@@ -6,9 +6,10 @@
   <version>4.0-RELEASE</version>
   <packaging>pom</packaging>
   <modules>
-  	<module>uengine-modeling</module>
+	  <module>uengine-modeling</module>
 	  <module>uengine-core</module>
 	  <module>uengine-bpmn-modeler</module>
+	  <module>bpmn-model</module>
   </modules>
   
   

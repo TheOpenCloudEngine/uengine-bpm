@@ -1,0 +1,82 @@
+package org.uengine.modeling;
+
+import java.io.Serializable;
+
+
+/**
+ * @author jyj
+ */
+public class Relation implements IRelation, Serializable{
+
+	private static final long serialVersionUID = 1234L;
+
+	String name;
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+
+
+	RelationView relationView;
+		public RelationView getRelationView() {
+			return relationView;
+		}
+		public void setRelationView(RelationView relationView) {
+			this.relationView = relationView;
+		}
+
+
+
+	/**
+	 * sourceElement
+	 */
+	transient IElement sourceElement;
+		@Override
+		public IElement getSourceElement() {
+			return this.sourceElement;
+		}
+		public void setSourceElement(IElement sourceElement) {
+			this.sourceElement = sourceElement;
+		}
+
+	/**
+	 * targetElement
+	 */
+	transient IElement targetElement;
+		@Override
+		public IElement getTargetElement() {
+			return this.targetElement;
+		}
+		public void setTargetElement(IElement targetElement) {
+			this.targetElement = targetElement;
+		}
+
+	@Override
+	public RelationView createView() {
+		RelationView relationView = null;
+		try {
+			relationView = (RelationView)Thread.currentThread().getContextClassLoader().loadClass("org.uengine.modeling.RelationView").newInstance();
+			relationView.setRelation(this);
+
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return relationView;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		IElement element = (IElement)obj;
+		
+		return getRelationView().getFrom().substring(0, getRelationView().getTo().indexOf("T") -1).equals(element.getElementView().getId());
+	}
+}

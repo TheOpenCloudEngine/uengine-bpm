@@ -1,0 +1,39 @@
+<% if(value){ %>
+        <div>
+            <div class="positionRight" style="margin-top:5px;">
+                <a id="wBtn" style="cursor: pointer" onClick="<%=methods.addActivityVariable.caller()%>"><span><%=mw3.localize("$add")%></span></a>
+                <a id="wBtn" style="cursor: pointer" onClick="mw3.getFaceHelper(<%=objectId%>).removeItem();"><span><%=mw3.localize("$Remove")%></span></a>
+            </div>
+            <div class="clear"></div>
+            <div class="form_table2"> 
+                <table style="width: 100%;" border="1" cellspacing="0" > 
+                <tbody>
+                <tr>
+                    <th style="padding-left:5px;">변수이름</th>
+                    <th style="width:100">변수설명</th>
+                    <th>변수타입</th>
+                </tr>
+                <%
+                    if( value.parameterContext && value.parameterContext.length > 0){
+                        var options;
+                        for(var i=0; i < value.parameterContext.length; i++){
+                            var context = value.parameterContext[i];
+                            if(typeof options == 'undefined'){
+                                options = objectMetadata;
+                            }
+                            options['htmlTag'] =  'tr';
+                %>
+                            <%=mw3.locateObject(context, context.__className, null , options, {objectId: objectId, name: '[' + i + ']'}) %>
+                <%
+                        }
+                        mw3.onLoadFaceHelperScript();
+                    }else{
+                %>
+                        <tr>
+                            <td colspan="3">변수가 없습니다</td>
+                        </tr>
+               <% }%>
+              
+            </div>
+        </div>
+<% }%>

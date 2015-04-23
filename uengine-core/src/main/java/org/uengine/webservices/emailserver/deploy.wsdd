@@ -1,0 +1,24 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from EMailServerService WSDL service -->
+
+  <service name="EMailService" provider="java:RPC" style="rpc" use="encoded">
+      <parameter name="wsdlTargetNamespace" value="http://org.uengine.webservices"/>
+      <parameter name="wsdlServiceElement" value="EMailServerService"/>
+      <parameter name="wsdlServicePort" value="EMailServer"/>
+      <parameter name="className" value="org.uengine.webservices.emailserver.impl.Liferay_EMailServerSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="EMailServer"/>
+      <parameter name="allowedMethods" value="*"/>
+
+  </service>
+</deployment>

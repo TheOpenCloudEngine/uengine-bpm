@@ -1,0 +1,10 @@
+<% if(value && value.errorMessage ){ %>
+
+    <% for(var i=0; i< value.errorMessage.length; i++ ){ %>
+        <div class="user_detail">
+            <span><%=value.errorMessage[i]%></span>
+        </div>
+        <div style="clear:both"></div>  
+    <% } %>
+        
+<% } %>

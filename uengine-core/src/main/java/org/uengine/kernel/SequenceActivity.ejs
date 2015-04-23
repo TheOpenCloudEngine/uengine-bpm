@@ -1,0 +1,22 @@
+<table>
+
+<%
+if(value!=null && value.childActivities){
+
+for(var i=0; i<value.childActivities.length; i++){
+
+%>
+
+<td>-></td><td> <%=mw3.locateObject(value.childActivities[i], value.childActivities[i].__className)%></td>
+
+<%
+}
+
+}else{
+%>
+
+<%=methods.load.here()%>
+
+<%}%>
+
+</table>

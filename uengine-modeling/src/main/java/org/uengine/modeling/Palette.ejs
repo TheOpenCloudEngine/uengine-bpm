@@ -1,0 +1,27 @@
+<div class="diagram_icon" style="padding-left:10px">	
+	<table class="diagram_icon table">
+	<% if(mw3.where != "popUp"){
+	%>
+		<tr>
+			<td style="padding:10px; background-color:#393939;color:#ffffff;font-size:12pt;border-bottom:0px;" colspan="2">
+				<%=fields.name.here({when: 'view'})%>
+			</td>
+		</tr>
+	<%
+	}
+	%>
+		
+	<%
+		if(typeof options == 'undefined') 
+			options = objectMetadata;
+			
+		options['htmlTag'] =  'tr';
+		
+		for(var i=0; i<value.symbolList.length; i++){
+	%>
+			<%=mw3.locateObject(value.symbolList[i], value.symbolList[i].__className, null, options, {objectId: value.__objectId, name: 'symbolList[' + i + ']'})%>
+	<%
+		}	
+	%>
+	</table>
+</div>

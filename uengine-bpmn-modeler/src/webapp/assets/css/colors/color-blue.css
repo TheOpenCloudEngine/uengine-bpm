@@ -1,0 +1,40 @@
+#sidebar{background-color: #005d8d;} 
+
+/* Header */
+.navbar-inverse {background-color: #005d8d;border-bottom: 1px solid #004c74} 
+.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {color: #fff;background-color: #17517A;} 
+.navbar-center {color:#fff}
+.navbar-inverse .navbar-brand {color: #fff; background: url('../../img/logo-red.png') no-repeat center; width: 120px}
+.sidebar-toggle {color:#adadad;border-right:none} 
+.sidebar-toggle:hover { color: #fff} 
+.header-menu #user-header .c-white, .header-menu #chat-header .c-white {color:#fff !important} 
+.header-menu #notifications-header .glyph-icon {color:#fff} 
+.header-menu #messages-header .glyph-icon {color:#fff} 
+.header-menu .dropdown-menu .dropdown-header, .header-menu .dropdown-menu .dropdown-header:hover {background: #004C74;color: #FFF;}
+.header-menu .dropdown-menu:after {border-bottom: 6px solid #004C74;}
+/* Sidebar */
+.sidebar-nav a {color:#fff} 
+.sidebar-nav a:hover {color:#fff;} 
+.sidebar-nav li.current a:hover i {color:#fff;} 
+.sidebar-nav li.current a{color: #fff;background-color: #004c74;border-left:3px solid #E95753;} 
+.sidebar-nav li.current li.current a{color: #fff;font-weight:500;background-color: #00518d;border-left:3px solid #E95753;} 
+#sidebar ul.submenu a{background-color: #006ea7} 
+.footer-widget {background-color: #1A5986;border-top:none;} 
+.footer-widget i {color: #adadad;}
+.footer-widget a:hover i{color: #fff} 
+.footer-gradient {background: url('../../img/gradient-light.png') repeat-x;} 
+#sidebar-charts {border-bottom: 1px solid #113e5e}
+.sidebar-charts-inner{border-bottom: none;} 
+.sidebar-chart-title {color:#fff;opacity: 0.4;} 
+.sidebar-chart-number {color:#fff} 
+#sidebar-charts hr.divider, li.divider {background: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(205, 205, 205, 0)), color-stop(50%, #113e5e), color-stop(100%, rgba(205, 205, 205, 0)));background: -webkit-linear-gradient(left, rgba(205, 205, 205, 0), #113e5e, rgba(205, 205, 205, 0));background: -moz-linear-gradient(left, rgba(205, 205, 205, 0), #113e5e, rgba(205, 205, 205, 0));background: -o-linear-gradient(left, rgba(205, 205, 205, 0),#113e5e, rgba(205, 205, 205, 0));background: linear-gradient(left, rgba(205, 205, 205, 0), #113e5e, rgba(205, 205, 205, 0))}
+.sidebar-footer .pull-left:hover {background-color:#17517A;} 
+.sidebar-nav a:hover i {color:#383838;}
+.sidebar-medium .sidebar-nav li.active i {color: #121212;}
+.sidebar-medium .sidebar-nav li.current a i {color: #121212;}
+
+/* Scrollbar */
+.mCSB_scrollTools .mCSB_draggerRail {background: #fff;background: rgba(255, 255, 255, 0.2);filter: "alpha(opacity=20)";-ms-filter: "alpha(opacity=20)"}
+.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {background: #121212;background: rgba(0, 0, 0, 0.2);filter: "alpha(opacity=20)";-ms-filter: "alpha(opacity=20)"}
+.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar {background: rgba(0, 0, 0, 0.4);filter: "alpha(opacity=40)";-ms-filter: "alpha(opacity=40)"}
+.mCSB_scrollTools .mCSB_dragger:active .mCSB_dragger_bar, .mCSB_scrollTools .mCSB_dragger.mCSB_dragger_onDrag .mCSB_dragger_bar {background: rgba(0, 0, 0, 0.3);filter: "alpha(opacity=30)";-ms-filter: "alpha(opacity=30)"}

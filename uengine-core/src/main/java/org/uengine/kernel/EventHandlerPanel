@@ -1,0 +1,44 @@
+<% if(value){ %>
+        <div>
+            <div class="positionRight" style="margin-top:5px;">
+                <a id="wBtn" style="cursor: pointer" onClick="<%=methods.addEventHandler.caller()%>"><span><%=mw3.localize("$add")%></span></a>
+                <a id="wBtn" style="cursor: pointer" onClick="mw3.getFaceHelper(<%=objectId%>).removeItem();"><span><%=mw3.localize("$Remove")%></span></a>
+            </div>
+            <div class="clear"></div>
+            <div class="form_table2"> 
+                <table style="width: 100%;" border="1" cellspacing="0" > 
+                <tbody>
+                <tr>
+                    <th>Name</th>
+                    <th>displayName</th>
+                    <th>HandlerActivity</th>
+                    <th>TriggeringMethod</th>
+                    <th>OpenRole</th>
+                </tr>
+                <%
+                    if( value.eventList && value.eventList.length > 0){
+                        var options;
+                        for(var i=0; i < value.eventList.length; i++){
+                            var context = value.eventList[i];
+                            if(typeof options == 'undefined'){
+                                options = objectMetadata;
+                            }
+                            options['htmlTag'] =  'tr';
+                %>
+                            <div onclick="mw3.getFaceHelper(<%=objectId%>).clickedItem('<%= i %>');">
+                                    <%=mw3.locateObject(context, context.__className, null , options) %>
+                            </div>
+                <%
+                            mw3.addBeanProperty(objectId, '[' + i + ']');
+                        }
+                        mw3.onLoadFaceHelperScript();
+                    }else{
+                %>
+                        <tr>
+                            <td colspan="5">이벤트가 없습니다</td>
+                        </tr>
+               <% }%>
+              
+            </div>
+        </div>
+<% }%>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 12.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 51448)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd" [
+	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
+	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
+]>
+<svg  version="1.0" id="Layer_1" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="411.167" height="429.158"
+	 viewBox="0 0 411.167 429.158" overflow="visible" enable-background="new 0 0 411.167 429.158" xml:space="preserve">
+<radialGradient id="XMLID_15_" cx="497.0298" cy="-1.9229" r="198.5125" gradientTransform="matrix(1 0 0 -1 -291.4463 203.6602)" gradientUnits="userSpaceOnUse">
+	<stop  offset="0" style="stop-color:#FFFFFF"/>
+	<stop  offset="0.1699" style="stop-color:#FCFCFC"/>
+	<stop  offset="0.3012" style="stop-color:#F2F2F2"/>
+	<stop  offset="0.4197" style="stop-color:#E2E2E2"/>
+	<stop  offset="0.5306" style="stop-color:#CACACA"/>
+	<stop  offset="0.6362" style="stop-color:#ACACAC"/>
+	<stop  offset="0.7379" style="stop-color:#878787"/>
+	<stop  offset="0.8364" style="stop-color:#5C5C5C"/>
+	<stop  offset="0.9299" style="stop-color:#2A2A2A"/>
+	<stop  offset="1" style="stop-color:#000000"/>
+</radialGradient>
+<polygon fill="url(#XMLID_15_)" stroke="#636466" stroke-width="10" points="7.071,205.584 205.582,7.071 404.096,205.588 
+	205.583,404.096 "/>
+<linearGradient id="XMLID_16_" gradientUnits="userSpaceOnUse" x1="813.0122" y1="-251.4463" x2="813.0122" y2="-637.0308" gradientTransform="matrix(0.9954 0.0959 0.0959 -0.9954 -579.0883 -279.4373)">
+	<stop  offset="0" style="stop-color:#FFFFFF"/>
+	<stop  offset="1" style="stop-color:#000000"/>
+</linearGradient>
+<path fill="url(#XMLID_16_)" stroke="#636466" stroke-width="4" d="M217.525,98.5c-54.008-5.203-102.713,29.064-117.536,79.228
+	l-34.218-3.295L109.833,218l51.567-34.355l-34.409-3.315c12.921-35.54,48.61-59.274,87.996-55.479
+	c46.712,4.5,80.931,46.014,76.431,92.727c-4.078,42.337-38.564,74.412-79.769,76.696l3.246,26.313
+	c53.265-3.796,97.581-45.545,102.872-100.471C323.667,158.851,278.791,104.403,217.525,98.5z"/>
+<path opacity="0.31" fill="#FFFFFF" enable-background="new    " d="M292.966,111.397L208.53,15.662L23.404,204.603l16.631,0.436
+	C107.028,161.134,191.548,129.857,292.966,111.397z"/>
+</svg>

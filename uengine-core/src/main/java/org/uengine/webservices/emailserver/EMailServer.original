@@ -1,0 +1,7 @@
+package com.hyunse.webservices.emailserver;
+
+public interface EMailServer{
+
+	public void sendMail(String from, String to, String title, String content);
+	
+}

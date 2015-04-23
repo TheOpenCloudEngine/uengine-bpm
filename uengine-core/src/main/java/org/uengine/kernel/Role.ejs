@@ -1,0 +1,16 @@
+<%
+if(value){
+%>
+	<ul>
+	
+    <% if(mw3.how == 'menu'){ %>
+        <li class="dragPossible_<%=objectId%>" style="cursor: pointer; padding-bottom:5px;">
+            <%=value.displayName ? value.displayName.text : value.name%>
+        </li>
+<%
+        }
+%>
+	</ul>
+<%
+}
+%>

@@ -3,6 +3,9 @@ package org.uengine.kernel.test;
 import junit.framework.TestCase;
 import org.uengine.kernel.*;
 import org.uengine.kernel.graph.Transition;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.*;
 
 public class OrGatewayActivityTest extends TestCase{
@@ -39,9 +42,24 @@ public class OrGatewayActivityTest extends TestCase{
         for(int i=1; i<20; i++) {
             Activity a1 = new DefaultActivity();
 
+            //a1.setQueuingEnabled(true);
+
             if(i == 7 || i==1){
                 a1 = new GatewayActivity();
             }
+
+//            if(i == 11){
+//                a1 = new DefaultActivity(){
+//                    @Override
+//                    protected void executeActivity(ProcessInstance instance) throws Exception {
+//
+//                        throw new Exception("xxxx");
+//
+//                        //super.executeActivity(instance);
+//                    }
+//                };
+//
+//            }
 
             a1.setTracingTag("a" + i);
             processDefinition.addChildActivity(a1);
@@ -148,12 +166,53 @@ public class OrGatewayActivityTest extends TestCase{
 
     public void testPathForVar1IsTrue() throws Exception {
 
+        processDefinition.setActivityFilters(new ActivityFilter[]{
+                new SensitiveActivityFilter() {
+                    @Override
+                    public void onEvent(Activity activity, ProcessInstance instance, String eventName, Object payload) throws Exception {
+                        if(Activity.ACTIVITY_FAULT.equals(eventName)){
+                            /// do something when a fault occurs in activity execution
+                        }
+                    }
+
+                    @Override
+                    public void beforeExecute(Activity activity, ProcessInstance instance) throws Exception {
+                    }
+
+                    @Override
+                    public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
+                    }
+
+                    @Override
+                    public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
+                        if(activity instanceof ProcessDefinition){
+                            assertExecutionPathEquals(new String[]{
+                                    "a10", "a9", "a1", "a2", "a3", "a4", "a7", "a11", "a12"
+                            }, instance);
+
+                        }
+                    }
+
+                    @Override
+                    public void onPropertyChange(Activity activity, ProcessInstance instance, String propertyName, Object changedValue) throws Exception {
+
+
+                    }
+
+                    @Override
+                    public void onDeploy(ProcessDefinition definition) throws Exception {
+
+                    }
+                }
+        });
+
+
         ProcessInstance instance = processDefinition.createInstance();
         instance.set("var1", "true");
         instance.execute();
-        assertExecutionPathEquals(new String[]{
-                "a10", "a9", "a1", "a2", "a3", "a4", "a7", "a11", "a12"
-        }, instance);
+
+
+
     }
 
 

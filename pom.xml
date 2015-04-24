@@ -10,6 +10,7 @@
 	  <module>uengine-core</module>
 	  <module>uengine-bpmn-modeler</module>
 	  <module>bpmn-model</module>
+	  <module>uengine-client-example</module>
   </modules>
   
   

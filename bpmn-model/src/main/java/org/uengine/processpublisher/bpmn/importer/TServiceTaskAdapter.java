@@ -4,6 +4,7 @@ import org.omg.spec.bpmn._20100524.model.TServiceTask;
 import org.omg.spec.bpmn._20100524.model.TTask;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.DefaultActivity;
+import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.WebServiceActivity;
 
 import java.util.Hashtable;
@@ -25,16 +26,16 @@ public class TServiceTaskAdapter extends TTaskAdapter{
                 Class theActivityClass = Thread.currentThread().getContextClassLoader().loadClass(className);
                 if(Activity.class.isAssignableFrom(theActivityClass)){
                     return (Activity) theActivityClass.newInstance();
+                }else{
+                    throw new RuntimeException(className + " is not an Activity");
                 }
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                throw new RuntimeException("No such activity class : " + className, e);
             } catch (InstantiationException e) {
-                e.printStackTrace();
+                throw new RuntimeException("Activity class : " + className + " is not initialized.", e);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                throw new RuntimeException("Activity class : " + className + " is not initialized.", e);
             }
-
-            return new DefaultActivity(src.getName());
 
         }else{
             return new DefaultActivity(src.getName());

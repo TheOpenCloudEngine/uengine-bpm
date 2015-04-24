@@ -1,10 +1,8 @@
 package org.uengine;
 
 
-import org.uengine.kernel.DefaultProcessInstance;
-import org.uengine.kernel.ProcessDefinition;
-import org.uengine.kernel.ProcessInstance;
-import org.uengine.processpublisher.AdapterUtil;
+import org.uengine.kernel.*;
+import org.uengine.processpublisher.BPMNUtil;
 
 import java.io.File;
 
@@ -14,8 +12,51 @@ public class ExampleBPMNExecution {
 
         ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
-        ProcessDefinition processDefinition = AdapterUtil.adapt(new File("/Users/kimsh/Documents/acitiviti sample/switch.xml")); //new File("/java/autoinsurance.bpmn"));
-processDefinition.afterDeserialization();
+
+
+
+        ProcessDefinition processDefinition = BPMNUtil.adapt(Thread.currentThread().getContextClassLoader().getResourceAsStream("org/uengine/sample.bpmn")); //new File("/java/autoinsurance.bpmn"));
+        processDefinition.afterDeserialization();
+
+        processDefinition.setActivityFilters(new ActivityFilter[]{
+                new SensitiveActivityFilter() {
+                    @Override
+                    public void onEvent(Activity activity, ProcessInstance instance, String eventName, Object payload) throws Exception {
+                        if(Activity.ACTIVITY_FAULT.equals(eventName)){
+                            /// do something when a fault occurs in activity execution
+                        }
+
+                        if(activity instanceof EndActivity && Activity.ACTIVITY_STOPPED.equals(eventName) ){
+                            System.out.println(instance.getActivityCompletionHistory());
+                        }
+                    }
+
+                    @Override
+                    public void beforeExecute(Activity activity, ProcessInstance instance) throws Exception {
+                    }
+
+                    @Override
+                    public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
+                    }
+
+                    @Override
+                    public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
+
+                    }
+
+                    @Override
+                    public void onPropertyChange(Activity activity, ProcessInstance instance, String propertyName, Object changedValue) throws Exception {
+
+
+                    }
+
+                    @Override
+                    public void onDeploy(ProcessDefinition definition) throws Exception {
+
+                    }
+                }
+        });
+
 
         ProcessInstance instance = processDefinition.createInstance();
 

@@ -1,15 +1,12 @@
 package org.uengine.bpmn.testmain;
 
-import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
-import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.uengine.kernel.ProcessDefinition;
-import org.uengine.processpublisher.AdapterUtil;
+import org.uengine.processpublisher.BPMNUtil;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 
@@ -46,7 +43,7 @@ public class ConvertBPMN2UETest {
         BPMNPlane plane = ((TDefinitions) element.getValue()).getBPMNDiagram().get(0).getBPMNPlane();
 
 
-        ProcessDefinition definition = (ProcessDefinition) AdapterUtil.adapt(element.getValue());
+        ProcessDefinition definition = (ProcessDefinition) BPMNUtil.adapt(element.getValue());
 
         System.out.println(definition);
 

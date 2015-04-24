@@ -444,6 +444,8 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 							final boolean isRetrying = (retCnt > 0 && retCnt < maxRetry-1);
 
+							//to separate the transactions
+
 							ProcessManagerFactoryBean pmfb = new ProcessManagerFactoryBean();
 							ProcessManagerRemote pm = null;
 							ProcessInstance instance = null;
@@ -661,6 +663,9 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 			}
 
 		}catch(Exception e){
+
+			fireFault(finalInstance, e);
+
 			throw e;
 		}finally{
 			if(act.isFaultTolerant()){

@@ -1,6 +1,5 @@
 package org.uengine.processpublisher.bpmn.importer;
 
-import org.metaworks.dao.TransactionContext;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
@@ -11,18 +10,16 @@ import org.omg.spec.bpmn._20100524.model.TLaneSet;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.dd._20100524.di.DiagramElement;
 import org.uengine.kernel.Activity;
-import org.uengine.kernel.Pool;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
 import org.uengine.kernel.graph.Transition;
 import org.uengine.modeling.ElementView;
 import org.uengine.processpublisher.Adapter;
-import org.uengine.processpublisher.AdapterUtil;
+import org.uengine.processpublisher.BPMNUtil;
 
 import javax.xml.bind.JAXBElement;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinition>{
     @Override
@@ -94,7 +91,7 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
                     for(JAXBElement flowElement: bpmnProcess.getFlowElement()){
                         context.put("parent", processDefinition);
 
-                        Object childElement = AdapterUtil.adapt(flowElement.getValue(), context);
+                        Object childElement = BPMNUtil.adapt(flowElement.getValue(), context);
 
                         if(childElement instanceof Activity){
 

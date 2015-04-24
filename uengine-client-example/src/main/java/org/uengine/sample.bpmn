@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="W20150424203025_228848225" name="bbbb" isExecutable="true">
+    <startEvent id="OG_6779_2" name="Start"></startEvent>
+    <sequenceFlow id="SF254044116" sourceRef="OG_6779_2" targetRef="OG_6779_8"></sequenceFlow>
+    <parallelGateway id="OG_6779_8" name="병렬 처리" activiti:async="true"></parallelGateway>
+    <sequenceFlow id="SF991015487" sourceRef="OG_6779_8" targetRef="OG_6779_12"></sequenceFlow>
+    <sequenceFlow id="SF426166733" sourceRef="OG_6779_8" targetRef="OG_6779_16"></sequenceFlow>
+    <serviceTask id="OG_6779_12" name="CHEF NODE : namenode1" activiti:async="true" implementation="java:org.bahamas.test.Activity1"></serviceTask>
+    <sequenceFlow id="SF728561693" sourceRef="OG_6779_12" targetRef="OG_6779_20"></sequenceFlow>
+    <serviceTask id="OG_6779_16" name="CHEF NODE : namenode1" activiti:async="true" implementation="java:org.bahamas.test.Activity1"></serviceTask>
+    <sequenceFlow id="SF46970638" sourceRef="OG_6779_16" targetRef="OG_6779_20"></sequenceFlow>
+    <parallelGateway id="OG_6779_20" name="병렬 종료" activiti:async="true"></parallelGateway>
+    <sequenceFlow id="SF291418580" sourceRef="OG_6779_20" targetRef="OG_6779_5"></sequenceFlow>
+    <endEvent id="OG_6779_5" name="End"></endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_W20150424203025_228848225">
+    <bpmndi:BPMNPlane bpmnElement="W20150424203025_228848225" id="BPMNPlane_W20150424203025_228848225"></bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

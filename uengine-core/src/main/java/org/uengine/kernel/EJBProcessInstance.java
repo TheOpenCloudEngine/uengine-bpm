@@ -1,13 +1,12 @@
 package org.uengine.kernel;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -17,7 +16,6 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.uengine.contexts.ComplexType;
-import org.uengine.contexts.IFileContent;
 import org.uengine.persistence.dao.UniqueKeyGenerator;
 import org.uengine.persistence.processinstance.ProcessInstanceDAO;
 import org.uengine.persistence.processinstance.ProcessInstanceDAOType;
@@ -28,7 +26,6 @@ import org.uengine.persistence.rolemapping.RoleMappingDAOType;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.SimulatorTransactionContext;
 import org.uengine.processmanager.TransactionContext;
-import org.uengine.util.MeasuringContext;
 import org.uengine.util.UEngineUtil;
 import org.uengine.webservices.worklist.WorkList;
 import org.uengine.webservices.worklist.WorkListServiceLocator;
@@ -39,7 +36,7 @@ import org.uengine.webservices.worklist.WorkListServiceLocator;
  */
 
 public class EJBProcessInstance extends DefaultProcessInstance implements TransactionListener {
-	
+
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	protected final static int TYPE_NULL 	= -2;
@@ -52,28 +49,26 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	protected final static int TYPE_CALENDAR= 6;
 //	protected final static int TYPE_FORMCONTEXT= 7;
 
-	protected final static int TYPE_FILECONTENT= 9;
-
 	//dirty field list for synchronizing when endCaching()
 	Map modifiedKeyMap;
 	Map modifiedRoleMappings;
 	Map cachedRoleMappings;
 	//
-	
+
 	//for caching
 	boolean caching;
-		public boolean isCaching() {
-			return caching;
-		}
-		public void setCaching(boolean b) {
-			caching = b;
-		}
-	
+	public boolean isCaching() {
+		return caching;
+	}
+	public void setCaching(boolean b) {
+		caching = b;
+	}
+
 	boolean processVariablesAreCached = false;
 	boolean roleMappingsAreCached = false;
 	boolean isNew = false;
 	//
-	
+
 //	ProcessInstanceRepositoryLocal processInstanceRepositoryLocal;
 //	public ProcessInstanceRepositoryLocal getProcessInstanceRepositoryLocal() throws Exception{
 //		if(processInstanceRepositoryLocal == null){
@@ -93,7 +88,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			processInstanceDAO.getImplementationObject().setKeyField("INSTID");
 			processInstanceDAO.getImplementationObject().createUpdateSql();
 		}
-		
+
 		return processInstanceDAO;
 	}
 
@@ -102,63 +97,63 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		if(pvdf==null){
 			pvdf = ProcessVariableDAOType.getInstance(ptc);
 		}
-		
+
 		return pvdf;
 	}
-		
+
 	public EJBProcessInstance (ProcessDefinition procDef, String name, Map options) throws Exception{
 		setCaching(true);
-		
+
 		//isNew field is for recognizing the instance is just initiated in the transaction. 
 		// when the argument procDef is provided, it means also initiation stage. 
 		if(procDef != null)
 			isNew = true;
-		
+
 		//creates an instance for the use of factory logic if definition is null
-		if(procDef==null) return;			
-		
+		if(procDef==null) return;
+
 		if ( (getProcessTransactionContext()==null || (getProcessTransactionContext() instanceof SimulatorTransactionContext)) && options != null && options.get("ptc") != null ) {
 			super.setProcessTransactionContext( (ProcessTransactionContext)options.get("ptc") );
 		}
-		
+
 		getProcessTransactionContext().addTransactionListener(this);
-		
+
 		Long instanceId = UniqueKeyGenerator.issueProcessInstanceKey(getProcessTransactionContext());
-		
+
 		ProcessInstanceDAOType pidt = ProcessInstanceDAOType.getInstance(getProcessTransactionContext());
 		processInstanceDAO = pidt.createDAOImpl(null);
-				
+
 		processInstanceDAO.setStatus(Activity.STATUS_READY);
 		processInstanceDAO.setDefName(procDef.getName());
 		processInstanceDAO.setInstId(instanceId);
 		processInstanceDAO.setDefModDate(procDef.getModifiedDate().getTime());
-		
+
 		setInstanceId(""+processInstanceDAO.getInstId());
-	
+
 		if(!UEngineUtil.isNotEmpty(name))
 			name = procDef.getName() + instanceId;
-			
+
 		processInstanceDAO.setName(name);
 		setName(name);
-		
+
 		Date now = GlobalContext.getNow(getProcessTransactionContext()).getTime();
 		processInstanceDAO.setStartedDate(now);
-		
-		boolean isSubProcess = 
-			(	options!=null 
-				&& options.containsKey("isSubProcess") 
-				&& options.get("isSubProcess").equals("yes")
-			);
-			
+
+		boolean isSubProcess =
+				(	options!=null
+						&& options.containsKey("isSubProcess")
+						&& options.get("isSubProcess").equals("yes")
+				);
+
 		if(isSubProcess){
-			processInstanceDAO.setIsSubProcess(true);			
+			processInstanceDAO.setIsSubProcess(true);
 			processInstanceDAO.setMainInstId(new Long((String)options.get(DefaultProcessInstance.RETURNING_PROCESS)));
 			processInstanceDAO.setMainActTrcTag((String)options.get(DefaultProcessInstance.RETURNING_TRACINGTAG));
 			processInstanceDAO.setMainExecScope((String)options.get(DefaultProcessInstance.RETURNING_EXECSCOPE));
 			processInstanceDAO.setDontReturn(((Boolean)options.get(DefaultProcessInstance.DONT_RETURN)).booleanValue());
 			processInstanceDAO.setIsEventHandler(options.containsKey("isEventHandler"));
 		}
-		
+
 		if(options.containsKey(DefaultProcessInstance.ROOT_PROCESS)){
 			processInstanceDAO.setRootInstId(new Long((String)options.get(DefaultProcessInstance.ROOT_PROCESS)));
 		}else{
@@ -167,14 +162,14 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		processInstanceDAO.setDefVerId(procDef.getId());
 		processInstanceDAO.setDefId(procDef.getBelongingDefinitionId());
-		
+
 		getProcessTransactionContext().registerProcessInstance(this);
 	}
 
 	public EJBProcessInstance () throws Exception{
 		setInstanceId(null);
 	}
-	
+
 	public String getMainActivityTracingTag(){
 		try {
 			return getProcessInstanceDAO().getMainActTrcTag();
@@ -186,7 +181,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	public ProcessInstance getInstance(String instanceId) throws Exception{
 		return this.getInstance(instanceId, null);
 	}
-	
+
 	//TODO hotspot
 	public ProcessInstance getInstance(String instanceId, Map options) throws Exception{
 
@@ -202,15 +197,15 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			
 			return tempInst;
 */		}
-		
+
 		ProcessTransactionContext ptc = getProcessTransactionContext();
 		if (options != null && options.containsKey("ptc")) {
 			ptc = (ProcessTransactionContext)options.get("ptc");
 		}
-		
+
 		if(ptc==null)
 			throw new UEngineException("TransactionContext should be provided.");
-		
+
 		setProcessTransactionContext(ptc);
 
 		if(isCaching()){
@@ -218,21 +213,21 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			if(instance!=null)
 				return instance;
 		}
-		
+
 		try{
-addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
+			addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 
 
 			setInstanceId(instanceId);
 			boolean isArchive = getProcessInstanceDAO().getIsArchive();
-			
+
 			if(GlobalContext.logLevelIsDebug){
 				addDebugInfo("Definition administration url",GlobalContext.WEB_CONTEXT_ROOT + "/processmanager/viewProcessFlowChart.jsp?processDefinition=" + getProcessInstanceDAO().getDefId() + "&processDefinitionVersionID=" + getProcessInstanceDAO().getDefVerId());
 				addDebugInfo("Process Designer launch url",GlobalContext.WEB_CONTEXT_ROOT + "/processmanager/ProcessDesigner.jnlp?defVerId=" + getProcessInstanceDAO().getDefVerId() + "&defId=" + getProcessInstanceDAO().getDefId());
 				addDebugInfo("Instance administration url", GlobalContext.WEB_CONTEXT_ROOT + "/processmanager/viewProcessInformation.jsp?instanceId=" + getInstanceId());
 			}
-			
-			
+
+
 			//if the instance is archived, the instance would be loaded from a serialized XML file.
 			if(isArchive){
 				return FileProcessArchive.load(instanceId, ptc);
@@ -243,51 +238,47 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 //			return inst;
 			getProcessTransactionContext().addTransactionListener(this);
 			ptc.registerProcessInstance(this);
-			
+
 			//if the instance has been retreived by instanceId, it tells us it is not newly initiated status.
 			isNew = false;
-			
+
 			return this;
-			
-		//The case that there's no such instance record in bpm_procinst. Perhaps the instance is archived.
+
+			//The case that there's no such instance record in bpm_procinst. Perhaps the instance is archived.
 		}catch(javax.ejb.ObjectNotFoundException onfe){
-			
+
 			//try to find in file system
 			try{
 				return FileProcessArchive.load(instanceId, ptc);
 			}catch(Exception e){
 				throw new UEngineException("No such process instance.");
-			}			
+			}
 		}
 	}
-	
+
 	public void applyChanges() throws Exception{
-		MeasuringContext mc = new MeasuringContext("EJBProcessInstance:applyChanges()");
-		
+
 		ProcessInstanceDAO procInsDAO = getProcessInstanceDAO();
 		procInsDAO.getImplementationObject().setTableName("BPM_PROCINST");
 		procInsDAO.getImplementationObject().setKeyField("INSTID");
 		procInsDAO.setModDate(GlobalContext.getNow(getProcessTransactionContext()).getTime());
-		
+
 		if(isNew){
 			procInsDAO.getImplementationObject().createInsertSql();
-			
-			isNew = false;
 		}else{
 			procInsDAO.getImplementationObject().createUpdateSql();
 		}
-		
-		
+
 		//TODO Checking for dirty field is needed
 		procInsDAO.update();
 
-		mc.printElapsedTime(this);
-
+		setCaching(true);
 		if(modifiedKeyMap!=null){
-			//System.out.println("modifiedKeyMap.size() ===========================> " + modifiedKeyMap.size());
-//changed to let the variable/property values persist so that the history of data change can be stored
-			if(modifiedKeyMap.size() > 0)
-				getProcessVariableDAOFacade().deleteValue(getInstanceId(), modifiedKeyMap.keySet().iterator());
+			setProcessVariablesFile(getVariables());
+			
+			/*만일을 위해 DB에도 값을 넣는다.*/
+			/*
+			getProcessVariableDAOFacade().deleteValue(getInstanceId(), modifiedKeyMap.keySet().iterator());
 
 			ProcessVariableDAO pvd = getProcessVariableDAOFacade().createProcessVariableDAOForBatchInsert();
 			for(Iterator iterator = modifiedKeyMap.keySet().iterator(); iterator.hasNext();){
@@ -314,63 +305,61 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 			}
 			
 			pvd.updateBatch();
+			*/
 		}
 
-		mc.printElapsedTime(this);
 
 		setCaching(false);
-		
+
 		if(modifiedRoleMappings!=null){
 			RoleMappingDAOType rmDAOFacade = RoleMappingDAOType.getInstance(ptc);
 
-			if(modifiedRoleMappings.size() > 0)				
+			if(modifiedRoleMappings.size() > 0)
 				rmDAOFacade.removeRoleMappings(getInstanceId(), modifiedRoleMappings.keySet().iterator());
-								
+
 			RoleMappingDAO roleMappingDAO = rmDAOFacade.createDAOForInsertRoleMappingBatch();
-			
+
 			for(Iterator iterator = modifiedRoleMappings.keySet().iterator(); iterator.hasNext();){
 				String roleName = (String)iterator.next();
 				RoleMapping rm = (RoleMapping)cachedRoleMappings.get(roleName);
-				
+
 //(new Exception("[EJBProcessInstance:putRoleMappingImpl] instanceId = " + instanceId + "; RoleName = " + roleName)).printStackTrace();
 
 				putRoleMappingImpl(roleName, rm, true, roleMappingDAO);
 			}
-			
+
 			roleMappingDAO.updateBatch();
 		}
-		
-		mc.printElapsedTime(this);
+		//setCaching(true);
 
 	}
-	
+
 
 	protected int getDataType(Object value){
 		if(value==null) return TYPE_NULL; //null
-		
+
 		if(value instanceof String) 	return TYPE_STRING;
 		if(value instanceof Integer) 	return TYPE_INTEGER;
 		if(value instanceof Long) 		return TYPE_LONG;
 		if(value instanceof Boolean)	return TYPE_BOOLEAN;
 		if(value instanceof Date) 		return TYPE_DATE;
 		if(value instanceof Calendar) 	return TYPE_CALENDAR;
-		if(value instanceof IFileContent)	return TYPE_FILECONTENT;
-		
+
 		return TYPE_ANY;//means any type (xml serialization)
 	}
 
 	public void set(String scopeByTracingTag, String key, Serializable val) throws Exception{
-		
+
 		if(val instanceof ProcessVariableValue){
 			ProcessVariableValue pvv = (ProcessVariableValue)val;
 			pvv.setName(key);
 			set(scopeByTracingTag, pvv);
-			
+
 			getProcessDefinition().firePropertyChangeEventToActivityFilters(this, "variable", pvv);
 
 			return;
 		}
-		
+
 		setImpl(scopeByTracingTag, key, val, 0, false, isCaching(), false, null, false);
 
 		ProcessVariableValue pvv = new ProcessVariableValue();
@@ -380,27 +369,27 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 	}
 
 	public void setProperty(String scopeByTracingTag, String key, Serializable val) throws Exception{
-		
+
 		//If the activity where the scopeByTracingTag is under an execution scope, the property space should be devided.
 		ExecutionScopeContext esc = getExecutionScopeContext();
 		if(esc!=null){
 			Activity activity = getProcessDefinition().getActivity(scopeByTracingTag);
-		
+
 			if(activity == esc.getRootActivityInTheScope() || esc.getRootActivityInTheScope().isAncestorOf(activity)){
 				scopeByTracingTag = scopeByTracingTag + "." + esc.getExecutionScope();
 			}
 		}
-		
+
 		setImpl(scopeByTracingTag, key, val, 0, false, isCaching(), false, null, true);
 	}
-	
+
 	public void add(String scopeByTracingTag, String key, Serializable val, int index) throws Exception{
 		if(isCaching()){
 			super.add(scopeByTracingTag, key, val, index);
-			
+
 			if(modifiedKeyMap==null)
 				modifiedKeyMap = new Hashtable();
-			
+
 			modifiedKeyMap.put(createFullKey(scopeByTracingTag, key, false), new String[]{scopeByTracingTag, key});
 
 		}else
@@ -409,7 +398,10 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 	}
 
 	private void setImpl(String scopeByTracingTag, String key, Serializable val, int index, boolean append, boolean toCache, boolean isBatch, ProcessVariableDAO pvd, boolean isProperty) throws Exception{
-		
+
+
+
+
 		if(!isProperty && getProcessDefinition()!=null){
 			ProcessVariable pv = getProcessDefinition().getProcessVariable(key);
 
@@ -417,53 +409,27 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 
 			addDebugInfo(" --- [Set Variable] --------------------\n  * name : "+pv.getName()+"\n  * value : " + (GlobalContext.logLevelIsDebug ? "\n"+GlobalContext.serialize(val, String.class) : val +"'"));
 			addDebugInfo(" ---------------------------------------");
-		
+
 			if(pv!=null && pv.shouldAccessValueInSpecializedWay()){
 				pv.set(this, scopeByTracingTag, val);
 				return;
 			}
-			
-			
-			if(key.indexOf('.') > -1){
-				
-				//case 1 :  the variable type is kind of ProcessVariablePartResolver that already has the protocol
-				if( ProcessVariablePartResolver.class.isAssignableFrom(pv.getType()) ){
-					String [] wholePartPath = key.replace('.','@').split("@");
-					/*String [] partPath = new String[wholePartPath.length-1];
-					for(int i=0; i<partPath.length; i++){
-						partPath[i] = wholePartPath[i+1];
-					}*/
-	
-					Object sourceValue = get("", wholePartPath[0]);
-	
-					ProcessVariablePartResolver variableDelegator = (ProcessVariablePartResolver)sourceValue;
-					variableDelegator.setPart(this, wholePartPath, val);
-					
-					return;
-				}
-				
-				//case 2 :  the variable type is kind of complex type that needs bean property setting
-				if(ComplexType.class.isAssignableFrom(pv.getType())){
-					String [] wholePartPath = key.replace('.','@').split("@");
-					String majorKey = wholePartPath[0];
-					Object sourceValue = get("", majorKey);
-					Class theType = ((ComplexType)pv.getDefaultValue()).getTypeClass();
-					
-					if(sourceValue == null || sourceValue instanceof ComplexType){
-						sourceValue = theType.newInstance();
-					}
-					
-					String propKeyOnly = key.substring(key.indexOf(".")+1);
-					
-					UEngineUtil.setBeanPropertyValue(sourceValue, propKeyOnly, val);
-					
-					val = (Serializable) sourceValue;
-					key = majorKey;
 
-				}
+			if(key.indexOf('.') > -1 && ProcessVariablePartResolver.class.isAssignableFrom(pv.getType()) ){
+				String [] wholePartPath = key.replace('.','@').split("@");
+				/*String [] partPath = new String[wholePartPath.length-1];
+				for(int i=0; i<partPath.length; i++){
+					partPath[i] = wholePartPath[i+1];
+				}*/
 
+				Object sourceValue = get("", wholePartPath[0]);
+
+				ProcessVariablePartResolver variableDelegator = (ProcessVariablePartResolver)sourceValue;
+				variableDelegator.setPart(this, wholePartPath, val);
+
+				return;
 			}
-			
+
 			/**
 			 * if the process variable is volatile, never stores it in persisting storage.
 			 */
@@ -472,33 +438,40 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 
 		if(toCache){
 //System.out.println("The value in the cach is used: set ================================");
-			
+
 			if(val instanceof ProcessVariableValue){
 				throw new UEngineException("Object ProcessVariableValue cannot be set by method 'set(String scope, String variableName, Serializable value)' but 'set(String scope, ProcessVariableValue value)' rather.");
 			}
-			
+
 			if(isProperty)
 				super.setProperty(scopeByTracingTag, key, val);
 			else
 				super.set(scopeByTracingTag, key, val);
-			
+
 			//check the values became dirty so that they can be updated into database later
 			if(modifiedKeyMap==null)
 				modifiedKeyMap = new Hashtable();
-			
+
 			modifiedKeyMap.put(createFullKey(scopeByTracingTag, key, isProperty), new String[]{scopeByTracingTag/*, new Boolean(isInserted)*/, key});
 
 			return;
-		}		
+		}
+
+		if ( !isBatch )
+			setProcessVariablesFile(createFullKey(scopeByTracingTag, key, isProperty), val);
 		
+		
+		/*만일을 대비해 데이터를 넣어놓는다.*/
+		/*
 		int dataType =getDataType(val);
 
 		if(dataType==TYPE_ANY){
 			//try{
 			//TODO: type-sensitive serialization is enabled now. You may let this disabled for the performance issue						
-			ProcessVariable pd = getProcessDefinition()	
+			ProcessVariable pd = null;{
+				pd = getProcessDefinition()	
 					.getProcessVariable(key);
-			
+			}
 											
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			
@@ -528,46 +501,68 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 				getProcessVariableDAOFacade().insertValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType, index); 
 			}
 		}
-		
+		*/
+
 	}
 
 
-	
+
 	private void beginCaching(String scopeByTracingTag, String key, boolean isProperty) throws Exception{
 		if(!processVariablesAreCached && !variables.containsKey(createFullKey(scopeByTracingTag, key, isProperty))){
 			try{
 				if(!isNew){
-					
+
 					ProcessVariable[] vars = getProcessDefinition().getProcessVariables();
 					if(vars!=null)
-					for(int i=0; i<vars.length; i++){
-						ProcessVariable var = vars[i];
-						if(var.getDefaultValue() instanceof ComplexType){
-							//modified by yookjy 2011.03.24
-							ComplexType v = (ComplexType)var.getDefaultValue();
-							if (v.getTypeId() != null && !"".equals(v.getTypeId())) {
-								v.getTypeClass(getProcessTransactionContext().getProcessManager());
-							}
+						for(int i=0; i<vars.length; i++){
+							ProcessVariable var = vars[i];
+							if(var.getDefaultValue() instanceof ComplexType){
+								//modified by yookjy 2011.03.24
+								ComplexType v = (ComplexType)var.getDefaultValue();
+								if (v.getTypeId() != null && !"".equals(v.getTypeId())) {
+									v.getTypeClass(getProcessTransactionContext().getProcessManager());
+								}
 //							((ComplexType)var.getDefaultValue()).getTypeClass(getProcessTransactionContext().getProcessManager());
+							}
 						}
+
+
+					//20120911 var filePath read
+					//20130815 var filePath save
+
+					Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(starteddate);
+					String calendarDirectory = cal.get(Calendar.YEAR)
+							+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
+							+ cal.get(Calendar.DAY_OF_MONTH);
+
+					String filePath =GlobalContext.FILE_SYSTEM_DIR +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
+
+
+					File varFile = new File(filePath);
+					if (varFile.exists()) {
+						Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
+						fileVariables.putAll(variables);
+						variables = fileVariables;
+					} else {
+						DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
+						shotProcessInstance.variables.putAll(variables);
+						variables = shotProcessInstance.variables;
 					}
-					
-					DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
-					shotProcessInstance.variables.putAll(variables);
-					variables = shotProcessInstance.variables;
 
 					if(GlobalContext.logLevelIsDebug){
 						addDebugInfo("");
 
 						if(vars!=null)
-						for(int i=0; i<vars.length; i++){
-							ProcessVariable var = vars[i];
-							Serializable data = super.get("", var.getName());
-							String dataInStr = (String)GlobalContext.serialize(data, String.class);
-							
-							addDebugInfo("Initial Variable '" + var.getName() + "'", dataInStr);
-						}
-						
+							for(int i=0; i<vars.length; i++){
+								ProcessVariable var = vars[i];
+								Serializable data = super.get("", var.getName());
+								String dataInStr = (String)GlobalContext.serialize(data, String.class);
+
+								addDebugInfo("Initial Variable '" + var.getName() + "'", dataInStr);
+							}
+
 						addDebugInfo("");
 
 						Role[] roles = getProcessDefinition().getRoles();
@@ -576,18 +571,18 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 								Role role = roles[i];
 								RoleMapping rm = getRoleMapping(role.getName());
 								String dataInStr = (String)GlobalContext.serialize(rm, String.class);
-								
+
 								addDebugInfo("Initial RoleMapping '" + role.getName() + "'", dataInStr);
 							}
-							
-						
-						
+
+
+
 					}else
 						addDebugInfo("Initial Variable Values", variables);
 
 				}
-				
-				
+
+
 				processVariablesAreCached = true;
 			}catch(Exception e){
 				throw new UEngineException("Error when caching process instance data: "+e.getMessage(), e);
@@ -603,10 +598,10 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 		//If the activity where the scopeByTracingTag is under an execution scope, the property space should be devided.
 		ExecutionScopeContext esc = getExecutionScopeContext();
 		if(esc!=null){
-			if(scopeByTracingTag.indexOf('.')==-1){			
-		
+			if(scopeByTracingTag.indexOf('.')==-1){
+
 				Activity activity = getProcessDefinition().getActivity(scopeByTracingTag);
-			
+
 				if(activity == esc.getRootActivityInTheScope() || esc.getRootActivityInTheScope().isAncestorOf(activity)){
 					scopeByTracingTag = scopeByTracingTag + "." + esc.getExecutionScope();
 				}
@@ -615,41 +610,41 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 
 		return getImpl(scopeByTracingTag, key, true);
 	}
-	
 
-   public Serializable getImpl(String scopeByTracingTag, String key, boolean isProperty)
-    throws Exception
+
+	public Serializable getImpl(String scopeByTracingTag, String key, boolean isProperty)
+			throws Exception
 	{
-		   try{
-	   
-		   String firstPart = key;
-		   if(key.indexOf('.') > 0){
+		try{
+
+			String firstPart = key;
+			if(key.indexOf('.') > 0){
 				String [] wholePartPath = key.replace('.','@').split("@");
 				firstPart = wholePartPath [0];
-		   }
-		   
+			}
+
 			if(getProcessDefinition()!=null){
 				ProcessVariable pv = getProcessDefinition().getProcessVariable(firstPart);
 				if(pv!=null && pv.shouldAccessValueInSpecializedWay()){
 					return pv.get(this, scopeByTracingTag);
 				}
 			}
-	
+
 			Serializable sourceValue = null;
-			
+
 			if(isCaching()){
 				beginCaching(scopeByTracingTag, firstPart, isProperty);
-	
-	//System.out.println("The value in the cache is used================================");
+
+				//System.out.println("The value in the cache is used================================");
 				if(isProperty)
 					return super.getProperty(scopeByTracingTag, firstPart);
 				else
 					sourceValue = super.get(scopeByTracingTag, firstPart);
 			}
-		   
+
 			if(sourceValue==null)
-				sourceValue = getProcessVariableDAOFacade().get(getInstanceId(), scopeByTracingTag, firstPart); 
-			
+				sourceValue = getFile(scopeByTracingTag, key, firstPart, isProperty);
+
 			if(sourceValue == null){
 				ProcessDefinition pd = getProcessDefinition();
 				if(pd != null){
@@ -658,51 +653,48 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 						sourceValue = (Serializable)pv.getDefaultValue();
 				}
 			}
-			
-	
-			
-			return resolveParts(sourceValue, key);
-	   }catch(Exception e){
-		   throw new UEngineException("Error to get variable [" + key + "]: " + e.getMessage(), e);
-	   }
-	}
-   
 
-   public ProcessVariableValue getMultiple(String scopeByTracingTag, String key)
-   throws Exception
+
+
+			return resolveParts(sourceValue, key);
+		}catch(Exception e){
+			throw new UEngineException("Error to get variable [" + key + "]: " + e.getMessage(), e);
+		}
+	}
+
+
+	public ProcessVariableValue getMultiple(String scopeByTracingTag, String key)
+			throws Exception
 	{
-	   if(key.indexOf(".") > -1){
-		   Serializable orgValue = get(scopeByTracingTag, key);
-		   if(orgValue instanceof ProcessVariableValue){
-			   return (ProcessVariableValue)orgValue;
-		   }else{
-			   ProcessVariableValue pvv = new ProcessVariableValue();
-			   
-			   if(orgValue instanceof BeanPropertyResolver){
-				   key = key.substring(key.indexOf("."));
-				   
-				   ((BeanPropertyResolver)orgValue).getBeanProperty(key);
-			   }else if (orgValue instanceof ProcessVariablePartResolver){
+		if(key.indexOf(".") > -1){
+			Serializable orgValue = get(scopeByTracingTag, key);
+			if(orgValue instanceof ProcessVariableValue){
+				return (ProcessVariableValue)orgValue;
+			}else{
+				ProcessVariableValue pvv = new ProcessVariableValue();
+
+				if(orgValue instanceof BeanPropertyResolver){
+					key = key.substring(key.indexOf("."));
+
+					((BeanPropertyResolver)orgValue).getBeanProperty(key);
+				}else if (orgValue instanceof ProcessVariablePartResolver){
 					orgValue = resolveParts(orgValue, key);
-			   }else{
-				   key = key.substring(key.indexOf(".")+1);
-				   orgValue = (Serializable) UEngineUtil.beanPropertyValueObject(orgValue, key, false, null);
-			   }
-			   
-			   pvv.setValue(orgValue);
-			   pvv.beforeFirst();
-			   
-			   return pvv;
-		   }
-	   }
-	   
+				}
+
+				pvv.setValue(orgValue);
+				pvv.beforeFirst();
+
+				return pvv;
+			}
+		}
+
 		if(isCaching()){
 			if(!processVariablesAreCached && !variables.containsKey(createFullKey(scopeByTracingTag, key, false))){
 				try{
 					if(!isNew){
 						variables.putAll(getAll()); // there may be some extra values 
 					}
-					
+
 					processVariablesAreCached = true;
 				}catch(Exception e){
 					throw new UEngineException("Error when caching process instance data: "+e.getMessage(), e);
@@ -711,69 +703,69 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 
 			return super.getMultiple(scopeByTracingTag, key);
 		}
-		
-		return getProcessVariableDAOFacade().getAsProcessVariableValue(getInstanceId(), scopeByTracingTag, key);	
+
+		return getMultipeFile(scopeByTracingTag, key);
 	}
 
 	public Map getAll(String scope) throws Exception {
-		return getProcessVariableDAOFacade().getAll(getInstanceId()); 
+		return getAllFile();
 	}
-	
-	public String getStatus(String scope) throws Exception{		
-		return getProcessDefinition().getActivity(scope).getStatus(this);		
+
+	public String getStatus(String scope) throws Exception{
+		return getProcessDefinition().getActivity(scope).getStatus(this);
 	}
-	
+
 	protected void setStatus(String scope, String status) throws Exception{
 		super.setStatus(scope, status);
-		
+
 		ProcessInstanceDAO piDAO = null;
 		//forward status of pi to processinstance
 		if(scope.equals("")){
 			//remove if this instance doesn't need to be archived				
 			if(status.equals(Activity.STATUS_COMPLETED) && !getProcessDefinition().isArchive())
-				remove();	
+				remove();
 			else{
 				piDAO = getProcessInstanceDAO();
 				piDAO.setStatus(status);
 			}
-			
+
 			//when the instance is completed or stopped.
 			if(status.equals(Activity.STATUS_COMPLETED) || status.equals(Activity.STATUS_STOPPED)){
-				if(piDAO==null){					
+				if(piDAO==null){
 					piDAO = getProcessInstanceDAO();
 				}
-					
+
 				piDAO.setFinishedDate(GlobalContext.getNow(getProcessTransactionContext()).getTime());
-				
+
 				archive();
 			}
 		}
 
 	}
-	
+
 	public void archive() throws Exception{
 		if("false".equals(GlobalContext.getPropertyString("server.archive.completed.processes", "false"))) return;
-		
-		FileProcessArchive processArchive = new FileProcessArchive();{					
+
+		FileProcessArchive processArchive = new FileProcessArchive();{
 			Map pvMap = getAll();
 			processArchive.setInstanceId(getInstanceId());
 			processArchive.variables = pvMap;
-		
+
 			ProcessDefinition definition = getProcessDefinition();
-			
-			if(definition==null) throw new UEngineException("There's no definition found for the instance ("+ getInstanceId() +")"); 
-			
+
+			if(definition==null) throw new UEngineException("There's no definition found for the instance ("+ getInstanceId() +")");
+
 			Role[] roles = definition.getRoles();
 			for(int i=0; i<roles.length; i++){
 				RoleMapping rm = getRoleMapping(roles[i].getName());
 				if(rm!=null)
-					processArchive.putRoleMapping(rm);			
+					processArchive.putRoleMapping(rm);
 			}
-			
-			processArchive.setProcessDefinition(getProcessDefinition());			
+
+			processArchive.setProcessDefinition(getProcessDefinition());
 		}
-		
-		final String archivePath = processArchive.save(getProcessTransactionContext());	
+
+		final String archivePath = processArchive.save(getProcessTransactionContext());
 		//should be invoked after applyChanges() of this ProcessInstance
 		getProcessTransactionContext().addTransactionListener(new TransactionListener(){
 
@@ -784,29 +776,28 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 
 			public void beforeRollback(TransactionContext tx) throws Exception{
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void afterCommit(TransactionContext tx) throws Exception {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void afterRollback(TransactionContext tx) throws Exception {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 		});
-	
+
 	}
 
 	public void setProcessDefinition(ProcessDefinition value) {
 		if(value!=processDefinition){
-			value.clearWithOutLastRevisionInfo();
 			String generatedPath = UEngineUtil.getCalendarDir();
 			generatedPath = generatedPath + "/" + getInstanceId() + ".upd";
-			
+
 			try {
 				ProcessDefinitionFactory.getInstance(getProcessTransactionContext()).storeProcessDefinition(generatedPath, value);
 				getProcessInstanceDAO().setDefPath(generatedPath);
@@ -815,21 +806,21 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 				throw new RuntimeException(e);
 			}
 		}
-		
+
 		super.setProcessDefinition(value);
 	}
-	
+
 	public ProcessDefinition getProcessDefinition() throws Exception {
 		//TODO if pd can't be cached since it is an ad-hoc, this may cause some decrease of performance
 		if(processDefinition==null){
 			if(getInstanceId()==null) return null;
 //			try{
-				ProcessDefinition procDef;
-				
-				if(isAdhocProcess()){
-					procDef = ProcessDefinitionFactory.getInstance(getProcessTransactionContext()).getDefinitionWithPath(getProcessInstanceDAO().getDefPath());
-				}else
-					procDef = ProcessDefinitionFactory.getInstance(getProcessTransactionContext()).getDefinition(getProcessInstanceDAO().getDefVerId().toString());
+			ProcessDefinition procDef;
+
+			if(isAdhocProcess()){
+				procDef = ProcessDefinitionFactory.getInstance(getProcessTransactionContext()).getDefinitionWithPath(getProcessInstanceDAO().getDefPath());
+			}else
+				procDef = ProcessDefinitionFactory.getInstance(getProcessTransactionContext()).getDefinition(getProcessInstanceDAO().getDefVerId().toString());
 				
 /*				if(procDef.isAdhoc()){
 					//TODO reload if adhoc.. bad performance?
@@ -839,12 +830,12 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 				}else{
 					setProcessDefinition(procDef);
 				}*/
-				
-				//if(!procDef.isAdhoc()) //TODO: check-me-if-error: maintain same definition during same transation
-				processDefinition = procDef;
-				//else
-				//	return procDef;
-									
+
+			//if(!procDef.isAdhoc()) //TODO: check-me-if-error: maintain same definition during same transation
+			processDefinition = procDef;
+			//else
+			//	return procDef;
+
 //			}catch(javax.ejb.ObjectNotFoundException onfe){
 //System.out.println("EJBActivityInstance::getProcessDefinition(): can't find process instance!");
 //				
@@ -853,11 +844,11 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 //				setProcessDefinition(null);
 //			}
 		}
-		
+
 		return processDefinition;
-	}		
-	
-	
+	}
+
+
 
 	public void remove() throws Exception{
 /*		ProcessInstanceDAO piDAO = getProcessInstanceDAO();
@@ -868,30 +859,30 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 */
 		ProcessInstanceDAOType.getInstance(getProcessTransactionContext()).removeProcessInstance(new Long(getRootProcessInstanceId()));
 	}
-	
+
 	public ProcessInstance createSnapshot() throws Exception {
 		final DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
 		shotProcessInstance.setInstanceId(getInstanceId());
-		
+
 		Role[] roles = getProcessDefinition().getRoles();
 		for(int i=0; i<roles.length; i++){
 			RoleMapping rm = getRoleMapping(roles[i].getName());
 			if(rm!=null){
 				rm.setName(roles[i].getName());
-				shotProcessInstance.putRoleMapping(rm);	
+				shotProcessInstance.putRoleMapping(rm);
 			}
 		}
-		
+
 		shotProcessInstance.setProcessTransactionContext(getProcessTransactionContext());
-		
+
 		return shotProcessInstance;
 	}
 
 
 ////////////// private methods ////////////////////
-	
+
 	public String getInfo() throws Exception{
-		
+
 		return getProcessInstanceDAO().getInfo();
 	}
 
@@ -903,16 +894,16 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 	public String getName() {
 		if(name==null){
 			try{
-				name = getProcessInstanceDAO().getName();			
+				name = getProcessInstanceDAO().getName();
 			}catch(Exception e){
 			}
 		}
-		
+
 		return name;
 	}
-	
+
 	public boolean isSubProcess() throws Exception {
-		return getProcessInstanceDAO().getIsSubProcess();			
+		return getProcessInstanceDAO().getIsSubProcess();
 	}
 
 	Boolean isSubProcess = null;
@@ -920,19 +911,19 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 		if(isSubProcess==null){
 			try{
 				ProcessInstanceDAO piDAO = getProcessInstanceDAO();
-				isSubProcess = Boolean.valueOf(piDAO.getIsAdhoc());										
+				isSubProcess = Boolean.valueOf(piDAO.getIsAdhoc());
 			}catch(Exception e){
 				isSubProcess = Boolean.valueOf(false);
 			}
 		}
-		
+
 		return isSubProcess.booleanValue();
 	}
 
 	public Vector getRunningOrCompletedActivityTracingTags() throws Exception{
 		Map statusMap = getAll();
 		Vector finding = new Vector();
-		
+
 		Set keys = statusMap.keySet();
 		for(Iterator iter = keys.iterator(); iter.hasNext();){
 			String key = (String)iter.next();
@@ -940,12 +931,12 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 				String val = (String)statusMap.get(key);
 				if(!val.equals(Activity.STATUS_READY)){
 					//TODO: It is required to add a field for scope (tracingtag) into BPM_PROCVAR
-					String tracingTag = key.substring(0, key.length() - "_status".length() - 1);					
+					String tracingTag = key.substring(0, key.length() - "_status".length() - 1);
 					finding.add(tracingTag);
 				}
 			}
 		}
-	
+
 		return finding;
 	}
 
@@ -958,7 +949,7 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 		try{
 			String mainProcessInstanceIdInStr = (getProcessInstanceDAO().getMainInstId() != null ? getProcessInstanceDAO().getMainInstId().toString() : null);
 			return (mainProcessInstanceIdInStr.equals("-1") ? null : mainProcessInstanceIdInStr);
-			
+
 		}catch(Exception e){
 			return null;
 		}
@@ -983,7 +974,7 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 	public ProcessInstance getSubProcessInstance(String absoluteTracingTag) throws Exception {
 		ProcessDefinition definition = getProcessDefinition();
 		ProcessInstance findingProcessInstance = this;
-		
+
 		if(absoluteTracingTag.indexOf("@")>0){
 			String[] scopesByTracingTag = absoluteTracingTag.split("@");
 			for(int i=0; i<scopesByTracingTag.length-1; i++){
@@ -993,107 +984,107 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 				if(spInstanceIds.size() == 0){
 					throw new UEngineException("Activity in the subprocess ["+ absoluteTracingTag +"] cannot be found.");
 				}
-				
+
 				String spInstanceId = (String)spInstanceIds.get(0);
-				
-				
+
+
 				findingProcessInstance = ProcessInstance.create().getInstance(spInstanceId);
 				definition = findingProcessInstance.getProcessDefinition();
 			}
-			
+
 			absoluteTracingTag = scopesByTracingTag[scopesByTracingTag.length-1];
 		}
-		
+
 		return findingProcessInstance;
 	}
-	
+
 	public Calendar calculateDueDate(Calendar startDate, int duration) {
 		startDate.setTimeInMillis(startDate.getTimeInMillis() + (long)duration * 86400000L);
 		return startDate;
 	}
-	
+
 	public void beforeCommit(TransactionContext tx) throws Exception{
 		applyChanges();
 	}
-	
+
 	public void beforeRollback(TransactionContext tx) throws Exception{
 	}
-	
+
 	public ProcessInstance getMainProcessInstance() throws Exception {
 		if(getMainProcessInstanceId() == null) return null;
-		
+
 		return getProcessTransactionContext().getProcessManager().getProcessInstance(getMainProcessInstanceId());
 	}
-	
+
 	public ProcessInstance getRootProcessInstance() throws Exception {
 		if(getRootProcessInstanceId() == null) return null;
-		
+
 		return getProcessTransactionContext().getProcessManager().getProcessInstance(getRootProcessInstanceId());
 	}
 
-	
+
 	public RoleMapping getRoleMapping(String roleName) throws Exception{
 		if(isCaching() && cachedRoleMappings!=null && cachedRoleMappings.containsKey(roleName)){
 			return (RoleMapping)((RoleMapping)cachedRoleMappings.get(roleName)).clone();
 		}
-		
+
 		if(isCaching() && modifiedRoleMappings!=null && modifiedRoleMappings.containsKey(roleName)) return null;
-		
+
 		RoleMappingDAOType rmDAOFacade = RoleMappingDAOType.getInstance(ptc);
 		RoleMappingDAO roleMappingDAO = rmDAOFacade.findByInstanceIdAndRoleName(new Long(getInstanceId()), roleName);
-		
+
 		if ( roleMappingDAO.size() < 1 ) return null;
-		
+
 		RoleMapping making;
-		
+
 		if(roleMappingDAO.size()==1){
 			making = rmDAOFacade.createRoleMapping(roleMappingDAO); //(RoleMapping)GlobalContext.deserialize(roleMappingDAO.getValue(), RoleMapping.class);
 		}else{
 			making = RoleMapping.create();
 			making.setName(roleName);
-			
+
 			int i = roleMappingDAO.size();
 			do{
 				//RoleMapping mapping = (RoleMapping)GlobalContext.deserialize(roleMappingDAO.getValue(), RoleMapping.class);
 				RoleMapping mapping = rmDAOFacade.createRoleMapping(roleMappingDAO);
-				making.replaceCurrentRoleMapping(mapping);	
-				
+				making.replaceCurrentRoleMapping(mapping);
+
 				if(making.getCursor() == 0){
 					making.setDispatchingOption(mapping.getDispatchingOption());
 					making.setDispatchingParameters(mapping.getDispatchingParameters());
 				}
-				
-				if ((--i)>0) making.moveToAdd();	
+
+				if ((--i)>0) making.moveToAdd();
 			}while(roleMappingDAO.next());
 		}
-		
+
 		making.beforeFirst();
-		
+
 		if(isCaching()){
 			if(cachedRoleMappings == null)
 				cachedRoleMappings = new HashMap();
-		
+
 			cachedRoleMappings.put(roleName, making);
 		}
-		
+
 		return making;
 	}
-	
-	public void putRoleMapping(String roleName, RoleMapping roleMapping) throws Exception{		
+
+	public void putRoleMapping(String roleName, RoleMapping roleMapping) throws Exception{
 		putRoleMappingImpl(roleName, roleMapping, false, null);
 	}
-		
-	public void putRoleMappingImpl(String roleName, RoleMapping roleMapping, boolean isBatch, RoleMappingDAO roleMappingDAO) throws Exception{		
-		addDebugInfo("   --- [Set Role] --------------------\n    * name : "+roleName+"\n    * value : " + (GlobalContext.logLevelIsDebug ? GlobalContext.serialize(roleMapping, String.class) : roleMapping.getEndpoint() +"'"));
-		addDebugInfo("   -----------------------------------");
-		
+
+	public void putRoleMappingImpl(String roleName, RoleMapping roleMapping, boolean isBatch, RoleMappingDAO roleMappingDAO) throws Exception{
+//		addDebugInfo("   --- [Set Role] --------------------\n    * name : "+roleName+"\n    * value : " + (GlobalContext.logLevelIsDebug ? GlobalContext.serialize(roleMapping, String.class) : roleMapping.getEndpoint() +"'"));
+//		addDebugInfo("   -----------------------------------");
+
 		if(isCaching()){
 			if(modifiedRoleMappings == null)
 				modifiedRoleMappings = new HashMap();
 
 			if(cachedRoleMappings == null)
 				cachedRoleMappings = new HashMap();
-			
+
 
 			modifiedRoleMappings.put(roleName, roleName);
 
@@ -1103,14 +1094,14 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 				roleMapping.setName(roleName);
 				cachedRoleMappings.put(roleName, roleMapping);
 			}
-			
+
 			getProcessDefinition().firePropertyChangeEventToActivityFilters(this, "roleMapping", roleMapping);
 
 			return;
-		}		
+		}
 
 		RoleMappingDAOType rmDAOType = RoleMappingDAOType.getInstance(ptc);
-		
+
 		int count = 0;
 
 		if(!isBatch){
@@ -1128,33 +1119,33 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 			RoleMapping currMapping = roleMapping.getCurrentRoleMapping();
 			if(currMapping==null)
 				continue;
-			
+
 			currMapping.makeSingle();
-			
+
 			if(roleMapping.getCurrentRoleMapping().resourceName == null){
 				roleMapping.fill(this);
 			}
-			
+
 			boolean verifyOK = true;
 			switch ( currMapping.getAssignType() ) {
-			case Role.ASSIGNTYPE_USER:
-				if(currMapping.getEndpoint() == null ){
-					if(currMapping.size()-1 != currMapping.getCursor())
-						throw new UEngineException("One of rolemapping value has null endpoint.");
-					
-					verifyOK = false;					
-				}
-				break;
+				case Role.ASSIGNTYPE_USER:
+					if(currMapping.getEndpoint() == null ){
+						if(currMapping.size()-1 != currMapping.getCursor())
+							throw new UEngineException("One of rolemapping value has null endpoint.");
+
+						verifyOK = false;
+					}
+					break;
 			}
-			
+
 			if(verifyOK){
 				rmDAOType.insertRoleMappingBatch(roleMappingDAO, new Long(getInstanceId()), new Long(getRootProcessInstanceId()), roleName, currMapping);
 				count++;
 			}
-			
+
 		}while(roleMapping.next());
 		roleMapping.beforeFirst();
-		
+
 		if(count>0 && !isBatch)
 			roleMappingDAO.updateBatch();
 
@@ -1165,18 +1156,12 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 		RoleMappingDAOType rmDAOType = RoleMappingDAOType.getInstance(ptc);
 		return rmDAOType.findByRootInstanceIdAndEndpoint(new Long(getRootProcessInstanceId()), rm.getEndpoint()).size() > 0;
 	}
-	
+
 	public void setDueDate(Calendar date) throws Exception {
 		super.setDueDate(date);
 		getProcessInstanceDAO().setDueDate(date.getTime());
 	}
-	
-	public void setDueDate(Date date) throws Exception {
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(date);
-		this.setDueDate(cal);
-	}
-	
+
 	public void setName(String value) {
 		// TODO Auto-generated method stub
 		super.setName(value);
@@ -1186,15 +1171,15 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public void setDefinitionVersionId(String verId) throws Exception {
 		getProcessInstanceDAO().setDefVerId(verId);
 	}
-	
+
 	public boolean isNew() {
 		return isNew;
 	}
-	
+
 	public void stop() throws Exception {
 		stop(Activity.STATUS_STOPPED);
 	}
@@ -1203,18 +1188,18 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 		super.stop(status);
 		getProcessInstanceDAO().setStatus(status);
 	}
-	
+
 	public WorkList getWorkList() {
 		return (new WorkListServiceLocator()).getWorkList();
 	}
 	public void afterCommit(TransactionContext tx) throws Exception {
-		
-		
+
+
 
 	}
 	public void afterRollback(TransactionContext tx) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String getMainExecutionScope() {
@@ -1225,5 +1210,144 @@ addDebugInfo("EJBProcessInstance: instanceId is set by " + instanceId);
 		}
 	}
 
+	private void setProcessVariablesFile (Map modifiedVariables) throws FileNotFoundException, Exception {
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(starteddate);
+		String calendarDirectory = cal.get(Calendar.YEAR)
+				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
+				+ cal.get(Calendar.DAY_OF_MONTH);
+		String filePath = GlobalContext.FILE_SYSTEM_DIR + calendarDirectory ;
+
+		File newFile = new File(filePath);
+		File dir = newFile.getParentFile();
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		if (!newFile.exists()) {
+			newFile.mkdirs();
+		}
+
+		File varFile = new File(filePath +"/vars_"+getInstanceId() + ".json");
+		Map procVars = null;
+
+		if ( varFile.exists() ) {
+			procVars = (Map) GlobalContext.deserialize(new FileInputStream(varFile), Object.class);
+		} else {
+			DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
+			procVars = shotProcessInstance.variables;
+		}
+
+		procVars.putAll(modifiedVariables);
+
+		GlobalContext.serialize(procVars,new FileOutputStream(filePath +"/vars_"+getInstanceId() + ".json"), Object.class);
+	}
+
+	private void setProcessVariablesFile (String key, Serializable val) throws FileNotFoundException, Exception {
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(starteddate);
+		String calendarDirectory = cal.get(Calendar.YEAR)
+				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
+				+ cal.get(Calendar.DAY_OF_MONTH);
+		String filePath = GlobalContext.FILE_SYSTEM_DIR + calendarDirectory ;
+
+		File newFile = new File(filePath);
+		File dir = newFile.getParentFile();
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		if (!newFile.exists()) {
+			newFile.mkdirs();
+		}
+
+		File varFile = new File(filePath +"/vars_"+getInstanceId() + ".json");
+		Map procVars = null;
+
+		if ( varFile.exists() ) {
+			procVars = (Map) GlobalContext.deserialize(new FileInputStream(varFile), Object.class);
+		} else {
+			DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
+			procVars = shotProcessInstance.variables;
+		}
+
+		procVars.put(key, val);
+
+		GlobalContext.serialize(procVars,new FileOutputStream(filePath +"/vars_"+getInstanceId() + ".json"), Object.class);
+	}
+
+	private Map getAllFile() throws FileNotFoundException, Exception {
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(starteddate);
+		String calendarDirectory = cal.get(Calendar.YEAR)
+				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
+				+ cal.get(Calendar.DAY_OF_MONTH);
+		String filePath = GlobalContext.FILE_SYSTEM_DIR + calendarDirectory ;
+
+		File varFile = new File(filePath +"/vars_"+getInstanceId() + ".json");
+		Map procVars = null;
+
+		if (varFile.exists()) {
+			return (Map) GlobalContext.deserialize(new FileInputStream(varFile), Object.class);
+		}
+		else
+			return getProcessVariableDAOFacade().getAll(getInstanceId());
+	}
+
+	private ProcessVariableValue getMultipeFile(String scopeByTracingTag, String key) throws FileNotFoundException, Exception {
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(starteddate);
+		String calendarDirectory = cal.get(Calendar.YEAR)
+				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
+				+ cal.get(Calendar.DAY_OF_MONTH);
+
+		String filePath =GlobalContext.FILE_SYSTEM_DIR +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
+		File varFile = new File(filePath);
+		if (varFile.exists()) {
+			Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
+			IndexedProcessVariableMap ipvm = (IndexedProcessVariableMap)fileVariables.get(createFullKey(scopeByTracingTag, key, false));
+			int maxIndex = ipvm.getMaxIndex();
+			ProcessVariableValue pvv = new ProcessVariableValue();
+			for(int i=0; i<maxIndex+1; i++){
+				Serializable value = ipvm.getProcessVariableAt(i);
+				pvv.setValue(value);
+				pvv.moveToAdd();
+			}
+			pvv.beforeFirst();
+			if(pvv.size()==0 || (pvv.size()==1 && pvv.getValue()==null)){
+				try{
+					Serializable value = (Serializable)getProcessDefinition().getProcessVariable(key).getDefaultValue();
+					pvv.setValue(value);
+
+					return pvv;
+				}catch(Exception e){}
+			}
+
+			return pvv;
+		}
+
+		return getProcessVariableDAOFacade().getAsProcessVariableValue(getInstanceId(), scopeByTracingTag, key);
+	}
+	private Serializable getFile(String scopeByTracingTag, String key, String firstPart, boolean isProperty) throws FileNotFoundException, Exception {
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(starteddate);
+		String calendarDirectory = cal.get(Calendar.YEAR)
+				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
+				+ cal.get(Calendar.DAY_OF_MONTH);
+
+		String filePath =GlobalContext.FILE_SYSTEM_DIR +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
+		File varFile = new File(filePath);
+		Serializable sourceValue;
+		if (varFile.exists()) {
+			Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
+			sourceValue = (Serializable)fileVariables.get(createFullKey(scopeByTracingTag, key, isProperty));
+		} else
+			sourceValue = getProcessVariableDAOFacade().get(getInstanceId(), scopeByTracingTag, firstPart);
+
+		return sourceValue;
+	}
 
 }

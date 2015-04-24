@@ -646,30 +646,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 		return fullKey.endsWith(SUFFIX_PROPERTY);
 	}
 	
-	class IndexedProcessVariableMap extends HashMap{
-
-		int maxIndex = 0;
-			public int getMaxIndex() {
-				return maxIndex;
-			}
-			public void setMaxIndex(int maxIndex) {
-				this.maxIndex = maxIndex;
-			}
-		
-		public void putProcessVariable(int index, Object arg1) {
-			if(getMaxIndex() < index){
-				setMaxIndex(index);
-			}
-			
-			put(Integer.valueOf(index), arg1);
-		}
-		
-		public Serializable getProcessVariableAt(int index){
-			return (Serializable)get(Integer.valueOf(index));
-		}
-	}
-
-	public ProcessInstance getMainProcessInstance() throws Exception {		
+	public ProcessInstance getMainProcessInstance() throws Exception {
 		throw new UEngineException("You can't access main process in in-memory process.");				
 	}
 	

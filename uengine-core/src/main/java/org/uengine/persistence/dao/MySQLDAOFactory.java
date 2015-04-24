@@ -102,6 +102,10 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 				try {
 					//conn = DefaultConnectionFactory.create().getConnection(); //may cause connection leak and undesired sequence number increment.
 					conn = getConnectionFactory().getConnection();
+
+					if(conn == null)
+						throw new RuntimeException("Database connection is null.");
+
 					conn.setAutoCommit(false);
 					
 					Long seq_key  = null;
@@ -145,7 +149,10 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 					return key;
 					
 				} catch (Exception e1) {
+
+					if(conn!=null)
 					try {
+
 						conn.rollback();
 					} catch (SQLException e) {
 						e.printStackTrace();

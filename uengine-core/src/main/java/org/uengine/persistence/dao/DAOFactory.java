@@ -46,13 +46,15 @@ public abstract class DAOFactory{
 	abstract public String getDBMSProductName() throws Exception;
 
 	public static DAOFactory getInstance(ConnectionFactory tc){
+		if(tc == null)
+			throw new IllegalArgumentException("ConnectionFactory or TransactionContext is null. ConnectionFactory should be provided to create the DAOFactory.");
+
 		DAOFactory daoFactory;
 		try{
 			USE_CLASS_NAME = GlobalContext.getPropertyString("daofactory.class");
 			daoFactory = (DAOFactory)Thread.currentThread().getContextClassLoader().loadClass(USE_CLASS_NAME).newInstance();
 		}catch(Exception e){
-			e.printStackTrace();
-			daoFactory = new org.uengine.persistence.dao.HSQLDAOFactory();
+			throw new RuntimeException("No DAO Factory (database product setting) is specified. Please set the entry 'daofactory.class' in the uengine.properteis", e);
 		}
 		
 		daoFactory.setConnectionFactory(tc);

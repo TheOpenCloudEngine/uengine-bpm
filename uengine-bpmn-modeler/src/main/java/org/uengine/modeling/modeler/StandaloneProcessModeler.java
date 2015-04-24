@@ -3,7 +3,7 @@ package org.uengine.modeling.modeler;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Clipboard;
 import org.uengine.kernel.ProcessDefinition;
-import org.uengine.processpublisher.AdapterUtil;
+import org.uengine.processpublisher.BPMNUtil;
 
 import java.io.File;
 
@@ -21,7 +21,7 @@ public class StandaloneProcessModeler {
 
     @ServiceMethod(keyBinding = "Ctrl+L")
     public ProcessModeler load() throws Exception {
-        ProcessDefinition processDefinition = AdapterUtil.adapt(new File("/Users/kimsh/Documents/acitiviti sample/parallel.xml")); //new File("/java/autoinsurance.bpmn"));
+        ProcessDefinition processDefinition = BPMNUtil.adapt(new File("/Users/kimsh/Documents/acitiviti sample/parallel.xml")); //new File("/java/autoinsurance.bpmn"));
 
         getProcessModeler().setModel(processDefinition);
 

@@ -31,11 +31,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.uengine.metaworks</groupId>
-			<artifactId>metaworks3</artifactId>
-			<version>1.0.9-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.uengine</groupId>
 			<artifactId>uengine-core</artifactId>
 			<version>${project.version}</version>
@@ -48,7 +43,7 @@
 		<dependency>
 			<groupId>org.uengine</groupId>
 			<artifactId>bpmn-model</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 

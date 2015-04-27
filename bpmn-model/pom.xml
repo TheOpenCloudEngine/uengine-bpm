@@ -4,17 +4,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.uengine</groupId>
+        <artifactId>uengine</artifactId>
+        <version>4.0-RELEASE</version>
+    </parent>
+
     <groupId>org.uengine</groupId>
     <artifactId>bpmn-model</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <repositories>
         <repository>
-            <id>org.uengine</id>
-            <url>http://maven.opencloudengine.org/content/repositories/snapshots/</url>
+            <id>oss-rh</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
             <releases>
+                <enabled>true</enabled>
             </releases>
             <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
@@ -25,7 +32,7 @@
         <dependency>
             <groupId>org.uengine</groupId>
             <artifactId>uengine-core</artifactId>
-            <version>1.0.20-SNAPSHOT</version>
+            <version>4.0-RELEASE</version>
         </dependency>
 
 
@@ -66,12 +73,11 @@
     <distributionManagement>
         <repository>
             <id>releases</id>
-            <url>http://maven.opencloudengine.org/content/repositories/releases/</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
-            <url>http://maven.opencloudengine.org/content/repositories/snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-
 </project>

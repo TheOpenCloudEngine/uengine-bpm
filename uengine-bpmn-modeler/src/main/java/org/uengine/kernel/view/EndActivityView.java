@@ -9,7 +9,7 @@ public class EndActivityView extends StartActivityView {
 	public final static String SHAPE_ID = "OG.shape.bpmn.E_End";
 	
 	public EndActivityView(){
-		
+		setShapeId(SHAPE_ID);
 	}
 	
 	public EndActivityView(IElement element){

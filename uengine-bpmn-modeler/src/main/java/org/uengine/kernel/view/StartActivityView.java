@@ -11,7 +11,7 @@ public class StartActivityView extends EventActivityView{
 	public final static String ELEMENT_CLASSNAME = StartActivity.class.getName();
 
 	public StartActivityView(){
-
+		setShapeId(SHAPE_ID);
 	}
 
 	public StartActivityView(IElement element){

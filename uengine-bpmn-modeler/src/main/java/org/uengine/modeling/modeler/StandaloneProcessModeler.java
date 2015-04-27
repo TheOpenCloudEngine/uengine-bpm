@@ -21,7 +21,7 @@ public class StandaloneProcessModeler {
 
     @ServiceMethod(keyBinding = "Ctrl+L")
     public ProcessModeler load() throws Exception {
-        ProcessDefinition processDefinition = BPMNUtil.adapt(new File("/Users/kimsh/Documents/acitiviti sample/parallel.xml")); //new File("/java/autoinsurance.bpmn"));
+        ProcessDefinition processDefinition = BPMNUtil.adapt(new File("/java/autoinsurance.bpmn"));
 
         getProcessModeler().setModel(processDefinition);
 

@@ -10,11 +10,13 @@
 
     <repositories>
         <repository>
-            <id>org.uengine</id>
-            <url>http://maven.opencloudengine.org/content/repositories/snapshots/</url>
+            <id>oss-rh</id>
+            <url>https://oss.sonatype.org/content/groups/public</url>
             <releases>
+                <enabled>true</enabled>
             </releases>
             <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
@@ -66,12 +68,11 @@
     <distributionManagement>
         <repository>
             <id>releases</id>
-            <url>http://maven.opencloudengine.org/content/repositories/releases/</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
-            <url>http://maven.opencloudengine.org/content/repositories/snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-
 </project>

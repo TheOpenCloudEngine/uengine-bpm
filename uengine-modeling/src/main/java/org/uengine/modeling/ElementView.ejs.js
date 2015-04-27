@@ -65,7 +65,9 @@ var org_uengine_modeling_ElementView = function(objectId, className){
         }else{
 
 
-            var shape = eval('new ' + this.object.shapeId + '(\'' + this.getLabel() + '\')');
+			var shape = eval('new ' + this.object.shapeId);
+			shape.label = this.getLabel();
+
             var style = this.object.style;
             var boundary;
 

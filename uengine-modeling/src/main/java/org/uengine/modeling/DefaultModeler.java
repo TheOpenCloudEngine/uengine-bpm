@@ -59,19 +59,4 @@ public class DefaultModeler extends Modeler {
     }
 
 
-    @ServiceMethod(keyBinding = "Ctrl+S", callByContent = true)
-    public void save() throws Exception {
-        XStream xStream = new XStream();
-        xStream.toXML(getModel(), new FileWriter("model.xml"));
-    }
-
-
-
-    @ServiceMethod(keyBinding = "Ctrl+O")
-    public void load() throws Exception {
-        XStream xStream = new XStream();
-        IModel model = (IModel) xStream.fromXML(new FileReader("model.xml"));
-
-        setModel(model);
-    }
 }

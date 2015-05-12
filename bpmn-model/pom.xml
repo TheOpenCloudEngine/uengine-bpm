@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.uengine</groupId>
         <artifactId>uengine</artifactId>
-        <version>4.0-RELEASE</version>
+        <version>4.0-SNAPSHOT</version>
     </parent>
 
 
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.uengine</groupId>
             <artifactId>uengine-core</artifactId>
-            <version>4.0-RELEASE</version>
+            <version>${project.version}</version>
         </dependency>
 
 
@@ -45,14 +45,7 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <!--<configuration>-->
-                            <!--<schemaDirectory>src/main/resources</schemaDirectory>-->
-                            <!--<schemaIncludes>-->
-                                <!--<include>BPMN20.xsd</include>-->
-                            <!--</schemaIncludes>-->
-                            <!--<generatePackage>org.uengine.bpmn</generatePackage>-->
-                            <!--<generateDirectory>${project.build.directory}/generated-sources/kenexa</generateDirectory>-->
-                        <!--</configuration>-->
+
                     </execution>
                 </executions>
             </plugin>

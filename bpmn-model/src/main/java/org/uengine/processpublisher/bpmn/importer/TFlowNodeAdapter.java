@@ -1,23 +1,14 @@
 package org.uengine.processpublisher.bpmn.importer;
 
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
-import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TProcess;
-import org.omg.spec.bpmn._20100524.model.TTask;
 import org.omg.spec.dd._20100524.dc.Bounds;
-import org.omg.spec.dd._20100524.di.DiagramElement;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.DefaultActivity;
-import org.uengine.kernel.FlowActivity;
-import org.uengine.kernel.HumanActivity;
-import org.uengine.kernel.graph.Transition;
+import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.modeling.ElementView;
-import org.uengine.modeling.RelationView;
 import org.uengine.processpublisher.Adapter;
 
-import javax.xml.namespace.QName;
-import java.lang.reflect.ParameterizedType;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -51,8 +42,8 @@ public class TFlowNodeAdapter<T extends TFlowNode, T1 extends Activity> implemen
 
         ElementView view = activity.createView();
 
-        view.setX((int) Math.round(bpmnShape.getBounds().getX()));
-        view.setY((int) Math.round(bpmnShape.getBounds().getY()));
+        view.setX((int) Math.round(bpmnShape.getBounds().getX() + bpmnShape.getBounds().getWidth() / 2));
+        view.setY((int) Math.round(bpmnShape.getBounds().getY() + bpmnShape.getBounds().getHeight() / 2));
         view.setWidth((int) Math.round(bpmnShape.getBounds().getWidth()));
         view.setHeight((int) Math.round(bpmnShape.getBounds().getHeight()));
         view.setId(activity.getTracingTag());

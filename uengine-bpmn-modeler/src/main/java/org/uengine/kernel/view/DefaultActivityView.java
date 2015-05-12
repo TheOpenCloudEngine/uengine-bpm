@@ -97,20 +97,20 @@ public class DefaultActivityView extends ActivityView{
 	private void convertActivity(DefaultActivity defaultActivity){
 		DefaultActivity activity;
 		
-		if(getElement() instanceof ReferenceActivity){
-			activity = ((ReferenceActivity)getElement()).getReferencedActivity();
-		}else{
+//		if(getElement() instanceof ReferenceActivity){
+//			activity = ((ReferenceActivity)getElement()).getReferencedActivity();
+//		}else{
 			activity = (DefaultActivity)getElement();
-		}
+//		}
 		
 		IDocument document = activity.getDocument();
 		defaultActivity.setDocument(document);
 		defaultActivity.setName(getLabel());
-		if(getElement() instanceof ReferenceActivity){
-			((ReferenceActivity)getElement()).setReferencedActivity(defaultActivity);
-			((ReferenceActivity)getElement()).setChanged(true);
-		}else{
-			setElement(defaultActivity);
-		}	
+//		if(getElement() instanceof ReferenceActivity){
+//			((ReferenceActivity)getElement()).setReferencedActivity(defaultActivity);
+//			((ReferenceActivity)getElement()).setChanged(true);
+//		}else{
+//			setElement(defaultActivity);
+//		}
 	}
 }

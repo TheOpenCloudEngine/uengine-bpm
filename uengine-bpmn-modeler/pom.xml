@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.uengine</groupId>
 		<artifactId>uengine</artifactId>
-		<version>4.0-RELEASE</version>
+		<version>4.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>uengine-bpmn-modeler</artifactId>
 	<name>uengine-bpmn-modeler</name>

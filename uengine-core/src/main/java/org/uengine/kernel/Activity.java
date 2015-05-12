@@ -24,14 +24,14 @@ import java.util.Vector;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
-import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Id;
 import org.metaworks.annotation.Name;
 import org.metaworks.annotation.Order;
 import org.uengine.contexts.TextContext;
-import org.uengine.kernel.graph.Transition;
+import org.uengine.kernel.bpmn.Event;
+import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.util.UEngineUtil;
@@ -562,15 +562,17 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		//review: performance: need to use 'Hashtable' to locate the command or directly invocation from fire... methods.
 		if(command.equals(ACTIVITY_DONE)){
 			Activity theActivityHasBeenDone = ((Activity)payload);
-			
-			if(Activity.STATUS_COMPLETED.equals(theActivityHasBeenDone.getStatus(instance))){
-				if(!(theActivityHasBeenDone instanceof SubProcessActivity)){
-					//SubProcessActivity spa = (SubProcessActivity)theActivityHasBeenDone;
-					
-					//TODO: it should block the completion only when the sub process activity is in the event handler 
-					throw new UEngineException("Activity [" + theActivityHasBeenDone + "] tries to notify completion event twice. Check whether the activity calls 'fireComplete(instance)' more than once.");
-				}
-			}
+
+// In BPMN executions, multiple activity completions (multiple-tokens) are permitted.
+
+//			if(Activity.STATUS_COMPLETED.equals(theActivityHasBeenDone.getStatus(instance))){
+//				if(!(theActivityHasBeenDone instanceof SubProcessActivity)){
+//					//SubProcessActivity spa = (SubProcessActivity)theActivityHasBeenDone;
+//
+//					//TODO: it should block the completion only when the sub process activity is in the event handler
+////					throw new UEngineException("Activity [" + theActivityHasBeenDone + "] tries to notify completion event twice. Check whether the activity calls 'fireComplete(instance)' more than once.");
+//				}
+//			}
 			
 			setStatus(instance, STATUS_COMPLETED);
 			//review: Ensure subclasses are not overrided this method.
@@ -647,7 +649,13 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		setTokenCount(instance, 0);
 		onEvent(ACTIVITY_DONE, instance, this);
 	}
-	
+
+	public void notifyCompletionToParent(ProcessInstance instance) throws Exception{
+		if(getParentActivity()!=null)
+			getParentActivity().onEvent(CHILD_DONE, instance, this);
+	}
+
+
 	public void fireSkipped(ProcessInstance instance) throws Exception{
 		onEvent(ACTIVITY_SKIPPED, instance, this);
 	}
@@ -853,8 +861,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		boolean otherwiseCondition = false;
 		boolean isCondition = false;
 		boolean emptyCondition = false;	// 컨디션이 전혀 없는 경우는 true
-		for (Iterator<Transition> it = getOutgoingTransitions().iterator(); it.hasNext(); ) {
-			Transition ts = (Transition)it.next();
+		for (Iterator<SequenceFlow> it = getOutgoingSequenceFlows().iterator(); it.hasNext(); ) {
+			SequenceFlow ts = (SequenceFlow)it.next();
 			if( ts.getCondition() != null){
 				isCondition = true;	
 				Condition condition = ts.getCondition();
@@ -1463,39 +1471,39 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	/*
 	 * api for graph-based model 
 	 */
-	private transient List<Transition> incomingTransitions;
-	private transient List<Transition> outgoingTransitions;
+	private transient List<SequenceFlow> incomingSequenceFlows;
+	private transient List<SequenceFlow> outgoingSequenceFlows;
 	
 	@Hidden
-	public List<Transition> getIncomingTransitions() {
-		if (incomingTransitions == null) {
-			incomingTransitions = new ArrayList<Transition>();
+	public List<SequenceFlow> getIncomingSequenceFlows() {
+		if (incomingSequenceFlows == null) {
+			incomingSequenceFlows = new ArrayList<SequenceFlow>();
 		}
-		return incomingTransitions;
+		return incomingSequenceFlows;
 	}
 	
-	public void setIncomingTransitions(List<Transition> incomingTransitions) {
-		this.incomingTransitions = incomingTransitions;
+	public void setIncomingSequenceFlows(List<SequenceFlow> incomingSequenceFlows) {
+		this.incomingSequenceFlows = incomingSequenceFlows;
 	}
 	
 	@Hidden
-	public List<Transition> getOutgoingTransitions() {
-		if (outgoingTransitions == null) {
-			outgoingTransitions = new ArrayList<Transition>();
+	public List<SequenceFlow> getOutgoingSequenceFlows() {
+		if (outgoingSequenceFlows == null) {
+			outgoingSequenceFlows = new ArrayList<SequenceFlow>();
 		}
-		return outgoingTransitions;
+		return outgoingSequenceFlows;
 	}
 	
-	public void setOutgoingTransitions(List<Transition> outgoingTransitions) {
-		this.outgoingTransitions = outgoingTransitions;
+	public void setOutgoingSequenceFlows(List<SequenceFlow> outgoingSequenceFlows) {
+		this.outgoingSequenceFlows = outgoingSequenceFlows;
 	}
 	
-	public void addIncomingTransition(Transition incomingTransition) {
-		getIncomingTransitions().add(incomingTransition);
+	public void addIncomingTransition(SequenceFlow incomingSequenceFlow) {
+		getIncomingSequenceFlows().add(incomingSequenceFlow);
 	}
 	
-	public void addOutgoingTransition(Transition outgoingTransition) {
-		getOutgoingTransitions().add(outgoingTransition);
+	public void addOutgoingTransition(SequenceFlow outgoingSequenceFlow) {
+		getOutgoingSequenceFlows().add(outgoingSequenceFlow);
 	}
 
 	public List<Activity> getPossibleNextActivities(ProcessInstance instance, String scope) throws Exception {
@@ -1504,8 +1512,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 //		System.out.println("outgoingTransitions: " + getOutgoingTransitions().size());
 		boolean otherwiseFlag = false;
 		Activity otherwiseActivity = null;
-		for (Iterator<Transition> it = getOutgoingTransitions().iterator(); it.hasNext(); ) {
-			Transition ts = (Transition)it.next();
+		for (Iterator<SequenceFlow> it = getOutgoingSequenceFlows().iterator(); it.hasNext(); ) {
+			SequenceFlow ts = (SequenceFlow)it.next();
 			if( ts.getCondition() != null){
 				Condition condition = ts.getCondition();
 				if( condition.isMet(instance, scope) ){
@@ -1530,18 +1538,24 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		}
 		return activities;
 	}
-	
+
+	/**
+	 * Check if this activity is triggered from event or not.
+	 * This information is used normally for completing FlowActivity.
+	 * @return
+	 * @throws Exception
+	 */
 	public boolean checkStartsWithEventActivity() throws Exception {
 		boolean check = false;
-		for (Iterator<Transition> it = getIncomingTransitions().iterator(); it.hasNext(); ) {
-			Transition ts = (Transition)it.next();
+		for (Iterator<SequenceFlow> it = getIncomingSequenceFlows().iterator(); it.hasNext(); ) {
+			SequenceFlow ts = (SequenceFlow)it.next();
 			Activity beforeActivity = ts.getSourceActivity();
-			if(beforeActivity instanceof EventActivity && beforeActivity instanceof MessageListener ){
-				if( "STOP_ACTIVITY".equals(((EventActivity)beforeActivity).getActivityStop()) ){
-					return false;
-				}else{
+			if(beforeActivity instanceof Event && beforeActivity instanceof MessageListener ){
+//				if( "STOP_ACTIVITY".equals(((Event)beforeActivity).getActivityStop()) ){
+//					return false;
+//				}else{
 					return true;
-				}
+//				}
 			}else{
 				check = beforeActivity.checkStartsWithEventActivity();
 			}
@@ -1588,4 +1602,65 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setElementView(ElementView view){
 			this.elementView = view;
 		}
+
+
+	//transient List<ActivityEventListener> activityEventListeners;
+
+	public void addEventListener(final ActivityEventListener activityEventListener) {
+//		if(activityEventListeners == null){
+//			activityEventListeners = new ArrayList<ActivityEventListener>();
+//		}
+//
+//		activityEventListeners.add(activityEventListener);
+
+
+		ActivityFilter[] activityFilters = getProcessDefinition().getActivityFilters();
+		activityFilters = (ActivityFilter[]) UEngineUtil.addArrayElement(activityFilters, new SensitiveActivityFilter() {
+			@Override
+			public void onEvent(Activity activity, ProcessInstance instance, String eventName, Object payload) throws Exception {
+				if(Activity.this == activity){
+					activityEventListener.onEvent(activity, instance, eventName, payload);
+				}
+			}
+
+			@Override
+			public void beforeExecute(Activity activity, ProcessInstance instance) throws Exception {
+				if(Activity.this == activity){
+					activityEventListener.beforeExecute(activity, instance);
+				}
+
+			}
+
+			@Override
+			public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
+				if(Activity.this == activity){
+					activityEventListener.afterExecute(activity, instance);
+				}
+			}
+
+			@Override
+			public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
+				if(Activity.this == activity){
+					activityEventListener.afterComplete(activity, instance);
+				}
+			}
+
+			@Override
+			public void onPropertyChange(Activity activity, ProcessInstance instance, String propertyName, Object changedValue) throws Exception {
+				if(Activity.this == activity){
+					activityEventListener.onPropertyChange(activity, instance, propertyName, changedValue);
+				}
+
+			}
+
+			@Override
+			public void onDeploy(ProcessDefinition definition) throws Exception {
+				//not implemented
+			}
+		});
+
+		getProcessDefinition().setActivityFilters(activityFilters);
+
+	}
+
 }

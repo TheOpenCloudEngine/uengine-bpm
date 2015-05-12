@@ -645,7 +645,7 @@ System.out.println("length of childs : " + pd.getChildActivities().size());
 		return names;
 	}
 
-	protected void addMessageListener(ProcessInstance instance, MessageListener ml) throws Exception{
+	public void addMessageListener(ProcessInstance instance, MessageListener ml) throws Exception{
 		addMessageListener(ml.getMessage(), instance, ml.getTracingTag());
 	}
 
@@ -689,7 +689,7 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		instance.removeMessageListener(message, scope);
 	}
 	
-	protected void removeMessageListener(ProcessInstance instance, MessageListener ml) throws Exception{
+	public void removeMessageListener(ProcessInstance instance, MessageListener ml) throws Exception{
 		removeMessageListener(ml.getMessage(), instance, ml.getTracingTag());
 	}
 	

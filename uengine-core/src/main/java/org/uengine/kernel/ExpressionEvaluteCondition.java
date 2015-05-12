@@ -1,12 +1,9 @@
 package org.uengine.kernel;
 
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.bsf.BSFEngine;
 import org.apache.bsf.BSFManager;
-import org.codehaus.janino.ExpressionEvaluator;
 
-import javax.servlet.http.HttpServletRequest;
 
 public class ExpressionEvaluteCondition extends Condition {
 

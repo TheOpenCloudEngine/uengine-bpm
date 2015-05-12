@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.ejb.RemoveException;
 
 import org.metaworks.annotation.Hidden;
+import org.uengine.kernel.bpmn.Pool;
 import org.uengine.processmanager.ProcessManagerFactoryBean;
 import org.uengine.processmanager.ProcessManagerRemote;
 import org.uengine.processmanager.ProcessTransactionContext;

@@ -12,7 +12,7 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
-import org.uengine.kernel.graph.Transition;
+import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
@@ -98,8 +98,8 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
                             processDefinition.addChildActivity((Activity)childElement);
 
 
-                        }else if(childElement instanceof Transition){
-                            processDefinition.addTransition((Transition) childElement);
+                        }else if(childElement instanceof SequenceFlow){
+                            processDefinition.addSequenceFlow((SequenceFlow) childElement);
 
                         }
 

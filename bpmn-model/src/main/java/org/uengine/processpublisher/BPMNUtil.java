@@ -62,7 +62,10 @@ public class BPMNUtil {
         JAXBElement element = (JAXBElement) um.unmarshal(file);
 
 
-        return (ProcessDefinition) adapt(element.getValue());
+        ProcessDefinition processDefinition = (ProcessDefinition) adapt(element.getValue());
+        processDefinition.afterDeserialization();
+
+        return processDefinition;
     }
 
     public static ProcessDefinition adapt(InputStream is) throws Exception{
@@ -72,7 +75,10 @@ public class BPMNUtil {
         JAXBElement element = (JAXBElement) um.unmarshal(is);
 
 
-        return (ProcessDefinition) adapt(element.getValue());
+        ProcessDefinition processDefinition = (ProcessDefinition) adapt(element.getValue());
+        processDefinition.afterDeserialization();
+
+        return processDefinition;
     }
 
 }

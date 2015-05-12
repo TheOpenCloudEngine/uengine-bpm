@@ -1,7 +1,7 @@
 package org.uengine.modeling.modeler.palette;
 
-import org.uengine.kernel.HumanActivity;
-import org.uengine.kernel.graph.view.TransitionView;
+import org.uengine.kernel.bpmn.view.GatewayView;
+import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.kernel.view.*;
 import org.uengine.modeling.Palette;
 import org.uengine.modeling.Symbol;
@@ -34,7 +34,7 @@ public class SimplePalette extends Palette {
 		symbol.setName("Default");
 		this.getSymbolList().add(symbol);
 		
-		symbol=SymbolFactory.create(GatewayActivityView.class, GatewaySymbol.class);
+		symbol=SymbolFactory.create(GatewayView.class, GatewaySymbol.class);
 		symbol.setName("Gateway");
 		this.getSymbolList().add(symbol);
 
@@ -48,7 +48,7 @@ public class SimplePalette extends Palette {
 //		this.getSymbolList().add(SymbolFactory.create(AnnotationActivityView.class));
 //		this.getSymbolList().add(SymbolFactory.create(ScopeActivityView.class));
 		
-		this.getSymbolList().add(TransitionView.createSymbol());
+		this.getSymbolList().add(SequenceFlowView.createSymbol());
 		
 	}
 }

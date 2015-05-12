@@ -1,5 +1,6 @@
 package org.uengine.modeling.modeler;
 
+import org.metaworks.annotation.Payload;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Clipboard;
 import org.uengine.kernel.ProcessDefinition;
@@ -15,13 +16,14 @@ public class StandaloneProcessModeler {
         setProcessModeler(new ProcessModeler());
 
    //     load();
+        setFileName("/java/autoinsurance.bpmn");
 
         setClipboard(new Clipboard());
     }
 
     @ServiceMethod(keyBinding = "Ctrl+L")
-    public ProcessModeler load() throws Exception {
-        ProcessDefinition processDefinition = BPMNUtil.adapt(new File("/java/autoinsurance.bpmn"));
+    public ProcessModeler load(@Payload("fileName") String fileName) throws Exception {
+        ProcessDefinition processDefinition = BPMNUtil.adapt(new File(getFileName()));
 
         getProcessModeler().setModel(processDefinition);
 
@@ -36,6 +38,17 @@ public class StandaloneProcessModeler {
         public void setProcessModeler(ProcessModeler processModeler) {
             this.processModeler = processModeler;
         }
+
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+
+    String fileName;
 
     Clipboard clipboard;
         public Clipboard getClipboard() {

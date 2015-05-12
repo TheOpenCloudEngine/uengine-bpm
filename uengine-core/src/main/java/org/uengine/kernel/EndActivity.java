@@ -6,7 +6,7 @@ import java.util.Map;
 import org.metaworks.FieldDescriptor;
 import org.metaworks.Type;
 import org.metaworks.inputter.RadioInput;
-import org.uengine.modeling.ElementView;
+import org.uengine.kernel.bpmn.StartActivity;
 import org.uengine.persistence.processinstance.ProcessInstanceDAO;
 import org.uengine.persistence.processinstance.ProcessInstanceDAOType;
 
@@ -14,7 +14,7 @@ import org.uengine.persistence.processinstance.ProcessInstanceDAOType;
  * @author Jinyoung Jang
  */
 
-public class EndActivity extends StartActivity{
+public class EndActivity extends StartActivity {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	public final static int STATUS_STOPPED		= 1;

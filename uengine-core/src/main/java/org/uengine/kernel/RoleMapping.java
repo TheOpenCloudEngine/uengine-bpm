@@ -244,13 +244,13 @@ public class RoleMapping implements java.io.Serializable, Cloneable, CommandVari
 			currentRoleMapping.extendedProperties.remove(key);			
 	}
     
-    public RoleMapping findRelative(String relationName){
-    	try{
-			return RelationFactory.getRelation(relationName).findRelative(this);
-    	}catch(Exception e){
-    		return null;
-    	}
-    }
+//    public RoleMapping findRelative(String relationName){
+//    	try{
+//			return RelationFactory.getRelation(relationName).findRelative(this);
+//    	}catch(Exception e){
+//    		return null;
+//    	}
+//    }
     
     public synchronized boolean next(){
     	if(multipleMappings==null)

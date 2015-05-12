@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.metaworks.Type;
 import org.metaworks.annotation.Hidden;
-import org.uengine.modeling.ElementView;
+import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.util.UEngineUtil;
 
 
@@ -370,7 +370,7 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 				eventNames.put(eventHandler.getName(),"");
 			}
 		}
-		if( this.getIncomingTransitions() == null || (this.getIncomingTransitions() != null && this.getIncomingTransitions().size() < 1) ){
+		if( this.getIncomingSequenceFlows() == null || (this.getIncomingSequenceFlows() != null && this.getIncomingSequenceFlows().size() < 1) ){
 			vc.add(getActivityLabel() + " is not execute. no incomming transition. ");
 		}
 		

@@ -9,8 +9,8 @@ import org.uengine.kernel.Activity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
 import org.uengine.kernel.UEngineException;
-import org.uengine.kernel.graph.Transition;
-import org.uengine.kernel.graph.view.TransitionView;
+import org.uengine.kernel.bpmn.SequenceFlow;
+import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 
@@ -53,12 +53,12 @@ public class ProcessModeler extends DefaultModeler {
 			elementViewList.add(elementView);
 		}
 		
-		for(IRelation relation : def.getTransitions()){
-			Transition transition = (Transition) relation;
-			TransitionView transitionView = (TransitionView)transition.getRelationView();
-			transition.setRelationView(null);
-			transitionView.setRelation(transition);
-			relationViewList.add(transitionView);
+		for(IRelation relation : def.getSequenceFlows()){
+			SequenceFlow sequenceFlow = (SequenceFlow) relation;
+			SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
+			sequenceFlow.setRelationView(null);
+			sequenceFlowView.setRelation(sequenceFlow);
+			relationViewList.add(sequenceFlowView);
 		}
 
 		if(def.getRoles()!=null){
@@ -132,10 +132,10 @@ public class ProcessModeler extends DefaultModeler {
 		}
 		
 		for(RelationView relationView : this.getCanvas().getRelationViewList()){
-			Transition transition = (Transition) relationView.getRelation();
+			SequenceFlow sequenceFlow = (SequenceFlow) relationView.getRelation();
 			relationView.setRelation(null);
-			transition.setRelationView((TransitionView)relationView);
-			def.addTransition(transition);
+			sequenceFlow.setRelationView((SequenceFlowView)relationView);
+			def.addSequenceFlow(sequenceFlow);
 		}
 		def.setPools(null);
 		return def;

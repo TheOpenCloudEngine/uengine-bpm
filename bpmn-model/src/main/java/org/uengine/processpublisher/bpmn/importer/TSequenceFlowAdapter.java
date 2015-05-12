@@ -6,11 +6,8 @@ import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.dd._20100524.dc.Point;
-import org.uengine.kernel.EndEventActivity;
 import org.uengine.kernel.ExpressionEvaluteCondition;
-import org.uengine.kernel.FlowActivity;
-import org.uengine.kernel.SequenceActivity;
-import org.uengine.kernel.graph.Transition;
+import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.RelationView;
 import org.uengine.processpublisher.Adapter;
 
@@ -18,17 +15,17 @@ import javax.xml.namespace.QName;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class TSequenceFlowAdapter implements Adapter<TSequenceFlow, Transition> {
+public class TSequenceFlowAdapter implements Adapter<TSequenceFlow, SequenceFlow> {
 
 
 
     @Override
-    public Transition convert(TSequenceFlow src, Hashtable keyedContext) throws Exception {
+    public SequenceFlow convert(TSequenceFlow src, Hashtable keyedContext) throws Exception {
 
-        Transition transition = new Transition();
+        SequenceFlow transition = new SequenceFlow();
 
-        transition.setTarget(((TFlowNode)src.getTargetRef()).getId());
-        transition.setSource(((TFlowNode)src.getSourceRef()).getId());
+        transition.setTargetRef(((TFlowNode)src.getTargetRef()).getId());
+        transition.setSourceRef(((TFlowNode)src.getSourceRef()).getId());
         transition.setTracingTag(src.getId());
 
         if(src.getConditionExpression()!=null && src.getConditionExpression().getContent().size()>0)
@@ -53,8 +50,8 @@ public class TSequenceFlowAdapter implements Adapter<TSequenceFlow, Transition> 
         relationView.setWidth("" + Math.round(bpmnEdge.getWaypoint().get(1).getX()));
         relationView.setHeight("" + Math.round(bpmnEdge.getWaypoint().get(1).getY()));
         relationView.setId(transition.getTracingTag());
-        relationView.setFrom(transition.getSource() + "_TERMINAL_C_INOUT_0");
-        relationView.setTo(transition.getTarget() + "_TERMINAL_C_INOUT_0");
+        relationView.setFrom(transition.getSourceRef() + "_TERMINAL_C_INOUT_0");
+        relationView.setTo(transition.getTargetRef() + "_TERMINAL_C_INOUT_0");
         relationView.setLabel(src.getName());
 
         transition.setRelationView(relationView);

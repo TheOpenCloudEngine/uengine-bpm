@@ -1,5 +1,6 @@
 package org.uengine.modeling.modeler.palette;
 
+import org.uengine.kernel.bpmn.view.*;
 import org.uengine.kernel.view.*;
 import org.uengine.modeling.Palette;
 import org.uengine.modeling.SymbolFactory;

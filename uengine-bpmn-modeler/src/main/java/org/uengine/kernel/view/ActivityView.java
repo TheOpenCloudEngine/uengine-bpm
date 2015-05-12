@@ -2,7 +2,7 @@ package org.uengine.kernel.view;
 
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.HumanActivity;
-import org.uengine.kernel.ReferenceActivity;
+//import org.uengine.kernel.ReferenceActivity;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.Symbol;
@@ -34,11 +34,11 @@ public class ActivityView extends ElementView {
 	
 	public Activity getRealActivity(){
 		Activity activity = null;
-		if(getElement() instanceof ReferenceActivity){
-			activity = ((ReferenceActivity)getElement()).getReferencedActivity();
-		} else {
+//		if(getElement() instanceof ReferenceActivity){
+//			activity = ((ReferenceActivity)getElement()).getReferencedActivity();
+//		} else {
 			activity = (Activity)getElement();
-		}
+//		}
 		return activity;
 	}
 

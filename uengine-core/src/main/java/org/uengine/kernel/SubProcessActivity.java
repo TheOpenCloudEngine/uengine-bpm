@@ -1144,32 +1144,7 @@ public class SubProcessActivity extends DefaultActivity {
 		setSubprocessIds(instance, currSubProcessLabels, SUBPROCESS_INST_LABELS);
 	}
 
-	transient String parentEditorId;
-	@Hidden
-	public String getParentEditorId() {
-		return parentEditorId;
-	}
-	public void setParentEditorId(String parentEditorId) {
-		this.parentEditorId = parentEditorId;
-	}
 
-	public ElementView createView(){
-		ElementView elementView = null;
-		try {
-			elementView = (ElementView)Thread.currentThread().getContextClassLoader().loadClass("org.uengine.kernel.designer.ui.SubProcessActivityView").newInstance();
-			elementView.setElement(this);
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return elementView;
-	}
 }
 
 

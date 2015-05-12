@@ -455,8 +455,21 @@ public class DefaultProcessInstance extends ProcessInstance{
 	public ProcessInstance getInstance(String instanceId, Map options) throws Exception{
 		
 		if(options.containsKey("ptc")) ptc =(ProcessTransactionContext)options.get("ptc");
+
+		String executionScope = null;
+		if(instanceId.indexOf("@") > 0){
+			String[] instanceIdAndExecutionScope = instanceId.split("@");
+			instanceId = instanceIdAndExecutionScope[0];
+
+			executionScope = instanceIdAndExecutionScope[1];
+		}
 		
 		ProcessInstance instance = ptc.getProcessInstanceInTransaction(instanceId);
+
+		if(executionScope!=null){
+			instance.setExecutionScope(executionScope);
+		}
+
 		if(instance!=null)
 			return instance;
 		//else{
@@ -639,7 +652,12 @@ public class DefaultProcessInstance extends ProcessInstance{
 	}
 	
 	protected String createFullKey(String tracingTag, String key, boolean isProperty){
-		return tracingTag + ":" + key + (isProperty ? SUFFIX_PROPERTY : "");
+
+		return tracingTag
+				+ (getExecutionScopeContext() != null ? ":" + getExecutionScopeContext().getExecutionScope() : "")
+				+ ":" + key
+				+ (isProperty ? SUFFIX_PROPERTY : "")
+				;
 	}
 	
 	protected boolean isProperty(String fullKey){

@@ -23,7 +23,7 @@ public class EventTest extends UEngineTest{
      *                |
      *                +-> 5 -> 6 -> 4
      *
-     *   * path 5 is EscalationEvent attached to 1
+     *   * 5 is EscalationEvent which is attached to 1
      *
      * @throws Exception
      */

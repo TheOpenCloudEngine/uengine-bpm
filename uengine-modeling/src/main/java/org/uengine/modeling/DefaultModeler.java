@@ -33,23 +33,6 @@ public class DefaultModeler extends Modeler {
         return super.getPalette();
     }
 
-    @Override
-    public IModel getModel() throws Exception {
-//        if(this.model  == null)
-//            this.model = createModel();
-
-        return this.model;
-    }
-
-    public IModel createModel(){
-        return new IModel() {
-            @Override
-            public String getAlias() {
-                return null;
-            }
-        };
-    }
-
     public List<ElementView> obtainElementViewList(){
         return getCanvas().getElementViewList();
     }

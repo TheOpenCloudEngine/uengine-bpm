@@ -89,7 +89,6 @@ public class ProcessModeler extends DefaultModeler {
 			this.setLastTracingTag(compareTracingTag);
 	}
 	
-	@Override
 	public IModel createModel() {
 		try {
 			return makeProcessDefinitionFromCanvas(getCanvas());

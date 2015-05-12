@@ -7,7 +7,7 @@ import javax.persistence.Id;
 /**
  * @author jyj
  */
-public class RelationView implements Serializable {
+public class RelationView implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1234L;
 	public final static String SHAPE_ID = "OG.shape.bpmn.C_Flow";
@@ -168,5 +168,11 @@ public class RelationView implements Serializable {
 		symbol.setShapeType("EDGE");
 		
 		return symbol;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
 	}
 }

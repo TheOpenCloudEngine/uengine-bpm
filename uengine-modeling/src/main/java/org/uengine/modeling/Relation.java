@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * @author jyj
  */
-public class Relation implements IRelation, Serializable{
+public class Relation implements Serializable, IRelation{
 
 	private static final long serialVersionUID = 1234L;
 
@@ -78,5 +78,13 @@ public class Relation implements IRelation, Serializable{
 		IElement element = (IElement)obj;
 		
 		return getRelationView().getFrom().substring(0, getRelationView().getTo().indexOf("T") -1).equals(element.getElementView().getId());
+	}
+
+	@Override
+	public RelationView asView() {
+		RelationView view = getRelationView();
+		setRelationView(null);
+		view.setRelation(this);
+		return view;
 	}
 }

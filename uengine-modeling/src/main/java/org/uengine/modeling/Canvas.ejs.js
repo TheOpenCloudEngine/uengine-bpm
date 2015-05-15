@@ -6,7 +6,6 @@ var org_uengine_modeling_Canvas = function(objectId, className){
 	this.objectDiv = $(document.getElementById(this.objectDivId));
 	this.metaworksContext = mw3.objectContexts[this.objectId].__metaworksContext;
 
-//	this.objectDiv.addClass('mw3_resize').addClass('mw3_refresh').addClass('canvas').css('height','100%');
 	this.objectDiv.addClass('mw3_resize').addClass('canvas').css('height','100%');
 	this.history = [];
 	this.historyInit = true;
@@ -15,16 +14,6 @@ var org_uengine_modeling_Canvas = function(objectId, className){
 	this.tracingTag = 0;
 
 	if(this.object){
-//		mw3.importScript('lib/jquery/jquery.contextMenu.js');
-//		mw3.importScript('lib/jquery/jquery.ui.position.js');
-//		mw3.importStyle('style/jquery.contextMenu.css');
-//		mw3.importScript('lib/jquery/jquery-tooltip.js');
-//		mw3.importStyle('style/jquery/jquery-tooltip.css');
-//		mw3.importStyle('dwr/metaworks/org/uengine/codi/mw3/model/PureWebProcessDesigner.ejs.css');
-
-//		mw3.importScript('lib/jquery/jquery.jqGrid.js');
-//		mw3.importStyle('style/ui.jqgrid.css');
-
 		var faceHelper = this;
 		faceHelper.load();
 	}
@@ -42,7 +31,7 @@ org_uengine_modeling_Canvas.prototype = {
 
 	load : function(){
 		OG.common.Constants.CANVAS_BACKGROUND = "#fff";
-		OG.Constants.ENABLE_CANVAS_OFFSET = true; // Layout 占싼딆뒠占쎌꼷占�占쎈봿��野껋럩��true 嚥∽옙筌욑옙��
+		OG.Constants.ENABLE_CANVAS_OFFSET = true;
 
 
 

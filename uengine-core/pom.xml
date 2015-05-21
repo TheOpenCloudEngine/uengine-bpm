@@ -10,7 +10,7 @@
 	<artifactId>uengine-core</artifactId>
 	<name>uengine-core</name>
 	<url>http://maven.apache.org</url>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.springframework-version>3.0.3.RELEASE</org.springframework-version>
@@ -107,9 +107,27 @@
 			<version>4.7</version>
 		</dependency>
 
-
+		<!-- Json-lib -->
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<!-- JAX-RS -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<!-- Jersey -->
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>2.6</version>
+		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 		<resources>
@@ -133,6 +151,6 @@
 		</resources>
 
 	</build>
-	
-	
+
+
 </project>

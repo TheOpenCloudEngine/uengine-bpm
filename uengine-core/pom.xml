@@ -92,7 +92,7 @@
         </dependency>
         <!-- for archiving (export/import) process definitions -->
         <dependency>
-            <groupId>net.sf.jazzlib</groupId>
+            <groupId>net.sf</groupId>
             <artifactId>jazzlib</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -149,7 +149,7 @@
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>3.0</version>
+            <version>3.2.1</version>
         </dependency>
 
         <dependency>

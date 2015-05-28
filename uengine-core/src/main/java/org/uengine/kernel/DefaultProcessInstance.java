@@ -228,7 +228,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 	
 	public void set(String scopeByTracingTag, String key, Serializable val) throws Exception{
 		if(val instanceof ProcessVariableValue){
-			ProcessVariableValue pvv = new ProcessVariableValue();
+			ProcessVariableValue pvv = (ProcessVariableValue)val;
 			pvv.setName(key);
 			set(scopeByTracingTag, pvv);
 			return;

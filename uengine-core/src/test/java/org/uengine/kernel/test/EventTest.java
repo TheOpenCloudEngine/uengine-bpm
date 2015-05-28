@@ -168,11 +168,11 @@ public class EventTest extends UEngineTest{
         }, instance);
 
 
-        instance.getProcessDefinition().fireMessage("event", instance, "a5");
-        assertExecutionPathEquals("Triggering Expired Event", new String[]{
-                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a11", "a12",
-        }, instance);
-
+//        instance.getProcessDefinition().fireMessage("event", instance, "a5");
+//        assertExecutionPathEquals("Triggering Expired Event", new String[]{
+//                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a11", "a12",
+//        }, instance);
+//
 
 
 

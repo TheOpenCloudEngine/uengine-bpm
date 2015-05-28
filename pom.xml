@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.uengine</groupId>
   <artifactId>uengine</artifactId>
-  <version>4.0-RELEASE</version>
+  <version>4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
 	  <module>uengine-modeling</module>
@@ -11,6 +11,7 @@
 	  <module>uengine-bpmn-modeler</module>
 	  <module>bpmn-model</module>
 	  <module>uengine-client-example</module>
+	  <module>uengine-default-company</module>
   </modules>
   
   

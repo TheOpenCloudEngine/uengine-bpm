@@ -1,11 +1,6 @@
 package org.uengine.kernel;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -480,6 +475,8 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	public RoleMapping getActualMapping(ProcessInstance instance) throws Exception{	
 		
 		RoleMapping roleMapping = null;
+
+		if(getRole()==null) throw new IllegalStateException("Role is not set for HumanActivity ["+ getName() + "]");
 		
 		try{
 			if (Activity.STATUS_COMPLETED.equals(instance.getStatus(getTracingTag()))) {
@@ -493,7 +490,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 //			if(roleMapping == null && instance.isNew() && instance.isSubProcess())
 //				throw new NullPointerException();
 		}catch(Exception e){
-			throw new UEngineException("Couldn't get the actual user for the role [" + getName() + "] since: \n" + e.getMessage(), e);
+			throw new UEngineException("Couldn't get the actual user for the role [" + getRole().getName() + "] since: \n" + e.getMessage(), e);
 		}
 		if(instance.isNew()){ //only when the instance is newly initiating now.
 			//FIXME: may occur a decrease of performance 
@@ -752,6 +749,14 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 		if(payload instanceof ResultPayload){
 			ResultPayload resultPayload = ((ResultPayload)payload);
 			taskId = (String)resultPayload.getExtendedValue(PAYLOADKEY_TASKID);
+
+			for(KeyedParameter variableChange : resultPayload.getProcessVariableChanges()){
+
+//				if(getParameterMap().containsKey(variableChange.getKey()))
+					instance.set("", variableChange.getKey(), (Serializable) variableChange.getValue());
+//				else
+//					throw new Exception("This human activity can't change the variable [" + variableChange.getKey() + "]. The parameter should be set in the parameter list.");
+			}
 		}else{//for old-version, single role mapping
 			taskId = (String)instance.getProperty(getTracingTag(), PVKEY_TASKID);
 		}
@@ -1042,7 +1047,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	protected void setTaskStatusMap(ProcessInstance instance, Map map) throws Exception{
 		instance.setProperty(getTracingTag(), "TASK_STATUS_MAP", (java.io.Serializable)map);
 	}
-	
+
 	/**
 	 * for getting parameters (without instance info) from outside
 	 */

@@ -46,8 +46,8 @@ public abstract class DAOFactory{
 	abstract public String getDBMSProductName() throws Exception;
 
 	public static DAOFactory getInstance(ConnectionFactory tc){
-		if(tc == null)
-			throw new IllegalArgumentException("ConnectionFactory or TransactionContext is null. ConnectionFactory should be provided to create the DAOFactory.");
+//		if(tc == null)
+//			throw new IllegalArgumentException("ConnectionFactory or TransactionContext is null. ConnectionFactory should be provided to create the DAOFactory.");
 
 		DAOFactory daoFactory;
 		try{

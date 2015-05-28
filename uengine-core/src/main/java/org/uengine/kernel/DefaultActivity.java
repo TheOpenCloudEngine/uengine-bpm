@@ -4,10 +4,7 @@ import javax.naming.InitialContext;
 
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Order;
-import org.metaworks.component.MetaWorksComponentCenter;
-import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IDocument;
-import org.uengine.util.UEngineUtil;
 
 /**
  * @author Jinyoung Jang
@@ -46,7 +43,7 @@ public class DefaultActivity extends Activity{
 	public void setDocument(IDocument document) {
 		this.document = document;
 	}
-	
+
 	public void createDocument(){
 		try {
 			setDocument((IDocument)Thread.currentThread().getContextClassLoader().loadClass("org.uengine.essencia.model.DefaultActivityDocument").newInstance());

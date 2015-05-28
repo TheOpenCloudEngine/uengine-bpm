@@ -486,7 +486,11 @@ public class SubProcess extends ScopeActivity{
 
                 subprocessInstances.add(thePI);
                 subprocessInstanceIds.add(thePI.getInstanceId() + "@" + esc.getExecutionScope());
-                subprocessLabels.add(theValue);
+
+                if(theValue != null)
+                    subprocessLabels.add(theValue.toString());
+                else
+                    subprocessLabels.add(thePI.getInstanceId());
 
                 instance.setExecutionScopeContext(oldEsc);
 
@@ -610,8 +614,18 @@ public class SubProcess extends ScopeActivity{
           instance.set("", vb.getVariable().getName(), null);
         }
 
+        String originalExecutionScope = null;
+
+        if(instance.getMainExecutionScope()!=null){
+            originalExecutionScope = instance.getExecutionScopeContext().getExecutionScope();
+        }
+
+
         if(spIds!=null)
         for(int indexOfSP=0; indexOfSP<spIds.size(); indexOfSP++){
+
+            instance.setExecutionScope(originalExecutionScope);//keep the execution scope
+
           String subProcessId = (String)spIds.elementAt(indexOfSP);
 
           ParameterContext[] variableBindings = getVariableBindings();
@@ -639,10 +653,14 @@ public class SubProcess extends ScopeActivity{
 
               if(join){
                    Serializable valueOfSP = subProcessInstance.get("", vb.getArgument().getText());
+
+                  instance.setExecutionScope(originalExecutionScope);
                    instance.add("", vb.getVariable().getName(), valueOfSP, indexOfSP);//process multiple pv
               }else{
                 ProcessVariableValue valueOfSP = subProcessInstance.getMultiple("", vb.getArgument().getText());
                 valueOfSP.setName(vb.getVariable().getName());
+
+                  instance.setExecutionScope(originalExecutionScope);
                 instance.set("", valueOfSP);
               }
             }catch(Exception e){
@@ -737,6 +755,8 @@ public class SubProcess extends ScopeActivity{
     protected ProcessInstance initiateSubProcess(String realDefinitionId, ProcessInstance instance, RoleMapping currentRoleMapping, Serializable currentVariableValue, boolean isConnectedMultipleSubProcesses, int mappingIndex) throws Exception{
         String subProcessInstanceName = evaluateContent(instance, getInstanceId()).toString();
 
+        transferValues(instance, instance, currentRoleMapping, currentVariableValue, mappingIndex);
+
         super.executeActivity(instance);
 
         return instance;
@@ -759,7 +779,13 @@ public class SubProcess extends ScopeActivity{
                     instance.addDebugInfo("[SubProcessActivity] transferring main process' variable: ", getForEachVariable());
                     instance.addDebugInfo(" to sub process' variable: ", pvpc.getArgument().getText());
                 }else{
+
+                    String currExecutionScope = instance.getExecutionScopeContext().getExecutionScope();
+                    instance.setExecutionScope(instance.getMainExecutionScope());
+
                     ProcessVariableValue pvv = pvpc.getVariable().getMultiple(instance, "");
+
+                    instance.setExecutionScope(currExecutionScope);
 
                     if(pvv==null)
                         val=null;

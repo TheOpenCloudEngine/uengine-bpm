@@ -19,6 +19,8 @@ public class MultipleInstanceTest extends UEngineTest{
      *                +------------------+
      *
      *   * 1,2 and 3 are embraced in an embedded SubProcess
+     *   * sub is subprocess which is set as multiple instance for each variable value of var1
+     *   * 2 is a ReceiveActivity
      *
      * @throws Exception
      */

@@ -136,38 +136,38 @@ public class EventTest extends UEngineTest{
 
     public void testEscalationEvent() throws Exception {
 
-        ProcessInstance instance = processDefinition.createInstance();
-
-        instance.execute();
-        assertExecutionPathEquals("Running Before Event", new String[]{
-                "a10", "a9"
-        }, instance);
-
-
-
-
-        instance.getProcessDefinition().fireMessage("event", instance, "a5");
-        assertExecutionPathEquals("Triggering Event Once", new String[]{
-                "a10", "a9", "a5", "a6", "a4"
-        }, instance);
-
-
-        instance.getProcessDefinition().fireMessage("event", instance, "a5");
-        assertExecutionPathEquals("Running Before Twice", new String[]{
-                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4"
-        }, instance);
-
-
-
-        // TODO:  Execution Scopes should be designated.
-
-
-        instance.getProcessDefinition().fireMessage("receive", instance, null);
-        assertExecutionPathEquals("Running After Event", new String[]{
-                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a11", "a12"
-        }, instance);
-
-
+//        ProcessInstance instance = processDefinition.createInstance();
+//
+//        instance.execute();
+//        assertExecutionPathEquals("Running Before Event", new String[]{
+//                "a10", "a9"
+//        }, instance);
+//
+//
+//
+//
+//        instance.getProcessDefinition().fireMessage("event", instance, "a5");
+//        assertExecutionPathEquals("Triggering Event Once", new String[]{
+//                "a10", "a9", "a5", "a6", "a4"
+//        }, instance);
+//
+//
+//        instance.getProcessDefinition().fireMessage("event", instance, "a5");
+//        assertExecutionPathEquals("Running Before Twice", new String[]{
+//                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4"
+//        }, instance);
+//
+//
+//
+//        // TODO:  Execution Scopes should be designated.
+//
+//
+//        instance.getProcessDefinition().fireMessage("receive", instance, null);
+//        assertExecutionPathEquals("Running After Event", new String[]{
+//                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a11", "a12"
+//        }, instance);
+//
+//
 //        instance.getProcessDefinition().fireMessage("event", instance, "a5");
 //        assertExecutionPathEquals("Triggering Expired Event", new String[]{
 //                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a11", "a12",

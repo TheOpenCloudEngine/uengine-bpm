@@ -13,8 +13,8 @@
 	  <module>uengine-client-example</module>
 	  <module>uengine-default-company</module>
   </modules>
-  
-  
+
+
   <pluginRepositories>
 		<pluginRepository>
 			<id>central</id>
@@ -27,7 +27,7 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-  
+
   	<repositories>
 		<repository>
 			<id>oss-rh</id>
@@ -59,10 +59,10 @@
 			<artifactId>metaworks3</artifactId>
 			<version>1.1-SNAPSHOT</version>
 		</dependency>
-		
+
 
 	</dependencies>
-  
+
   <build>
 		<plugins>
 			<plugin>
@@ -77,5 +77,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

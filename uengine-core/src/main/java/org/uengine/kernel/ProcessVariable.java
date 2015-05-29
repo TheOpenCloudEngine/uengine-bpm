@@ -308,10 +308,20 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 	}
 	
 	public void afterDeserialization() {
+
+		if(getDefaultValue()!=null && getDefaultValue() instanceof NeedArrangementToSerialize){
+			((NeedArrangementToSerialize)getDefaultValue()).afterDeserialization();
+		}
+
 		setName(getName());
 	}
 
-	public void beforeSerialization() {}
+	public void beforeSerialization() {
+
+		if(getDefaultValue()!=null && getDefaultValue() instanceof NeedArrangementToSerialize){
+			((NeedArrangementToSerialize)getDefaultValue()).beforeSerialization();
+		}
+	}
 	
 	public static Object evaluate(Object val, ProcessInstance instance) throws Exception{
 		if(val instanceof ProcessVariable){

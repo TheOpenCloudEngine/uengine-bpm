@@ -5,6 +5,8 @@ import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.SubProcess;
 
+import java.io.FileOutputStream;
+
 public class MultipleInstanceTest extends UEngineTest{
 
     ProcessDefinition processDefinition;
@@ -99,6 +101,7 @@ public class MultipleInstanceTest extends UEngineTest{
 
         ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
+        GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
 
     }
 

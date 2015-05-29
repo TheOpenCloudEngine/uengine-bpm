@@ -22,57 +22,6 @@ public class DefaultActivityView extends ActivityView{
 		super(element);
 	}
 
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		
-		symbol = fillSymbol(symbol);
-
-		return symbol;
-	}
-
-	public Symbol createSymbol(String type) {
-		Symbol symbol = createSymbol();
-
-		symbol = changeShapeId(symbol, type);
-
-		return symbol;
-	}
-	public Symbol createSymbol(String type, Class<? extends Symbol> symbolType) {
-		Symbol symbol = null;
-		
-		try {
-			symbol = (Symbol)Thread.currentThread().getContextClassLoader().loadClass(symbolType.getName()).newInstance();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		
-		symbol = fillSymbol(symbol);
-		symbol = changeShapeId(symbol, type);
-		
-		return symbol;
-	}
-	private Symbol fillSymbol(Symbol symbol){
-		symbol.setName("추상");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(100);
-		symbol.setWidth(100);
-		symbol.setElementClassName(ELEMENT_CLASSNAME);
-		symbol.setShapeType(SHAPE_TYPE);
-		return symbol;
-	}
-	private Symbol changeShapeId(Symbol symbol, String type){
-		if("BPMN".equals(type)){
-			symbol.setShapeId(SHAPE_ID_BPMN);
-		}else{
-			symbol.setShapeId(SHAPE_ID_VACD );
-		}
-		return symbol;
-	}
-	
 
 	@ServiceMethod(callByContent=true, eventBinding="changeToAbstract")
 	public void changeToAbstract(){

@@ -29,28 +29,6 @@ public class StartActivityView extends EventActivityView {
 //	@AutowiredFromClient
 //	public EditorInfo editorInfo;
 
-	@Override
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
 
-		return fillSymbol(symbol);
-	}
-	
-	@Override
-	public Symbol createSymbol(Class<? extends Symbol> symbolType) {
-		Symbol symbol = new Symbol();
-		
-		return fillSymbol(symbol);
-	}
-	
-	private Symbol fillSymbol(Symbol symbol){
-		symbol.setName("시작");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(30);
-		symbol.setWidth(30);
-		symbol.setElementClassName(ELEMENT_CLASSNAME);
-		symbol.setShapeType(SHAPE_TYPE);
-		return symbol;
-	}
 	
 }

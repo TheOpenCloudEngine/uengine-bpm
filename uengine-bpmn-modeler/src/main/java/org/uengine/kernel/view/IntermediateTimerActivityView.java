@@ -17,17 +17,6 @@ public class IntermediateTimerActivityView extends EventActivityView {
 		super(element);
 	}
 
-	@Override
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("타이머 중간");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(30);
-		symbol.setWidth(30);
-		symbol.setElementClassName(IntermediateTimer.class.getName());
-		symbol.setShapeType("GEOM");
-		
-		return symbol;
-	}
+
 	
 }

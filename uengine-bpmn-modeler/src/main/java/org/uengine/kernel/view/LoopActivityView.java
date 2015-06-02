@@ -16,16 +16,5 @@ public final static String SHAPE_ID = "OG.shape.bpmn.A_LoopTask";
 		super(element);
 	}
 
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("반복");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(100);
-		symbol.setWidth(100);
-		symbol.setElementClassName(LoopActivity.class.getName());
-		symbol.setShapeType("GEOM");
-		
-		return symbol;
-	}
-	
+
 }

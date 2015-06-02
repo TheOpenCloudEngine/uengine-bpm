@@ -208,19 +208,19 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
     }
 
     public abstract Symbol createSymbol();
-
-    //TODO: should make interface for createSymbol()....
-    public Symbol createSymbol(String type) {
-        return null;
-    }
-
-    public Symbol createSymbol(Class<? extends Symbol> symbolType) {
-        return null;
-    }
-
-    public Symbol createSymbol(String type, Class<? extends Symbol> symbolType) {
-        return null;
-    }
+//
+//    //TODO: should make interface for createSymbol()....
+//    public Symbol createSymbol(String type) {
+//        return null;
+//    }
+//
+//    public Symbol createSymbol(Class<? extends Symbol> symbolType) {
+//        return null;
+//    }
+//
+//    public Symbol createSymbol(String type, Class<? extends Symbol> symbolType) {
+//        return null;
+//    }
 
     @ServiceMethod(callByContent = true, target = ServiceMethodContext.TARGET_APPEND)
     public Object duplicate() {

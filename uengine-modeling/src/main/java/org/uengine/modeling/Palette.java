@@ -47,6 +47,13 @@ public abstract class Palette implements ContextAware {
 		setMetaworksContext(new MetaworksContext());
 		this.symbolList = new ArrayList<Symbol>();
 	}
-	
-	protected abstract void initPallet();
+
+	public void addSymbol(Class <? extends ElementView> elementForSymbol){
+		try {
+			this.getSymbolList().add(elementForSymbol.newInstance().createSymbol());
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e);
+		}
+
+	}
 }

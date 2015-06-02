@@ -6,6 +6,7 @@ import org.uengine.kernel.HumanActivity;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.Symbol;
+import org.uengine.util.UEngineUtil;
 
 public class ActivityView extends ElementView {
 
@@ -22,14 +23,25 @@ public class ActivityView extends ElementView {
 	@Override
 	public Symbol createSymbol() {
 		Symbol symbol = new Symbol();
-		symbol.setName("Default Activity");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(100);
-		symbol.setWidth(100);
-		symbol.setElementClassName(HumanActivity.class.getName());
-		symbol.setShapeType("GEOM");
-		
-		return symbol;
+
+		symbol.setElementClassName(UEngineUtil.getDomainClassName(getClass(), "view"));
+
+		try {
+			Activity activityInstance = (Activity) Class.forName(symbol.getElementClassName()).newInstance();
+
+			symbol.setName(activityInstance.getName());
+			symbol.setShapeId(getShapeId());
+			symbol.setHeight(100);
+			symbol.setWidth(100);
+			symbol.setShapeType("GEOM");
+
+			return symbol;
+
+
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to create symbol", e);
+		}
+
 	}
 	
 	public Activity getRealActivity(){

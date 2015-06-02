@@ -18,27 +18,5 @@ public class GatewayView extends ActivityView {
 		super(element);
 	}
 	
-	@Override
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		
-		return fillSymbol(symbol);
-	}
-	
-	@Override
-	public Symbol createSymbol(Class<? extends Symbol> symbolType) {
-		Symbol symbol = new GatewaySymbol();
-		
-		return fillSymbol(symbol);
-	}
-	
-	private Symbol fillSymbol(Symbol symbol){
-		symbol.setName("배타적");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(40);
-		symbol.setWidth(40);
-		symbol.setElementClassName(Gateway.class.getName());
-		symbol.setShapeType("GEOM");
-		return symbol;
-	}
+
 }

@@ -240,14 +240,14 @@ System.out.println("method = "+m + "method.getParameters[0]" + m.getParameterTyp
 
 	static public String getDomainClassName(Class cls, String compType){
 
-		String componentClassName = cls.getClass().getName();
+		String componentClassName = cls.getName();
 		int whereComponentPackageNameStarts = componentClassName.lastIndexOf("." + compType);
 
-		String domainClassName = componentClassName.substring(componentClassName.length() - compType.length());
+		String domainClassName = componentClassName.substring(whereComponentPackageNameStarts + compType.length()+1, componentClassName.length() - compType.length());
 
 		String domainPackageName = componentClassName.substring(0, whereComponentPackageNameStarts);
 
-		return domainPackageName + getClassNameOnly(domainClassName);
+		return domainPackageName + domainClassName;
 	}
 
 	static public String getComponentClassName(Class cls, String compType, boolean isDefault, boolean overridesPackage){

@@ -9,6 +9,7 @@ import org.uengine.processpublisher.BPMNUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class StandaloneProcessModeler {
 
@@ -31,6 +32,15 @@ public class StandaloneProcessModeler {
         getProcessModeler().setModel(processDefinition);
 
         return getProcessModeler();
+    }
+    
+    @ServiceMethod(callByContent=true)
+    public void save() throws Exception {
+//        ProcessDefinition processDefinition = BPMNUtil.adapt(new File(getFileName()));
+        ProcessDefinition definition = (ProcessDefinition) getProcessModeler().createModel();
+        
+        GlobalContext.serialize(definition, new FileOutputStream(getFileName()), String.class);
+
     }
 
     ProcessModeler processModeler;

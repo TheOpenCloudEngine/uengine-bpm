@@ -127,8 +127,24 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 
 		super.afterDeserialization();
 	}
-	
+
+	@Override
+	public void beforeSerialization() {
+
+
+		ProcessVariable [] processVariables = getProcessVariables();
+
+		if(processVariables!=null)
+			for(int i=0; i<processVariables.length; i++){
+				processVariables[i].beforeSerialization();
+			}
+
+		super.beforeSerialization();
+	}
+
 	protected void beforeExecute(ProcessInstance instance) throws Exception {
+
+
 		super.beforeExecute(instance);
 		if(getEventHandlers()!=null && getEventHandlers().length > 0) 
 			getProcessDefinition().addMessageListener(instance, this);

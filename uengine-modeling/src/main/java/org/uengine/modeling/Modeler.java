@@ -36,7 +36,7 @@ public abstract class Modeler implements ContextAware {
 	public Palette getPalette() {
 		return palette;
 	}
-	public void setPalette(Palette palette) {
+	public void  setPalette(Palette palette) {
 		this.palette = palette;
 	}
 	

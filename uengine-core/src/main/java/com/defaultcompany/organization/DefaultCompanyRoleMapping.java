@@ -13,10 +13,7 @@ public class DefaultCompanyRoleMapping extends RoleMapping{
 	public void fill(ProcessInstance instance) throws Exception {
 		if(GlobalContext.isDesignTime()) return;
 
+		
 	}
 	
-	public static void main(String args[]) throws Exception{
-		RoleMapping rm = new DefaultCompanyRoleMapping();
-		rm.fill(null);
-	}
 }

@@ -337,6 +337,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 	//TODO: hotspot. replicate the serialization event
 
 	public void beforeSerialization(){
+
 		List<Activity> childActivities = getChildActivities();	 			
 		for(Activity child : childActivities){
 			if(child instanceof NeedArrangementToSerialize)

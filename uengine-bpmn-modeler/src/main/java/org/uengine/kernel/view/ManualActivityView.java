@@ -20,27 +20,5 @@ public class ManualActivityView extends ActivityView{
 		super(element);
 	}
 
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("수동");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(100);
-		symbol.setWidth(100);
-		symbol.setElementClassName(ELEMENT_CLASSNAME);
-		symbol.setShapeType(SHAPE_TYPE);
-		
-		return symbol;
-	}
-	
-	public Symbol createSymbol(String modelerType) {
-		Symbol symbol = createSymbol();
 
-		if("BPMN".equals(modelerType)){
-			symbol.setShapeId(SHAPE_ID_BPMN);
-		}else{
-			symbol.setShapeId(SHAPE_ID_VACD );
-		}
-
-		return symbol;
-	}
 }

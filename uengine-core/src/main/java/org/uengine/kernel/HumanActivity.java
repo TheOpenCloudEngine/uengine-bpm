@@ -751,11 +751,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 			taskId = (String)resultPayload.getExtendedValue(PAYLOADKEY_TASKID);
 
 			for(KeyedParameter variableChange : resultPayload.getProcessVariableChanges()){
-
-//				if(getParameterMap().containsKey(variableChange.getKey()))
-					instance.set("", variableChange.getKey(), (Serializable) variableChange.getValue());
-//				else
-//					throw new Exception("This human activity can't change the variable [" + variableChange.getKey() + "]. The parameter should be set in the parameter list.");
+				instance.set("", variableChange.getKey(), (Serializable) variableChange.getValue());
 			}
 		}else{//for old-version, single role mapping
 			taskId = (String)instance.getProperty(getTracingTag(), PVKEY_TASKID);
@@ -1047,7 +1043,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	protected void setTaskStatusMap(ProcessInstance instance, Map map) throws Exception{
 		instance.setProperty(getTracingTag(), "TASK_STATUS_MAP", (java.io.Serializable)map);
 	}
-
+	
 	/**
 	 * for getting parameters (without instance info) from outside
 	 */

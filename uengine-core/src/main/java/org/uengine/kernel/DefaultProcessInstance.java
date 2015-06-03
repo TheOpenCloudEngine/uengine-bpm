@@ -308,7 +308,31 @@ public class DefaultProcessInstance extends ProcessInstance{
 	}
 	
 	public Serializable getSourceValue(String scopeByTracingTag, String key) throws Exception{
-		return (Serializable)variables.get(createFullKey(scopeByTracingTag, key, false));
+
+		ExecutionScopeContext originalScope = getExecutionScopeContext();;
+		ExecutionScopeContext scope;
+
+		Serializable value = null;
+
+		do {
+			scope = getExecutionScopeContext();
+
+			String fullKey = createFullKey(scopeByTracingTag, key, false);
+
+			if(variables.containsKey(fullKey)){
+				value = (Serializable) variables.get(fullKey);
+
+				break;
+			}else {
+
+				setExecutionScope(getMainExecutionScope());
+			}
+
+		}while(scope != null);
+
+		setExecutionScopeContext(originalScope);
+
+		return value;
 	}
 	
 	public String getInXML(String scopeByTracingTag, String key) throws Exception{

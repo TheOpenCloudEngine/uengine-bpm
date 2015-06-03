@@ -5,6 +5,8 @@ import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.SubProcess;
 
+import java.io.FileOutputStream;
+
 public class MultipleInstanceTest extends UEngineTest{
 
     ProcessDefinition processDefinition;
@@ -19,8 +21,6 @@ public class MultipleInstanceTest extends UEngineTest{
      *                +------------------+
      *
      *   * 1,2 and 3 are embraced in an embedded SubProcess
-     *   * sub is subprocess which is set as multiple instance for each variable value of var1
-     *   * 2 is a ReceiveActivity
      *
      * @throws Exception
      */
@@ -101,6 +101,7 @@ public class MultipleInstanceTest extends UEngineTest{
 
         ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
+        GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
 
     }
 

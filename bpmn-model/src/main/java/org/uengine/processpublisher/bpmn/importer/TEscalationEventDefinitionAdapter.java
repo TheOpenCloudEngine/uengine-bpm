@@ -10,9 +10,14 @@ public class TEscalationEventDefinitionAdapter implements Adapter<TEscalationEve
 
     @Override
     public Event convert(TEscalationEventDefinition src, Hashtable keyedContext) throws Exception {
-        String escalationCode = src.getEscalationRef().getLocalPart();
+
         Event event = new Event();
-        event.setName(escalationCode);
+
+
+        if(src.getEscalationRef()!=null) {
+            String escalationCode = src.getEscalationRef().getLocalPart();
+            event.setName(escalationCode);
+        }
 
         return event;
     }

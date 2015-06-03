@@ -237,7 +237,19 @@ System.out.println("method = "+m + "method.getParameters[0]" + m.getParameterTyp
 	static public String getComponentClassName(Class cls, String compType){
 		return getComponentClassName(cls, compType, false, false);
 	}
-	
+
+	static public String getDomainClassName(Class cls, String compType){
+
+		String componentClassName = cls.getName();
+		int whereComponentPackageNameStarts = componentClassName.lastIndexOf("." + compType);
+
+		String domainClassName = componentClassName.substring(whereComponentPackageNameStarts + compType.length()+1, componentClassName.length() - compType.length());
+
+		String domainPackageName = componentClassName.substring(0, whereComponentPackageNameStarts);
+
+		return domainPackageName + domainClassName;
+	}
+
 	static public String getComponentClassName(Class cls, String compType, boolean isDefault, boolean overridesPackage){
 		String pkgName = (overridesPackage ? GlobalContext.ACTIVITY_DESCRIPTION_COMPONENT_OVERRIDER_PACKAGE : cls.getPackage().getName());
 		String clsName = getClassNameOnly(cls);

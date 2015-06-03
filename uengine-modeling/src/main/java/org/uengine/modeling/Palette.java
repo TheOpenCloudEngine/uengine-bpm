@@ -48,5 +48,5 @@ public abstract class Palette implements ContextAware {
 		this.symbolList = new ArrayList<Symbol>();
 	}
 	
-	protected abstract void initPallet();
+//	protected abstract void initPallet();
 }

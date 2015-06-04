@@ -17,6 +17,7 @@ import org.metaworks.annotation.Range;
 import org.metaworks.annotation.Validator;
 import org.metaworks.annotation.ValidatorContext;
 import org.metaworks.annotation.ValidatorSet;
+import org.metaworks.dwr.SerializationSensitive;
 import org.uengine.contexts.DatabaseSynchronizationOption;
 import org.uengine.contexts.TextContext;
 
@@ -24,7 +25,7 @@ import org.uengine.contexts.TextContext;
  * @author Jinyoung Jang
  */
 
-public class ProcessVariable implements java.io.Serializable, NeedArrangementToSerialize, Cloneable, ContextAware{
+public class ProcessVariable implements java.io.Serializable, NeedArrangementToSerialize, Cloneable, ContextAware, SerializationSensitive {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	transient MetaworksContext metaworksContext;

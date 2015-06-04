@@ -63,8 +63,7 @@ public class Symbol {
 		
 	@ServiceMethod(callByContent=true, mouseBinding="drag", target=ServiceMethodContext.TARGET_APPEND)
 	public Object drag(){
-		return new ToEvent(new Clipboard("drop", this), "refresh");
-//		return new Refresh(new Clipboard("drop", this), true);
+		return new Refresh(new Clipboard("drop", this), true);
 	}
 	
 }

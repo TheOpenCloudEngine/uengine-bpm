@@ -90,7 +90,18 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 		public void setType(Class type){
 			this.type = type;
 		}
-		
+
+
+	private String typeClassName;
+
+	public String getTypeClassName() {
+		return typeClassName;
+	}
+
+	public void setTypeClassName(String typeClassName) {
+		this.typeClassName = typeClassName;
+	}
+
 	transient String typeInputter;
 		@Order(3)
 		@Range(options={"Text","Date","Complex"}, values={"java.lang.String","java.util.Date","org.uengine.contexts.ComplexType"})
@@ -314,13 +325,25 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		}
 
 		setName(getName());
+
+		try {
+			if (getTypeClassName() != null) {
+				setType(Thread.currentThread().getContextClassLoader().loadClass(getTypeClassName()));
+			}
+		}catch (ClassNotFoundException e){
+			e.printStackTrace();
+		}
 	}
 
 	public void beforeSerialization() {
 
 		if(getDefaultValue()!=null && getDefaultValue() instanceof NeedArrangementToSerialize){
-			((NeedArrangementToSerialize)getDefaultValue()).beforeSerialization();
+			((NeedArrangementToSerialize) getDefaultValue()).beforeSerialization();
 		}
+
+		setTypeClassName(getType().getName());
+
+		setType(null);
 	}
 	
 	public static Object evaluate(Object val, ProcessInstance instance) throws Exception{

@@ -112,7 +112,7 @@ public class TimerEventTest extends UEngineTest {
 
         final ProcessInstance instance = processDefinition.createInstance();
         instance.execute();
-            assertExecutionPathEquals("Running Before Event", new String[]{
+        assertExecutionPathEquals("Running Before Event", new String[]{
                 "a1"
         }, instance);
 
@@ -138,7 +138,7 @@ public class TimerEventTest extends UEngineTest {
         String trctag = "";
 
         try {
-            ApplicationContext xml = new ClassPathXmlApplicationContext("classpath:spring-config.xml");
+            ApplicationContext xml = new ClassPathXmlApplicationContext("spring-config.xml");
             dataSource = (DataSource) xml.getBean("dataSource");
             conn = dataSource.getConnection();
 

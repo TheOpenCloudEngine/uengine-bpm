@@ -59,29 +59,29 @@ import org.uengine.processmanager.ProcessDefinitionRemote;
  * @author Jinyoung Jang
  */
 
-public class UEngineUtil{
+public class UEngineUtil {
 
-	static public String getClassNameOnly(Class activityCls){
-		return getClassNameOnly(activityCls.getName());
-	}
-	
-	static public String getClassNameOnly(String clsName){
-		return clsName.substring( clsName.lastIndexOf(".")+1);
-	}
+    static public String getClassNameOnly(Class activityCls) {
+        return getClassNameOnly(activityCls.getName());
+    }
 
-	
-	static public Object addArrayElement(Object array, Object newElement){
-		int length = array!=null ? Array.getLength(array) : 0;
-		Object newArray = Array.newInstance(newElement.getClass(), length+1);
-		
-		if(length>0)
-			System.arraycopy(array, 0, newArray, 0, length);
+    static public String getClassNameOnly(String clsName) {
+        return clsName.substring(clsName.lastIndexOf(".") + 1);
+    }
 
-		Array.set(newArray, length, newElement);		
 
-		return newArray;
-	}
-	
+    static public Object addArrayElement(Object array, Object newElement) {
+        int length = array != null ? Array.getLength(array) : 0;
+        Object newArray = Array.newInstance(newElement.getClass(), length + 1);
+
+        if (length > 0)
+            System.arraycopy(array, 0, newArray, 0, length);
+
+        Array.set(newArray, length, newElement);
+
+        return newArray;
+    }
+
     /**
      * Gets a named property from a JavaBean and returns its value as a String,
      * possibly null.
@@ -115,18 +115,18 @@ public class UEngineUtil{
             // If not an array, just convert the object to a String in an array
             // and return
             else {
-                return new String[] { value.toString() };
+                return new String[]{value.toString()};
             }
         } else {
             return null;
         }
     }
 
-    public static void setBeanPropertyValue(Object bean, String name, Object settingValue) throws Exception{
-    	beanPropertyValueObject(bean, name, true, settingValue);
+    public static void setBeanPropertyValue(Object bean, String name, Object settingValue) throws Exception {
+        beanPropertyValueObject(bean, name, true, settingValue);
     }
-    
-    
+
+
     /**
      * Gets a named property from a JavaBean and returns its value as an Object,
      * possibly null.
@@ -143,332 +143,337 @@ public class UEngineUtil{
                 PropertyDescriptor prop = new PropertyDescriptor(name, bean
                         .getClass());
                 reader = prop.getReadMethod();
-                
-                if(set)
-                	writer = prop.getWriteMethod();
+
+                if (set)
+                    writer = prop.getWriteMethod();
             } catch (IntrospectionException e) {
                 // No property exists with that name, try a generic get method
                 // Object get( Object key )
                 try {
                     reader = bean.getClass().getMethod("get",
-                            new Class[] { Object.class });
-                    params = new Object[] { name };
+                            new Class[]{Object.class});
+                    params = new Object[]{name};
                 } catch (NoSuchMethodException f) {
                     // Try an Object get( String key) method
                     try {
                         reader = bean.getClass().getMethod("get",
-                                new Class[] { String.class });
-                        params = new Object[] { name };
+                                new Class[]{String.class});
+                        params = new Object[]{name};
                     } catch (NoSuchMethodException g) {
                         // Give up
                     }
                 }
             }
-            
-            if(set){
-            
-            	if(writer!=null){
-	                try {
-	                    return writer.invoke(bean, new Object[]{settingValue});
-	                } catch (IllegalAccessException e) {
-	                } catch (IllegalArgumentException e) {
-	                } catch (InvocationTargetException e) {
-	                    throw new Exception("Exception setting property \""
-	                            + name + "\" from bean "
-	                            + bean.getClass().getName() + ": "
-	                            + e.getTargetException());
-	                }
-            		
-            	}
-            	
-            }else{
-            
 
-	            // If a reader method has been found
-	            if (reader != null) {
-	                try {
-	                    return reader.invoke(bean, params);
-	                } catch (IllegalAccessException e) {
-	                } catch (IllegalArgumentException e) {
-	                } catch (InvocationTargetException e) {
-	                    throw new Exception("Exception getting property \""
-	                            + name + "\" from bean "
-	                            + bean.getClass().getName() + ": "
-	                            + e.getTargetException());
-	                }
-	            }
+            if (set) {
+
+                if (writer != null) {
+                    try {
+                        return writer.invoke(bean, new Object[]{settingValue});
+                    } catch (IllegalAccessException e) {
+                    } catch (IllegalArgumentException e) {
+                    } catch (InvocationTargetException e) {
+                        throw new Exception("Exception setting property \""
+                                + name + "\" from bean "
+                                + bean.getClass().getName() + ": "
+                                + e.getTargetException());
+                    }
+
+                }
+
+            } else {
+
+
+                // If a reader method has been found
+                if (reader != null) {
+                    try {
+                        return reader.invoke(bean, params);
+                    } catch (IllegalAccessException e) {
+                    } catch (IllegalArgumentException e) {
+                    } catch (InvocationTargetException e) {
+                        throw new Exception("Exception getting property \""
+                                + name + "\" from bean "
+                                + bean.getClass().getName() + ": "
+                                + e.getTargetException());
+                    }
+                }
             }
         }
 
         return null;
     }
 
-	
 
-	static public void initializeProperties(Object destination, Object[] props){
-		Class destCls = destination.getClass();
+    static public void initializeProperties(Object destination, Object[] props) {
+        Class destCls = destination.getClass();
 
-		String propName;
-		Object propData;
-		for(int i=0; i<props.length; i+=2){
-			propName = (String)props[i];
-			propData = props[i+1];
-			
-			propName = propName.substring(0,1).toUpperCase() + propName.substring(1, propName.length());
-System.out.println("propName = "+propName + " propData = " +  propData + " propData.class " + propData.getClass());
-			
-			try{
-				Method m = destCls.getMethod("set" + propName, new Class[]{propData.getClass()});
-				
-System.out.println("method = "+m + "method.getParameters[0]" + m.getParameterTypes()[0] );
+        String propName;
+        Object propData;
+        for (int i = 0; i < props.length; i += 2) {
+            propName = (String) props[i];
+            propData = props[i + 1];
 
-				m.invoke(destination, new Object[]{propData});
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-	}	
-	
-	static public String getSafeString(String src, String defaultStr){
-		if(isNotEmpty(src)) return src;
-		return defaultStr;
-	}
+            propName = propName.substring(0, 1).toUpperCase() + propName.substring(1, propName.length());
+            System.out.println("propName = " + propName + " propData = " + propData + " propData.class " + propData.getClass());
 
-	static public String getComponentClassName(Class cls, String compType){
-		return getComponentClassName(cls, compType, false, false);
-	}
+            try {
+                Method m = destCls.getMethod("set" + propName, new Class[]{propData.getClass()});
 
-	static public String getDomainClassName(Class cls, String compType){
+                System.out.println("method = " + m + "method.getParameters[0]" + m.getParameterTypes()[0]);
 
-		String componentClassName = cls.getName();
-		int whereComponentPackageNameStarts = componentClassName.lastIndexOf("." + compType);
+                m.invoke(destination, new Object[]{propData});
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-		String domainClassName = componentClassName.substring(whereComponentPackageNameStarts + compType.length()+1, componentClassName.length() - compType.length());
+    static public String getSafeString(String src, String defaultStr) {
+        if (isNotEmpty(src)) return src;
+        return defaultStr;
+    }
 
-		String domainPackageName = componentClassName.substring(0, whereComponentPackageNameStarts);
+    static public String getComponentClassName(Class cls, String compType) {
+        return getComponentClassName(cls, compType, false, false);
+    }
 
-		return domainPackageName + domainClassName;
-	}
+    static public String getDomainClassName(Class cls, String compType) {
 
-	static public String getComponentClassName(Class cls, String compType, boolean isDefault, boolean overridesPackage){
-		String pkgName = (overridesPackage ? GlobalContext.ACTIVITY_DESCRIPTION_COMPONENT_OVERRIDER_PACKAGE : cls.getPackage().getName());
-		String clsName = getClassNameOnly(cls);
-		
-		return pkgName + "." + compType +(isDefault ? ".Default" : ".")+ clsName + compType.substring(0, 1).toUpperCase() + compType.substring(1, compType.length());		
-	}
-	
-	public static String getProcessDefinitionXML(ProcessDefinition definition) throws Exception {
-		return getProcessDefinitionXML(definition, "XPD");
-	}
-	
-	public static String getProcessDefinitionXML(ProcessDefinition definition, String serializer) throws Exception {
-		ByteArrayOutputStream bao = new ByteArrayOutputStream();		
-		GlobalContext.serialize(definition, bao, serializer);
-		return bao.toString(GlobalContext.DATABASE_ENCODING/*"ISO-8859-1"*/);		
-	}
-	
-	static public Object getComponentByEscalation(Class activityCls, String compType){
-		return getComponentByEscalation(activityCls, compType, null);
-	}
-	
-	static public void copyStream(InputStream sourceInputStream, OutputStream targetOutputStream) throws Exception{
-		int length = 1024;
-		byte[] bytes = new byte[length]; 
-		int c; 
-		int total_bytes=0;
-			
-		while ((c = sourceInputStream.read(bytes)) != -1) { 
-				total_bytes +=c; 
-				targetOutputStream.write(bytes,0,c); 
-		} 
-		
-		if (sourceInputStream != null) try { sourceInputStream.close(); } catch (Exception e) {}
-		if (targetOutputStream != null) try { targetOutputStream.close(); } catch (Exception e) {}
-	}
-	
-	static public void copyStreamAndDoNotCloseStream(InputStream sourceInputStream, OutputStream targetOutputStream) throws Exception{
-		int length = 1024;
-		byte[] bytes = new byte[length]; 
-		int c; 
-		int total_bytes=0;
-			
-		while((c=sourceInputStream.read(bytes)) != -1) 
-		{ 
-				total_bytes +=c; 
-				targetOutputStream.write(bytes,0,c); 
-		} 			
-	}
-	
-	static public Object getComponentByEscalation(Class activityCls, String compType, Object defaultValue){
-		Class componentClass = null;
-		Class copyOfActivityCls = activityCls;
-		
-		//try to find proper component by escalation (prior to overriding package)
-		String overridingPackageName = GlobalContext.ACTIVITY_DESCRIPTION_COMPONENT_OVERRIDER_PACKAGE;
-		if(overridingPackageName!=null){
-			do{
-				String componentClsName = UEngineUtil.getComponentClassName(copyOfActivityCls, compType, false, true);
-	
-				try{
-					componentClass = Thread.currentThread().getContextClassLoader().loadClass(componentClsName);
-				}catch(Exception e){
-				}
+        String componentClassName = cls.getName();
+        int whereComponentPackageNameStarts = componentClassName.lastIndexOf("." + compType);
 
-				//try to find proper component by escalation (with original package)
-				if(componentClass==null){
-					componentClsName = UEngineUtil.getComponentClassName(copyOfActivityCls, compType);
-					try{
-						componentClass = Thread.currentThread().getContextClassLoader().loadClass(componentClsName);
-					}catch(ClassNotFoundException e){
-					}
-				}
-				copyOfActivityCls = copyOfActivityCls.getSuperclass();
-			}while(componentClass==null && copyOfActivityCls!=Activity.class);
-		}
-		
-		if (componentClass == null) {
-			copyOfActivityCls = activityCls;
-			//try to find proper component by escalation (with original package)
-			do{
-				String componentClsName = UEngineUtil.getComponentClassName(copyOfActivityCls, compType);
-	
-				try{
-					componentClass = Thread.currentThread().getContextClassLoader().loadClass(componentClsName);
-				}catch(Exception e){
-				}
-	
-				copyOfActivityCls = copyOfActivityCls.getSuperclass();
-			}while(componentClass==null && copyOfActivityCls!=Activity.class);
-			
-			//try default one
-			if(componentClass==null){
-				if(defaultValue!=null){
-					return defaultValue;
-				}else{
-					try{
-						componentClass = Thread.currentThread().getContextClassLoader().loadClass(UEngineUtil.getComponentClassName(activityCls, compType, true, false));			
-					}catch(ClassNotFoundException e){
-					}
-				}
-			}
-		}
-		
-		try{
-			return componentClass.newInstance();
-		}catch(Exception e){
-			e.printStackTrace();
-			
-			return null;
-		}
-	}
-	
-	//TODO: Too tightly coupled
-	static public synchronized void addActivityTypeComponent(Properties options) throws Exception{
-		String componentPath = options.getProperty("componentPath");
-		String componentFileName = (new File(componentPath)).getName();
-		String uEngineHomePath = options.getProperty("uEngineHome");
-		String activityTypesXMLPath = uEngineHomePath + "/settings/src/org/uengine/processdesigner/activitytypes.xml";
-		//review: uengine-web directory path should be declared as a constant value  
-		String signedJarListXMLPath = uEngineHomePath + "/was/server/default/deploy/ext.ear/portal-web-complete.war/html/uengine-web/processmanager/jarlist.xml"; 
-		String webImageDir = uEngineHomePath + "/was/server/default/deploy/uengine-web.war/processmanager/images"; 
-			
-		JarFile jarfile = new JarFile(componentPath);
-		ZipEntry entry = jarfile.getEntry("META-INF/activitytypes.xml");
-		InputStream is = jarfile.getInputStream(entry);
-		ArrayList compActList = (ArrayList)GlobalContext.deserialize(is, String.class);
-		is.close();
+        String domainClassName = componentClassName.substring(whereComponentPackageNameStarts + compType.length() + 1, componentClassName.length() - compType.length());
 
-		//add activity types		
-		is = new FileInputStream(activityTypesXMLPath);
-		ArrayList actList = (ArrayList)GlobalContext.deserialize(is, String.class);
-		is.close();
-		
-		//TODO: ignore or overwrite if already contains
-		actList.addAll(compActList);
-		
-		OutputStream os = new FileOutputStream(activityTypesXMLPath);
-		GlobalContext.serialize(actList, os, String.class);
-		os.close();
+        String domainPackageName = componentClassName.substring(0, whereComponentPackageNameStarts);
 
-		//add jarfile location
-		is = new FileInputStream(signedJarListXMLPath);
-		ArrayList jarList = (ArrayList)GlobalContext.deserialize(is, String.class);
-		is.close();
-		
-		jarList.add(componentFileName);
-		
-		os = new FileOutputStream(signedJarListXMLPath);
-		GlobalContext.serialize(jarList, os, String.class);	
-	}
-	
-	public static String QName2ClassName(QName qName){
-		String clsName = "";
-		clsName = QName2PackageName(qName.getNamespaceURI()) + "." + qName.getLocalPart();
+        return domainPackageName + domainClassName;
+    }
 
-		return clsName;
-	}
-	
-	public static String QName2PackageName(String name){
-		String stubPkgName = "";{
-			String targetNS = name;
-			
-			try{
-				URL url = new URL(targetNS);
-				String host = url.getHost();
-				String path = url.getPath();
-				String file = url.getFile();
-				
-				String fullName = host;
-				
-				boolean bFirst = true;
-				StringTokenizer stk = new StringTokenizer(fullName, ".");
-				while(stk.hasMoreTokens()){
-					String token = stk.nextToken();
-					stubPkgName = token + (bFirst ? "":".") + stubPkgName;
-					bFirst = false;
-				}
-					
-				//jws.Purchase_Order_Receiver_v2_WebService.axis.localhost
-					
-				stubPkgName = stubPkgName + path.replace('.', '_').replace('/', '.');
-				
-			}catch(Exception e){
-			//	e.printStackTrace();
-			}
-		}
-		return stubPkgName;
-	}
-	
-	public static boolean isNotEmpty(String value){
-		boolean blnIsData = false;
-		if (value != null) {
-			value = value.trim();
-			if (value.length() > 0 && !"null".equals(value.toLowerCase())) {
-				blnIsData = true;
-			}
-		}
-		
-		return blnIsData;
-	}
-	
-	
-	public static boolean isTrue(Object obj) {
-		boolean isTrue = false;
-		if (null != obj && isNotEmpty(obj.toString())) {
-			String strTrue = obj.toString().trim().toLowerCase();
-			isTrue = !(
-					"-1".equals(strTrue)
-					|| "0".equals(strTrue)
-					|| "false".equals(strTrue) 
-					|| "no".equals(strTrue)
-					|| "n".equals(strTrue)
-					|| "undefined".equals(strTrue)
-			);
-		}
-		
-		return isTrue;
-	}
-	
+    static public String getComponentClassName(Class cls, String compType, boolean isDefault, boolean overridesPackage) {
+        String pkgName = (overridesPackage ? GlobalContext.ACTIVITY_DESCRIPTION_COMPONENT_OVERRIDER_PACKAGE : cls.getPackage().getName());
+        String clsName = getClassNameOnly(cls);
+
+        return pkgName + "." + compType + (isDefault ? ".Default" : ".") + clsName + compType.substring(0, 1).toUpperCase() + compType.substring(1, compType.length());
+    }
+
+    public static String getProcessDefinitionXML(ProcessDefinition definition) throws Exception {
+        return getProcessDefinitionXML(definition, "XPD");
+    }
+
+    public static String getProcessDefinitionXML(ProcessDefinition definition, String serializer) throws Exception {
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        GlobalContext.serialize(definition, bao, serializer);
+        return bao.toString(GlobalContext.DATABASE_ENCODING/*"ISO-8859-1"*/);
+    }
+
+    static public Object getComponentByEscalation(Class activityCls, String compType) {
+        return getComponentByEscalation(activityCls, compType, null);
+    }
+
+    static public void copyStream(InputStream sourceInputStream, OutputStream targetOutputStream) throws Exception {
+        int length = 1024;
+        byte[] bytes = new byte[length];
+        int c;
+        int total_bytes = 0;
+
+        while ((c = sourceInputStream.read(bytes)) != -1) {
+            total_bytes += c;
+            targetOutputStream.write(bytes, 0, c);
+        }
+
+        if (sourceInputStream != null) try {
+            sourceInputStream.close();
+        } catch (Exception e) {
+        }
+        if (targetOutputStream != null) try {
+            targetOutputStream.close();
+        } catch (Exception e) {
+        }
+    }
+
+    static public void copyStreamAndDoNotCloseStream(InputStream sourceInputStream, OutputStream targetOutputStream) throws Exception {
+        int length = 1024;
+        byte[] bytes = new byte[length];
+        int c;
+        int total_bytes = 0;
+
+        while ((c = sourceInputStream.read(bytes)) != -1) {
+            total_bytes += c;
+            targetOutputStream.write(bytes, 0, c);
+        }
+    }
+
+    static public Object getComponentByEscalation(Class activityCls, String compType, Object defaultValue) {
+        Class componentClass = null;
+        Class copyOfActivityCls = activityCls;
+
+        //try to find proper component by escalation (prior to overriding package)
+        String overridingPackageName = GlobalContext.ACTIVITY_DESCRIPTION_COMPONENT_OVERRIDER_PACKAGE;
+        if (overridingPackageName != null) {
+            do {
+                String componentClsName = UEngineUtil.getComponentClassName(copyOfActivityCls, compType, false, true);
+
+                try {
+                    componentClass = Thread.currentThread().getContextClassLoader().loadClass(componentClsName);
+                } catch (Exception e) {
+                }
+
+                //try to find proper component by escalation (with original package)
+                if (componentClass == null) {
+                    componentClsName = UEngineUtil.getComponentClassName(copyOfActivityCls, compType);
+                    try {
+                        componentClass = Thread.currentThread().getContextClassLoader().loadClass(componentClsName);
+                    } catch (ClassNotFoundException e) {
+                    }
+                }
+                copyOfActivityCls = copyOfActivityCls.getSuperclass();
+            } while (componentClass == null && copyOfActivityCls != Activity.class);
+        }
+
+        if (componentClass == null) {
+            copyOfActivityCls = activityCls;
+            //try to find proper component by escalation (with original package)
+            do {
+                String componentClsName = UEngineUtil.getComponentClassName(copyOfActivityCls, compType);
+
+                try {
+                    componentClass = Thread.currentThread().getContextClassLoader().loadClass(componentClsName);
+                } catch (Exception e) {
+                }
+
+                copyOfActivityCls = copyOfActivityCls.getSuperclass();
+            } while (componentClass == null && copyOfActivityCls != Activity.class);
+
+            //try default one
+            if (componentClass == null) {
+                if (defaultValue != null) {
+                    return defaultValue;
+                } else {
+                    try {
+                        componentClass = Thread.currentThread().getContextClassLoader().loadClass(UEngineUtil.getComponentClassName(activityCls, compType, true, false));
+                    } catch (ClassNotFoundException e) {
+                    }
+                }
+            }
+        }
+
+        try {
+            return componentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    //TODO: Too tightly coupled
+    static public synchronized void addActivityTypeComponent(Properties options) throws Exception {
+        String componentPath = options.getProperty("componentPath");
+        String componentFileName = (new File(componentPath)).getName();
+        String uEngineHomePath = options.getProperty("uEngineHome");
+        String activityTypesXMLPath = uEngineHomePath + "/settings/src/org/uengine/processdesigner/activitytypes.xml";
+        //review: uengine-web directory path should be declared as a constant value
+        String signedJarListXMLPath = uEngineHomePath + "/was/server/default/deploy/ext.ear/portal-web-complete.war/html/uengine-web/processmanager/jarlist.xml";
+        String webImageDir = uEngineHomePath + "/was/server/default/deploy/uengine-web.war/processmanager/images";
+
+        JarFile jarfile = new JarFile(componentPath);
+        ZipEntry entry = jarfile.getEntry("META-INF/activitytypes.xml");
+        InputStream is = jarfile.getInputStream(entry);
+        ArrayList compActList = (ArrayList) GlobalContext.deserialize(is, String.class);
+        is.close();
+
+        //add activity types
+        is = new FileInputStream(activityTypesXMLPath);
+        ArrayList actList = (ArrayList) GlobalContext.deserialize(is, String.class);
+        is.close();
+
+        //TODO: ignore or overwrite if already contains
+        actList.addAll(compActList);
+
+        OutputStream os = new FileOutputStream(activityTypesXMLPath);
+        GlobalContext.serialize(actList, os, String.class);
+        os.close();
+
+        //add jarfile location
+        is = new FileInputStream(signedJarListXMLPath);
+        ArrayList jarList = (ArrayList) GlobalContext.deserialize(is, String.class);
+        is.close();
+
+        jarList.add(componentFileName);
+
+        os = new FileOutputStream(signedJarListXMLPath);
+        GlobalContext.serialize(jarList, os, String.class);
+    }
+
+    public static String QName2ClassName(QName qName) {
+        String clsName = "";
+        clsName = QName2PackageName(qName.getNamespaceURI()) + "." + qName.getLocalPart();
+
+        return clsName;
+    }
+
+    public static String QName2PackageName(String name) {
+        String stubPkgName = "";
+        {
+            String targetNS = name;
+
+            try {
+                URL url = new URL(targetNS);
+                String host = url.getHost();
+                String path = url.getPath();
+                String file = url.getFile();
+
+                String fullName = host;
+
+                boolean bFirst = true;
+                StringTokenizer stk = new StringTokenizer(fullName, ".");
+                while (stk.hasMoreTokens()) {
+                    String token = stk.nextToken();
+                    stubPkgName = token + (bFirst ? "" : ".") + stubPkgName;
+                    bFirst = false;
+                }
+
+                //jws.Purchase_Order_Receiver_v2_WebService.axis.localhost
+
+                stubPkgName = stubPkgName + path.replace('.', '_').replace('/', '.');
+
+            } catch (Exception e) {
+                //	e.printStackTrace();
+            }
+        }
+        return stubPkgName;
+    }
+
+    public static boolean isNotEmpty(String value) {
+        boolean blnIsData = false;
+        if (value != null) {
+            value = value.trim();
+            if (value.length() > 0 && !"null".equals(value.toLowerCase())) {
+                blnIsData = true;
+            }
+        }
+
+        return blnIsData;
+    }
+
+
+    public static boolean isTrue(Object obj) {
+        boolean isTrue = false;
+        if (null != obj && isNotEmpty(obj.toString())) {
+            String strTrue = obj.toString().trim().toLowerCase();
+            isTrue = !(
+                    "-1".equals(strTrue)
+                            || "0".equals(strTrue)
+                            || "false".equals(strTrue)
+                            || "no".equals(strTrue)
+                            || "n".equals(strTrue)
+                            || "undefined".equals(strTrue)
+            );
+        }
+
+        return isTrue;
+    }
+
 /*	public static Object[] getProcessNameAndVersion(String definitionName){
 		String nameOnly=null; int version=-1;{
 			int versionPos = definitionName.lastIndexOf("v");
@@ -491,527 +496,550 @@ System.out.println("method = "+m + "method.getParameters[0]" + m.getParameterTyp
 		return new Object[]{nameOnly, new Integer(version)};
 	}*/
 
-	public static String getWebServerBaseURL(){
-		String host = System.getProperty("uEngineWebServerBaseURL");
-		if ( host == null ) {
-			host = "http://localhost";
-		}
-		return host;
-	}
-		
-	public static String sendViaHttpPost(String urlStr, String[] keyAndValues)
-		throws Exception {
-		try {
-			// Construct data
+    public static String getWebServerBaseURL() {
+        String host = System.getProperty("uEngineWebServerBaseURL");
+        if (host == null) {
+            host = "http://localhost";
+        }
+        return host;
+    }
 
-			StringBuffer sb = new StringBuffer();
-			String sep = "";	
-			
-			for(int i=0; i<keyAndValues.length; i+=2){
-				
-				String key = keyAndValues[i];
-				String value = keyAndValues[i+1];				
-				
-				if(value == null) continue;
-				
-				sb	.append(sep)
-					.append(URLEncoder.encode(key, "UTF-8"))
-					.append("=")
-					.append(URLEncoder.encode(value, "UTF-8"));
-					
-				sep = "&";
-			}
-			
-			String data = sb.toString();
-    
-			// Send data
-			URL url = new URL(urlStr);
-			URLConnection conn = url.openConnection();
-			conn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			wr.write(data);
-			wr.flush();
-			wr.close();
+    public static String sendViaHttpPost(String urlStr, String[] keyAndValues)
+            throws Exception {
+        try {
+            // Construct data
 
-			// Get the response
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String line;
-			sb = new StringBuffer();
-			while ((line = rd.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-			
-			rd.close();
-			
-			return sb.toString();
-		} catch (Exception e) {
-			throw e;
-		}
-	}		
+            StringBuffer sb = new StringBuffer();
+            String sep = "";
 
-	public static InputStream getInputStreamFromHttpPost(String urlStr, String[] keyAndValues)
-		throws Exception {
-		try {
-			// Construct data
+            for (int i = 0; i < keyAndValues.length; i += 2) {
 
-			StringBuffer sb = new StringBuffer();
-			String sep = "";	
-			
-			for(int i=0; i<keyAndValues.length; i+=2){
-				
-				String key = keyAndValues[i];
-				String value = keyAndValues[i+1];				
-				
-				if(value == null) continue;
-				
-				sb	.append(sep)
-					.append(URLEncoder.encode(key, "UTF-8"))
-					.append("=")
-					.append(URLEncoder.encode(value, "UTF-8"));
-					
-				sep = "&";
-			}
-			
-			String data = sb.toString();
-    
-			// Send data
-			URL url = new URL(urlStr);
-			URLConnection conn = url.openConnection();
-			conn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			wr.write(data);
-			wr.flush();
+                String key = keyAndValues[i];
+                String value = keyAndValues[i + 1];
 
-			return conn.getInputStream();
-		} catch (Exception e) {
-			throw e;
-		}
-	}	
+                if (value == null) continue;
 
-	public static String createInstanceId(ProcessDefinitionRemote pd){
-		Calendar now = Calendar.getInstance();
-		int y = now.get(Calendar.YEAR);
-		int m = now.get(Calendar.MONTH) + 1;
-		int d = now.get(Calendar.DATE);
-		int h = now.get(Calendar.HOUR);
-		int mi = now.get(Calendar.MINUTE);
-		int s = now.get(Calendar.SECOND);
-			
-		return pd.getName().getText().replace(' ', '_') + "-" + y + (m<10?"0"+m:""+m) + (d<10?"0"+d:""+d) + (h<10?"0"+h:""+h) + (mi<10?"0"+mi:""+mi) + (s<10?"0"+s:""+s);
-	}
+                sb.append(sep)
+                        .append(URLEncoder.encode(key, "UTF-8"))
+                        .append("=")
+                        .append(URLEncoder.encode(value, "UTF-8"));
 
-	public static String createInstanceId(ProcessDefinition pd){
-		return createInstanceId(new ProcessDefinitionRemote(pd, null));
-	}
-	
-	public static String toOnlyFirstCharacterUpper(String src){
-		if(src==null) return null;
-		
-		if(src.length() == 0) return "";
-		
-		String firstChar = src.substring(0,1);
-		String remainder = src.length() > 1 ? src.substring(1) : "";
-		
-		return firstChar.toUpperCase() + remainder;
-	}
+                sep = "&";
+            }
+
+            String data = sb.toString();
+
+            // Send data
+            URL url = new URL(urlStr);
+            URLConnection conn = url.openConnection();
+            conn.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write(data);
+            wr.flush();
+            wr.close();
+
+            // Get the response
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            sb = new StringBuffer();
+            while ((line = rd.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+
+            rd.close();
+
+            return sb.toString();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public static InputStream getInputStreamFromHttpPost(String urlStr, String[] keyAndValues)
+            throws Exception {
+        try {
+            // Construct data
+
+            StringBuffer sb = new StringBuffer();
+            String sep = "";
+
+            for (int i = 0; i < keyAndValues.length; i += 2) {
+
+                String key = keyAndValues[i];
+                String value = keyAndValues[i + 1];
+
+                if (value == null) continue;
+
+                sb.append(sep)
+                        .append(URLEncoder.encode(key, "UTF-8"))
+                        .append("=")
+                        .append(URLEncoder.encode(value, "UTF-8"));
+
+                sep = "&";
+            }
+
+            String data = sb.toString();
+
+            // Send data
+            URL url = new URL(urlStr);
+            URLConnection conn = url.openConnection();
+            conn.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write(data);
+            wr.flush();
+
+            return conn.getInputStream();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public static String createInstanceId(ProcessDefinitionRemote pd) {
+        Calendar now = Calendar.getInstance();
+        int y = now.get(Calendar.YEAR);
+        int m = now.get(Calendar.MONTH) + 1;
+        int d = now.get(Calendar.DATE);
+        int h = now.get(Calendar.HOUR);
+        int mi = now.get(Calendar.MINUTE);
+        int s = now.get(Calendar.SECOND);
+
+        return pd.getName().getText().replace(' ', '_') + "-" + y + (m < 10 ? "0" + m : "" + m) + (d < 10 ? "0" + d : "" + d) + (h < 10 ? "0" + h : "" + h) + (mi < 10 ? "0" + mi : "" + mi) + (s < 10 ? "0" + s : "" + s);
+    }
+
+    public static String createInstanceId(ProcessDefinition pd) {
+        return createInstanceId(new ProcessDefinitionRemote(pd, null));
+    }
+
+    public static String toOnlyFirstCharacterUpper(String src) {
+        if (src == null) return null;
+
+        if (src.length() == 0) return "";
+
+        String firstChar = src.substring(0, 1);
+        String remainder = src.length() > 1 ? src.substring(1) : "";
+
+        return firstChar.toUpperCase() + remainder;
+    }
 
 
-	public static void main(String[] args) throws Exception{
-		if(args[0].equals("addActivityTypeComponent")){
-			Properties options = new Properties();
-			options.setProperty("componentPath", args[1]);
-			options.setProperty("uEngineHome", args[2]);
+    public static void main(String[] args) throws Exception {
+        if (args[0].equals("addActivityTypeComponent")) {
+            Properties options = new Properties();
+            options.setProperty("componentPath", args[1]);
+            options.setProperty("uEngineHome", args[2]);
 
-			addActivityTypeComponent(options);		
-		}
-	}
-	
-	
-	////////////////
-	
-	
+            addActivityTypeComponent(options);
+        }
+    }
 
-	/** decimalformat */
-	private static DecimalFormat subslotFormat = new DecimalFormat("0000");
 
-	/** ���� �߻�; '�� ���� */
-	public static int countForRandom = 100;
+    ////////////////
 
-	/**
-	 * ��/��/��/ ���丮 ��v ��ȯ 
-	 */
-	public static String getCalendarDir() {
-		Calendar calendar = Calendar.getInstance(Locale.KOREA);
-		return calendar.get(Calendar.YEAR) + "/" +
-			(calendar.get(Calendar.MONTH) + 1) + "/" +
-			calendar.get(Calendar.DAY_OF_MONTH);
-	}
 
-	public static String getSubDir() {
-		int frequency[] = new int[24];				// frequency�� 1�ð�; ��� ���� ���ΰ��� ���� d��
-		frequency[ 0] = 0;	frequency[12] = 3;		//
-		frequency[ 1] = 0;	frequency[13] = 5;		// ex)
-		frequency[ 2] = 0;	frequency[14] = 5;		// �ش� �ð��� frequency�� 0�� ���
-		frequency[ 3] = 0;	frequency[15] = 5;		// -> '9900' ����
-		frequency[ 4] = 0;	frequency[16] = 5;		//
-		frequency[ 5] = 0;	frequency[17] = 5;		// �ش� �ð��� 14���̰�, 14���� frequency�� 4�� ���
-		frequency[ 6] = 1;	frequency[18] = 4;		// -> 14��  0��~14�� : '1400' ����
-		frequency[ 7] = 1;	frequency[19] = 3;		//    14�� 15��~29�� : '1401' ����
-		frequency[ 8] = 3;	frequency[20] = 1;		//    14�� 30��~44�� : '1402' ����
-		frequency[ 9] = 5;	frequency[21] = 1;		//    14�� 45��~59�� : '1403' ����
-		frequency[10] = 6;	frequency[22] = 1;		//
-		frequency[11] = 5;	frequency[23] = 0;		// �� frequency�� 1~60 ���̷� ��d�� ��
+    /**
+     * decimalformat
+     */
+    private static DecimalFormat subslotFormat = new DecimalFormat("0000");
 
-		Calendar calendar = Calendar.getInstance(Locale.KOREA);
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-		int minute = calendar.get(Calendar.MINUTE);
-		int piece = 0;
-		if (frequency[hour]==0) {
-			hour = 99;
-		} else {
-			piece = minute / ( 60 / frequency[hour] );
-		}
+    /**
+     * ���� �߻�; '�� ����
+     */
+    public static int countForRandom = 100;
 
-		String zero = "0000";
-		String strHour = zero + Integer.toString(hour);
-		strHour = strHour.substring(strHour.length()-2, strHour.length());
-		String strPiece = zero + Integer.toString(piece);
-		strPiece = strPiece.substring(strPiece.length()-2, strPiece.length());
+    /**
+     * ��/��/��/ ���丮 ��v ��ȯ
+     */
+    public static String getCalendarDir() {
+        Calendar calendar = Calendar.getInstance(Locale.KOREA);
+        return calendar.get(Calendar.YEAR) + "/" +
+                (calendar.get(Calendar.MONTH) + 1) + "/" +
+                calendar.get(Calendar.DAY_OF_MONTH);
+    }
 
-		return strHour + strPiece;
-	}
+    public static String getSubDir() {
+        int frequency[] = new int[24];                // frequency�� 1�ð�; ��� ���� ���ΰ��� ���� d��
+        frequency[0] = 0;
+        frequency[12] = 3;        //
+        frequency[1] = 0;
+        frequency[13] = 5;        // ex)
+        frequency[2] = 0;
+        frequency[14] = 5;        // �ش� �ð��� frequency�� 0�� ���
+        frequency[3] = 0;
+        frequency[15] = 5;        // -> '9900' ����
+        frequency[4] = 0;
+        frequency[16] = 5;        //
+        frequency[5] = 0;
+        frequency[17] = 5;        // �ش� �ð��� 14���̰�, 14���� frequency�� 4�� ���
+        frequency[6] = 1;
+        frequency[18] = 4;        // -> 14��  0��~14�� : '1400' ����
+        frequency[7] = 1;
+        frequency[19] = 3;        //    14�� 15��~29�� : '1401' ����
+        frequency[8] = 3;
+        frequency[20] = 1;        //    14�� 30��~44�� : '1402' ����
+        frequency[9] = 5;
+        frequency[21] = 1;        //    14�� 45��~59�� : '1403' ����
+        frequency[10] = 6;
+        frequency[22] = 1;        //
+        frequency[11] = 5;
+        frequency[23] = 0;        // �� frequency�� 1~60 ���̷� ��d�� ��
 
-	/**
-	 * ��/��/�� + UniqueFileName + ����Ȯ����
-	 */
-	public static String getUniqueFile(String originalFileName) {
-		return getUniqueFile(originalFileName, true);
-	}
-	
+        Calendar calendar = Calendar.getInstance(Locale.KOREA);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int piece = 0;
+        if (frequency[hour] == 0) {
+            hour = 99;
+        } else {
+            piece = minute / (60 / frequency[hour]);
+        }
 
-	public static String getUniqueFile(String originalFileName, boolean makeSubFolder) {
-		if (makeSubFolder) {
-			return getCalendarDir() + "/" + getSubDir() + "/" + getUniqID() + "." + getFileExt(originalFileName);
-		} else {
-			return getCalendarDir() + "/" + getUniqID() + "." + getFileExt(originalFileName);
-		}
-	}
+        String zero = "0000";
+        String strHour = zero + Integer.toString(hour);
+        strHour = strHour.substring(strHour.length() - 2, strHour.length());
+        String strPiece = zero + Integer.toString(piece);
+        strPiece = strPiece.substring(strPiece.length() - 2, strPiece.length());
 
-	public static String getNamedExtFile(String namedFile, String ext) { 
-		return namedFile.substring(0, namedFile.lastIndexOf('.'))+"."+ext;
-	}
+        return strHour + strPiece;
+    }
 
-	
-	/**
-	 * String 배열의 내부에 값이 들어가 있는지 검사한다. 빈 값이 있다면 false 없다면 true 를 반환한다.
-	 * @param values
-	 * @return
-	 */
-	public static boolean isNotEmpty(String[] values){
-		boolean blnIsData = true;
-		
-		if (values != null) {
-			for(int i=0; i<values.length; i++) {
-				if (!isNotEmpty(values[i])) {
-					blnIsData = false;
-					break;
-				}
-			}
-		} else {
-			blnIsData = false;
-		}
-		return blnIsData;
-	}
-	
+    /**
+     * ��/��/�� + UniqueFileName + ����Ȯ����
+     */
+    public static String getUniqueFile(String originalFileName) {
+        return getUniqueFile(originalFileName, true);
+    }
 
-	/**
-	 * Unique ���� �̸� ��
-	 */
-	public static String getUniqID() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSS", Locale.KOREA);
-		return sdf.format(new Date()) + "_" + getRandomStr();
-	}
 
-	public static String getRandomStr() {
-		long randomNo = 0;
+    public static String getUniqueFile(String originalFileName, boolean makeSubFolder) {
+        if (makeSubFolder) {
+            return getCalendarDir() + "/" + getSubDir() + "/" + getUniqID() + "." + getFileExt(originalFileName);
+        } else {
+            return getCalendarDir() + "/" + getUniqID() + "." + getFileExt(originalFileName);
+        }
+    }
 
-		for(int i=0; i<100; i++) {
-			String temp = "";
-			for(int j=0; j<5; j++) {
-				temp = temp + Integer.toString(countForRandom);
-				countForRandom++;
-				if (countForRandom>900) countForRandom = 100;
-			}
-			randomNo = randomNo + Long.parseLong(temp) + System.currentTimeMillis() + temp.hashCode();
-		}
+    public static String getNamedExtFile(String namedFile, String ext) {
+        return namedFile.substring(0, namedFile.lastIndexOf('.')) + "." + ext;
+    }
 
-		String randomStr = Long.toString(randomNo);
-		randomStr = randomStr.substring(randomStr.length()-12, randomStr.length());
 
-		return randomStr;
-	}
+    /**
+     * String 배열의 내부에 값이 들어가 있는지 검사한다. 빈 값이 있다면 false 없다면 true 를 반환한다.
+     *
+     * @param values
+     * @return
+     */
+    public static boolean isNotEmpty(String[] values) {
+        boolean blnIsData = true;
 
-	public static void saveContents(String path, String contents) throws IOException {
-		saveContents(path, contents, "UTF-8");
-	}
-	
-	/**
-	 * �����͸� properties �� ��d�� ���ڵ� ���·� ����
-	 */
-	public static void saveContents(String path, String contents, String encoding) throws IOException {
-		saveContents(new File(path), contents, encoding);
-	}
-		
-	public static void saveContents(File file, String contents) throws IOException {
-		saveContents(file, contents, "UTF-8");
-	}	
-	
-	public static void saveContents(File file, String contents, String encoding) throws IOException {	
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                if (!isNotEmpty(values[i])) {
+                    blnIsData = false;
+                    break;
+                }
+            }
+        } else {
+            blnIsData = false;
+        }
+        return blnIsData;
+    }
+
+
+    /**
+     * Unique ���� �̸� ��
+     */
+    public static String getUniqID() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSS", Locale.KOREA);
+        return sdf.format(new Date()) + "_" + getRandomStr();
+    }
+
+    public static String getRandomStr() {
+        long randomNo = 0;
+
+        for (int i = 0; i < 100; i++) {
+            String temp = "";
+            for (int j = 0; j < 5; j++) {
+                temp = temp + Integer.toString(countForRandom);
+                countForRandom++;
+                if (countForRandom > 900) countForRandom = 100;
+            }
+            randomNo = randomNo + Long.parseLong(temp) + System.currentTimeMillis() + temp.hashCode();
+        }
+
+        String randomStr = Long.toString(randomNo);
+        randomStr = randomStr.substring(randomStr.length() - 12, randomStr.length());
+
+        return randomStr;
+    }
+
+    public static void saveContents(String path, String contents) throws IOException {
+        saveContents(path, contents, "UTF-8");
+    }
+
+    /**
+     * �����͸� properties �� ��d�� ���ڵ� ���·� ����
+     */
+    public static void saveContents(String path, String contents, String encoding) throws IOException {
+        saveContents(new File(path), contents, encoding);
+    }
+
+    public static void saveContents(File file, String contents) throws IOException {
+        saveContents(file, contents, "UTF-8");
+    }
+
+    public static void saveContents(File file, String contents, String encoding) throws IOException {
 //		File file = new File(path);
-		if ( ! file.getParentFile().exists() ) {
-			file.getParentFile().mkdirs();
-		}
-		OutputStreamWriter writer = null;
-		FileOutputStream outputStream = new FileOutputStream(file); 
-		try {
-			writer = new OutputStreamWriter(outputStream, encoding);
-			writer.write(contents);
-		} finally {
-			if ( writer != null ) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-				}
-			}
-		}			
-	}
-	
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        OutputStreamWriter writer = null;
+        FileOutputStream outputStream = new FileOutputStream(file);
+        try {
+            writer = new OutputStreamWriter(outputStream, encoding);
+            writer.write(contents);
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
 
-	
-	/**
-	 * CDATA ���� 
-	 * @param data CDATA�� ����� XML ������ 
-	 * @return CDATA�� ��� ��Ʈ�� ������
-	 */
-	public static String getCDataSections(String data) {
-		return data.substring(data.indexOf("<![CDATA[")+9,data.lastIndexOf("]]>"));
-	}
-	
-	
-	/**
-	   * ��Ʈ�� ��ũ������(�ε����� ��ū; ��ȯ�Ѵ�)
-	   * @param     strSrc  �Է½�Ʈ��
-	   * @param     nCount  ��ū�ε���
-	   * @exception
-	   * @return    ��ū��
-	   */
-	public static String getTokenChar(String strSrc, int nCount)
-								 throws Exception {
-		String strRet = "";
-		if (strSrc == null) return "";
-		try {
-			if (strSrc.trim().equals("")) return strRet;
 
-			StringTokenizer tokenTemp = new StringTokenizer(strSrc, 27 + "");
+    /**
+     * CDATA ����
+     *
+     * @param data CDATA�� ����� XML ������
+     * @return CDATA�� ��� ��Ʈ�� ������
+     */
+    public static String getCDataSections(String data) {
+        return data.substring(data.indexOf("<![CDATA[") + 9, data.lastIndexOf("]]>"));
+    }
 
-			for (int i = 1; tokenTemp.hasMoreTokens() && (i <= nCount); i++) {
-				String strTemp = tokenTemp.nextToken();
-				if (i == nCount) strRet = strTemp;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return strRet;
-	}
-	
-	
-	/**
-	   * ���ڿ�(strSrc)�߿��� ������(key)�� �̿��� �ε���(nCount)�� �ش��ϴ� ��ū; ��ȯ�Ѵ�.
-	   * @param     strSrc  ���ڿ�
-	   * @param     nCount  �ε���
-	   * @param     key     ������
-	   * @exception
-	   * @return    �ش� ��ū
-	   */
-	public static String getTokenString(String strSrc, int nCount, String key)
-								 throws Exception {
-		String strRet = "";
 
-		if (strSrc == null) return "";
+    /**
+     * ��Ʈ�� ��ũ������(�ε����� ��ū; ��ȯ�Ѵ�)
+     *
+     * @param strSrc �Է½�Ʈ��
+     * @param nCount ��ū�ε���
+     * @return ��ū��
+     * @throws
+     */
+    public static String getTokenChar(String strSrc, int nCount)
+            throws Exception {
+        String strRet = "";
+        if (strSrc == null) return "";
+        try {
+            if (strSrc.trim().equals("")) return strRet;
 
-		try {
-			if (strSrc.trim().equals("")) return strRet;
+            StringTokenizer tokenTemp = new StringTokenizer(strSrc, 27 + "");
 
-			StringTokenizer tokenTemp = new StringTokenizer(strSrc, key);
+            for (int i = 1; tokenTemp.hasMoreTokens() && (i <= nCount); i++) {
+                String strTemp = tokenTemp.nextToken();
+                if (i == nCount) strRet = strTemp;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strRet;
+    }
 
-			for (int i = 1; tokenTemp.hasMoreTokens() && (i <= nCount); i++) {
-				String strTemp = tokenTemp.nextToken();
-				if (i == nCount) strRet = strTemp;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return strRet;
-	}
-	
-	public static String getTokenString(String str, int col)
-								 throws Exception {
-		StringTokenizer st = new StringTokenizer(str, "|");
-		if (st.hasMoreTokens()) {
-			if (col == 2) st.nextToken();
-			if (st.hasMoreTokens()) return st.nextToken();
-		}
-		return null;
-	}
 
-	/**
-	   * �־��� ���ڿ����� parameter�� ������ delemeter�� ��ũ����¡ �� ���ϴ� ���; ��ȯ�Ѵ�.
-	   * @param     strSrc  ���ڿ�
-	   * @param     nCount  �ε���
-	   * @param     delemeter ������
-	   * @exception
-	   * @return    �ش� ��ū
-	   */
-	public static String getToken(String strSrc, int nCount, String delemeter)
-					throws Exception {
-		String strRet = "";
-		try {
-			StringTokenizer tokenTemp = new StringTokenizer(strSrc, delemeter);
+    /**
+     * ���ڿ�(strSrc)�߿��� ������(key)�� �̿��� �ε���(nCount)�� �ش��ϴ� ��ū; ��ȯ�Ѵ�.
+     *
+     * @param strSrc ���ڿ�
+     * @param nCount �ε���
+     * @param key    ������
+     * @return �ش� ��ū
+     * @throws
+     */
+    public static String getTokenString(String strSrc, int nCount, String key)
+            throws Exception {
+        String strRet = "";
 
-			for (int i = 1; tokenTemp.hasMoreTokens() && (i <= nCount); i++) {
-				String strTemp = tokenTemp.nextToken();
+        if (strSrc == null) return "";
 
-				if (i == nCount) {
-					strRet = strTemp;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+        try {
+            if (strSrc.trim().equals("")) return strRet;
 
-		}
-		return strRet;
-	}
-	
-	/**
-	   * ���ڿ�(strSrc)�� Ưd����(strKey); �ٸ� ���ڿ�(strKey)�� �����Ѵ�.
-	   * @param     strSrc   �� ���ڿ�
-	   * @param     strKey   ������� ����
-	   * @param     strValue ������ ���ڿ�
-	   * @exception
-	   * @return    ����� ��~���ڿ�
-	   */
-	public static String replaceString(String strSrc, String strKey, String strValue)
-						 throws Exception {
-		String strRet = "";
-		String strTemp = "";
-		try {
-			StringTokenizer tokenTemp = new StringTokenizer(strSrc, strKey);
-			int nCount = tokenTemp.countTokens();
+            StringTokenizer tokenTemp = new StringTokenizer(strSrc, key);
 
-			for (int i = 1; i <= nCount; i++) {
-				if (i == nCount) {
-					strRet += getTokenString(strSrc, i, strKey);
-				} else {
-					strRet += (getTokenString(strSrc, i, strKey) + strValue);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+            for (int i = 1; tokenTemp.hasMoreTokens() && (i <= nCount); i++) {
+                String strTemp = tokenTemp.nextToken();
+                if (i == nCount) strRet = strTemp;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strRet;
+    }
 
-		}
-		return strRet;
-	}
-	
-	
-	/**
-	 * word���� ���𿡵��ͷ� copy�� �߻�Ǵ� <![endif]>�� ���� �޼ҵ�
-	 * @param src �Խù����Ͽ��� �о���� �Խù����� ��Ʈ��
-	 * @param key ���ϰ����ϴ� �ױ׵� ��Ʈ�� ��)<![endif]>
-	 * @return strRet key�±׸� ���� �Խù����� ��Ʈ��
-	 */
-	public static String deleteString(String src, String key)
-						throws Exception { //word���� ���𿡵��ͷ� copy�� �߻�Ǵ� <![endif]>�� ���� �޼ҵ�
+    public static String getTokenString(String str, int col)
+            throws Exception {
+        StringTokenizer st = new StringTokenizer(str, "|");
+        if (st.hasMoreTokens()) {
+            if (col == 2) st.nextToken();
+            if (st.hasMoreTokens()) return st.nextToken();
+        }
+        return null;
+    }
 
-		String beforeTag = "";
-		String afterTag = "";
-		String strRet = "";
+    /**
+     * �־��� ���ڿ����� parameter�� ������ delemeter�� ��ũ����¡ �� ���ϴ� ���; ��ȯ�Ѵ�.
+     *
+     * @param strSrc    ���ڿ�
+     * @param nCount    �ε���
+     * @param delemeter ������
+     * @return �ش� ��ū
+     * @throws
+     */
+    public static String getToken(String strSrc, int nCount, String delemeter)
+            throws Exception {
+        String strRet = "";
+        try {
+            StringTokenizer tokenTemp = new StringTokenizer(strSrc, delemeter);
 
-		try {
-			int begin = 0;
-			int end = 0;
-			int nLen = key.length();
-			boolean iscontinue = true;
+            for (int i = 1; tokenTemp.hasMoreTokens() && (i <= nCount); i++) {
+                String strTemp = tokenTemp.nextToken();
 
-			while (iscontinue) {
-				if (src.indexOf(key) > -1) { //��f�ϰ����ϴ� ��ũ�� x���ϴ� ���
+                if (i == nCount) {
+                    strRet = strTemp;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
 
-					end = src.indexOf(key);
-					beforeTag = src.substring(begin, end);
-					afterTag = src.substring(end + nLen);
-					src = afterTag;
-					strRet += beforeTag;
+        }
+        return strRet;
+    }
 
-					continue;
-				} else { //��f�ϰ����ϴ� �±װ� x������ �ʴ� ���
-					strRet += src;
-					iscontinue = false;
+    /**
+     * ���ڿ�(strSrc)�� Ưd����(strKey); �ٸ� ���ڿ�(strKey)�� �����Ѵ�.
+     *
+     * @param strSrc   �� ���ڿ�
+     * @param strKey   ������� ����
+     * @param strValue ������ ���ڿ�
+     * @return ����� ��~���ڿ�
+     * @throws
+     */
+    public static String replaceString(String strSrc, String strKey, String strValue)
+            throws Exception {
+        String strRet = "";
+        String strTemp = "";
+        try {
+            StringTokenizer tokenTemp = new StringTokenizer(strSrc, strKey);
+            int nCount = tokenTemp.countTokens();
 
-					break;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+            for (int i = 1; i <= nCount; i++) {
+                if (i == nCount) {
+                    strRet += getTokenString(strSrc, i, strKey);
+                } else {
+                    strRet += (getTokenString(strSrc, i, strKey) + strValue);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
 
-		}
-		return strRet;
-	}
-	
-	/**
-	   * ��Ʈ���߿� �ѱ��� ���ԵǾ���� �Ǵ��Ѵ�.
-	   * @param     uni20
-	   * @exception
-	   * @return    �ѱ��� ���ԵǾ� ���̸� true, �ƴϸ�false�� ����
-	   */
-	public boolean checkHan(String uni20) throws Exception {
-		boolean nResult = false;
+        }
+        return strRet;
+    }
 
-		try {
-			if (uni20 == null) {
-				return nResult;
-			}
 
-			int len = uni20.length();
-			char[] carry = new char[len];
+    /**
+     * word���� ���𿡵��ͷ� copy�� �߻�Ǵ� <![endif]>�� ���� �޼ҵ�
+     *
+     * @param src �Խù����Ͽ��� �о���� �Խù����� ��Ʈ��
+     * @param key ���ϰ����ϴ� �ױ׵� ��Ʈ�� ��)<![endif]>
+     * @return strRet key�±׸� ���� �Խù����� ��Ʈ��
+     */
+    public static String deleteString(String src, String key)
+            throws Exception { //word���� ���𿡵��ͷ� copy�� �߻�Ǵ� <![endif]>�� ���� �޼ҵ�
 
-			for (int i = 0; i < len; i++) {
-				char c = uni20.charAt(i);
+        String beforeTag = "";
+        String afterTag = "";
+        String strRet = "";
 
-				if ((c < 0xac00) || (0xd7a3 < c)) {
-					carry[i] = c;
-				} else {
-					nResult = true;
+        try {
+            int begin = 0;
+            int end = 0;
+            int nLen = key.length();
+            boolean iscontinue = true;
 
-					byte[] ksc = String.valueOf(c).getBytes("KSC5601");
+            while (iscontinue) {
+                if (src.indexOf(key) > -1) { //��f�ϰ����ϴ� ��ũ�� x���ϴ� ���
 
-					if (ksc.length != 2) {
-						carry[i] = '\ufffd';
+                    end = src.indexOf(key);
+                    beforeTag = src.substring(begin, end);
+                    afterTag = src.substring(end + nLen);
+                    src = afterTag;
+                    strRet += beforeTag;
 
-						//                    System.out.print("Warning : Some of Unicode 2.0 Hangul character was ignored");
-					} else {
-						carry[i] = (char) (0x3400 + (((ksc[0] & 0xff) - 0xb0) * 94) + 
-								   (ksc[1] & 0xff) - 0xa1);
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+                    continue;
+                } else { //��f�ϰ����ϴ� �±װ� x������ �ʴ� ���
+                    strRet += src;
+                    iscontinue = false;
 
-		}
-		return nResult;
-	}
-	
-	/**
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return strRet;
+    }
+
+    /**
+     * ��Ʈ���߿� �ѱ��� ���ԵǾ���� �Ǵ��Ѵ�.
+     *
+     * @param uni20
+     * @return �ѱ��� ���ԵǾ� ���̸� true, �ƴϸ�false�� ����
+     * @throws
+     */
+    public boolean checkHan(String uni20) throws Exception {
+        boolean nResult = false;
+
+        try {
+            if (uni20 == null) {
+                return nResult;
+            }
+
+            int len = uni20.length();
+            char[] carry = new char[len];
+
+            for (int i = 0; i < len; i++) {
+                char c = uni20.charAt(i);
+
+                if ((c < 0xac00) || (0xd7a3 < c)) {
+                    carry[i] = c;
+                } else {
+                    nResult = true;
+
+                    byte[] ksc = String.valueOf(c).getBytes("KSC5601");
+
+                    if (ksc.length != 2) {
+                        carry[i] = '\ufffd';
+
+                        //                    System.out.print("Warning : Some of Unicode 2.0 Hangul character was ignored");
+                    } else {
+                        carry[i] = (char) (0x3400 + (((ksc[0] & 0xff) - 0xb0) * 94) +
+                                (ksc[1] & 0xff) - 0xa1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return nResult;
+    }
+
+    /**
      * ���ڿ��� �������� üũ
+     *
      * @param digitStr String ���ڷ� ������ ���ڿ�
      * @return boolean  ���ڷ� �����Ǿ� ��8�� true, �ƴϸ� false
      */
@@ -1023,756 +1051,768 @@ System.out.println("method = "+m + "method.getParameters[0]" + m.getParameterTyp
         }
         return true;
     }
-    
-	/**
-	   * html ����; ��Ʈ������� ��ȯ�Ѵ�.
-	   * @param     docPath html���� ���
-	   * @exception
-	   * @return    html ����(��Ʈ��)
-	   */
-	public static String getStringFromHtmlFile(String docPath) 
-								 throws Exception {
-		String strRet = "";
-		String tmpLine = "";
 
-		if (docPath == null) {
-			return "����� ������ ��f�Ǿ�ų� ������ ã; �� ��4ϴ�.!";
-		}
+    /**
+     * html ����; ��Ʈ������� ��ȯ�Ѵ�.
+     *
+     * @param docPath html���� ���
+     * @return html ����(��Ʈ��)
+     * @throws
+     */
+    public static String getStringFromHtmlFile(String docPath)
+            throws Exception {
+        String strRet = "";
+        String tmpLine = "";
 
-		StringBuffer sb = new StringBuffer();
+        if (docPath == null) {
+            return "����� ������ ��f�Ǿ�ų� ������ ã; �� ��4ϴ�.!";
+        }
 
-		File tmpFile = new File(docPath);
+        StringBuffer sb = new StringBuffer();
 
-		if (!tmpFile.exists()) {
-			return "����� ������ ��f�Ǿ�ų� ������ ã; �� ��4ϴ�.!";
-		}
+        File tmpFile = new File(docPath);
 
-		BufferedReader br = null;
+        if (!tmpFile.exists()) {
+            return "����� ������ ��f�Ǿ�ų� ������ ã; �� ��4ϴ�.!";
+        }
 
-		try {
-			//��Ĺ����� ���Ϸ� �о�´�.
-			br = new BufferedReader(new FileReader(docPath));
+        BufferedReader br = null;
 
-			while ((tmpLine = br.readLine()) != null) {
-				sb.append(tmpLine);
-				sb.append("\n");
+        try {
+            //��Ĺ����� ���Ϸ� �о�´�.
+            br = new BufferedReader(new FileReader(docPath));
 
-				//                  strRet += tmpLine + "\n";
-			}
+            while ((tmpLine = br.readLine()) != null) {
+                sb.append(tmpLine);
+                sb.append("\n");
 
-			if (br != null) {
-				br.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+                //                  strRet += tmpLine + "\n";
+            }
 
-		} finally {
-			try {
-				if (br != null) {
-					br.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+            if (br != null) {
+                br.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
 
-			}
-		}
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
 
-		return sb.toString();
-	}
-	
-	/**
-     * NOTE : �ѱ��̳� �Ϻ����� ��� ���� ũ�Ⱑ ������ �޶� ���ڼ� �׳� 10�ڷ� 
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * NOTE : �ѱ��̳� �Ϻ����� ��� ���� ũ�Ⱑ ������ �޶� ���ڼ� �׳� 10�ڷ�
      * f���� ��� ���ڼ� �����ϴ� ���� �޶���� �ȴ�.
-     * ������ �ѱ��̳� �Ϻ���� ���� ascii ��; ����� ��� �� ���ڸ� 
+     * ������ �ѱ��̳� �Ϻ���� ���� ascii ��; ����� ��� �� ���ڸ�
      * �� ���ڸ� �ν��Ͽ� ó���ϵ��� �Ѵ�.
      */
-   	public static String getLimitString(String str, int limitSize) {
-		limitSize = limitSize--;
-		StringBuffer sb = new StringBuffer();
-		for (int i=0;i<str.length(); i++) {
-			if ( i > limitSize ) {
-				// 5���ڸ� ���͵� ������ 9�ڰ� display �Ǵ� �ͺ��� �ѱ���
-				// ��ġ�ϴ� ���� �� �д�. ������ ���ڸ� �� ���δ�.
-				sb.deleteCharAt(sb.length()-1);
-				sb.append("..");
-				break;
-			}
-			int value = (int)str.charAt(i);
-			if (value > 127) {
-				limitSize--;
-			}
-			sb.append(str.charAt(i));
-		}
-		return sb.toString();
-	}
-	
-	
-	/**
-	   * ���� full path�� ���ϸ? ��ȯ�Ѵ�.
-	   * @param     strPath ������ ��ü���
-	   * @exception
-	   * @return    ���ϸ�
-	   */
-	public static String getSimpleFileName(String strPath) {
-		String strRet = " ";
-		try {
-			File fTemp = new File(strPath);
-			if (fTemp.exists()) {
-				strRet = fTemp.getName();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+    public static String getLimitString(String str, int limitSize) {
+        limitSize = limitSize--;
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < str.length(); i++) {
+            if (i > limitSize) {
+                // 5���ڸ� ���͵� ������ 9�ڰ� display �Ǵ� �ͺ��� �ѱ���
+                // ��ġ�ϴ� ���� �� �д�. ������ ���ڸ� �� ���δ�.
+                sb.deleteCharAt(sb.length() - 1);
+                sb.append("..");
+                break;
+            }
+            int value = (int) str.charAt(i);
+            if (value > 127) {
+                limitSize--;
+            }
+            sb.append(str.charAt(i));
+        }
+        return sb.toString();
+    }
 
-		}
-		return strRet;
-	}
 
-	/**
-	   * ���ϸ?�� Ȯ���ڸ� ��ȯ�Ѵ�.
-	   * @param     strPath ���ϰ��
-	   * @exception
-	   * @return    ������ Ȯ����
-	   */
-	public static String getFileExt(String strPath) {
-		String strRet = "";
-		try {
-			int index = strPath.lastIndexOf(".") + 1;
-
-			if (index > -1) {
-				strRet = strPath.substring(index);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-		return strRet;
-	}
-
-	/**
-	   * ���ϰ�θ� f���� �����̸��� ��ȯ
-	   * @param     strPath ���ϰ��
-	   * @exception
-	   * @return    �����̸�
-	   */
-	public static String getFileName(String strPath) {
-		strPath = replace(strPath, "\\", "/");
-		String strRet = "";
-		try {
-			int index = strPath.lastIndexOf('/') + 1;
-
-			if (index > -1) {
-				strRet = strPath.substring(index);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-		return strRet;
-	}
-
-	/**
-	   * ���� ��ü��ο��� ���ϸ�; f���� ��θ� ��ȯ�Ѵ�.
-	   * @param     strPath ���ϰ��
-	   * @exception
-	   * @return    ������ Ȯ����
-	   */
-	public static String getFilePath(String strPath) {
-		strPath = replace(strPath, "\\", "/");
-		String strRet = "";
-		try {
-			int index = strPath.lastIndexOf('/');
-
-			if (index > -1) {
-				strRet = strPath.substring(0, index);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-		return strRet;
-	}	
-
-	
-	/**
-	  * 8859_1�� ǥ��� ���ڿ�; �Էµ� CharSet Ÿ�Կ� �´� ���ڿ��� �ٲ��ش�.
-	  * @param     8859_1�� ǥ��� ���ڿ�
-	  * @exception UnsupportedEncodingException
-	  * @return    �ش� ��� CharacterSet 8�� ��ȯ�� ���ڿ�
-	  */
-	public static String toEncode(String str) {
-		if ( false ) {
-			return str;
-		}
-		
-		String encodedStr = null;
-		if (str == null) return encodedStr;
-		try {
-			encodedStr = new String(str.getBytes("8859_1"), "UTF-8");
-			if ( checkEncoding(encodedStr) && (encodedStr.length()!=0) ) {
-//				System.out.println("UTF-8");
-				return encodedStr;
-			}
-			encodedStr = new String(str.getBytes("8859_1"), "KSC5601");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return str;
-	}
-	
-	public static String toEncode(String str, String encoding) {
-		String encodedStr = null;
-		if (str == null) return encodedStr;
-		try {
-			encodedStr = new String(str.getBytes("8859_1"), encoding);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return str;
-	}	
-	
-	public static String toURLEncode(String str) {
-		try {
-			return URLEncoder.encode(str, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return str;
-	}
-	
-	public static String[] toEncode(String[] strs) {
-		if ( false ) {
-			return strs;
-		}		
-		
-		if ( strs == null ) return null;
-		String[] tempStrs = new String[strs.length];
-		for(int i=0; i<strs.length; i++) {
-			tempStrs[i] = toEncode(strs[i]);
-		}
-		return tempStrs;
-	}
-	
-	public static String[] toEncode(String[] strs, String encoding) {
-		if ( strs == null ) return null;
-		String[] tempStrs = new String[strs.length];
-		for(int i=0; i<strs.length; i++) {
-			tempStrs[i] = toEncode(strs[i], encoding);
-		}
-		return tempStrs;
-	}	
-	
-	/**
-	 * ���ڿ��� ���Ե� ĳ���� �߿� ���� ���ڰ� �ִ��� �˻�
-	 */
-	public static boolean checkEncoding(String uni20) throws Exception {
-		boolean nResult = true;		
-		try {
-			if (uni20 == null) return nResult;			
-			int cnt = 0;
-			int len = uni20.length();
-			char[] carry = new char[len];			
-			for (int i = 0; i < len; i++) {
-				char c = uni20.charAt(i);
-				if ( Integer.toHexString(c).equals("fffd") ) cnt++;
-				if ( cnt > 1 ) return false;
-				//System.out.println(type + " c : " + c + ", " + Integer.toHexString(c));
-			}
-			if ( len == 1 && cnt == 1 ) nResult = false;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return nResult;
-	}    
-
-    
     /**
-	  * KSC5601 ǥ��� ���ڿ�; �ѱ� ���ڿ��� �ٲ��ش�.
-	  * @param     �ѱ۷� ǥ��� ���ڿ�
-	  * @exception UnsupportedEncodingException
-	  * @return    8859_1 ���ڿ�
-	  */
-	public static String fromEncode(String str) {
+     * ���� full path�� ���ϸ? ��ȯ�Ѵ�.
+     *
+     * @param strPath ������ ��ü���
+     * @return ���ϸ�
+     * @throws
+     */
+    public static String getSimpleFileName(String strPath) {
+        String strRet = " ";
+        try {
+            File fTemp = new File(strPath);
+            if (fTemp.exists()) {
+                strRet = fTemp.getName();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return strRet;
+    }
+
+    /**
+     * ���ϸ?�� Ȯ���ڸ� ��ȯ�Ѵ�.
+     *
+     * @param strPath ���ϰ��
+     * @return ������ Ȯ����
+     * @throws
+     */
+    public static String getFileExt(String strPath) {
+        String strRet = "";
+        try {
+            int index = strPath.lastIndexOf(".") + 1;
+
+            if (index > -1) {
+                strRet = strPath.substring(index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return strRet;
+    }
+
+    /**
+     * ���ϰ�θ� f���� �����̸��� ��ȯ
+     *
+     * @param strPath ���ϰ��
+     * @return �����̸�
+     * @throws
+     */
+    public static String getFileName(String strPath) {
+        strPath = replace(strPath, "\\", "/");
+        String strRet = "";
+        try {
+            int index = strPath.lastIndexOf('/') + 1;
+
+            if (index > -1) {
+                strRet = strPath.substring(index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return strRet;
+    }
+
+    /**
+     * ���� ��ü��ο��� ���ϸ�; f���� ��θ� ��ȯ�Ѵ�.
+     *
+     * @param strPath ���ϰ��
+     * @return ������ Ȯ����
+     * @throws
+     */
+    public static String getFilePath(String strPath) {
+        strPath = replace(strPath, "\\", "/");
+        String strRet = "";
+        try {
+            int index = strPath.lastIndexOf('/');
+
+            if (index > -1) {
+                strRet = strPath.substring(0, index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return strRet;
+    }
+
+
+    /**
+     * 8859_1�� ǥ��� ���ڿ�; �Էµ� CharSet Ÿ�Կ� �´� ���ڿ��� �ٲ��ش�.
+     *
+     * @param 8859_1�� ǥ��� ���ڿ�
+     * @return �ش� ��� CharacterSet 8�� ��ȯ�� ���ڿ�
+     * @throws UnsupportedEncodingException
+     */
+    public static String toEncode(String str) {
+        if (false) {
+            return str;
+        }
+
+        String encodedStr = null;
+        if (str == null) return encodedStr;
+        try {
+            encodedStr = new String(str.getBytes("8859_1"), "UTF-8");
+            if (checkEncoding(encodedStr) && (encodedStr.length() != 0)) {
+//				System.out.println("UTF-8");
+                return encodedStr;
+            }
+            encodedStr = new String(str.getBytes("8859_1"), "KSC5601");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    public static String toEncode(String str, String encoding) {
+        String encodedStr = null;
+        if (str == null) return encodedStr;
+        try {
+            encodedStr = new String(str.getBytes("8859_1"), encoding);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    public static String toURLEncode(String str) {
+        try {
+            return URLEncoder.encode(str, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    public static String[] toEncode(String[] strs) {
+        if (false) {
+            return strs;
+        }
+
+        if (strs == null) return null;
+        String[] tempStrs = new String[strs.length];
+        for (int i = 0; i < strs.length; i++) {
+            tempStrs[i] = toEncode(strs[i]);
+        }
+        return tempStrs;
+    }
+
+    public static String[] toEncode(String[] strs, String encoding) {
+        if (strs == null) return null;
+        String[] tempStrs = new String[strs.length];
+        for (int i = 0; i < strs.length; i++) {
+            tempStrs[i] = toEncode(strs[i], encoding);
+        }
+        return tempStrs;
+    }
+
+    /**
+     * ���ڿ��� ���Ե� ĳ���� �߿� ���� ���ڰ� �ִ��� �˻�
+     */
+    public static boolean checkEncoding(String uni20) throws Exception {
+        boolean nResult = true;
+        try {
+            if (uni20 == null) return nResult;
+            int cnt = 0;
+            int len = uni20.length();
+            char[] carry = new char[len];
+            for (int i = 0; i < len; i++) {
+                char c = uni20.charAt(i);
+                if (Integer.toHexString(c).equals("fffd")) cnt++;
+                if (cnt > 1) return false;
+                //System.out.println(type + " c : " + c + ", " + Integer.toHexString(c));
+            }
+            if (len == 1 && cnt == 1) nResult = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return nResult;
+    }
+
+
+    /**
+     * KSC5601 ǥ��� ���ڿ�; �ѱ� ���ڿ��� �ٲ��ش�.
+     *
+     * @param �ѱ۷� ǥ��� ���ڿ�
+     * @return 8859_1 ���ڿ�
+     * @throws UnsupportedEncodingException
+     */
+    public static String fromEncode(String str) {
         if (str == null)
             return null;
         try {
-			return new String(str.getBytes("UTF-8"), "8859_1");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
+            return new String(str.getBytes("UTF-8"), "8859_1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
-	
+
     /**
-	  * KSC5601 ǥ��� ���ڿ�; �ѱ� ���ڿ��� �ٲ��ش�.
-	  * @param     �ѱ۷� ǥ��� ���ڿ�
-	  * @exception UnsupportedEncodingException
-	  * @return    8859_1 ���ڿ�
-	  */
-	public static String fromEncode(String str, String encoding) {
-       if (str == null)
-           return null;
-       try {
-			return new String(str.getBytes(encoding), "8859_1");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
-   }	
-	
-	
-	/**
-	 * NOTE : StringBuffer�� ���� ��x�� String Ŭ������ replace �޼ҵ带 ����ϴ� ����
-	 * 50~60 �� d�� ��.
-	 */
-	public static String replace(String src, String oldstr, String newstr) {
-		if (src == null)
-			return null;		
-		StringBuffer dest = new StringBuffer("");
-		int  len = oldstr.length();
-		int  srclen = src.length();
-		int  pos = 0;
-		int  oldpos = 0;
-		
-		while ((pos = src.indexOf(oldstr, oldpos)) >= 0) {
-			dest.append(src.substring(oldpos, pos));
-			dest.append(newstr);
-			oldpos = pos + len;
-		}
-		
-		if (oldpos < srclen)
-			dest.append(src.substring(oldpos, srclen));
-			
-		return dest.toString();
-	}
-	
-	
-	/**
-	  * Ưd ��ū; �����Ѵ�.
-	  * @param     strSrc  ������ ��ū ���ڿ�
-	  * @param     nIndex  ������ ��ū�� �ε���
-	  * @param     strToken  ������ ����
-	  * @exception
-	  * @return    String  ����� ���ڿ�
-	  */
-	public static String replaceToken(String strSrc, int nIndex, String strToken)
-						throws Exception {
-		if (strSrc == null) {
-			return strSrc;
-		}
+     * KSC5601 ǥ��� ���ڿ�; �ѱ� ���ڿ��� �ٲ��ش�.
+     *
+     * @param �ѱ۷� ǥ��� ���ڿ�
+     * @return 8859_1 ���ڿ�
+     * @throws UnsupportedEncodingException
+     */
+    public static String fromEncode(String str, String encoding) {
+        if (str == null)
+            return null;
+        try {
+            return new String(str.getBytes(encoding), "8859_1");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-		try {
-			StringTokenizer st = new StringTokenizer(strSrc, 27 + "");
-			int nCount = st.countTokens();
 
-			if (nCount < nIndex) {
-				return strSrc;
-			}
+    /**
+     * NOTE : StringBuffer�� ���� ��x�� String Ŭ������ replace �޼ҵ带 ����ϴ� ����
+     * 50~60 �� d�� ��.
+     */
+    public static String replace(String src, String oldstr, String newstr) {
+        if (src == null)
+            return null;
+        StringBuffer dest = new StringBuffer("");
+        int len = oldstr.length();
+        int srclen = src.length();
+        int pos = 0;
+        int oldpos = 0;
 
-			StringBuffer sb = new StringBuffer();
+        while ((pos = src.indexOf(oldstr, oldpos)) >= 0) {
+            dest.append(src.substring(oldpos, pos));
+            dest.append(newstr);
+            oldpos = pos + len;
+        }
 
-			for (int i = 1; i < (nCount + 1); i++) {
-				if (nIndex == i) {
-					sb.append(strToken);
-				} else {
-					sb.append(getTokenChar(strSrc, i));
-				}
+        if (oldpos < srclen)
+            dest.append(src.substring(oldpos, srclen));
 
-				sb.append(27);
-			}
+        return dest.toString();
+    }
 
-			return sb.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
 
-		}
-		return null;
-	}
-	
-	
-	/**
-	 * �ؽ�ȭ�� �н���带 ��´�.
-	 */
-	public static String getHashPassword (String str) {
-		byte[] b;
-		try {
-			b = str.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			b = str.getBytes();
-			System.out.println ("Warning: UTF8 not supported.");
-		}
-		
-		MessageDigest currentAlgorithm = null;
-		
-		try {
-			currentAlgorithm = MessageDigest.getInstance("MD5");
-		} catch(Exception e) {
-			System.out.println("No Such Algorithm");
-			return "Failed";
-		}
-		currentAlgorithm.reset();
-		currentAlgorithm.update(b);
-		
-		byte[] hash = currentAlgorithm.digest();
-		
-		byte[] password = new byte[8];
-		
-		for (int i=0; i<8; i++) {
-			password[i] = (byte)((hash[i] ^ hash[i+8]) & 0x7f);
-			if (password[i] == 0) password[i] = (byte) '0';
-		}
-		
-		try {
-			str = new String (password, "UTF8");
-		} catch (UnsupportedEncodingException e) {
-			str = new String (password);
-			System.out.println ("Warining: UTF8 not supported.");
-		}
-		
-		return str;
-	}
+    /**
+     * Ưd ��ū; �����Ѵ�.
+     *
+     * @param strSrc   ������ ��ū ���ڿ�
+     * @param nIndex   ������ ��ū�� �ε���
+     * @param strToken ������ ����
+     * @return String  ����� ���ڿ�
+     * @throws
+     */
+    public static String replaceToken(String strSrc, int nIndex, String strToken)
+            throws Exception {
+        if (strSrc == null) {
+            return strSrc;
+        }
 
-	public static void copyToFile(File inFile, File outFile) throws IOException {
-		if ( !outFile.getParentFile().exists() ) outFile.getParentFile().mkdirs();
-		
-		BufferedInputStream fin = null;
-		BufferedOutputStream fout = null;
-		
-		try {
-			fin = new BufferedInputStream(new FileInputStream(inFile), 2048);
-			fout = new BufferedOutputStream(new FileOutputStream(outFile), 2048);
-			
-			synchronized (fin) {
-				synchronized (fout) {
-					int intReadByte = -1;
-					while ((intReadByte=fin.read()) != -1) {
-						fout.write(intReadByte);
-					}
-				}
-			}
-			//_copy(fin, fout);
-		} finally {
-			try {
-				if ( fin != null ) fin.close();
-			} catch (IOException e ) {
-				e.printStackTrace(); 
-			}
-			try {
-				if ( fout != null ) fout.close();
-			} catch (IOException e ) { 
-				e.printStackTrace(); 
-			}
-		}		
-	}
-	/**
-	 * ���Ϻ���
-	 */
-	public static void copyToFile(String inFile, String outFile) throws IOException {
-		copyToFile(new File(inFile), new File(outFile));
-	}
-	
-	
-	/**
-	 * Temporary (only test)
-	 */
-	public static void _copy(InputStream in, OutputStream out) throws IOException {
-		synchronized (in) {
-			synchronized (out) {
-				byte[] buffer = new byte[2048];
-				while (true) {
-					int bytesRead = in.read(buffer);
-					if (bytesRead == -1) break;
-					out.write(buffer, 0, bytesRead);
-				}
-			}
-		}
-	}
-	
-	
-	//--------------------- from gwLibUtil
-	public static String fillString(String strValue, char chVal, int intLength, int intGu) {
-		String strReturn = "";
-		for (int i = 0 ; i < (intLength - strValue.length() ) ; i++) {
-			strReturn = chVal + strReturn;
-		}
-		if (intGu  == 0) {
-			// strVal�� �տ� chVal�� ä���
-			strReturn = strReturn + strValue;
-		} else if(intGu ==1) {
-			// strVal�� �ڿ� chVal�� ä���
-			strReturn = strValue + strReturn ;
-		} else {
-			// �׳� �״�� ������
-			strReturn = strValue;
-		}
-		return strReturn;
-	}
-	
-	
-	/**
-	 * String str���� userID,int in ���� DB character�� ũ��
-	 */
-	public static String changeChar(String str,int in) {
-		String _str=str;
-		int counMe=str.length();
-		while(in-counMe>0) {
-			_str = _str + " ";
-			counMe++;
-		}
-		return _str;
-	}
-	
-	/**
-	 *
-	 */
-	public static String createFileName(String strUserId) {
-		java.util.Calendar caltmp = java.util.Calendar.getInstance();
-		SimpleDateFormat formatter= new SimpleDateFormat ("yyyyMMddHHmmssSSS");
-		return formatter.format(caltmp.getTime()) + strUserId;
-	}
-	
-	public static boolean getBoolean(int param) {
-		return param==1?true:false;
-	}
-	
-	public static int getInt(boolean param) {
-		int intReturn = 0;
-		if(param) intReturn = 1;
-		return intReturn;
-	}
-	
-	public static String getString(String param) {
-		if ( param == null ) return "";
-		return param;
-	}
-	
-	public static String getCDATAString(String param) {
-		return "<![CDATA["+getString(param)+"]]>";
-	}
-	
-	/** jdk1.2.2 version algorithms */
-	private static int hashCode(String str)
-    {
+        try {
+            StringTokenizer st = new StringTokenizer(strSrc, 27 + "");
+            int nCount = st.countTokens();
+
+            if (nCount < nIndex) {
+                return strSrc;
+            }
+
+            StringBuffer sb = new StringBuffer();
+
+            for (int i = 1; i < (nCount + 1); i++) {
+                if (nIndex == i) {
+                    sb.append(strToken);
+                } else {
+                    sb.append(getTokenChar(strSrc, i));
+                }
+
+                sb.append(27);
+            }
+
+            return sb.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
+
+    /**
+     * �ؽ�ȭ�� �н���带 ��´�.
+     */
+    public static String getHashPassword(String str) {
+        byte[] b;
+        try {
+            b = str.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            b = str.getBytes();
+            System.out.println("Warning: UTF8 not supported.");
+        }
+
+        MessageDigest currentAlgorithm = null;
+
+        try {
+            currentAlgorithm = MessageDigest.getInstance("MD5");
+        } catch (Exception e) {
+            System.out.println("No Such Algorithm");
+            return "Failed";
+        }
+        currentAlgorithm.reset();
+        currentAlgorithm.update(b);
+
+        byte[] hash = currentAlgorithm.digest();
+
+        byte[] password = new byte[8];
+
+        for (int i = 0; i < 8; i++) {
+            password[i] = (byte) ((hash[i] ^ hash[i + 8]) & 0x7f);
+            if (password[i] == 0) password[i] = (byte) '0';
+        }
+
+        try {
+            str = new String(password, "UTF8");
+        } catch (UnsupportedEncodingException e) {
+            str = new String(password);
+            System.out.println("Warining: UTF8 not supported.");
+        }
+
+        return str;
+    }
+
+    public static void copyToFile(File inFile, File outFile) throws IOException {
+        if (!outFile.getParentFile().exists()) outFile.getParentFile().mkdirs();
+
+        BufferedInputStream fin = null;
+        BufferedOutputStream fout = null;
+
+        try {
+            fin = new BufferedInputStream(new FileInputStream(inFile), 2048);
+            fout = new BufferedOutputStream(new FileOutputStream(outFile), 2048);
+
+            synchronized (fin) {
+                synchronized (fout) {
+                    int intReadByte = -1;
+                    while ((intReadByte = fin.read()) != -1) {
+                        fout.write(intReadByte);
+                    }
+                }
+            }
+            //_copy(fin, fout);
+        } finally {
+            try {
+                if (fin != null) fin.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (fout != null) fout.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * ���Ϻ���
+     */
+    public static void copyToFile(String inFile, String outFile) throws IOException {
+        copyToFile(new File(inFile), new File(outFile));
+    }
+
+
+    /**
+     * Temporary (only test)
+     */
+    public static void _copy(InputStream in, OutputStream out) throws IOException {
+        synchronized (in) {
+            synchronized (out) {
+                byte[] buffer = new byte[2048];
+                while (true) {
+                    int bytesRead = in.read(buffer);
+                    if (bytesRead == -1) break;
+                    out.write(buffer, 0, bytesRead);
+                }
+            }
+        }
+    }
+
+
+    //--------------------- from gwLibUtil
+    public static String fillString(String strValue, char chVal, int intLength, int intGu) {
+        String strReturn = "";
+        for (int i = 0; i < (intLength - strValue.length()); i++) {
+            strReturn = chVal + strReturn;
+        }
+        if (intGu == 0) {
+            // strVal�� �տ� chVal�� ä���
+            strReturn = strReturn + strValue;
+        } else if (intGu == 1) {
+            // strVal�� �ڿ� chVal�� ä���
+            strReturn = strValue + strReturn;
+        } else {
+            // �׳� �״�� ������
+            strReturn = strValue;
+        }
+        return strReturn;
+    }
+
+
+    /**
+     * String str���� userID,int in ���� DB character�� ũ��
+     */
+    public static String changeChar(String str, int in) {
+        String _str = str;
+        int counMe = str.length();
+        while (in - counMe > 0) {
+            _str = _str + " ";
+            counMe++;
+        }
+        return _str;
+    }
+
+    /**
+     *
+     */
+    public static String createFileName(String strUserId) {
+        java.util.Calendar caltmp = java.util.Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        return formatter.format(caltmp.getTime()) + strUserId;
+    }
+
+    public static boolean getBoolean(int param) {
+        return param == 1 ? true : false;
+    }
+
+    public static int getInt(boolean param) {
+        int intReturn = 0;
+        if (param) intReturn = 1;
+        return intReturn;
+    }
+
+    public static String getString(String param) {
+        if (param == null) return "";
+        return param;
+    }
+
+    public static String getCDATAString(String param) {
+        return "<![CDATA[" + getString(param) + "]]>";
+    }
+
+    /**
+     * jdk1.2.2 version algorithms
+     */
+    private static int hashCode(String str) {
         int count = str.length();
         char[] value = new char[count];
         str.getChars(0, count, value, 0);
 
-		int h = 0;
-		//int off = offset;
+        int h = 0;
+        //int off = offset;
         int off = 0;
-		char val[] = value;
-		int len = count;
+        char val[] = value;
+        int len = count;
 
-		for (int i = 0; i < len; i++)
-			h = 31*h + val[off++];
+        for (int i = 0; i < len; i++)
+            h = 31 * h + val[off++];
 
-		return h;
+        return h;
     }
-    
-	/**
-	 * ���ڿ����� Scriptlet �±׸� ��f�Ѵ�.
-	 * @param str ��ȯ�� ���ڿ�..
-	 * @return Scriptlet �±׸� ��f�� ���ڿ�.
-	 */
-	public static String removeScriptletTag( String str )
-	{
-		if( str == null || str.indexOf("<%") == -1 )
-		{
-			return str;
-		}
-		return str.replaceAll("\\Q<%=\\E|\\Q<%\\E|\\Q%>\\E", "");
-	}
 
-	public static Object getBeanProperty(Object bean, String key) throws Exception{
-		return getBeanProperty(bean, key,null, false);
-	}
-		
-	public static Object getBeanProperty(Object bean, String key, boolean ignoreBeanPropertyResolver) throws Exception{
-		return getBeanProperty(bean, key,null, ignoreBeanPropertyResolver);
-	}
-	
-	public static Object getBeanProperty(Object bean, String key, ProcessInstance instance ,boolean ignoreBeanPropertyResolver) throws Exception{
-		//resolve parts
-		String [] wholePartPath = key.replace('.','@').split("@");
-		
-		if(wholePartPath.length == 0){
-			wholePartPath = new String[]{null};
-		}
+    /**
+     * ���ڿ����� Scriptlet �±׸� ��f�Ѵ�.
+     *
+     * @param str ��ȯ�� ���ڿ�..
+     * @return Scriptlet �±׸� ��f�� ���ڿ�.
+     */
+    public static String removeScriptletTag(String str) {
+        if (str == null || str.indexOf("<%") == -1) {
+            return str;
+        }
+        return str.replaceAll("\\Q<%=\\E|\\Q<%\\E|\\Q%>\\E", "");
+    }
 
-		for(int i=0; i<wholePartPath.length; i++){
-			String partName = wholePartPath[i];
-			
-			if(bean instanceof BeanPropertyResolver && !ignoreBeanPropertyResolver){					
-				bean = ((BeanPropertyResolver)bean).getBeanProperty(partName);
-			}else{
-				if(partName==null){
-					return bean;
-				}else{
-					try{
-						String methodName = "get" + partName.substring(0,1).toUpperCase() + partName.substring(1);
-						if(instance == null){
-							Method getter = bean.getClass().getMethod(methodName, new Class[]{});
-							bean = (Serializable) getter.invoke(bean, new Object[]{});
-						}else{
-							Method getter = bean.getClass().getMethod(methodName, new Class[]{ProcessInstance.class});
-							bean = (Serializable) getter.invoke(bean, new Object[]{instance});
-						}
-					}catch (NoSuchMethodException e) {
-						throw new UEngineException("No such bean property '" + partName + "' in object "+bean);
-					}
-				}
-			}
-		}
-			
-		return bean;
-	}
+    public static Object getBeanProperty(Object bean, String key) throws Exception {
+        return getBeanProperty(bean, key, null, false);
+    }
 
-	public static void setBeanProperty(Object bean, String key, Object propertyValue) throws Exception{
-		setBeanProperty(bean, key, propertyValue,null, false);
-	}
+    public static Object getBeanProperty(Object bean, String key, boolean ignoreBeanPropertyResolver) throws Exception {
+        return getBeanProperty(bean, key, null, ignoreBeanPropertyResolver);
+    }
 
-	public static void setBeanProperty(Object bean, String key, Object propertyValue,boolean ignoreBeanPropertyResolver) throws Exception{
-		setBeanProperty(bean, key, propertyValue,null, ignoreBeanPropertyResolver);
-	}
-	
-	private static Class getBeanValueClass(Object obj){
-		Class cls=null;
-		if(obj instanceof Calendar){
-			cls = Calendar.class;
-		}else{
-			cls = obj.getClass();
-		}
-		
-		return cls;
-	}
-	
-	public static void setBeanProperty(Object bean, String key, Object propertyValue, ProcessInstance instance ,boolean ignoreBeanPropertyResolver) throws Exception{
-		
-		if(bean == null) throw new UEngineException("Bean object is null");
-		
-		//resolve parts
-		String [] wholePartPath = key.replace('.','@').split("@");
-		if(wholePartPath.length == 0){
-			wholePartPath = new String[]{null};
-		}
-		
-		for(int i=0; i<wholePartPath.length; i++){
-			String partName = wholePartPath[i];
-			
-			if(i==wholePartPath.length-1){
-				if(bean instanceof BeanPropertyResolver && !ignoreBeanPropertyResolver){
-					((BeanPropertyResolver)bean).setBeanProperty(partName, propertyValue);
-				}else{
-					Object beanValue=null;
-					if(propertyValue instanceof ProcessVariableValue)  beanValue =((ProcessVariableValue)propertyValue).getValue();
-					else beanValue = propertyValue;
+    public static Object getBeanProperty(Object bean, String key, ProcessInstance instance, boolean ignoreBeanPropertyResolver) throws Exception {
+        //resolve parts
+        String[] wholePartPath = key.replace('.', '@').split("@");
 
-					//TODO: the logic getter getter method should be enhanced to list all the methods which starts with "get"
-					String methodName = "set" + partName.substring(0,1).toUpperCase() + partName.substring(1);
-					Class  beanValueClass = getBeanValueClass(beanValue);
-					
-					if(instance ==null){
-						Method setter = bean.getClass().getMethod(methodName, new Class[]{beanValueClass});
-						setter.invoke(bean, new Object[]{beanValue});
-					}else{
-						Method setter = bean.getClass().getMethod(methodName, new Class[]{ProcessInstance.class,beanValueClass});
-						setter.invoke(bean, new Object[]{instance,beanValue});
-					}
-				}
-			}else{
-				if(bean instanceof BeanPropertyResolver && !ignoreBeanPropertyResolver){					
-					bean = ((BeanPropertyResolver)bean).getBeanProperty(partName);
-				}else{
-					Method getter = bean.getClass().getMethod("get" + partName.substring(0,1).toUpperCase() + partName.substring(1), new Class[]{});
-					bean = (Serializable) getter.invoke(bean, new Object[]{});
-				}
-			}
-		}
+        if (wholePartPath.length == 0) {
+            wholePartPath = new String[]{null};
+        }
 
-	}
-	
-	public static Point getRelativeLocation(Container container, Component comp){
-		
-		Point location = comp.getLocation();
-		while(comp.getParent() != container && comp.getParent()!=null){
-			Point parentLocation = comp.getParent().getLocation();
-			location.setLocation(location.getX() + parentLocation.x, location.getY() + parentLocation.getY());
-			comp = comp.getParent();
-		}
-		
-		if(comp.getParent()==null){
-			throw new RuntimeException(new UEngineException("Couldn't find the container " + container + " from the parent stack."));
-		}
-		
-		return location;
-	}
-	
-	public static Object putMultipleEntryMap(Map map, Object key, Object value){
-		if(map.containsKey(key)){
-			
-			Object existingValue = map.get(key);
-			
-			ArrayList multiValue;
-			if(existingValue instanceof ArrayList){
-				multiValue = (ArrayList)existingValue;
-			}else{
-				multiValue = new ArrayList();
-				multiValue.add(existingValue);
-			}
-			
-			multiValue.add(value);
-			return map.put(key, multiValue);
-		}else
-			return map.put(key, value);
-	}
-	
-	public static boolean boolValue(Boolean booleanValue){
-		return (booleanValue!=null ? booleanValue.booleanValue() : false);
-	}
-	
-	public static boolean isValidEmailAddress(String emailAddress) {
-		Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-		Matcher m = p.matcher(emailAddress);
-		boolean matchFound = m.matches();
+        for (int i = 0; i < wholePartPath.length; i++) {
+            String partName = wholePartPath[i];
 
-		if (matchFound)
-			return true;
-		else
-			return false;
-	}
-	
-	public static String encodeUTF8(String s) {
-		if (isNotEmpty(s)) {
-			try {
-				s = URLEncoder.encode(s, "UTF-8");
-			} catch (UnsupportedEncodingException e) { }
-		}
-		return s;
-	}
-	
-	/*
-	 * SQL Injection 취약점을 보완하기 위한 필터 메서드  
-	 */
-	public static String searchStringFilter(String s) {
-		s = s.replaceAll("'", "''");
-		s = s.replaceAll("\"", "\"\"");
+            if (bean instanceof BeanPropertyResolver && !ignoreBeanPropertyResolver) {
+                bean = ((BeanPropertyResolver) bean).getBeanProperty(partName);
+            } else {
+                if (partName == null) {
+                    return bean;
+                } else {
+                    try {
+                        String methodName = "get" + partName.substring(0, 1).toUpperCase() + partName.substring(1);
+                        if (instance == null) {
+                            Method getter = bean.getClass().getMethod(methodName, new Class[]{});
+                            bean = (Serializable) getter.invoke(bean, new Object[]{});
+                        } else {
+                            Method getter = bean.getClass().getMethod(methodName, new Class[]{ProcessInstance.class});
+                            bean = (Serializable) getter.invoke(bean, new Object[]{instance});
+                        }
+                    } catch (NoSuchMethodException e) {
+                        throw new UEngineException("No such bean property '" + partName + "' in object " + bean);
+                    }
+                }
+            }
+        }
+
+        return bean;
+    }
+
+    public static void setBeanProperty(Object bean, String key, Object propertyValue) throws Exception {
+        setBeanProperty(bean, key, propertyValue, null, false);
+    }
+
+    public static void setBeanProperty(Object bean, String key, Object propertyValue, boolean ignoreBeanPropertyResolver) throws Exception {
+        setBeanProperty(bean, key, propertyValue, null, ignoreBeanPropertyResolver);
+    }
+
+    private static Class getBeanValueClass(Object obj) {
+        Class cls = null;
+        if (obj instanceof Calendar) {
+            cls = Calendar.class;
+        } else {
+            cls = obj.getClass();
+        }
+
+        return cls;
+    }
+
+    public static void setBeanProperty(Object bean, String key, Object propertyValue, ProcessInstance instance, boolean ignoreBeanPropertyResolver) throws Exception {
+
+        if (bean == null) throw new UEngineException("Bean object is null");
+
+        //resolve parts
+        String[] wholePartPath = key.replace('.', '@').split("@");
+        if (wholePartPath.length == 0) {
+            wholePartPath = new String[]{null};
+        }
+
+        for (int i = 0; i < wholePartPath.length; i++) {
+            String partName = wholePartPath[i];
+
+            if (i == wholePartPath.length - 1) {
+                if (bean instanceof BeanPropertyResolver && !ignoreBeanPropertyResolver) {
+                    ((BeanPropertyResolver) bean).setBeanProperty(partName, propertyValue);
+                } else {
+                    Object beanValue = null;
+                    if (propertyValue instanceof ProcessVariableValue)
+                        beanValue = ((ProcessVariableValue) propertyValue).getValue();
+                    else beanValue = propertyValue;
+
+                    //TODO: the logic getter getter method should be enhanced to list all the methods which starts with "get"
+                    String methodName = "set" + partName.substring(0, 1).toUpperCase() + partName.substring(1);
+                    Class beanValueClass = getBeanValueClass(beanValue);
+
+                    if (instance == null) {
+                        Method setter = bean.getClass().getMethod(methodName, new Class[]{beanValueClass});
+                        setter.invoke(bean, new Object[]{beanValue});
+                    } else {
+                        Method setter = bean.getClass().getMethod(methodName, new Class[]{ProcessInstance.class, beanValueClass});
+                        setter.invoke(bean, new Object[]{instance, beanValue});
+                    }
+                }
+            } else {
+                if (bean instanceof BeanPropertyResolver && !ignoreBeanPropertyResolver) {
+                    bean = ((BeanPropertyResolver) bean).getBeanProperty(partName);
+                } else {
+                    Method getter = bean.getClass().getMethod("get" + partName.substring(0, 1).toUpperCase() + partName.substring(1), new Class[]{});
+                    bean = (Serializable) getter.invoke(bean, new Object[]{});
+                }
+            }
+        }
+
+    }
+
+    public static Point getRelativeLocation(Container container, Component comp) {
+
+        Point location = comp.getLocation();
+        while (comp.getParent() != container && comp.getParent() != null) {
+            Point parentLocation = comp.getParent().getLocation();
+            location.setLocation(location.getX() + parentLocation.x, location.getY() + parentLocation.getY());
+            comp = comp.getParent();
+        }
+
+        if (comp.getParent() == null) {
+            throw new RuntimeException(new UEngineException("Couldn't find the container " + container + " from the parent stack."));
+        }
+
+        return location;
+    }
+
+    public static Object putMultipleEntryMap(Map map, Object key, Object value) {
+        if (map.containsKey(key)) {
+
+            Object existingValue = map.get(key);
+
+            ArrayList multiValue;
+            if (existingValue instanceof ArrayList) {
+                multiValue = (ArrayList) existingValue;
+            } else {
+                multiValue = new ArrayList();
+                multiValue.add(existingValue);
+            }
+
+            multiValue.add(value);
+            return map.put(key, multiValue);
+        } else
+            return map.put(key, value);
+    }
+
+    public static boolean boolValue(Boolean booleanValue) {
+        return (booleanValue != null ? booleanValue.booleanValue() : false);
+    }
+
+    public static boolean isValidEmailAddress(String emailAddress) {
+        Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+        Matcher m = p.matcher(emailAddress);
+        boolean matchFound = m.matches();
+
+        if (matchFound)
+            return true;
+        else
+            return false;
+    }
+
+    public static String encodeUTF8(String s) {
+        if (isNotEmpty(s)) {
+            try {
+                s = URLEncoder.encode(s, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+            }
+        }
+        return s;
+    }
+
+    /*
+     * SQL Injection 취약점을 보완하기 위한 필터 메서드
+     */
+    public static String searchStringFilter(String s) {
+        s = s.replaceAll("'", "''");
+        s = s.replaceAll("\"", "\"\"");
 //		s = s.replaceAll("\\", "\\\\");
-		s = s.replaceAll(";", "");
-		s = s.replaceAll("#", "");
-		s = s.replaceAll("--", "");
+        s = s.replaceAll(";", "");
+        s = s.replaceAll("#", "");
+        s = s.replaceAll("--", "");
 //		s = s.replaceAll(" ", "");
-		return s;
-	}
-	
-	@Deprecated
-	public static HashMap<String, Object> sessionToHashMap(HttpSession session) {
-		if(session == null) return null;
-		Enumeration enu = session.getAttributeNames();
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		while(enu.hasMoreElements()) {
-			String key = (String)enu.nextElement();
-			Object value = session.getAttribute(key);
-			map.put(key, value);
-		}
-		return map;
-	}
+        return s;
+    }
+
+    @Deprecated
+    public static HashMap<String, Object> sessionToHashMap(HttpSession session) {
+        if (session == null) return null;
+        Enumeration enu = session.getAttributeNames();
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        while (enu.hasMoreElements()) {
+            String key = (String) enu.nextElement();
+            Object value = session.getAttribute(key);
+            map.put(key, value);
+        }
+        return map;
+    }
 }

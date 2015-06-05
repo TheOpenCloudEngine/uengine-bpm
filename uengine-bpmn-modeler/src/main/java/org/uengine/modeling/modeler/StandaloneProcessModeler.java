@@ -5,6 +5,7 @@ import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Clipboard;
 import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.ProcessDefinition;
+import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.processpublisher.BPMNUtil;
 
 import java.io.File;
@@ -22,6 +23,8 @@ public class StandaloneProcessModeler {
         setFileName("/java/autoinsurance.bpmn");
 
         setClipboard(new Clipboard());
+
+        setProcessVariablePanel(new ProcessVariablePanel());
     }
 
     @ServiceMethod(keyBinding = "Ctrl+L")
@@ -70,5 +73,16 @@ public class StandaloneProcessModeler {
         public void setClipboard(Clipboard clipboard) {
             this.clipboard = clipboard;
         }
+
+
+    ProcessVariablePanel processVariablePanel;
+        public ProcessVariablePanel getProcessVariablePanel() {
+            return processVariablePanel;
+        }
+
+        public void setProcessVariablePanel(ProcessVariablePanel processVariablePanel) {
+            this.processVariablePanel = processVariablePanel;
+        }
+
 
 }

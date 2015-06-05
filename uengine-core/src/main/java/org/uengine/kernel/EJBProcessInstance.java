@@ -206,6 +206,14 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		if(ptc==null)
 			throw new UEngineException("TransactionContext should be provided.");
 
+		String executionScope = null;
+		if(instanceId.indexOf("@") > 0){
+			String[] instanceIdAndExecutionScope = instanceId.split("@");
+			instanceId = instanceIdAndExecutionScope[0];
+
+			executionScope = instanceIdAndExecutionScope[1];
+		}
+
 		setProcessTransactionContext(ptc);
 
 		if(isCaching()){

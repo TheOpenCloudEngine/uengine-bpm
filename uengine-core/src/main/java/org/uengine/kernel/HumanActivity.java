@@ -749,10 +749,6 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 		if(payload instanceof ResultPayload){
 			ResultPayload resultPayload = ((ResultPayload)payload);
 			taskId = (String)resultPayload.getExtendedValue(PAYLOADKEY_TASKID);
-
-			for(KeyedParameter variableChange : resultPayload.getProcessVariableChanges()){
-				instance.set("", variableChange.getKey(), (Serializable) variableChange.getValue());
-			}
 		}else{//for old-version, single role mapping
 			taskId = (String)instance.getProperty(getTracingTag(), PVKEY_TASKID);
 		}

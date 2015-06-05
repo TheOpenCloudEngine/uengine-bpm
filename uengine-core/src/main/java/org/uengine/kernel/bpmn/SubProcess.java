@@ -1,9 +1,11 @@
 package org.uengine.kernel.bpmn;
 
+import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Range;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
+import org.uengine.kernel.bpmn.face.ProcessVariableSelectorFace;
 import org.uengine.util.UEngineUtil;
 
 import java.io.Serializable;
@@ -165,13 +167,14 @@ public class SubProcess extends ScopeActivity{
     }
 
     ProcessVariable forEachVariable;
-    @Hidden
-    public ProcessVariable getForEachVariable() {
-        return forEachVariable;
-    }
-    public void setForEachVariable(ProcessVariable forEachVariable) {
-        this.forEachVariable = forEachVariable;
-    }
+        @Face(faceClass=ProcessVariableSelectorFace.class)
+
+        public ProcessVariable getForEachVariable() {
+            return forEachVariable;
+        }
+        public void setForEachVariable(ProcessVariable forEachVariable) {
+            this.forEachVariable = forEachVariable;
+        }
 
     //  boolean viewAlsoInMainProcess;
     //  	public boolean isViewAlsoInMainProcess() {

@@ -342,9 +342,11 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 			((NeedArrangementToSerialize) getDefaultValue()).beforeSerialization();
 		}
 
-		setTypeClassName(getType().getName());
+		if(getType()!=null) {
+			setTypeClassName(getType().getName());
 
-		setType(null);
+			setType(null);
+		}
 	}
 	
 	public static Object evaluate(Object val, ProcessInstance instance) throws Exception{

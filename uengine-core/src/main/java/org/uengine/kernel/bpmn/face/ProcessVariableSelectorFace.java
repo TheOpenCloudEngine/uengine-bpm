@@ -1,9 +1,37 @@
 package org.uengine.kernel.bpmn.face;
 
 import org.metaworks.Face;
+import org.metaworks.annotation.AutowiredFromClient;
+import org.metaworks.component.SelectBox;
+import org.uengine.kernel.ProcessVariable;
 
-/**
- * Created by kimsh on 2015. 6. 5..
- */
-public class ProcessVariableSelectorFace implements Face {
+import java.util.ArrayList;
+
+public class ProcessVariableSelectorFace extends SelectBox implements Face<ProcessVariable> {
+
+    @AutowiredFromClient ProcessVariablePanel processVariablePanel;
+
+    @Override
+    public void setValueToFace(ProcessVariable value) {
+
+        if(processVariablePanel==null)
+            throw new RuntimeException("ProcessVariablePanel is null");
+
+        ArrayList<String> options = new ArrayList<String>();
+
+        for(ProcessVariable processVariable : processVariablePanel.getProcessVariableList()){
+            options.add(processVariable.getName());
+        }
+
+        setOptionNames(options);
+        setOptionValues(options);
+
+    }
+
+    @Override
+    public ProcessVariable createValueFromFace() {
+        String variableName = getSelectedText();
+
+        return ProcessVariable.forName(variableName);
+    }
 }

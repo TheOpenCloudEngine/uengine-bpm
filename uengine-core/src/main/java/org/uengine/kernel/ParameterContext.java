@@ -12,11 +12,13 @@ import org.metaworks.ServiceMethodContext;
 import org.metaworks.Type;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Range;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.component.SelectBox;
 import org.metaworks.inputter.RadioInput;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.TextContext;
+import org.uengine.kernel.bpmn.face.ProcessVariableSelectorFace;
 import org.uengine.processdesigner.mapper.TransformerMapping;
 
 /**
@@ -72,6 +74,7 @@ public class ParameterContext implements Serializable , ContextAware{
 		}
 
 	ProcessVariable variable;
+	@Face(faceClass = ProcessVariableSelectorFace.class)
 		public ProcessVariable getVariable() {
 			return variable;
 		}
@@ -88,6 +91,7 @@ public class ParameterContext implements Serializable , ContextAware{
 		}
 	
 	String direction;
+	@Range(options={"IN", "OUT", "IN-OUT"}, values={"IN", "OUT", "IN-OUT"})
 		public String getDirection() {
 			return direction;
 		}

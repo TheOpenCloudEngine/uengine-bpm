@@ -20,6 +20,7 @@ import org.metaworks.annotation.ValidatorSet;
 import org.metaworks.dwr.SerializationSensitive;
 import org.uengine.contexts.DatabaseSynchronizationOption;
 import org.uengine.contexts.TextContext;
+import org.uengine.util.UEngineUtil;
 
 /**
  * @author Jinyoung Jang
@@ -328,7 +329,7 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		setName(getName());
 
 		try {
-			if (getTypeClassName() != null) {
+			if (UEngineUtil.isNotEmpty(getTypeClassName())) {
 				setType(Thread.currentThread().getContextClassLoader().loadClass(getTypeClassName()));
 			}
 		}catch (ClassNotFoundException e){

@@ -28,6 +28,11 @@ public class ParameterContext implements Serializable , ContextAware{
 	
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
+	public static final String DIRECTION_IN = "in".intern();
+	public static final String DIRECTION_OUT = "out".intern();
+	public static final String DIRECTION_INOUT = "in-out".intern();
+
+
 	public ParameterContext(){
 		this.setMetaworksContext(new MetaworksContext());
 	}
@@ -69,7 +74,7 @@ public class ParameterContext implements Serializable , ContextAware{
 		}
 	
 	String direction;
-	@Range(options={"IN", "OUT", "IN-OUT"}, values={"IN", "OUT", "IN-OUT"})
+	@Range(options={"IN", "OUT", "IN-OUT"}, values={"in", "out", "in-out"})
 		public String getDirection() {
 			return direction;
 		}

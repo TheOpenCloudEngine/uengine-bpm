@@ -6,7 +6,6 @@ import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.ServiceMethod;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.view.ScopeActivityView;
-import org.uengine.modeling.PropertySettingDialog;
 
 public class SubProcessView extends ScopeActivityView{
 
@@ -14,7 +13,5 @@ public class SubProcessView extends ScopeActivityView{
     public Object showProperty(@AutowiredFromClient ProcessVariablePanel processVariablePanel) throws Exception {
         return super.showProperty();
     }
-
-
 
 }

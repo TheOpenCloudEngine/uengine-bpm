@@ -23,35 +23,14 @@ public class SubProcessActivityView extends DefaultActivityView{
 	
 	
 	public SubProcessActivityView(){
-		
+		setShapeId(SHAPE_ID);
 	}
 	
 	public SubProcessActivityView(IElement element){
 		super(element);
 	}
 
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("하위 프로세스");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(100);
-		symbol.setWidth(100);
-		symbol.setElementClassName(SubProcessActivity.class.getName());
-		symbol.setShapeType(SHAPE_TYPE);
-		
-		return symbol;
-	}
-	public Symbol createSymbol(String modelerType) {
-		Symbol symbol = createSymbol();
-		
-		if(modelerType.equals("BPMN")){
-			symbol.setShapeId(SHAPE_ID_BPMN);
-		}else{
-				symbol.setShapeId(SHAPE_ID_VACD );
-		}
-		return symbol;
-	}
-	
+
 	@ServiceMethod(callByContent=true, mouseBinding="drop", target=ServiceMethodContext.TARGET_APPEND)
 	public Object drop() {
 		Object content = clipboard.getContent();

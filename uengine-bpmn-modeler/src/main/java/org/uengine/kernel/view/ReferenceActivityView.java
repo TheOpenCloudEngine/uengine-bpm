@@ -16,7 +16,7 @@ public class ReferenceActivityView extends ActivityView {
 
 	
 	public ReferenceActivityView(){
-		
+		setShapeId(SHAPE_ID);
 	}
 	
 	public ReferenceActivityView(IElement element){
@@ -34,14 +34,4 @@ public class ReferenceActivityView extends ActivityView {
 	}
 
 
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setShapeId(this.getShapeId());
-		symbol.setHeight(100);
-		symbol.setWidth(100);
-		symbol.setElementClassName(this.getClassName());
-		symbol.setShapeType("GEOM");
-		
-		return symbol;
-	}
 }

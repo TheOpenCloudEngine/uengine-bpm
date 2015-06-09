@@ -67,9 +67,9 @@ org_uengine_modeling_RelationView.prototype = {
 	},
 	getCanvas : function(){
 		
-		var canvasDiv = this.objectDiv.closest('.canvas');
-		var canvasId = canvasDiv.attr('objectId');
-		
+		//var canvasDiv = this.objectDiv.closest('.canvas');
+		//var canvasId = canvasDiv.attr('objectId');
+		canvasId = this.objectDiv.closest('.canvas').attr('id').split('_')[1];
 		var object = mw3.objects[canvasId];
 		return object.getFaceHelper().getCanvas();
 	},	

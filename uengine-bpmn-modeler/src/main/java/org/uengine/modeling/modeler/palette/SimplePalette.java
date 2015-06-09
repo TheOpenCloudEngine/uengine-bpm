@@ -20,7 +20,6 @@ public class SimplePalette extends Palette {
 		this.getSymbolList().add((new StartEventView()).createSymbol());
 		this.getSymbolList().add((new DefaultActivityView()).createSymbol());
 		this.getSymbolList().add((new GatewayView()).createSymbol());
-		this.getSymbolList().add((new LoopActivityView()).createSymbol());
 		this.getSymbolList().add((new HumanActivityView()).createSymbol());
 		this.getSymbolList().add((new SubProcessView()).createSymbol());
 

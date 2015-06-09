@@ -20,8 +20,7 @@ import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.uengine.contexts.MappingContext;
 import org.uengine.contexts.TextContext;
-import org.uengine.kernel.bpmn.StartActivity;
-import org.uengine.kernel.bpmn.StartEventActivity;
+import org.uengine.kernel.bpmn.StartEvent;
 import org.uengine.persistence.dao.DAOFactory;
 import org.uengine.persistence.worklist.WorklistDAOType;
 import org.uengine.util.ActivityForLoop;
@@ -496,7 +495,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 			//FIXME: may occur a decrease of performance 
 			ActivityReference actRef = getProcessDefinition().getInitiatorHumanActivityReference(instance.getProcessTransactionContext());
 			boolean thisIsInitiationActivity = (actRef.getActivity() == this);
-			if( actRef.getActivity() instanceof StartEventActivity || actRef.getActivity() instanceof StartActivity){
+			if( actRef.getActivity() instanceof StartEvent){
 				thisIsInitiationActivity = true;
 			}
 			//if the activity is initiator, put the role mapping with the login user.

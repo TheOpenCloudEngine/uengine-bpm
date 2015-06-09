@@ -9,13 +9,14 @@ import java.util.ArrayList;
 
 public class ProcessVariableSelectorFace extends SelectBox implements Face<ProcessVariable> {
 
-    @AutowiredFromClient ProcessVariablePanel processVariablePanel;
+    @AutowiredFromClient
+    public ProcessVariablePanel processVariablePanel;
 
     @Override
     public void setValueToFace(ProcessVariable value) {
 
         if(processVariablePanel==null)
-            throw new RuntimeException("ProcessVariablePanel is null");
+            return;//            throw new RuntimeException("ProcessVariablePanel is null");
 
         ArrayList<String> options = new ArrayList<String>();
 

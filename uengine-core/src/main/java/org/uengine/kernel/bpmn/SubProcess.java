@@ -7,6 +7,7 @@ import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.face.ParameterContextListFace;
 import org.uengine.kernel.bpmn.face.ProcessVariableSelectorFace;
+import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
 import org.uengine.util.UEngineUtil;
 
 import java.io.Serializable;
@@ -114,12 +115,12 @@ public class SubProcess extends ScopeActivity{
         this.versionSelectOption = versionSelectOption;
     }
 
-    List<ParameterContext> variableBindings = new ArrayList<ParameterContext>();
-    @Face(faceClass = ParameterContextListFace.class)
-        public List<ParameterContext> getVariableBindings() {
+    List<SubProcessParameterContext> variableBindings = new ArrayList<SubProcessParameterContext>();
+    @Face(faceClass = SubProcessParameterContextListFace.class)
+        public List<SubProcessParameterContext> getVariableBindings() {
             return variableBindings;
         }
-        public void setVariableBindings(List<ParameterContext> variableBindings) {
+        public void setVariableBindings(List<SubProcessParameterContext> variableBindings) {
             this.variableBindings = variableBindings;
         }
 
@@ -634,7 +635,7 @@ public class SubProcess extends ScopeActivity{
 
           String subProcessId = (String)spIds.elementAt(indexOfSP);
 
-          List<ParameterContext> variableBindings = getVariableBindings();
+          List<SubProcessParameterContext> variableBindings = getVariableBindings();
           if(variableBindings!=null)
           for(int i=0; i<variableBindings.size(); i++){
             ParameterContext vb = variableBindings.get(i);

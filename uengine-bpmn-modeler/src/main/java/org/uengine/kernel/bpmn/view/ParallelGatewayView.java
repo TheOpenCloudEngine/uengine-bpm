@@ -5,7 +5,7 @@ import org.uengine.kernel.view.ActivityView;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.Symbol;
 
-public class ParallelGatewayView extends ActivityView {
+public class ParallelGatewayView extends GatewayView {
 
 public final static String SHAPE_ID = "OG.shape.bpmn.G_Parallel";
 	
@@ -17,16 +17,5 @@ public final static String SHAPE_ID = "OG.shape.bpmn.G_Parallel";
 		super(element);
 	}
 	
-	@Override
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("병렬");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(40);
-		symbol.setWidth(40);
-		symbol.setElementClassName(ParallelGateway.class.getName());
-		symbol.setShapeType("GEOM");
-		
-		return symbol;
-	}
+
 }

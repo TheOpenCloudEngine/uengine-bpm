@@ -9,23 +9,11 @@ public class ScopeActivityView extends ActivityView{
 public final static String SHAPE_ID = "OG.shape.bpmn.ScopeActivity";
 	
 	public ScopeActivityView(){
-		
+		setShapeId(SHAPE_ID);
 	}
 	
 	public ScopeActivityView(IElement element){
 		super(element);
 	}
-	
-	@Override
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("그룹");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(80);
-		symbol.setWidth(100);
-		symbol.setElementClassName(ScopeActivity.class.getName());
-		symbol.setShapeType("GEOM");
-		
-		return symbol;
-	}
+
 }

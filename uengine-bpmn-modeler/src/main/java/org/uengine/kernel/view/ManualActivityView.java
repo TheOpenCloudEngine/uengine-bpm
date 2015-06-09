@@ -13,7 +13,7 @@ public class ManualActivityView extends ActivityView{
 
 	
 	public ManualActivityView(){
-		
+		setShapeId(SHAPE_ID);
 	}
 	
 	public ManualActivityView(IElement element){

@@ -12,34 +12,12 @@ public class WebServiceActivityView extends ActivityView {
 	public final static String ELEMENT_CLASSNAME = WebServiceActivity.class.getName();
 	
 	public WebServiceActivityView(){
-		
+		setShapeId(SHAPE_ID);
 	}
 	
 	public WebServiceActivityView(IElement element){
 		super(element);
 	}
 	
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("서비스");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(100);
-		symbol.setWidth(100);
-		symbol.setElementClassName(ELEMENT_CLASSNAME);
-		symbol.setShapeType(SHAPE_TYPE);
-		
-		return symbol;
-	}
-	
-	public Symbol createSymbol(String modelerType) {
-		Symbol symbol = createSymbol();
 
-		if("BPMN".equals(modelerType)){
-			symbol.setShapeId(SHAPE_ID_BPMN);
-		}else{
-			symbol.setShapeId(SHAPE_ID_VACD );
-		}
-
-		return symbol;
-	}
 }

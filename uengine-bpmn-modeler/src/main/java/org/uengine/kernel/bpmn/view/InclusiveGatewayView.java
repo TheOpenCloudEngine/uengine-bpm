@@ -10,23 +10,11 @@ public class InclusiveGatewayView extends ActivityView {
 	public final static String SHAPE_ID = "OG.shape.bpmn.G_Inclusive";
 	
 	public InclusiveGatewayView(){
-		
+		setShapeId(SHAPE_ID);
 	}
 	
 	public InclusiveGatewayView(IElement element){
 		super(element);
 	}
-	
-	@Override
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("포괄적");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(40);
-		symbol.setWidth(40);
-		symbol.setElementClassName(InclusiveGateway.class.getName());
-		symbol.setShapeType("GEOM");
-		
-		return symbol;
-	}
+
 }

@@ -1,9 +1,13 @@
 package org.uengine.kernel.bpmn;
 
+import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Range;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
+import org.uengine.kernel.bpmn.face.ParameterContextListFace;
+import org.uengine.kernel.bpmn.face.ProcessVariableSelectorFace;
+import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
 import org.uengine.util.UEngineUtil;
 
 import java.io.Serializable;
@@ -19,6 +23,7 @@ public class SubProcess extends ScopeActivity{
     protected final static String SUBPROCESS_INST_ID_COMPLETED="completedInstanceIdOfSPs";
     protected final static String EVENT_ONE_OF_PREV_SP_COMPLETED = "ONE_OF_PREV_SP_COMPLETED";
     public static final String SUB_PROCESS_IS_BEING_INSERTED = "_SubProcessIsBeingInserted";
+    private String multipleInstanceOption;
 
 
     public SubProcess(){
@@ -110,14 +115,15 @@ public class SubProcess extends ScopeActivity{
         this.versionSelectOption = versionSelectOption;
     }
 
-    ParameterContext[] variableBindings;
-    @Hidden
-    public ParameterContext[] getVariableBindings() {
-        return variableBindings;
-    }
-    public void setVariableBindings(ParameterContext[] contexts) {
-        variableBindings = contexts;
-    }
+    List<SubProcessParameterContext> variableBindings = new ArrayList<SubProcessParameterContext>();
+    @Face(faceClass = SubProcessParameterContextListFace.class)
+        public List<SubProcessParameterContext> getVariableBindings() {
+            return variableBindings;
+        }
+        public void setVariableBindings(List<SubProcessParameterContext> variableBindings) {
+            this.variableBindings = variableBindings;
+        }
+
 
     RoleParameterContext[] roleBindings;
     @Hidden
@@ -165,13 +171,14 @@ public class SubProcess extends ScopeActivity{
     }
 
     ProcessVariable forEachVariable;
-    @Hidden
-    public ProcessVariable getForEachVariable() {
-        return forEachVariable;
-    }
-    public void setForEachVariable(ProcessVariable forEachVariable) {
-        this.forEachVariable = forEachVariable;
-    }
+        @Face(faceClass=ProcessVariableSelectorFace.class)
+
+        public ProcessVariable getForEachVariable() {
+            return forEachVariable;
+        }
+        public void setForEachVariable(ProcessVariable forEachVariable) {
+            this.forEachVariable = forEachVariable;
+        }
 
     //  boolean viewAlsoInMainProcess;
     //  	public boolean isViewAlsoInMainProcess() {
@@ -605,8 +612,8 @@ public class SubProcess extends ScopeActivity{
     protected void applyVariableBindings(ProcessInstance instance, Vector spIds, Map subProcesses, Map options) throws Exception{
 
         if(variableBindings!=null)
-        for(int i=0; i<variableBindings.length; i++){
-          ParameterContext vb = variableBindings[i];
+        for(int i=0; i<variableBindings.size(); i++){
+          ParameterContext vb = variableBindings.get(i);
           if(vb.getVariable()==null ||
               (vb.getDirection()!=null && vb.getDirection().equals(ParameterContext.DIRECTION_IN))
           ) continue;
@@ -628,10 +635,10 @@ public class SubProcess extends ScopeActivity{
 
           String subProcessId = (String)spIds.elementAt(indexOfSP);
 
-          ParameterContext[] variableBindings = getVariableBindings();
+          List<SubProcessParameterContext> variableBindings = getVariableBindings();
           if(variableBindings!=null)
-          for(int i=0; i<variableBindings.length; i++){
-            ParameterContext vb = variableBindings[i];
+          for(int i=0; i<variableBindings.size(); i++){
+            ParameterContext vb = variableBindings.get(i);
             if(vb.getVariable()==null ||
                 (vb.getDirection()!=null && vb.getDirection().equals(ParameterContext.DIRECTION_IN))
             ) continue;
@@ -766,8 +773,8 @@ public class SubProcess extends ScopeActivity{
     protected void transferValues(ProcessInstance instance, ProcessInstance subProcessInstance, RoleMapping currentRoleMapping, Serializable currentVariableValue, int mappingIndex) throws Exception{
         //transfer the values of variables
         if(variableBindings !=null)
-            for(int i=0; i<variableBindings.length; i++){
-                ParameterContext pvpc = variableBindings[i];
+            for(int i=0; i<variableBindings.size(); i++){
+                ParameterContext pvpc = variableBindings.get(i);
                 if(pvpc.getVariable()==null || pvpc.getArgument()==null
                         || (pvpc.getDirection()!=null && pvpc.getDirection().equals(ParameterContext.DIRECTION_OUT))
                         )
@@ -1020,5 +1027,13 @@ public class SubProcess extends ScopeActivity{
             super.fireComplete(instance);
         }
 
+    }
+
+    public void setMultipleInstanceOption(String multipleInstanceOption) {
+        this.multipleInstanceOption = multipleInstanceOption;
+    }
+
+    public String getMultipleInstanceOption() {
+        return multipleInstanceOption;
     }
 }

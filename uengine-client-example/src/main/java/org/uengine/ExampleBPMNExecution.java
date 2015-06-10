@@ -4,8 +4,6 @@ package org.uengine;
 import org.uengine.kernel.*;
 import org.uengine.processpublisher.BPMNUtil;
 
-import java.io.File;
-
 public class ExampleBPMNExecution {
 
     public static void main(String[] args) throws Exception {
@@ -26,7 +24,7 @@ public class ExampleBPMNExecution {
                             /// do something when a fault occurs in activity execution
                         }
 
-                        if(activity instanceof EndActivity && Activity.ACTIVITY_STOPPED.equals(eventName) ){
+                        if(activity instanceof EndEvent && Activity.ACTIVITY_STOPPED.equals(eventName) ){
                             System.out.println(instance.getActivityCompletionHistory());
                         }
                     }

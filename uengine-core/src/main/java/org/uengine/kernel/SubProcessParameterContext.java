@@ -17,11 +17,6 @@ public class SubProcessParameterContext extends ParameterContext{
 	
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
-	public static void metaworksCallback_changeMetadata(Type type){
-		ParameterContext.metaworksCallback_changeMetadata(type);
-		FieldDescriptor fd;
-	}
-	
 	boolean split;
 		public boolean isSplit() {
 			return split;

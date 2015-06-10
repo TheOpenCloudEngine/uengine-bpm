@@ -1,7 +1,10 @@
 package org.uengine.modeling;
 
+import javax.naming.event.EventContext;
+
 import org.metaworks.Refresh;
 import org.metaworks.ServiceMethodContext;
+import org.metaworks.ToEvent;
 import org.metaworks.annotation.NonEditable;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Clipboard;

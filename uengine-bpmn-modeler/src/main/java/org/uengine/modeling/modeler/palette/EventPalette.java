@@ -9,17 +9,8 @@ public class EventPalette extends Palette {
 	public EventPalette(){
 		this.setName("Event");
 
-		addSymbol(StartActivityView.class);
-		addSymbol(IntermediateActivityView.class);
-		addSymbol(EndActivityView.class);
-		addSymbol(StartMessageActivityView.class);
-		addSymbol(IntermediateMessageActivityView.class);
-		addSymbol(IntermediateFilledMessageActivityView.class);
-		addSymbol(EndMessageActivityView.class);
-		addSymbol(StartTimerActivityView.class);
-		addSymbol(IntermediateTimerActivityView.class);
-		addSymbol(StartConditionalActivityView.class);
-		addSymbol(IntermediateConditionalActivityView.class);
+		addSymbol(StartEventView.class);
+		addSymbol(EndEventView.class);
 		addSymbol(TerminateActivityView.class);
 
 	}

@@ -8,7 +8,7 @@ var org_uengine_kernel_view_ActivityView = function(objectId, className){
 
 
 	this.tracingTag = function(){
-		var modeler = mw3.getAutowiredObject('org.uengine.modeling.Modeler', true);
+		var modeler = mw3.getAutowiredObject('org.uengine.modeling.Modeler');
 
 		this.object.element.tracingTag = modeler.getFaceHelper().getTracingTag();
 

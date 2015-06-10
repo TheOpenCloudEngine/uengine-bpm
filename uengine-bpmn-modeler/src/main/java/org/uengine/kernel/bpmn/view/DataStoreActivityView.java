@@ -17,16 +17,16 @@ public final static String SHAPE_ID = "OG.shape.bpmn.D_Store";
 		super(element);
 	}
 	
-	@Override
-	public Symbol createSymbol() {
-		Symbol symbol = new Symbol();
-		symbol.setName("데이터 저장소");
-		symbol.setShapeId(SHAPE_ID);
-		symbol.setHeight(50);
-		symbol.setWidth(50);
-		symbol.setElementClassName(DataStore.class.getName());
-		symbol.setShapeType("GEOM");
-		
-		return symbol;
-	}
+//	@Override
+//	public Symbol createSymbol() {
+//		Symbol symbol = new Symbol();
+//		symbol.setName("데이터 저장소");
+//		symbol.setShapeId(SHAPE_ID);
+//		symbol.setHeight(50);
+//		symbol.setWidth(50);
+//		symbol.setElementClassName(DataStore.class.getName());
+//		symbol.setShapeType("GEOM");
+//
+//		return symbol;
+//	}
 }

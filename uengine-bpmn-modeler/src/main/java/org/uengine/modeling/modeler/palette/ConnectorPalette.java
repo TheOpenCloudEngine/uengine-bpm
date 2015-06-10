@@ -10,11 +10,6 @@ public class ConnectorPalette extends Palette {
 
 	public ConnectorPalette(){
 		this.setName("Connector!");
-		initPallet();
-	}
-	
-	@Override
-	protected void initPallet() {
 		this.getSymbolList().add(SequenceFlowView.createSymbol());
 		this.getSymbolList().add(MessageFlowView.createSymbol());
 		this.getSymbolList().add(DataAssociationTransitionView.createSymbol());

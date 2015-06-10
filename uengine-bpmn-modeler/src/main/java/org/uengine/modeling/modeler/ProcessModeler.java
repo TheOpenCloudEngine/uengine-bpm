@@ -30,6 +30,10 @@ public class ProcessModeler extends DefaultModeler {
 	
 	@Override
 	public void setModel(IModel model) throws Exception {
+		
+		if(model==null)
+			return;
+		
 		List<ElementView> elementViewList = new ArrayList<ElementView>();
 		List<RelationView> relationViewList = new ArrayList<RelationView>();
 
@@ -43,7 +47,6 @@ public class ProcessModeler extends DefaultModeler {
 //
 //			elementViewList.add(elementView);
 //		}
-
 
 		for(IElement element : def.getChildActivities()){
 			ElementView elementView = element.getElementView();

@@ -17,14 +17,16 @@ import org.metaworks.annotation.Range;
 import org.metaworks.annotation.Validator;
 import org.metaworks.annotation.ValidatorContext;
 import org.metaworks.annotation.ValidatorSet;
+import org.metaworks.dwr.SerializationSensitive;
 import org.uengine.contexts.DatabaseSynchronizationOption;
 import org.uengine.contexts.TextContext;
+import org.uengine.util.UEngineUtil;
 
 /**
  * @author Jinyoung Jang
  */
 
-public class ProcessVariable implements java.io.Serializable, NeedArrangementToSerialize, Cloneable, ContextAware{
+public class ProcessVariable implements java.io.Serializable, NeedArrangementToSerialize, Cloneable, ContextAware, SerializationSensitive {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	transient MetaworksContext metaworksContext;
@@ -90,7 +92,18 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 		public void setType(Class type){
 			this.type = type;
 		}
-		
+
+
+	private String typeClassName;
+
+	public String getTypeClassName() {
+		return typeClassName;
+	}
+
+	public void setTypeClassName(String typeClassName) {
+		this.typeClassName = typeClassName;
+	}
+
 	transient String typeInputter;
 		@Order(3)
 		@Range(options={"Text","Date","Complex"}, values={"java.lang.String","java.util.Date","org.uengine.contexts.ComplexType"})
@@ -314,12 +327,26 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		}
 
 		setName(getName());
+
+		try {
+			if (UEngineUtil.isNotEmpty(getTypeClassName())) {
+				setType(Thread.currentThread().getContextClassLoader().loadClass(getTypeClassName()));
+			}
+		}catch (ClassNotFoundException e){
+			e.printStackTrace();
+		}
 	}
 
 	public void beforeSerialization() {
 
 		if(getDefaultValue()!=null && getDefaultValue() instanceof NeedArrangementToSerialize){
-			((NeedArrangementToSerialize)getDefaultValue()).beforeSerialization();
+			((NeedArrangementToSerialize) getDefaultValue()).beforeSerialization();
+		}
+
+		if(getType()!=null) {
+			setTypeClassName(getType().getName());
+
+			setType(null);
 		}
 	}
 	

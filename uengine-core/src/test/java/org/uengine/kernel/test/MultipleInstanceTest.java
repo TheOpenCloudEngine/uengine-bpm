@@ -1,5 +1,6 @@
 package org.uengine.kernel.test;
 
+import org.junit.Ignore;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
@@ -10,6 +11,7 @@ import java.io.FileOutputStream;
 public class MultipleInstanceTest extends UEngineTest{
 
     ProcessDefinition processDefinition;
+    SubProcess subProcess;
 
     /**
      * build a graph as follows:
@@ -18,9 +20,19 @@ public class MultipleInstanceTest extends UEngineTest{
      *                |                  |
      *          9 --->|   1 -> 2 -> 3    |---> 7
      *                |                  |
+     *                |        -         |
+     *                |        -         |
+     *                |        -         |
      *                +------------------+
      *
      *   * 1,2 and 3 are embraced in an embedded SubProcess
+
+     *                +-------sub--------+
+     *                |                  |
+     *          9 --->|   1 -> 2 -> 3    |---> 7
+     *                |                  |
+     *                |        O         |
+     *                +------------------+
      *
      * @throws Exception
      */
@@ -35,7 +47,7 @@ public class MultipleInstanceTest extends UEngineTest{
 
 
 
-        SubProcess subProcess = new SubProcess();
+        subProcess = new SubProcess();
         subProcess.setTracingTag("sub");
 
         subProcess.setForEachVariable(ProcessVariable.forName("var1"));
@@ -139,6 +151,10 @@ public class MultipleInstanceTest extends UEngineTest{
 
     public void testMIForExecutionScope() throws Exception {
 
+        subProcess.setMultipleInstanceOption("parallel");
+
+
+
         ProcessInstance instance = processDefinition.createInstance();
 
         ProcessVariableValue pvv = new ProcessVariableValue();
@@ -190,6 +206,55 @@ public class MultipleInstanceTest extends UEngineTest{
 
         assertExecutionPathEquals("With Execution Scope 2", new String[]{
                 "a9",       "a1", "a1", "a1",   "a2", "a3",   "a2", "a3",  "a2", "a3",   "sub", "a7"
+        }, instance);
+
+    }
+
+
+    public void _testMIForLoop() throws Exception {
+
+        subProcess.setMultipleInstanceOption("loop");
+
+
+        ProcessInstance instance = processDefinition.createInstance();
+
+        ProcessVariableValue pvv = new ProcessVariableValue();
+        pvv.setName("var1");
+        pvv.setValue("1");
+        pvv.moveToAdd();
+        pvv.setValue("2");
+        pvv.moveToAdd();
+        pvv.setValue("3");
+
+        instance.set("var1", pvv);
+
+        instance.execute();
+
+
+        assertExecutionPathEquals("Running Before Event", new String[]{
+                "a9",       "a1",
+        }, instance);
+
+        instance.setExecutionScope("0");
+        instance.getProcessDefinition().fireMessage("receive", instance, null);
+
+        assertExecutionPathEquals("With Execution Scope 0", new String[]{
+                "a9",       "a1", "a2", "a3",   "a1",
+        }, instance);
+
+
+        instance.setExecutionScope("1");
+        instance.getProcessDefinition().fireMessage("receive", instance, null);
+
+        assertExecutionPathEquals("With Execution Scope 1", new String[]{
+                "a9",       "a1", "a2", "a3",   "a1", "a2", "a3",
+        }, instance);
+
+        instance.setExecutionScope("2");
+        instance.getProcessDefinition().fireMessage("receive", instance, null);
+
+        assertExecutionPathEquals("With Execution Scope 2", new String[]{
+                "a9",       "a1", "a2", "a3",   "a1", "a2", "a3",   "a1", "a2", "a3",   "sub", "a7"
         }, instance);
 
     }

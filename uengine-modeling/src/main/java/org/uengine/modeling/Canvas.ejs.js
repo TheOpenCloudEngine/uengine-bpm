@@ -386,14 +386,14 @@ org_uengine_modeling_Canvas.prototype = {
 			};
 		}else{
 			var transition = {
-				__className: 'org.uengine.kernel.graph.Transition',
+				__className: 'org.uengine.kernel.bpmn.SequenceFlow',
 				sourceElement: sourceElementView.element,
 				targetElement: targetElementView.element,
 				source: sourceElementView.element.tracingTag,
 				target: targetElementView.element.tracingTag
 			};
 			var transitionView = {
-				__className: 'org.uengine.kernel.designer.ui.TransitionView',
+				__className: 'org.uengine.kernel.bpmn.view.SequenceFlowView',
 				id: edge.id,
 				from: $(edge).attr('_from'),
 				to: $(edge).attr('_to'),

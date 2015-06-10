@@ -67,8 +67,9 @@ org_uengine_modeling_RelationView.prototype = {
 	},
 	getCanvas : function(){
 		
-		var canvasDiv = this.objectDiv.closest('.canvas');
-		var canvasId = canvasDiv.attr('objectId');
+		//var canvasDiv = this.objectDiv.closest('.canvas');
+		//var canvasId = canvasDiv.attr('objectId');
+		var canvasId = this.objectDiv.closest('.canvas').attr('id').split("_")[1];
 		
 		var object = mw3.objects[canvasId];
 		return object.getFaceHelper().getCanvas();
@@ -210,7 +211,6 @@ org_uengine_modeling_RelationView.prototype = {
 		}else{
 			$(this.canvas._CONTAINER).one('loaded.' + id, {updateFieldName: fieldName, objectId: this.objectId}, function(event){
 				var faceHelper = mw3.getFaceHelper(event.data.objectId);
-				
 				faceHelper[fieldName] = true;
 				faceHelper.draw();
 			});
@@ -219,7 +219,13 @@ org_uengine_modeling_RelationView.prototype = {
 	
 	draw: function(){
 		var style = this.object.style;
-		if(this.object.from && this.object.to){
+		var fromPos = this.object.from.indexOf('_TERMINAL_');
+		var toPos = this.object.to.indexOf('_TERMINAL_');
+		
+		var fromElementId = this.object.from.substring(0, fromPos);
+		var toElementId = this.object.to.substring(0, toPos);
+		
+		if($('#' + fromElementId).length && $('#' + toElementId).length){
 
 			this.element = this.canvas.connectWithTerminalId(this.object.from, this.object.to , OG.JSON.decode(unescape(style)), this.getLabel(), this.object.id, this.object.shapeId);
 			

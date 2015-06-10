@@ -219,6 +219,7 @@ org_uengine_modeling_RelationView.prototype = {
 	
 	draw: function(){
 		var style = this.object.style;
+		
 		var fromPos = this.object.from.indexOf('_TERMINAL_');
 		var toPos = this.object.to.indexOf('_TERMINAL_');
 		

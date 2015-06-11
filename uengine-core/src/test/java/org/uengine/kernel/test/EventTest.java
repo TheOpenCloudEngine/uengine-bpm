@@ -1,15 +1,11 @@
 package org.uengine.kernel.test;
 
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.BlockFinder;
 import org.uengine.kernel.bpmn.Event;
-import org.uengine.kernel.bpmn.Gateway;
 import org.uengine.kernel.bpmn.SequenceFlow;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Vector;
 
 public class EventTest extends UEngineTest{
@@ -135,6 +131,9 @@ public class EventTest extends UEngineTest{
 
         GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
 
+        processDefinition = (ProcessDefinition) GlobalContext.deserialize(new FileInputStream("/java/er.bpmn"), String.class);
+
+
 
 
     }
@@ -142,6 +141,9 @@ public class EventTest extends UEngineTest{
     public void testEscalationEvent() throws Exception {
 
         ProcessInstance instance = processDefinition.createInstance();
+
+        instance.putRoleMapping("r1", "jane");
+        instance.getProcessDefinition().setId("EventTest");
 
         instance.execute();
         assertExecutionPathEquals("Running Before Event", new String[]{

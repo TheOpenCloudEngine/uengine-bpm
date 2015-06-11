@@ -1,5 +1,9 @@
 package org.uengine.kernel;
 
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.Type;
+import org.metaworks.annotation.ServiceMethod;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -7,10 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.metaworks.ServiceMethodContext;
-import org.metaworks.Type;
-import org.metaworks.annotation.ServiceMethod;
 
 /**
  * @author Jinyoung Jang
@@ -20,11 +20,11 @@ public abstract class RoleResolutionContext implements java.io.Serializable, Tra
 	public static void metaworksCallback_changeMetadata(Type type){
 		type.removeFieldDescriptor("Name");
 	}
-	
+
 	public RoleResolutionContext(){
-		
+
 	}
-	
+
 	private String name;
 
 	public String getName() {
@@ -34,22 +34,22 @@ public abstract class RoleResolutionContext implements java.io.Serializable, Tra
 	public void setName(String string) {
 		name = string;
 	}
-	
+
 	abstract public RoleMapping getActualMapping(
-		ProcessDefinition pd,
-		ProcessInstance instance,
-		String tracingTag,
-		Map options) throws Exception;
-		
+			ProcessDefinition pd,
+			ProcessInstance instance,
+			String tracingTag,
+			Map options) throws Exception;
+
 	abstract public String getDisplayName();
-	
+
 	/**
 	 * @deprecated
 	 */
 	public String[] getDispatchingParameters(){
 		return null;
 	}
-	
+
 	/**
 	 * @deprecated
 	 */
@@ -58,7 +58,7 @@ public abstract class RoleResolutionContext implements java.io.Serializable, Tra
 	}
 
 	public Object getTransferData(DataFlavor flavor)
-		throws UnsupportedFlavorException, IOException {
+			throws UnsupportedFlavorException, IOException {
 		List list = new ArrayList();
 		list.add(this);
 		return list;
@@ -75,7 +75,7 @@ public abstract class RoleResolutionContext implements java.io.Serializable, Tra
 	public String toString() {
 		return getDisplayName();
 	}
-	
+
 	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_POPUP)
 	public Object openPicker() throws Exception{
 		return null;

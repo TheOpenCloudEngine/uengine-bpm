@@ -66,19 +66,11 @@ org_uengine_modeling_RelationView.prototype = {
 		return unescape(this.object.label!=null?this.object.label:'');
 	},
 	getCanvas : function(){
-<<<<<<< HEAD
-		
-		//var canvasDiv = this.objectDiv.closest('.canvas');
-		//var canvasId = canvasDiv.attr('objectId');
-		var canvasId = this.objectDiv.closest('.canvas').attr('id').split("_")[1];
-		
-=======
 
 		//var canvasDiv = this.objectDiv.closest('.canvas');
 		//var canvasId = canvasDiv.attr('objectId');
 		var canvasId = this.objectDiv.closest('.canvas').attr('id').split("_")[1];
 
->>>>>>> c85c3036a4c18b8ee81f7cf8af970f013d8bf07e
 		var object = mw3.objects[canvasId];
 		return object.getFaceHelper().getCanvas();
 	},
@@ -227,15 +219,6 @@ org_uengine_modeling_RelationView.prototype = {
 
 	draw: function(){
 		var style = this.object.style;
-<<<<<<< HEAD
-		
-		var fromPos = this.object.from.indexOf('_TERMINAL_');
-		var toPos = this.object.to.indexOf('_TERMINAL_');
-		
-		var fromElementId = this.object.from.substring(0, fromPos);
-		var toElementId = this.object.to.substring(0, toPos);
-		
-=======
 
 		var fromPos = this.object.from.indexOf('_TERMINAL_');
 		var toPos = this.object.to.indexOf('_TERMINAL_');
@@ -243,7 +226,6 @@ org_uengine_modeling_RelationView.prototype = {
 		var fromElementId = this.object.from.substring(0, fromPos);
 		var toElementId = this.object.to.substring(0, toPos);
 
->>>>>>> c85c3036a4c18b8ee81f7cf8af970f013d8bf07e
 		if($('#' + fromElementId).length && $('#' + toElementId).length){
 
 			this.element = this.canvas.connectWithTerminalId(this.object.from, this.object.to , OG.JSON.decode(unescape(style)), this.getLabel(), this.object.id, this.object.shapeId);

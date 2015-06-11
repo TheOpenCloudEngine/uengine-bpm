@@ -10,6 +10,7 @@ import org.uengine.kernel.Activity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
 import org.uengine.kernel.UEngineException;
+import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
@@ -148,6 +149,13 @@ public class ProcessModeler extends DefaultModeler {
 					parentActivity = def;
 
 				parentActivity.addChildActivity(activity);
+
+				if(activity instanceof Event){
+					Activity toAttachActivity = findAttachedActivity(activity,canvas.getElementViewList());
+
+					if(toAttachActivity!=null)
+						((Event)activity).setAttachedToRef(toAttachActivity.getTracingTag());
+				}
 			}
 				
 		}
@@ -163,6 +171,11 @@ public class ProcessModeler extends DefaultModeler {
 		}
 		def.setPools(null);
 		return def;
+	}
+
+	//TODO: 원석 작업
+	private Activity findAttachedActivity(Activity activity, List<ElementView> elementViews) {
+		return null;
 	}
 
 	private FlowActivity findParentActivity(Object what, List<FlowActivity> parentActivities) {

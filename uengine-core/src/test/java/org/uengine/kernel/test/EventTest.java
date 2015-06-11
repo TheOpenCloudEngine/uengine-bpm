@@ -6,9 +6,11 @@ import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.Gateway;
 import org.uengine.kernel.bpmn.SequenceFlow;
 
+import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 public class EventTest extends UEngineTest{
 
@@ -131,6 +133,9 @@ public class EventTest extends UEngineTest{
 
         ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
+        GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
+
+
 
     }
 
@@ -143,6 +148,9 @@ public class EventTest extends UEngineTest{
                 "a10", "a9"
         }, instance);
 
+
+
+        Vector mls = instance.getMessageListeners("event");
 
 
 

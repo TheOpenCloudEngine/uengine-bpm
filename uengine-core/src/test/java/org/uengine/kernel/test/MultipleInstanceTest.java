@@ -1,8 +1,6 @@
 package org.uengine.kernel.test;
 
-import org.junit.Ignore;
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.SubProcess;
 
@@ -174,7 +172,7 @@ public class MultipleInstanceTest extends UEngineTest{
                 "a9",       "a1", "a1", "a1",
         }, instance);
 
-        try {
+       try {
             instance.getProcessDefinition().fireMessage("receive", instance, null);
         }catch(Exception e){
             fail("Receive should not be triggered");
@@ -211,7 +209,7 @@ public class MultipleInstanceTest extends UEngineTest{
     }
 
 
-    public void _testMIForLoop() throws Exception {
+    public void testMIForLoop() throws Exception {
 
         subProcess.setMultipleInstanceOption("loop");
 
@@ -247,7 +245,7 @@ public class MultipleInstanceTest extends UEngineTest{
         instance.getProcessDefinition().fireMessage("receive", instance, null);
 
         assertExecutionPathEquals("With Execution Scope 1", new String[]{
-                "a9",       "a1", "a2", "a3",   "a1", "a2", "a3",
+                "a9",       "a1", "a2", "a3",   "a1", "a2", "a3",   "a1"
         }, instance);
 
         instance.setExecutionScope("2");
@@ -258,4 +256,125 @@ public class MultipleInstanceTest extends UEngineTest{
         }, instance);
 
     }
+
+    public void _testMIRefreshParallel() throws Exception {
+
+        subProcess.setMultipleInstanceOption("parallel");
+
+
+        ProcessInstance instance = processDefinition.createInstance();
+
+        ProcessVariableValue pvv = new ProcessVariableValue();
+        pvv.setName("var1");
+        pvv.setValue("1");
+        pvv.moveToAdd();
+        pvv.setValue("2");
+
+        instance.set("var1", pvv);
+
+        instance.execute();
+
+
+        assertExecutionPathEquals("Running Before Event", new String[]{
+                "a9",       "a1", "a1",
+        }, instance);
+
+
+        instance.setExecutionScope("0");
+        instance.getProcessDefinition().fireMessage("receive", instance, null);
+
+        assertExecutionPathEquals("With Execution Scope 0", new String[]{
+                "a9",       "a1", "a1",   "a2", "a3"
+        }, instance);
+
+
+
+        ///// now add a new branch on the fly /////
+
+        pvv = instance.getMultiple("", "var1");
+        pvv.setName("var1");
+        pvv.moveToAdd();
+        pvv.setValue("3");
+
+        instance.set("var1", pvv);
+
+        subProcess.refreshMultipleInstance(instance); // this will trigger to add new branch for 3
+
+        assertExecutionPathEquals("With Execution Scope 0", new String[]{
+                "a9",       "a1", "a1",   "a2", "a3",   "a1"
+        }, instance);
+
+
+        instance.setExecutionScope("3");
+        instance.getProcessDefinition().fireMessage("receive", instance, null);
+
+        assertExecutionPathEquals("With Execution Scope 1", new String[]{
+                "a9",       "a1", "a1",   "a2", "a3",   "a1", "a2", "a3"
+        }, instance);
+
+
+    }
+
+
+    public void _testMIRefreshLoop() throws Exception {
+
+        subProcess.setMultipleInstanceOption("loop");
+
+
+        ProcessInstance instance = processDefinition.createInstance();
+
+        ProcessVariableValue pvv = new ProcessVariableValue();
+        pvv.setName("var1");
+        pvv.setValue("0");
+        pvv.moveToAdd();
+        pvv.setValue("2");
+
+        instance.set("var1", pvv);
+
+        instance.execute();
+
+
+        assertExecutionPathEquals("Running Before Event", new String[]{
+                "a9",       "a1",
+        }, instance);
+
+
+        instance.setExecutionScope("0");
+        instance.getProcessDefinition().fireMessage("receive", instance, null);
+
+        assertExecutionPathEquals("With Execution Scope 0", new String[]{
+                "a9",       "a1",  "a2", "a3",/* of 0 */   "a1"/* of 2 */
+        }, instance);
+
+
+
+        ///// now add a new branch on the fly /////
+
+        pvv = new ProcessVariableValue();
+        pvv.setName("var1");
+        pvv.setValue("0");
+        pvv.moveToAdd();
+        pvv.setValue("1"); //insert 2 after the 3 is running.
+        pvv.moveToAdd();
+        pvv.setValue("2");
+
+        instance.set("var1", pvv);
+
+        subProcess.refreshMultipleInstance(instance); // this will trigger to add new branch for 1
+
+        assertExecutionPathEquals("After refreshing (0,2 -> 0,1,2)", new String[]{
+                "a9",       "a1",  "a2", "a3",/* of 0 */   "a1"/* of 2 */, "a1"/* of 1 */
+        }, instance);
+
+
+        instance.setExecutionScope("1");
+        instance.getProcessDefinition().fireMessage("receive", instance, null);
+
+        assertExecutionPathEquals("With Execution Scope 1", new String[]{
+                "a9",       "a1",  "a2", "a3",/* of 0 */   "a1"/* of 2 */, "a1", "a2", "a3"/* of 1 */
+        }, instance);
+
+
+    }
+
 }

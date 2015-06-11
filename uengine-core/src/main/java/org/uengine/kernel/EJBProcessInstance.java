@@ -218,8 +218,12 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		if(isCaching()){
 			ProcessInstance instance = ptc.getProcessInstanceInTransaction(instanceId);
-			if(instance!=null)
+			if(instance!=null) {
+
+				instance.setExecutionScope(executionScope);
+
 				return instance;
+			}
 		}
 
 		try{
@@ -249,6 +253,11 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 			//if the instance has been retreived by instanceId, it tells us it is not newly initiated status.
 			isNew = false;
+
+
+			if(executionScope!=null){
+				setExecutionScope(executionScope);
+			}
 
 			return this;
 

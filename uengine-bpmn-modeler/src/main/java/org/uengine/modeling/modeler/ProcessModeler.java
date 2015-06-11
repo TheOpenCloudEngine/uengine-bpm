@@ -3,7 +3,6 @@ package org.uengine.modeling.modeler;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.tools.javac.comp.Flow;
 import org.metaworks.MetaworksContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.Activity;
@@ -14,8 +13,14 @@ import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
-import org.uengine.kernel.view.ActivityView;
-import org.uengine.modeling.*;
+import org.uengine.modeling.Canvas;
+import org.uengine.modeling.DefaultModeler;
+import org.uengine.modeling.ElementView;
+import org.uengine.modeling.IElement;
+import org.uengine.modeling.IModel;
+import org.uengine.modeling.IRelation;
+import org.uengine.modeling.Palette;
+import org.uengine.modeling.RelationView;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
 

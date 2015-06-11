@@ -68,11 +68,7 @@ public class ParameterContextPanel  implements ContextAware{
 		ParameterContext parameterContext = new ParameterContext();
 		parameterContext.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 		parameterContext.getMetaworksContext().setHow("add");
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> c85c3036a4c18b8ee81f7cf8af970f013d8bf07e
 		SelectBox valBox = new SelectBox();
 		
 		parameterContext.setType(valBox);

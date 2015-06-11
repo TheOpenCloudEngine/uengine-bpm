@@ -1,6 +1,6 @@
 var org_uengine_modeling_RelationView = function(objectId, className){
 	var faceHelper = this;
-	
+
 	this.objectId = objectId;
 	this.className = className;
 	this.object = mw3.objects[this.objectId];
@@ -11,7 +11,7 @@ var org_uengine_modeling_RelationView = function(objectId, className){
 	this.element = null;
 
 	this.metadata = mw3.getMetadata(this.className);
-	
+
 	faceHelper.init();
 };
 
@@ -29,28 +29,28 @@ org_uengine_modeling_RelationView.prototype = {
 			this.object.height = this.element.shape.geom.getBoundary().getHeight();
 			this.object.id = this.element.id;
 			this.object.shapeId = this.element.shape.SHAPE_ID;
-			
+
 			this.object.from = $(this.element).attr('_from');
 			this.object.to = $(this.element).attr('_to');
-			
+
 			var vertices = this.element.shape.geom.getVertices();
 			var from = vertices[0];
 			var to = vertices[vertices.length - 1];
 			this.object.value = from + ',' + to;
-			
+
 			this.object.geom = escape(this.element.shape.geom.toString());
 			this.object.style = escape(OG.JSON.encode(this.element.shape.geom.style));
-			
+
 			if(this.object.from != undefined && this.object.to != undefined){
-				
+
 				var temp = this.object.from.split('_');
 				var fromStr = temp[0] + '_' + temp[1] + '_' + temp[2];
 				temp = this.object.to.split('_');
 				var toStr = temp[0] + '_' + temp[1] + '_' + temp[2];
-				
+
 				var sourceElementView = mw3.getAutowiredObject('org.uengine.modeling.ElementView@' + fromStr, true);
 				var targetElementView = mw3.getAutowiredObject('org.uengine.modeling.ElementView@' + toStr, true);
-				
+
 				if(sourceElementView != undefined && targetElementView != undefined){
 					this.object.relation.sourceElement = sourceElementView.element;
 					this.object.relation.targetElement = targetElementView.element;
@@ -58,34 +58,35 @@ org_uengine_modeling_RelationView.prototype = {
 					this.object.relation.target = targetElementView.element.tracingTag;
 				}
 			}
-			
+
 		}
 	},
-	
+
 	getLabel : function(){
 		return unescape(this.object.label!=null?this.object.label:'');
 	},
 	getCanvas : function(){
-		
-		var canvasDiv = this.objectDiv.closest('.canvas');
-		var canvasId = canvasDiv.attr('objectId');
-		
+
+		//var canvasDiv = this.objectDiv.closest('.canvas');
+		//var canvasId = canvasDiv.attr('objectId');
+		var canvasId = this.objectDiv.closest('.canvas').attr('id').split("_")[1];
+
 		var object = mw3.objects[canvasId];
 		return object.getFaceHelper().getCanvas();
-	},	
+	},
 	init : function(){
 		var existElement = document.getElementById(this.object.id);
 		var style = this.object.style;
 		if(existElement){
 			//this.canvas.drawLabel(existElement, this.object.label);
-			
+
 			this.element = existElement;
-			
+
 			this.bindMapping();
 		}else if(this.object.from && this.object.to){
 			var fromPos = this.object.from.indexOf('_TERMINAL_');
 			var toPos = this.object.to.indexOf('_TERMINAL_');
-			
+
 			var fromElementId = this.object.from.substring(0, fromPos);
 			var toElementId = this.object.to.substring(0, toPos);
 
@@ -95,7 +96,7 @@ org_uengine_modeling_RelationView.prototype = {
 			//this.readyTargetElement(fromElementId, 'from');
 			var shape = eval('new ' + this.object.shapeId + '(\'' + this.object.value + '\')');
 			var geom = unescape(this.object.geom);
-			
+
 			if(geom){
 				geom = OG.JSON.decode(geom);
 				if (geom.type === OG.Constants.GEOM_NAME[OG.Constants.GEOM_TYPE.POLYLINE]) {
@@ -109,27 +110,27 @@ org_uengine_modeling_RelationView.prototype = {
 			if (this.getLabel()) {
 				shape.label = this.getLabel();
 			}
-			
-			this.element = this.canvas.drawShape(null, 
-	                shape, 
-	                null,
-	                OG.JSON.decode(unescape(style)),
-	                this.object.id,
-	                null,
-	                null);
-	        
-	        if (this.object.from) {
+
+			this.element = this.canvas.drawShape(null,
+				shape,
+				null,
+				OG.JSON.decode(unescape(style)),
+				this.object.id,
+				null,
+				null);
+
+			if (this.object.from) {
 				$(this.element).attr('_from', this.object.from);
-				
+
 				var pos = this.object.from.indexOf('_TERMINAL_');
-				
+
 				this.canvas._RENDERER.redrawShape($('#' + this.object.from.substring(0,pos))[0], null, true);
 			}
 		}else if(!this.object.from && this.object.to){
 			//this.readyTargetElement(toElementId, 'to');
 			var shape = eval('new ' + this.object.shapeId + '(\'' + this.object.value + '\')');
 			var geom = unescape(this.object.geom);
-			
+
 			if(geom){
 				geom = OG.JSON.decode(geom);
 				if (geom.type === OG.Constants.GEOM_NAME[OG.Constants.GEOM_TYPE.POLYLINE]) {
@@ -143,66 +144,66 @@ org_uengine_modeling_RelationView.prototype = {
 			if (this.getLabel()) {
 				shape.label = this.getLabel();
 			}
-					
-			this.element = this.canvas.drawShape(null, 
-	                shape, 
-	                null,
-	                OG.JSON.decode(unescape(style)),
-	                this.object.id,
-	                null,
-	                false);
-	        if (this.object.to) {
+
+			this.element = this.canvas.drawShape(null,
+				shape,
+				null,
+				OG.JSON.decode(unescape(style)),
+				this.object.id,
+				null,
+				false);
+			if (this.object.to) {
 				$(this.element).attr('_to', this.object.to);
-				
+
 				var pos = this.object.to.indexOf('_TERMINAL_');
-				
+
 				this.canvas._RENDERER.redrawShape($('#' + this.object.to.substring(0,pos))[0], null, true);
-			}        
+			}
 		}else{
 			var shape = eval('new ' + this.object.shapeId);
 			if (this.getLabel()) {
 				shape.label = this.getLabel();
 			}
-			this.element = this.canvas.drawShape([this.object.x, this.object.y], 
-	                shape, 
-	                [parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
-	                OG.JSON.decode(unescape(style)),
-	                this.object.id,
-	                null,
-	                null);
-	                
-	        this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
-	        
-	        mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
+			this.element = this.canvas.drawShape([this.object.x, this.object.y],
+				shape,
+				[parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
+				OG.JSON.decode(unescape(style)),
+				this.object.id,
+				null,
+				null);
+
+			this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
+
+			mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
 		}
 	},
-	
+
 	bindMapping : function(){
 		var metadata = mw3.getMetadata(this.className);
 		for(var methodName in metadata.serviceMethodContextMap){
 			var methodContext = metadata.serviceMethodContextMap[methodName];
-			
+
 			if(methodContext.eventBinding){
 				for(var eventNameIndex in methodContext.eventBinding){
 					var eventName = methodContext.eventBinding[eventNameIndex];
-					
+
 					this.bind(eventName);
 				}
 			}
-			
-		}				
+
+		}
 	},
-	
+
 	bind : function(name){
 		$(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function(event, ui){
 			$('#' + mw3._getObjectDivId(event.data.objectId)).trigger(event.type);
-		});		
+		});
 	},
-	
+
 	destroy : function(){
-		$(this.element).unbind('.' + this.objectId);	
+		$(this.element).unbind('.' + this.objectId);
 	},
-	
+
 	readyTargetElement : function(id, fieldName){
 		if($('#' + id).length){
 			this[fieldName] = true;
@@ -210,19 +211,25 @@ org_uengine_modeling_RelationView.prototype = {
 		}else{
 			$(this.canvas._CONTAINER).one('loaded.' + id, {updateFieldName: fieldName, objectId: this.objectId}, function(event){
 				var faceHelper = mw3.getFaceHelper(event.data.objectId);
-				
 				faceHelper[fieldName] = true;
 				faceHelper.draw();
 			});
 		}
 	},
-	
+
 	draw: function(){
 		var style = this.object.style;
-		if(this.object.from && this.object.to){
+
+		var fromPos = this.object.from.indexOf('_TERMINAL_');
+		var toPos = this.object.to.indexOf('_TERMINAL_');
+
+		var fromElementId = this.object.from.substring(0, fromPos);
+		var toElementId = this.object.to.substring(0, toPos);
+
+		if($('#' + fromElementId).length && $('#' + toElementId).length){
 
 			this.element = this.canvas.connectWithTerminalId(this.object.from, this.object.to , OG.JSON.decode(unescape(style)), this.getLabel(), this.object.id, this.object.shapeId);
-			
+
 			this.bindMapping();
 		}
 	}

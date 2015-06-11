@@ -1,8 +1,6 @@
 package org.uengine.kernel.test;
 
-import org.junit.Ignore;
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.SubProcess;
 
@@ -174,7 +172,7 @@ public class MultipleInstanceTest extends UEngineTest{
                 "a9",       "a1", "a1", "a1",
         }, instance);
 
-        try {
+       try {
             instance.getProcessDefinition().fireMessage("receive", instance, null);
         }catch(Exception e){
             fail("Receive should not be triggered");
@@ -211,7 +209,7 @@ public class MultipleInstanceTest extends UEngineTest{
     }
 
 
-    public void _testMIForLoop() throws Exception {
+    public void testMIForLoop() throws Exception {
 
         subProcess.setMultipleInstanceOption("loop");
 
@@ -247,7 +245,7 @@ public class MultipleInstanceTest extends UEngineTest{
         instance.getProcessDefinition().fireMessage("receive", instance, null);
 
         assertExecutionPathEquals("With Execution Scope 1", new String[]{
-                "a9",       "a1", "a2", "a3",   "a1", "a2", "a3",
+                "a9",       "a1", "a2", "a3",   "a1", "a2", "a3",   "a1"
         }, instance);
 
         instance.setExecutionScope("2");

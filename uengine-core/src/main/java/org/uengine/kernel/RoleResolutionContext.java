@@ -34,7 +34,7 @@ public abstract class RoleResolutionContext implements java.io.Serializable, Tra
 	public void setName(String string) {
 		name = string;
 	}
-	
+
 	abstract public RoleMapping getActualMapping(
 		ProcessDefinition pd,
 		ProcessInstance instance,
@@ -42,7 +42,7 @@ public abstract class RoleResolutionContext implements java.io.Serializable, Tra
 		Map options) throws Exception;
 		
 	abstract public String getDisplayName();
-	
+
 	/**
 	 * @deprecated
 	 */

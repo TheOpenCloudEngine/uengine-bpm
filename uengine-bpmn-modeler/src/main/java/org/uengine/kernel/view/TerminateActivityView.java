@@ -12,10 +12,5 @@ public class TerminateActivityView extends EventView {
 	public TerminateActivityView(){
 		setShapeId(SHAPE_ID);
 	}
-	
-	public TerminateActivityView(IElement element){
-		super(element);
-	}
-	
 
 }

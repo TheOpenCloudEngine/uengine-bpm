@@ -21,6 +21,7 @@ import org.metaworks.annotation.Hidden;
 import org.uengine.contexts.MappingContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.StartEvent;
+import org.uengine.kernel.face.RoleSelectorFace;
 import org.uengine.persistence.dao.DAOFactory;
 import org.uengine.persistence.worklist.WorklistDAOType;
 import org.uengine.util.ActivityForLoop;
@@ -52,7 +53,7 @@ public class HumanActivity extends ReceiveActivity {
 	
 	
 	protected Role role;
-	@Hidden
+	@Face(faceClass=RoleSelectorFace.class)
 		public Role getRole() {
 			
 			if(role!=null && role.getName()!=null && getProcessDefinition()!=null){

@@ -1,8 +1,6 @@
 package org.uengine.modeling.modeler.palette;
 
-import org.uengine.kernel.bpmn.view.GatewayView;
-import org.uengine.kernel.bpmn.view.StartEventView;
-import org.uengine.kernel.bpmn.view.SubProcessView;
+import org.uengine.kernel.bpmn.view.*;
 import org.uengine.kernel.view.*;
 import org.uengine.modeling.Palette;
 
@@ -22,6 +20,7 @@ public class SimplePalette extends Palette {
 		this.getSymbolList().add((new GatewayView()).createSymbol());
 		this.getSymbolList().add((new HumanActivityView()).createSymbol());
 		this.getSymbolList().add((new SubProcessView()).createSymbol());
-
+		this.getSymbolList().add((new MessageEventView()).createSymbol());
+		this.getSymbolList().add((new EscalationEventView()).createSymbol());
 	}
 }

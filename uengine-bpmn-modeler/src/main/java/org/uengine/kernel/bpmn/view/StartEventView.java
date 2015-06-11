@@ -14,10 +14,4 @@ public class StartEventView extends EventView {
 		setShapeId(SHAPE_ID);
 	}
 
-	public StartEventView(IElement element){
-		super(element);
-	}
-	
-
-	
 }

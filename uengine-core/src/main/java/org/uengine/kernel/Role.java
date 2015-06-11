@@ -28,10 +28,6 @@ import org.uengine.util.UEngineUtil;
 /**
  * @author Jinyoung Jang
  */
-@Face(ejsPath = "genericfaces/ActivityFace.ejs",
-ejsPathMappingByContext = {
-		"{how: 'menu', face: 'dwr/metaworks/org/uengine/kernel/Role.ejs'}"
-		}, options={"fieldOrder"},values={"name,displayName"})
 public class Role implements IElement, java.io.Serializable, Cloneable, ContextAware {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
@@ -166,6 +162,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 		}
 
 	private RoleResolutionContext roleResolutionContext = null;
+	@Hidden
 	@Face(displayName="역할 선택")
 	@Order(3)
 		public RoleResolutionContext getRoleResolutionContext() {
@@ -476,6 +473,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 
 		return elementView;
 	}
+	@Hidden
 	public ElementView getElementView() {
 		return this.elementView;
 	}

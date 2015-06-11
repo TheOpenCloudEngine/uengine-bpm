@@ -54,7 +54,7 @@ public class TimerEventTest extends UEngineTest {
                 rcv.setMessage("receive");
 
                 a1 = rcv;
-
+String ss;
             }
 
             if (i == 5) {

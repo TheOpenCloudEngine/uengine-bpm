@@ -2,13 +2,10 @@ package org.uengine.kernel.bpmn;
 
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Range;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.face.ParameterContextListFace;
 import org.uengine.kernel.bpmn.face.ProcessVariableSelectorFace;
 import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
-import org.uengine.util.UEngineUtil;
 
 import java.io.Serializable;
 import java.util.*;
@@ -33,6 +30,16 @@ public class SubProcess extends ScopeActivity{
         setInstanceId("<%=Instance.Name%>");
     }
 
+
+    private void setCurrForEachVariableIdx(ProcessInstance instance, int currForEachVariableIdx) throws Exception {
+        instance.setProperty(getTracingTag(), "currForEachVariableIdx", currForEachVariableIdx);
+    }
+
+    private int getCurrForEachVariableIdx(ProcessInstance instance) throws Exception {
+        return (int)instance.getProperty(getTracingTag(), "currForEachVariableIdx");
+    }
+
+
     String instanceId;
     @Hidden
     public String getInstanceId() {
@@ -51,69 +58,7 @@ public class SubProcess extends ScopeActivity{
         this.alias = alias;
     }
 
-    String definitionId;
-    @Hidden
-    public String getDefinitionId() {
-        return definitionId;
-    }
-    public void setDefinitionId(String l) {
-        definitionId = l;
-    }
 
-    //add ryu start
-    ProcessDefinition definitionObject;
-    @Hidden
-    public ProcessDefinition getDefinitionObject() {
-        return definitionObject;
-    }
-
-    public void setDefinitionObject(ProcessDefinition definition) {
-        this.definitionObject = definition;
-    }
-
-    /*  String dynamicDefinitionId;
-    public String getDynamicDefinitionId()
-    {
-      return dynamicDefinitionId;
-    }
-    public void setDynamicDefinitionId(String dynamicDefinitionId)
-    {
-      this.dynamicDefinitionId = dynamicDefinitionId;
-    }
-     */
-    ProcessVariable dynamicDefinitionIdPV;
-    @Hidden
-    public ProcessVariable getDynamicDefinitionIdPV() {
-        return dynamicDefinitionIdPV;
-    }
-    public void setDynamicDefinitionIdPV(ProcessVariable dynamicDefinitionIdPV) {
-        this.dynamicDefinitionIdPV = dynamicDefinitionIdPV;
-    }
-
-
-    int versionSelectOption = ProcessDefinition.VERSIONSELECTOPTION_CURRENT_PROD_VER;
-    @Hidden
-    @Range(
-            options={
-                    "Use the CURRENT production version",
-                    "Use the production version AT THE INITIATED TIME",
-                    "Use the production version AT THE DESIGNED TIME",
-                    "Use the version JUST SELECTED"
-            },
-
-            values={
-                    ""+ProcessDefinition.VERSIONSELECTOPTION_CURRENT_PROD_VER,
-                    ""+ProcessDefinition.VERSIONSELECTOPTION_PROD_VER_AT_INITIATED_TIME,
-                    ""+ProcessDefinition.VERSIONSELECTOPTION_PROD_VER_AT_DESIGNED_TIME,
-                    ""+ProcessDefinition.VERSIONSELECTOPTION_JUST_SELECTED,
-            }
-    )
-    public int getVersionSelectOption() {
-        return versionSelectOption;
-    }
-    public void setVersionSelectOption(int versionSelectOption) {
-        this.versionSelectOption = versionSelectOption;
-    }
 
     List<SubProcessParameterContext> variableBindings = new ArrayList<SubProcessParameterContext>();
     @Face(faceClass = SubProcessParameterContextListFace.class)
@@ -316,9 +261,6 @@ public class SubProcess extends ScopeActivity{
         Vector subprocessLabels = new Vector();
 
         ProcessVariableValue definitionIdPVV = null;
-        if(getDynamicDefinitionIdPV()!=null){
-            definitionIdPVV = getDynamicDefinitionIdPV().getMultiple(instance, "");
-        }
 
         if(getForEachRole()!=null){ //if there is configured forEachRole, initiate sub processes for each role mapping
 
@@ -351,7 +293,7 @@ public class SubProcess extends ScopeActivity{
                 }
 
                 if(unInitiatedRoleMappings.containsKey(endpoint)){
-                    ProcessInstance thePI = initiateSubProcess(thisDefinitionVersionId,instance, thisRM, thisValue, isConnectedMultipleSubProcesses, roleMapping.getCursor());
+                    ProcessInstance thePI = initiateSubProcess(instance, thisRM, thisValue, isConnectedMultipleSubProcesses, roleMapping.getCursor());
                     subprocessInstances.add(thePI);
                     subprocessInstanceIds.add(thePI.getInstanceId());
                     subprocessLabels.add(thisRM.getResourceName());
@@ -393,9 +335,45 @@ public class SubProcess extends ScopeActivity{
         }
     }
 
-    protected void executeActivity(ProcessInstance instance)
-            throws Exception {
+    protected void executeActivity(ProcessInstance instance) throws Exception {
+        if("loop".equals(getMultipleInstanceOption())){
+            executeActivity_CaseInLoop(instance);
+        }else{
+            executeActivity_CaseInParallel(instance);
+        }
+    }
 
+    private void executeActivity_CaseInLoop(ProcessInstance instance) throws Exception {
+        int currForEachVariableIdx = -1;
+        try{
+            currForEachVariableIdx = getCurrForEachVariableIdx(instance);
+        }catch(Exception e){}
+
+        currForEachVariableIdx++;
+
+        ProcessVariableValue pvv = getForEachVariable().getMultiple(instance, "");
+
+        if(currForEachVariableIdx >= pvv.size()){
+            super.fireComplete(instance);
+            return;
+        }
+
+        pvv.setCursor(currForEachVariableIdx);
+        Serializable theValue = pvv.getValue();
+
+        ExecutionScopeContext oldEsc = instance.getExecutionScopeContext();
+
+        ExecutionScopeContext esc = instance.issueNewExecutionScope(this, this, "sub");
+        instance.setExecutionScopeContext(esc);
+
+        initiateSubProcess(instance, null, theValue, false, pvv.getCursor());
+
+        instance.setExecutionScopeContext(oldEsc);
+
+        setCurrForEachVariableIdx(instance, currForEachVariableIdx);
+    }
+
+    private void executeActivity_CaseInParallel(ProcessInstance instance) throws Exception {
         boolean isConnectedMultipleSubProcesses = false;
         SubProcessActivity connectedPrevSubProcessActivity = null;
         try{
@@ -418,12 +396,6 @@ public class SubProcess extends ScopeActivity{
         Vector subprocessInstances = new Vector();
         Vector subprocessInstanceIds = new Vector();
         Vector subprocessLabels = new Vector();
-
-        ProcessVariableValue definitionIdPVV = null;
-        if(getDynamicDefinitionIdPV()!=null){
-            definitionIdPVV = getDynamicDefinitionIdPV().getMultiple(instance, "");
-        }
-
 
         instance.getProcessTransactionContext().setSharedContext("_SubProcessIsBeingInserted", new Boolean(true));
 
@@ -454,13 +426,7 @@ public class SubProcess extends ScopeActivity{
                     forEachValue.next();
                 }
 
-                String thisDefinitionVersionId = null;
-                if(definitionIdPVV!=null){
-                    thisDefinitionVersionId = (String) definitionIdPVV.getValue();
-                    definitionIdPVV.next();
-                }
-
-                ProcessInstance thePI = initiateSubProcess(thisDefinitionVersionId, instance, thisRM, thisValue, isConnectedMultipleSubProcesses, roleMapping.getCursor());
+                ProcessInstance thePI = initiateSubProcess(instance, thisRM, thisValue, isConnectedMultipleSubProcesses, roleMapping.getCursor());
 
                 subprocessInstances.add(thePI);
                 subprocessInstanceIds.add(thePI.getInstanceId());
@@ -478,26 +444,18 @@ public class SubProcess extends ScopeActivity{
             do{
                 Serializable theValue = pvv.getValue();
 
-                String thisDefinitionVersionId = null;
-                if(definitionIdPVV!=null){
-                    thisDefinitionVersionId = (String) definitionIdPVV.getValue();
-                    definitionIdPVV.next();
-                }
-
                 ExecutionScopeContext oldEsc = instance.getExecutionScopeContext();
 
                 ExecutionScopeContext esc = instance.issueNewExecutionScope(this, this, "sub");
                 instance.setExecutionScopeContext(esc);
 
-                ProcessInstance thePI = initiateSubProcess(thisDefinitionVersionId, instance, null, theValue, isConnectedMultipleSubProcesses, pvv.getCursor());
+                ProcessInstance thePI = initiateSubProcess(instance, null, theValue, isConnectedMultipleSubProcesses, pvv.getCursor());
 
                 subprocessInstances.add(thePI);
                 subprocessInstanceIds.add(thePI.getInstanceId() + "@" + esc.getExecutionScope());
 
-                if(theValue != null)
-                    subprocessLabels.add(theValue.toString());
-                else
-                    subprocessLabels.add(thePI.getInstanceId());
+                if(theValue != null) subprocessLabels.add(theValue.toString());
+                else subprocessLabels.add(thePI.getInstanceId());
 
                 instance.setExecutionScopeContext(oldEsc);
 
@@ -505,13 +463,7 @@ public class SubProcess extends ScopeActivity{
 
         }else{
             String thisDefinitionVersionId = null;
-            if(definitionIdPVV!=null){
-                thisDefinitionVersionId = (String) definitionIdPVV.getValue();
-            }
-
-            ProcessInstance thePI = initiateSubProcess(thisDefinitionVersionId, instance, null, null, false, 0);
-
-
+            ProcessInstance thePI = initiateSubProcess( instance, null, null, false, 0);
             subprocessInstances.add(thePI);
             subprocessInstanceIds.add(thePI.getInstanceId());
         }
@@ -520,7 +472,6 @@ public class SubProcess extends ScopeActivity{
         setSubprocessIds(instance, subprocessLabels, SUBPROCESS_INST_LABELS);
 
         instance.getProcessTransactionContext().setSharedContext(SUB_PROCESS_IS_BEING_INSERTED, null);
-
 
 //        if(!isConnectedMultipleSubProcesses)
 //            for(int i=0; i<subprocessInstances.size(); i++){
@@ -758,14 +709,11 @@ public class SubProcess extends ScopeActivity{
         return subProcesses;
     }
 
-
-    protected ProcessInstance initiateSubProcess(String realDefinitionId, ProcessInstance instance, RoleMapping currentRoleMapping, Serializable currentVariableValue, boolean isConnectedMultipleSubProcesses, int mappingIndex) throws Exception{
+    protected ProcessInstance initiateSubProcess(ProcessInstance instance, RoleMapping currentRoleMapping, Serializable currentVariableValue,
+                                                 boolean isConnectedMultipleSubProcesses, int mappingIndex) throws Exception{
         String subProcessInstanceName = evaluateContent(instance, getInstanceId()).toString();
-
         transferValues(instance, instance, currentRoleMapping, currentVariableValue, mappingIndex);
-
         super.executeActivity(instance);
-
         return instance;
     }
 
@@ -878,43 +826,6 @@ public class SubProcess extends ScopeActivity{
             }
     }
 
-    @Override
-    public Map getActivityDetails(ProcessInstance inst, String locale)
-            throws Exception {
-        Map details = super.getActivityDetails(inst, locale);
-
-        details.put("sub process", getDefinitionId());
-
-        Object instId = getSubprocessIds(inst, SUBPROCESS_INST_ID);
-        details.put("instanceId of sub process", instId);
-
-        return details;
-    }
-
-    public ValidationContext validate(Map options) {
-        // TODO Auto-generated method stub
-        ValidationContext vc = super.validate(options);
-
-        if(!UEngineUtil.isNotEmpty(getDefinitionId())){
-            vc.add(getActivityLabel() + " Definition is not specified.");
-        }
-
-        if(getForEachRole()!=null){
-            boolean bExist = false;
-            for(int i=0; i<getRoleBindings().length; i++){
-                if(getRoleBindings()[i].getRole() == getForEachRole()){
-                    bExist = true;
-                    break;
-                }
-            }
-
-            if(!bExist)
-                vc.add(getActivityLabel() + " Although For-each-role ("+getForEachRole()+") is specified, there's no binding with the "+getForEachRole()+".");
-        }
-
-        return vc;
-    }
-
     public Vector<String> getSubprocessIds(ProcessInstance instance) throws Exception{
         return getSubprocessIds(instance, SUBPROCESS_INST_ID);
     }
@@ -999,12 +910,6 @@ public class SubProcess extends ScopeActivity{
 //        super.compensate(instance);
 //    }
 
-    public String getDefinitionIdOnly(){
-        String[] definitionAndVersion = ProcessDefinition.splitDefinitionAndVersionId(getDefinitionId());
-        return definitionAndVersion[0];
-    }
-
-
     public void attachSubProcess(ProcessInstance instance, String subProcessInstanceId, String label) throws Exception{
         Vector currSubProcessIds = getSubprocessIds(instance);
         Vector currSubProcessLabels = getSubprocessLabels(instance);
@@ -1022,9 +927,12 @@ public class SubProcess extends ScopeActivity{
 
         boolean completable = onSubProcessReturn(instance, instance);
 
-
         if(completable && instance.getProcessTransactionContext().getSharedContext(SUB_PROCESS_IS_BEING_INSERTED) == null){
-            super.fireComplete(instance);
+            if("loop".equals(getMultipleInstanceOption())){
+                executeActivity_CaseInLoop(instance);
+            }else{
+                super.fireComplete(instance);
+            }
         }
 
     }

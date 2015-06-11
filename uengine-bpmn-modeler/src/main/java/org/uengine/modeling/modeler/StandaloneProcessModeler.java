@@ -1,16 +1,23 @@
 package org.uengine.modeling.modeler;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.metaworks.EventContext;
+import org.metaworks.Refresh;
+import org.metaworks.Remover;
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.ToAppend;
+import org.metaworks.ToEvent;
 import org.metaworks.annotation.Payload;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Clipboard;
 import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.ProcessDefinition;
+import org.uengine.kernel.ProcessVariable;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
-import org.uengine.processpublisher.BPMNUtil;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 public class StandaloneProcessModeler {
 
@@ -28,19 +35,43 @@ public class StandaloneProcessModeler {
     }
 
     @ServiceMethod(keyBinding = "Ctrl+L")
-    public ProcessModeler load(@Payload("fileName") String fileName) throws Exception {
+    public StandaloneProcessModeler load(@Payload("fileName") String fileName) throws Exception {
 //        ProcessDefinition processDefinition = BPMNUtil.adapt(new File(getFileName()));
-        ProcessDefinition processDefinition = (ProcessDefinition) GlobalContext.deserialize(new FileInputStream(getFileName()), String.class);
+    	ProcessDefinition processDefinition = (ProcessDefinition) GlobalContext.deserialize(new FileInputStream(getFileName()), String.class);
 
+        List<ProcessVariable> pList = new ArrayList<ProcessVariable>();
+        		
+        ProcessVariable[] pv = processDefinition.getProcessVariables();
+        
+        for(int i=0; i<pv.length; i++) {
+        	pList.add(pv[i]);
+        }
+        
+        
+        processVariablePanel.setProcessVariableList(pList);
+        
+        setProcessVariablePanel(processVariablePanel);
+        
         getProcessModeler().setModel(processDefinition);
-
-        return getProcessModeler();
+        
+        return this;
+        
     }
     
     @ServiceMethod(callByContent=true)
     public void save() throws Exception {
 //        ProcessDefinition processDefinition = BPMNUtil.adapt(new File(getFileName()));
         ProcessDefinition definition = (ProcessDefinition) getProcessModeler().createModel();
+        
+        List<ProcessVariable> processVariablList = processVariablePanel.getProcessVariableList();
+        ProcessVariable[] pvds = new ProcessVariable[processVariablList.size()];
+        
+        int variableIndex = 0; 
+        for(ProcessVariable processVariable: processVariablList) {
+        	pvds[variableIndex++] = processVariable;
+        }
+        
+        definition.setProcessVariables(pvds);
         
         GlobalContext.serialize(definition, new FileOutputStream(getFileName()), String.class);
 

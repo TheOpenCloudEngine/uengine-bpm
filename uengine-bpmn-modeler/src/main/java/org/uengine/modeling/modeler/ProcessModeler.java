@@ -13,6 +13,7 @@ import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
+import org.uengine.util.ActivityFor;
 
 public class ProcessModeler extends DefaultModeler {
 	
@@ -82,6 +83,30 @@ public class ProcessModeler extends DefaultModeler {
 		
 		this.getCanvas().setElementViewList(elementViewList);
 		this.getCanvas().setRelationViewList(relationViewList);
+		
+		ActivityFor loop = new ActivityFor(){
+			public int maxTT = 0;
+			@Override
+			public void logic(Activity activity) {
+	
+				try{
+					int tt = Integer.parseInt(activity.getTracingTag());
+					
+					if(tt > maxTT){
+						maxTT = tt;
+						
+						setReturnValue(maxTT);
+					}
+				}catch(Exception e){}
+			}
+			
+		};
+		
+		loop.run(def);
+		
+		if(loop.getReturnValue()!=null)
+			setLastTracingTag((int)loop.getReturnValue());
+		
 
 	}
 	
@@ -102,6 +127,7 @@ public class ProcessModeler extends DefaultModeler {
 		
 	public ProcessDefinition makeProcessDefinitionFromCanvas(Canvas canvas) throws Exception{
 		ProcessDefinition def = new ProcessDefinition();
+		
 		
 		for(ElementView elementView : canvas.getElementViewList()){
 			if(elementView.getElement() instanceof Role){
@@ -126,7 +152,6 @@ public class ProcessModeler extends DefaultModeler {
 				}
 			}else if (elementView.getElement() instanceof Activity){
 				Activity activity = (Activity)elementView.getElement();
-				elementView.setElement(null);
 				activity.setName(elementView.getLabel());
 				activity.setElementView(elementView);
 				def.addChildActivity(activity);
@@ -136,10 +161,35 @@ public class ProcessModeler extends DefaultModeler {
 		
 		for(RelationView relationView : this.getCanvas().getRelationViewList()){
 			SequenceFlow sequenceFlow = (SequenceFlow) relationView.getRelation();
+			
+			
+			String sourceRef = relationView.getFrom().substring(0, relationView.getFrom().indexOf("_TERMINAL_"));
+			String targetRef = relationView.getTo().substring(0, relationView.getTo().indexOf("_TERMINAL_"));
+			
+			for(ElementView elementView : this.getCanvas().getElementViewList()){
+					if(sourceRef.equals(elementView.getId())) {
+						
+						Activity fromActivity = (Activity)elementView.getElement();
+						sequenceFlow.setSourceRef(fromActivity.getTracingTag());
+						relationView.setFrom(fromActivity.getTracingTag() + relationView.TERMINAL_IN_OUT);
+					}
+					
+					if(targetRef.equals(elementView.getId())) {
+						
+						Activity toActivity = (Activity)elementView.getElement();
+						sequenceFlow.setTargetRef(toActivity.getTracingTag());
+						relationView.setTo(toActivity.getTracingTag() + relationView.TERMINAL_IN_OUT);
+					}
+					
+				elementView.setElement(null);
+					
+			}
+			
 			relationView.setRelation(null);
 			sequenceFlow.setRelationView((SequenceFlowView)relationView);
 			def.addSequenceFlow(sequenceFlow);
 		}
+		
 		def.setPools(null);
 		return def;
 	}

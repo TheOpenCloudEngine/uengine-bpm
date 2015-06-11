@@ -116,7 +116,7 @@ public class SubProcess extends ScopeActivity{
     }
 
     List<SubProcessParameterContext> variableBindings = new ArrayList<SubProcessParameterContext>();
-    @Face(faceClass = SubProcessParameterContextListFace.class)
+    	@Face(faceClass = SubProcessParameterContextListFace.class)
         public List<SubProcessParameterContext> getVariableBindings() {
             return variableBindings;
         }

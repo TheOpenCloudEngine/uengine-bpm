@@ -18,11 +18,11 @@ public class ProcessVariablePanel {
             this.processVariableList = processVariableList;
         }
 
-    MetaworksList<ProcessVariable>  processVariableMetaworksList = new MetaworksList<ProcessVariable>();
-        public MetaworksList<ProcessVariable> getProcessVariableMetaworksList() {
-            return processVariableMetaworksList;
-        }
-        public void setProcessVariableMetaworksList(MetaworksList<ProcessVariable> processVariableMetaworksList) {
-            this.processVariableMetaworksList = processVariableMetaworksList;
-        }
+//    MetaworksList<ProcessVariable>  processVariableMetaworksList = new MetaworksList<ProcessVariable>();
+//        public MetaworksList<ProcessVariable> getProcessVariableMetaworksList() {
+//            return processVariableMetaworksList;
+//        }
+//        public void setProcessVariableMetaworksList(MetaworksList<ProcessVariable> processVariableMetaworksList) {
+//            this.processVariableMetaworksList = processVariableMetaworksList;
+//        }
 }

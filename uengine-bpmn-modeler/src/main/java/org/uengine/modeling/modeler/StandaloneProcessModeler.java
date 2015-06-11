@@ -6,7 +6,9 @@ import org.metaworks.widget.Clipboard;
 import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessVariable;
+import org.uengine.kernel.Role;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
+import org.uengine.kernel.bpmn.face.RolePanel;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,6 +28,8 @@ public class StandaloneProcessModeler {
         setClipboard(new Clipboard());
 
         setProcessVariablePanel(new ProcessVariablePanel());
+
+        setRolePanel(new RolePanel());
     }
 
     @ServiceMethod(keyBinding = "Ctrl+L")
@@ -41,10 +45,19 @@ public class StandaloneProcessModeler {
             pList.add(pv[i]);
         }
 
+        List<Role> rList = new ArrayList<Role>();
+
+        Role[] roles = processDefinition.getRoles();
+
+        for(int j=0; j<roles.length; j++) {
+            rList.add(roles[j]);
+        }
 
         processVariablePanel.setProcessVariableList(pList);
+        rolePanel.setRoleList(rList);
 
         setProcessVariablePanel(processVariablePanel);
+        setRolePanel(rolePanel);
 
         getProcessModeler().setModel(processDefinition);
 
@@ -64,8 +77,16 @@ public class StandaloneProcessModeler {
         for(ProcessVariable processVariable: processVariablList) {
             pvds[variableIndex++] = processVariable;
         }
+        List<Role> roleList = rolePanel.getRoleList();
+        Role[] roles = new Role[roleList.size()];
+
+        int roleIndex = 0;
+        for(Role role: roleList) {
+            roles[roleIndex++] = role;
+        }
 
         definition.setProcessVariables(pvds);
+        definition.setRoles(roles);
 
         GlobalContext.serialize(definition, new FileOutputStream(getFileName()), String.class);
 
@@ -109,5 +130,15 @@ public class StandaloneProcessModeler {
         this.processVariablePanel = processVariablePanel;
     }
 
+
+
+    RolePanel rolePanel;
+    public RolePanel getRolePanel() {
+        return rolePanel;
+    }
+
+    public void setRolePanel(RolePanel rolePanel) {
+        this.rolePanel = rolePanel;
+    }
 
 }

@@ -89,6 +89,24 @@ public class ProcessModeler extends DefaultModeler {
 			}
 
 		}
+
+//		for(IElement element : def.getChildActivities()){
+//			ElementView elementView = element.getElementView();
+//
+//			if (elementView.getElement() instanceof FlowActivity){
+//				FlowActivity parentActivity = (FlowActivity) elementView.getElement();
+//				List<Activity> list = parentActivity.getChildActivities();
+//				for(Activity activity: list) {
+//					elementViewList.add(activity.getElementView());
+//				}
+//			}
+//			
+//			element.setElementView(null); //prevent cyclic reference
+//			elementView.setElement(element);
+//
+//			elementViewList.add(elementView);
+//		}
+//		
 		for(IRelation relation : def.getSequenceFlows()){
 			SequenceFlow sequenceFlow = (SequenceFlow) relation;
 			SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
@@ -138,6 +156,7 @@ public class ProcessModeler extends DefaultModeler {
 
 		if(loop.getReturnValue()!=null)
 			setLastTracingTag((int)loop.getReturnValue());
+
 
 	}
 
@@ -203,9 +222,8 @@ public class ProcessModeler extends DefaultModeler {
 				if(activity instanceof Event){
 					Activity toAttachActivity = findAttachedActivity(elementView, canvas.getElementViewList());
 
-					if(toAttachActivity!=null) {
-						((Event) activity).setAttachedToRef(toAttachActivity.getTracingTag());
-					}
+					if(toAttachActivity!=null)
+						((Event)activity).setAttachedToRef(toAttachActivity.getTracingTag());
 				}
 			}
 
@@ -244,7 +262,7 @@ public class ProcessModeler extends DefaultModeler {
 				parentActivity = def;
 
 			parentActivity.addSequenceFlow(sequenceFlow);
-			def.addSequenceFlow(sequenceFlow);
+
 		}
 
 		for(ElementView elementView : canvas.getElementViewList()){

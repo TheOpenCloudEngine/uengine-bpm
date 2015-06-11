@@ -3,14 +3,17 @@ package org.uengine.modeling.modeler;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.tools.javac.comp.Flow;
 import org.metaworks.MetaworksContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
 import org.uengine.kernel.UEngineException;
+import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
+import org.uengine.kernel.view.ActivityView;
 import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 
@@ -102,6 +105,15 @@ public class ProcessModeler extends DefaultModeler {
 		
 	public ProcessDefinition makeProcessDefinitionFromCanvas(Canvas canvas) throws Exception{
 		ProcessDefinition def = new ProcessDefinition();
+
+		List<FlowActivity> parentActivities = new ArrayList<FlowActivity>();
+
+		for(ElementView elementView : canvas.getElementViewList()){
+			if (elementView.getElement() instanceof FlowActivity){
+				parentActivities.add((FlowActivity) elementView.getElement());
+			}
+
+		}
 		
 		for(ElementView elementView : canvas.getElementViewList()){
 			if(elementView.getElement() instanceof Role){
@@ -129,7 +141,13 @@ public class ProcessModeler extends DefaultModeler {
 				elementView.setElement(null);
 				activity.setName(elementView.getLabel());
 				activity.setElementView(elementView);
-				def.addChildActivity(activity);
+
+				FlowActivity parentActivity = findParentActivity(elementView, parentActivities);
+
+				if(parentActivity==null)
+					parentActivity = def;
+
+				parentActivity.addChildActivity(activity);
 			}
 				
 		}
@@ -138,11 +156,52 @@ public class ProcessModeler extends DefaultModeler {
 			SequenceFlow sequenceFlow = (SequenceFlow) relationView.getRelation();
 			relationView.setRelation(null);
 			sequenceFlow.setRelationView((SequenceFlowView)relationView);
+
+			FlowActivity parentActivity = findParentActivity(relationView, parentActivities);
+
 			def.addSequenceFlow(sequenceFlow);
 		}
 		def.setPools(null);
 		return def;
 	}
 
-	
+	private FlowActivity findParentActivity(Object what, List<FlowActivity> parentActivities) {
+		for(FlowActivity flowActivity : parentActivities){
+
+			long x = 0;
+			long y = 0;
+			long width = 0;
+			long height = 0;
+
+			if(what instanceof ElementView) {
+				ElementView activityView = (ElementView)what;
+
+				 x = Long.parseLong(activityView.getX());
+				 y = Long.parseLong(activityView.getY());
+				width = Long.parseLong(activityView.getWidth());
+				height = Long.parseLong(activityView.getHeight());
+			}else if(what instanceof RelationView){
+				RelationView relationView = (RelationView)what;
+
+				x = Long.parseLong(relationView.getX());
+				y = Long.parseLong(relationView.getY());
+				width = Long.parseLong(relationView.getWidth());
+				height = Long.parseLong(relationView.getHeight());
+
+			}
+
+			long p_x = Long.parseLong(flowActivity.getElementView().getX());
+			long p_y = Long.parseLong(flowActivity.getElementView().getY());
+			long p_width = Long.parseLong(flowActivity.getElementView().getWidth());
+			long p_height = Long.parseLong(flowActivity.getElementView().getHeight());
+
+			if(p_x < x && p_y < y){ //TODO
+				return flowActivity; //I'm your father..
+			}
+		}
+
+		return null;
+	}
+
+
 }

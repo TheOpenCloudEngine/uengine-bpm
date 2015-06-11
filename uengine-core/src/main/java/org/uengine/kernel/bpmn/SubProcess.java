@@ -280,15 +280,32 @@ public class SubProcess extends ScopeActivity{
         setSubprocessIds(instance, spInstLabels, SUBPROCESS_INST_LABELS);
     }
     public void refreshMultipleInstance(ProcessInstance instance)throws Exception{
-        Hashtable unInitiatedRoleMappings = getUnInitiatedRoleMappings(instance);
-        Hashtable deletedRoleMappings = getDeletedRoleMappings(instance);
 
-        //------- delete instance
-        if(deletedRoleMappings.size()!=0)
-            stopSubProcessInstance(instance,deletedRoleMappings);
+        if(getForEachRole()!=null)
+            refreshMultipleInstance_by_ForEachRole(instance);
+        else if(getForEachVariable()!=null)
+            refreshMultipleInstance_by_ForEachVariable(instance);
+    }
 
-        if(unInitiatedRoleMappings.size()==0){
-            return ;
+    private void refreshMultipleInstance_by_ForEachVariable(ProcessInstance instance) {
+        //TODO: reference the refreshMultipleInstance_by_ForEachRole
+    }
+
+    private void refreshMultipleInstance_by_ForEachRole(ProcessInstance instance) throws Exception {
+        Hashtable unInitiatedRoleMappings = null;
+        Hashtable deletedRoleMappings = null;
+
+        if(getForEachRole()!=null) {
+            unInitiatedRoleMappings = getUnInitiatedRoleMappings(instance);
+            deletedRoleMappings = getDeletedRoleMappings(instance);
+
+            //------- delete instance
+            if (deletedRoleMappings.size() > 0)
+                stopSubProcessInstance(instance, deletedRoleMappings);
+
+            if (unInitiatedRoleMappings.size() == 0) {
+                return;
+            }
         }
 
         //------- add instance

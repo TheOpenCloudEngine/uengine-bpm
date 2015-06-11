@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 public class EventTest extends UEngineTest{
 
@@ -134,6 +135,8 @@ public class EventTest extends UEngineTest{
 
         GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
 
+
+
     }
 
     public void testEscalationEvent() throws Exception {
@@ -145,6 +148,9 @@ public class EventTest extends UEngineTest{
                 "a10", "a9"
         }, instance);
 
+
+
+        Vector mls = instance.getMessageListeners("event");
 
 
 

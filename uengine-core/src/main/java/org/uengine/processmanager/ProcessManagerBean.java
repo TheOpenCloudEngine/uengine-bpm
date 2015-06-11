@@ -1301,12 +1301,13 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 */
 			
 			ProcessInstance instance = getInstance(instanceId);
-			
-			if(!instance.isRunning("") 
-					&& ((instance.isNew() && tracingTag.indexOf("@")>0) //first process is subprocess
-							|| !((HumanActivity)instance.getProcessDefinition().getActivity(tracingTag)).isNotificationWorkitem())
-				)
-				instance.execute();
+
+			//TODO: it is not required anymore. begin with workitem.
+//			if(!instance.isRunning("")
+//					&& ((instance.isNew() && tracingTag.indexOf("@")>0) //first process is subprocess
+//							|| !((HumanActivity)instance.getProcessDefinition().getActivity(tracingTag)).isNotificationWorkitem())
+//				)
+//				instance.execute();
 			
 			ProcessDefinition definition = instance.getProcessDefinition();
 					 

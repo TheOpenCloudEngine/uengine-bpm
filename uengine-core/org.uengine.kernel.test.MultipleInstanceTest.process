@@ -88,7 +88,6 @@
       <leaveEventListenersEvenIfOutOfScope>false</leaveEventListenersEvenIfOutOfScope>
       <isCollapsed>false</isCollapsed>
       <instanceId>&lt;%=Instance.Name%&gt;</instanceId>
-      <versionSelectOption>0</versionSelectOption>
       <variableBindings/>
       <runAndForget>false</runAndForget>
       <createAsRootProcess>false</createAsRootProcess>

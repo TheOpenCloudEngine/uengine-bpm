@@ -12,6 +12,7 @@ public class StartEventView extends EventView {
 
 	public StartEventView(){
 		setShapeId(SHAPE_ID);
+		setLabel(ELEMENT_CLASSNAME);
 	}
 
 }

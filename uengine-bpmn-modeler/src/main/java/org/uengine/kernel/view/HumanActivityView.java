@@ -18,6 +18,7 @@ public class HumanActivityView extends ActivityView{
 	
 	public HumanActivityView(){
 		setShapeId(SHAPE_ID_BPMN);
+		setLabel(ELEMENT_CLASSNAME);
 	}
 	
 	public HumanActivityView(IElement element){

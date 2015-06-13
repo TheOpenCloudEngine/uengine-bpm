@@ -163,6 +163,8 @@ public class EndEvent extends StartEvent {
 
 		return vc;
 	}
+
+
 	
 
 	

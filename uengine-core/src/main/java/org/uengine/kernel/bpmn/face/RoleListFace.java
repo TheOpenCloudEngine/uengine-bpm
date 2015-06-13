@@ -1,6 +1,5 @@
 package org.uengine.kernel.bpmn.face;
 
-import org.metaworks.Face;
 import org.metaworks.widget.ListFace;
 import org.uengine.kernel.Role;
 

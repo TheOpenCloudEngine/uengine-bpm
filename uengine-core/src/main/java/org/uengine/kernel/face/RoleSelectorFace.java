@@ -14,11 +14,12 @@ import java.util.ArrayList;
 public class RoleSelectorFace extends SelectBox implements Face <Role>{
 
     @AutowiredFromClient
-    public RolePanel rolePanel;
+    RolePanel rolePanel;
 
     @Override
     public void setValueToFace(Role value) {
-        if(rolePanel != null) {
+
+        if(rolePanel != null && rolePanel.getRoleList() !=null) {
             ArrayList<String> options = new ArrayList<String>();
 
             for(Role role : rolePanel.getRoleList()){

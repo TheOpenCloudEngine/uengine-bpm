@@ -1,9 +1,5 @@
 package org.uengine.modeling.modeler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.metaworks.MetaworksContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.Activity;
@@ -16,18 +12,13 @@ import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.SubProcess;
 import org.uengine.kernel.bpmn.view.EventView;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
-import org.uengine.modeling.Canvas;
-import org.uengine.modeling.DefaultModeler;
-import org.uengine.modeling.ElementView;
-import org.uengine.modeling.IElement;
-import org.uengine.modeling.IModel;
-import org.uengine.modeling.IRelation;
-import org.uengine.modeling.Palette;
-import org.uengine.modeling.RelationView;
-import org.uengine.modeling.modeler.palette.AttributePalette;
-import org.uengine.modeling.modeler.palette.ModelerPalette;
+import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProcessModeler extends DefaultModeler {
 
@@ -36,7 +27,7 @@ public class ProcessModeler extends DefaultModeler {
 	public ProcessModeler() {
 		setType(SUFFIX);
 		this.setCanvas(new ProcessCanvas(getType()));
-		Palette palette = new ModelerPalette(getType());
+		Palette palette = new SimplePalette(getType());
 		this.setPalette(palette);
 
 		setMetaworksContext(new MetaworksContext());
@@ -51,8 +42,8 @@ public class ProcessModeler extends DefaultModeler {
 
 		ProcessDefinition def = (ProcessDefinition)model;
 
-		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
-		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
+		((SimplePalette)getPalette()).getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
+		((SimplePalette)getPalette()).getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
 
 		final List<ElementView> elementViewList = new ArrayList<ElementView>();
 		List<RelationView> relationViewList = new ArrayList<RelationView>();

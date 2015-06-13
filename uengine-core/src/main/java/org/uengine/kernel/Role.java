@@ -451,13 +451,13 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	 * 나중에 apply 버튼은 ActivityWindow 로 빼야한다... 지금은 텝에 버튼이 보이질 않아서 임시로 달아놓음
 	 * @return
 	 */
-	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
+	@Hidden
 	public Object[] apply(){
 		return null;
 	}
 
-	
-	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
+
+	@Hidden
 	public Object[] cancel(){
 		ModalWindow modalWindow = new ModalWindow();
 		return new Object[]{new Remover(modalWindow , true)};

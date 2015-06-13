@@ -90,12 +90,6 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-		<!-- for archiving (export/import) process definitions -->
-		<dependency>
-			<groupId>net.sf</groupId>
-			<artifactId>jazzlib</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>

@@ -177,7 +177,7 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 			$(this.element).droppable( "destroy" );
 		
 		$(this.element).unbind('.' + this.objectId);
-	}
+
 	
 	this.autoResizeCanvas = function(boundary){
 		var rootBBox = this.canvas._RENDERER.getRootBBox();

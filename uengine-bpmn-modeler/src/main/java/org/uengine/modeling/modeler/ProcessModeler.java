@@ -3,7 +3,6 @@ package org.uengine.modeling.modeler;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.tools.javac.comp.Flow;
 import org.metaworks.MetaworksContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.Activity;

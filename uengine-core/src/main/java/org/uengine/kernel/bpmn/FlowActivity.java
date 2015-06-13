@@ -40,12 +40,18 @@ public class FlowActivity extends ComplexActivity {
 	
 				// source
                 String source = sequenceFlow.getSourceRef();
+				if(source == null){
+					source = sequenceFlow.getRelationView().getFrom().split("_")[0];
+				}
                 Activity sourceActivity = getProcessDefinition().getActivity(source);
                 sourceActivity.addOutgoingTransition(sequenceFlow);
                 sequenceFlow.setSourceActivity(sourceActivity);
     
                 // target
                 String target = sequenceFlow.getTargetRef();
+				if(target == null){
+					target = sequenceFlow.getRelationView().getTo().split("_")[0];
+				}
                 Activity targetActivity = getProcessDefinition().getActivity(target);
                 targetActivity.addIncomingTransition(sequenceFlow);
                 sequenceFlow.setTargetActivity(targetActivity);
@@ -58,6 +64,9 @@ public class FlowActivity extends ComplexActivity {
 		// TODO 프로세스를 퍼블리싱하여 제공할때는 이벤트로 프로세스가 시작이 될수가 있다 이때를 위한 부분을 처리해야함
 		for (Iterator it = getChildActivities().iterator(); it.hasNext();) {
 			child = (Activity) it.next();
+//			if(child.getTracingTag().equals("1")){
+//				return child;
+//			}
 			if( child.getOutgoingSequenceFlows().size() == 0 && child.getIncomingSequenceFlows().size() == 0){
 				// null 로 리턴될 경우 super 로직을 태움
 				continue;

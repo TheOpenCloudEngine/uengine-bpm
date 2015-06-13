@@ -42,8 +42,10 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 	}
 	
 	this.getCanvas = function(){
+		
 		//var canvasId = this.objectDiv.closest('.canvas').attr('objectId');
-		var canvasId = this.objectDiv.closest('.canvas').attr('id').split('_')[1];
+		var canvasId = this.objectDiv.closest('.canvas').attr('id').split("_")[1];
+		
 		return mw3.getFaceHelper(canvasId).getCanvas();
 	}
 	

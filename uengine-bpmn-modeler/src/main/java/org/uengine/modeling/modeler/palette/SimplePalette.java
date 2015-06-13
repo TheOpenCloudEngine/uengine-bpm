@@ -1,5 +1,6 @@
 package org.uengine.modeling.modeler.palette;
 
+import org.uengine.kernel.bpmn.face.RolePanelButton;
 import org.uengine.kernel.bpmn.view.*;
 import org.uengine.kernel.view.*;
 import org.uengine.modeling.Palette;
@@ -9,8 +10,7 @@ public class SimplePalette extends Palette {
 	public SimplePalette(){
 		
 	}
-	
-	
+
 	public SimplePalette(String type){
 		this.setName("BPMN Diagram");
 		setType(type);
@@ -22,5 +22,6 @@ public class SimplePalette extends Palette {
 		this.getSymbolList().add((new SubProcessView()).createSymbol());
 		this.getSymbolList().add((new MessageEventView()).createSymbol());
 		this.getSymbolList().add((new EscalationEventView()).createSymbol());
+
 	}
 }

@@ -1,11 +1,7 @@
 package org.uengine.kernel.bpmn;
 
-import org.metaworks.annotation.Range;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.uengine.kernel.DefaultActivity;
-import org.uengine.kernel.MessageListener;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.scheduler.SchedulerUtil;
 

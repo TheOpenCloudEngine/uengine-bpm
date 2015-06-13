@@ -5,6 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.metaworks.MetaworksContext;
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.AutowiredToClient;
+import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.ProcessDefinition;
@@ -13,6 +18,7 @@ import org.uengine.kernel.UEngineException;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.kernel.bpmn.SequenceFlow;
+import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.kernel.bpmn.view.EventView;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.modeling.Canvas;
@@ -35,12 +41,31 @@ public class ProcessModeler extends DefaultModeler {
 	public ProcessModeler() {
 		setType(SUFFIX);
 		this.setCanvas(new ProcessCanvas(getType()));
-		Palette palette = new ModelerPalette(getType());
+		Palette palette = new SimplePalette(getType());
 		this.setPalette(palette);
+
+		setRolePanel(new RolePanel());
 
 		setMetaworksContext(new MetaworksContext());
 		getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
 	}
+
+	RolePanel rolePanel;
+//	@Hidden
+	@AutowiredToClient
+		public RolePanel getRolePanel() {
+			return rolePanel;
+		}
+		public void setRolePanel(RolePanel rolePanel) {
+			this.rolePanel = rolePanel;
+		}
+
+	@ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
+	public ModalWindow openRolePanel(){
+		return new ModalWindow(getRolePanel());
+	}
+
+
 
 	@Override
 	public void setModel(IModel model) throws Exception {
@@ -50,8 +75,8 @@ public class ProcessModeler extends DefaultModeler {
 			return;
 		}
 
-		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getRolePanel().setRoleList(Arrays.asList(pd.getRoles()));
-		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getProcessVariablePanel().setProcessVariableList(Arrays.asList(pd.getProcessVariables()));
+//		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getRolePanel().setRoleList(Arrays.asList(pd.getRoles()));
+//		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getProcessVariablePanel().setProcessVariableList(Arrays.asList(pd.getProcessVariables()));
 
 		List<ElementView> elementViewList = new ArrayList<ElementView>();
 		List<RelationView> relationViewList = new ArrayList<RelationView>();

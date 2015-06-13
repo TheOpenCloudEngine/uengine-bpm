@@ -74,7 +74,7 @@ public class GlobalContext{
 	public final static boolean useManagedTransaction = "true".equals(GlobalContext.getPropertyString("use.managedtransaction", "false"));
 	public final static boolean useAutoUserTransactionDemarcation = "true".equals(GlobalContext.getPropertyString("use.auto.usertransaction.demarcation", "false"));
 	public final static boolean captureSystemOut = "true".equals(GlobalContext.getPropertyString("capture.system.out", "false"));
-	public final static boolean logLevelIsDebug = "debug".equals(GlobalContext.getPropertyString("log.level", "debug"));
+	public final static boolean logLevelIsDebug = "debug".equals(GlobalContext.getPropertyString("log.level", "prod"));
 	public final static boolean CONNECTION_LEAKAGE_DETECT = "true".equals(GlobalContext.getPropertyString("connection.leakage.detect", "false"));
 	public final static String FILE_SYSTEM_DIR = GlobalContext.getPropertyString("filesystem.dir", "./");
 	

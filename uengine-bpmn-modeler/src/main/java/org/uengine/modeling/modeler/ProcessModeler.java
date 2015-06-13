@@ -1,6 +1,7 @@
 package org.uengine.modeling.modeler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.metaworks.MetaworksContext;
@@ -22,6 +23,7 @@ import org.uengine.modeling.IModel;
 import org.uengine.modeling.IRelation;
 import org.uengine.modeling.Palette;
 import org.uengine.modeling.RelationView;
+import org.uengine.modeling.modeler.palette.AttributePalette;
 import org.uengine.modeling.modeler.palette.ModelerPalette;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
@@ -42,9 +44,14 @@ public class ProcessModeler extends DefaultModeler {
 
 	@Override
 	public void setModel(IModel model) throws Exception {
+		ProcessDefinition pd = (ProcessDefinition)model;
 
-		if(model==null)
+		if(model==null){
 			return;
+		}
+
+		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getRolePanel().setRoleList(Arrays.asList(pd.getRoles()));
+		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getProcessVariablePanel().setProcessVariableList(Arrays.asList(pd.getProcessVariables()));
 
 		List<ElementView> elementViewList = new ArrayList<ElementView>();
 		List<RelationView> relationViewList = new ArrayList<RelationView>();

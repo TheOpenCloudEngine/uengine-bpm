@@ -49,10 +49,14 @@ public class ProcessModeler extends DefaultModeler {
 		if(model==null)
 			return;
 
+		ProcessDefinition def = (ProcessDefinition)model;
+
+		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
+		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
+
 		final List<ElementView> elementViewList = new ArrayList<ElementView>();
 		List<RelationView> relationViewList = new ArrayList<RelationView>();
 
-		ProcessDefinition def = (ProcessDefinition)model;
 
 //		for(IElement element : def.getPools()){
 //			ElementView elementView = element.getElementView();

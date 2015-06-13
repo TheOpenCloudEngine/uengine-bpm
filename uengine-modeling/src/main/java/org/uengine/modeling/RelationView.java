@@ -11,7 +11,7 @@ public class RelationView implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1234L;
     public final static String SHAPE_ID = "OG.shape.bpmn.C_Flow";
-    private final String TERMINAL_IN_OUT = "_TERMINAL_C_INOUT_0";
+    public final String TERMINAL_IN_OUT = "_TERMINAL_C_INOUT_0";
 
     String id;
 

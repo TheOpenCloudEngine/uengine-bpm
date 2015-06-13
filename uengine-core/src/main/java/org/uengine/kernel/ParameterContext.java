@@ -31,6 +31,7 @@ public class ParameterContext implements Serializable , ContextAware{
 	public static final String DIRECTION_IN = "in".intern();
 	public static final String DIRECTION_OUT = "out".intern();
 	public static final String DIRECTION_INOUT = "in-out".intern();
+	private boolean multipleInput;
 
 
 	public ParameterContext(){
@@ -88,5 +89,13 @@ public class ParameterContext implements Serializable , ContextAware{
 		}
 		public void setTransformerMapping(TransformerMapping transformerMapping) {
 			this.transformerMapping = transformerMapping;
-		}	
+		}
+
+	public boolean isMultipleInput() {
+		return multipleInput;
+	}
+
+	public void setMultipleInput(boolean multipleInput) {
+		this.multipleInput = multipleInput;
+	}
 }

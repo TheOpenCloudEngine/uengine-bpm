@@ -75,7 +75,6 @@ import org.uengine.persistence.processinstance.ProcessInstanceRepositoryLocal;
 import org.uengine.security.AclManager;
 import org.uengine.security.Authority;
 import org.uengine.util.ActivityForLoop;
-import org.uengine.util.CompressZip;
 import org.uengine.util.DeleteDir;
 import org.uengine.util.FileCopy;
 import org.uengine.util.UEngineUtil;
@@ -1712,6 +1711,11 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		}
 	}
 
+	@Override
+	public void exportProcessDefinitionbyDefinitionId(String defId, boolean allVersion) throws Exception {
+
+	}
+
 	public void removeProcessDefinition(String processDefinition) throws RemoteException{
 		log("removeProcessDefinition", new Object[]{processDefinition});
 		try{
@@ -2097,57 +2101,57 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		}
 	}
 	
-	public void exportProcessDefinitionbyVersionId(String defVerId) throws RemoteException {
-		ProcessDefinitionRemote mainPdr = getProcessDefinitionRemote(defVerId);
-		ArrayList zipEntryMapperList= new ArrayList();
-		
-		InputStream in;
-		String filePathRoot = "temp" + File.separatorChar;
-		File isExistFolder = new File(filePathRoot);
-		if(!isExistFolder.exists()){
-			isExistFolder.mkdir();
-		}
-		String filePath = filePathRoot + mainPdr.getName().toString() + ".zip";
-		
-		try {
-			Vector subDefinition = getSubDefinitionsDeeply(getDefinition(mainPdr.getId()));
-			subDefinition.add(mainPdr.getId());
-			
-			UEngineArchive ua = new UEngineArchive();
-			for(int i=0; i < subDefinition.size() ;i++){
-				String subDefVerId = (String)subDefinition.get(i);
-				ProcessDefinitionRemote pdr = getProcessDefinitionRemote(subDefVerId);
-				
-				in = ProcessDefinitionFactory.getInstance(getTransactionContext()).getResourceStream(pdr.getId());
-				String objType="";
-				if(pdr.getObjType()==null){
-					if(pdr.isFolder()) 	objType="folder";
-					else	objType="process";
-				}else{
-					objType = pdr.getObjType();
-				}
-				boolean isRoot=false;
-				if(mainPdr.getId().equals(subDefVerId)){
-					isRoot=true;
-				}
-				
-				String defName = pdr.getName().toString();
-				ZipEntryMapper entryMapper = new ZipEntryMapper(defName,subDefVerId,pdr.getAlias(), objType,pdr.getVersion(),in);
-				zipEntryMapperList.add(entryMapper);
-				
-				ua.setDefinitionList(defName, pdr.getAlias(), pdr.getBelongingDefinitionId(), subDefVerId, objType, "","", pdr.getParentFolder(), pdr.getId(), isRoot);
-			}
-			
-			writeZip(filePath, zipEntryMapperList, ua);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//return filePath;
-	}
-	
+//	public void exportProcessDefinitionbyVersionId(String defVerId) throws RemoteException {
+//		ProcessDefinitionRemote mainPdr = getProcessDefinitionRemote(defVerId);
+//		ArrayList zipEntryMapperList= new ArrayList();
+//
+//		InputStream in;
+//		String filePathRoot = "temp" + File.separatorChar;
+//		File isExistFolder = new File(filePathRoot);
+//		if(!isExistFolder.exists()){
+//			isExistFolder.mkdir();
+//		}
+//		String filePath = filePathRoot + mainPdr.getName().toString() + ".zip";
+//
+//		try {
+//			Vector subDefinition = getSubDefinitionsDeeply(getDefinition(mainPdr.getId()));
+//			subDefinition.add(mainPdr.getId());
+//
+//			UEngineArchive ua = new UEngineArchive();
+//			for(int i=0; i < subDefinition.size() ;i++){
+//				String subDefVerId = (String)subDefinition.get(i);
+//				ProcessDefinitionRemote pdr = getProcessDefinitionRemote(subDefVerId);
+//
+//				in = ProcessDefinitionFactory.getInstance(getTransactionContext()).getResourceStream(pdr.getId());
+//				String objType="";
+//				if(pdr.getObjType()==null){
+//					if(pdr.isFolder()) 	objType="folder";
+//					else	objType="process";
+//				}else{
+//					objType = pdr.getObjType();
+//				}
+//				boolean isRoot=false;
+//				if(mainPdr.getId().equals(subDefVerId)){
+//					isRoot=true;
+//				}
+//
+//				String defName = pdr.getName().toString();
+//				ZipEntryMapper entryMapper = new ZipEntryMapper(defName,subDefVerId,pdr.getAlias(), objType,pdr.getVersion(),in);
+//				zipEntryMapperList.add(entryMapper);
+//
+//				ua.setDefinitionList(defName, pdr.getAlias(), pdr.getBelongingDefinitionId(), subDefVerId, objType, "","", pdr.getParentFolder(), pdr.getId(), isRoot);
+//			}
+//
+//			writeZip(filePath, zipEntryMapperList, ua);
+//
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		//return filePath;
+//	}
+//
 	public Vector getSubDefinitionsDeeply(ProcessDefinition pd) throws Exception{
 		final Vector definitions = new Vector();
 		final ProcessManagerBean pmb=this; 
@@ -2172,105 +2176,105 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		return definitions;
 	}
 	
-	public void writeZip(String filePath, ArrayList zipEntryMapperList,UEngineArchive ua) throws IOException {
-		net.sf.jazzlib.ZipOutputStream zipOut = new net.sf.jazzlib.ZipOutputStream(new FileOutputStream(filePath));
-		int zipEntryMapperLength = zipEntryMapperList.size();
-
-		for(int idx=0; idx<zipEntryMapperLength; idx++) {
-
-			ZipEntryMapper zipEntryMapper = (ZipEntryMapper)zipEntryMapperList.get(idx);
-
-			if(zipEntryMapper.getEntryType().equals(ZipEntryMapper.TYPE_FOLDER)) {
-				zipOut.putNextEntry(new net.sf.jazzlib.ZipEntry(zipEntryMapper.getEntryName() + File.separatorChar));
-
-			} else {
-				String entryName = zipEntryMapper.getEntryAlias() + ZipEntryMapper.ENTRY_SEPARATOR
-					             + zipEntryMapper.getEntryType();
-
-				ua.setProcessDefinitions(zipEntryMapper.getEntryId(), entryName);
-
-				zipOut.putNextEntry(new net.sf.jazzlib.ZipEntry(entryName));
-
-				InputStream zipIn = (InputStream)zipEntryMapper.getStream();
-
-				if(zipIn!=null){
-					byte [] buf = new byte[1024];
-					int len;
-					while ((len = zipIn.read(buf)) > 0) {
-						zipOut.write(buf, 0, len);
-					}
-					zipIn.close();
-		      	}
-			}
-	      	zipOut.closeEntry();
-		}
-
-		//meta-inf
-		zipOut.putNextEntry(new net.sf.jazzlib.ZipEntry("META-INF" + File.separatorChar));
-		zipOut.closeEntry();
-
-		zipOut.putNextEntry(new net.sf.jazzlib.ZipEntry("META-INF" + File.separatorChar+ "manifest.xml"));
-		try {
-			GlobalContext.serialize(ua, zipOut, String.class);
-			zipOut.closeEntry();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		zipOut.close();
-	}
-
-	public DefinitionArchive[] importDefinitionArchiveList(InputStream is) throws RemoteException {
-		net.sf.jazzlib.ZipInputStream zipIn = new net.sf.jazzlib.ZipInputStream(is);
-		net.sf.jazzlib.ZipEntry zipEntry;
-
-	    DefinitionArchive[] das = null;
-	    try {
-	    	while((zipEntry = zipIn.getNextEntry()) != null) {
-
-		    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				byte [] b = new byte[1024];
-				int len = 0;
-				while ( (len=zipIn.read(b))!= -1 ) {
-				    baos.write(b,0,len);
-				}
-
-				String definitionDoc = baos.toString("UTF-8");
-				baos.close();
-
-		    	System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
-		    	System.out.println("zipEntry.getName() : " + zipEntry.getName());
-		    	System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
-
-				if(definitionDoc instanceof String){
-					try{
-						Object obj = GlobalContext.deserialize(definitionDoc.toString(), Object.class);
-
-						if(obj instanceof UEngineArchive){
-							ArrayList definitionAcchiveList=((UEngineArchive)obj).getDefinitionList();
-
-							if(definitionAcchiveList.size()>0){
-								das = new DefinitionArchive[definitionAcchiveList.size()];
-								for (int i = 0; i < definitionAcchiveList.size(); i++) {
-									das[i] = (DefinitionArchive)definitionAcchiveList.get(i);
-								}
-							}
-							break;
-						}
-					}catch (Exception e) {
-
-					}
-				}
-	    	} // end while
-
-			zipIn.close();
-	    } catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-
-	    return das;
-	}
+//	public void writeZip(String filePath, ArrayList zipEntryMapperList,UEngineArchive ua) throws IOException {
+//		net.sf.jazzlib.ZipOutputStream zipOut = new net.sf.jazzlib.ZipOutputStream(new FileOutputStream(filePath));
+//		int zipEntryMapperLength = zipEntryMapperList.size();
+//
+//		for(int idx=0; idx<zipEntryMapperLength; idx++) {
+//
+//			ZipEntryMapper zipEntryMapper = (ZipEntryMapper)zipEntryMapperList.get(idx);
+//
+//			if(zipEntryMapper.getEntryType().equals(ZipEntryMapper.TYPE_FOLDER)) {
+//				zipOut.putNextEntry(new net.sf.jazzlib.ZipEntry(zipEntryMapper.getEntryName() + File.separatorChar));
+//
+//			} else {
+//				String entryName = zipEntryMapper.getEntryAlias() + ZipEntryMapper.ENTRY_SEPARATOR
+//					             + zipEntryMapper.getEntryType();
+//
+//				ua.setProcessDefinitions(zipEntryMapper.getEntryId(), entryName);
+//
+//				zipOut.putNextEntry(new net.sf.jazzlib.ZipEntry(entryName));
+//
+//				InputStream zipIn = (InputStream)zipEntryMapper.getStream();
+//
+//				if(zipIn!=null){
+//					byte [] buf = new byte[1024];
+//					int len;
+//					while ((len = zipIn.read(buf)) > 0) {
+//						zipOut.write(buf, 0, len);
+//					}
+//					zipIn.close();
+//		      	}
+//			}
+//	      	zipOut.closeEntry();
+//		}
+//
+//		//meta-inf
+//		zipOut.putNextEntry(new net.sf.jazzlib.ZipEntry("META-INF" + File.separatorChar));
+//		zipOut.closeEntry();
+//
+//		zipOut.putNextEntry(new net.sf.jazzlib.ZipEntry("META-INF" + File.separatorChar+ "manifest.xml"));
+//		try {
+//			GlobalContext.serialize(ua, zipOut, String.class);
+//			zipOut.closeEntry();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		zipOut.close();
+//	}
+//
+//	public DefinitionArchive[] importDefinitionArchiveList(InputStream is) throws RemoteException {
+//		net.sf.jazzlib.ZipInputStream zipIn = new net.sf.jazzlib.ZipInputStream(is);
+//		net.sf.jazzlib.ZipEntry zipEntry;
+//
+//	    DefinitionArchive[] das = null;
+//	    try {
+//	    	while((zipEntry = zipIn.getNextEntry()) != null) {
+//
+//		    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//				byte [] b = new byte[1024];
+//				int len = 0;
+//				while ( (len=zipIn.read(b))!= -1 ) {
+//				    baos.write(b,0,len);
+//				}
+//
+//				String definitionDoc = baos.toString("UTF-8");
+//				baos.close();
+//
+//		    	System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
+//		    	System.out.println("zipEntry.getName() : " + zipEntry.getName());
+//		    	System.out.println("++++++++++++++++++++++++++++++++++++++++++++");
+//
+//				if(definitionDoc instanceof String){
+//					try{
+//						Object obj = GlobalContext.deserialize(definitionDoc.toString(), Object.class);
+//
+//						if(obj instanceof UEngineArchive){
+//							ArrayList definitionAcchiveList=((UEngineArchive)obj).getDefinitionList();
+//
+//							if(definitionAcchiveList.size()>0){
+//								das = new DefinitionArchive[definitionAcchiveList.size()];
+//								for (int i = 0; i < definitionAcchiveList.size(); i++) {
+//									das[i] = (DefinitionArchive)definitionAcchiveList.get(i);
+//								}
+//							}
+//							break;
+//						}
+//					}catch (Exception e) {
+//
+//					}
+//				}
+//	    	} // end while
+//
+//			zipIn.close();
+//	    } catch (Exception e) {
+//	    	e.printStackTrace();
+//	    }
+//
+//	    return das;
+//	}
 		
 	private static String TEMP_DIRECTORY;
 	private static String DEFINITION_ROOT;
@@ -2293,53 +2297,53 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		}
 	}
 		
-	public void exportProcessDefinitionbyDefinitionId(String defId, boolean ExportAllVersion) throws Exception {
-		try{
-			UEngineArchive ua = new UEngineArchive();
-			Hashtable options = new Hashtable();
-			
-			ProcessDefinitionRemote pdr = getProcessDefinitionRemoteByDefinitionId(defId);
-			String defName = pdr.getName().getText();
-			
-			ua.setDefinitionList(defName, "", pdr.getBelongingDefinitionId(), String.valueOf(pdr.getVersion()), ZipEntryMapper.TYPE_FOLDER, defName, "", "-1", pdr.getId(), true);
-			
-			options.put(UEngineArchive.UENGINE_ARCHIVE, (UEngineArchive)ua);
-			options.put(UEngineArchive.SUB_PROC, new Hashtable());
-			
-			String rootDirectory = TEMP_DIRECTORY + defName + File.separatorChar;
-			File f = new File(rootDirectory);
-			if (f.exists()) {
-				DeleteDir.deleteDir(rootDirectory);
-			} else {
-				f.mkdirs();
-			}
-			
-			f = new File(TEMP_DIRECTORY + defName+".zip");
-			if (f.exists()) {
-				f.delete();
-			}
-			
-			_DUMMY_LIST_ = new ArrayList<String>();
-			
-			setDefinitionsForExport(defId, listProcessDefinitionRemotesLight(), defName + File.separatorChar, options, ExportAllVersion);
-			setSubProcessesForExport(defName, options);
-			setFormsForExport(defName,options);
-			
-			FileOutputStream fos = new FileOutputStream(TEMP_DIRECTORY + defName + "\\errlog.txt");
-			OutputStreamWriter osw = new OutputStreamWriter(fos);
-			osw.write(_DUMMY_LIST_.toString());
-			osw.close();
-			fos.close();
-			
-			CompressZip cz = new CompressZip();
-			cz.zip(TEMP_DIRECTORY, defName+".zip", TEMP_DIRECTORY, ua);
-			
-			DeleteDir.deleteDir(rootDirectory);
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
+//	public void exportProcessDefinitionbyDefinitionId(String defId, boolean ExportAllVersion) throws Exception {
+//		try{
+//			UEngineArchive ua = new UEngineArchive();
+//			Hashtable options = new Hashtable();
+//
+//			ProcessDefinitionRemote pdr = getProcessDefinitionRemoteByDefinitionId(defId);
+//			String defName = pdr.getName().getText();
+//
+//			ua.setDefinitionList(defName, "", pdr.getBelongingDefinitionId(), String.valueOf(pdr.getVersion()), ZipEntryMapper.TYPE_FOLDER, defName, "", "-1", pdr.getId(), true);
+//
+//			options.put(UEngineArchive.UENGINE_ARCHIVE, (UEngineArchive)ua);
+//			options.put(UEngineArchive.SUB_PROC, new Hashtable());
+//
+//			String rootDirectory = TEMP_DIRECTORY + defName + File.separatorChar;
+//			File f = new File(rootDirectory);
+//			if (f.exists()) {
+//				DeleteDir.deleteDir(rootDirectory);
+//			} else {
+//				f.mkdirs();
+//			}
+//
+//			f = new File(TEMP_DIRECTORY + defName+".zip");
+//			if (f.exists()) {
+//				f.delete();
+//			}
+//
+//			_DUMMY_LIST_ = new ArrayList<String>();
+//
+//			setDefinitionsForExport(defId, listProcessDefinitionRemotesLight(), defName + File.separatorChar, options, ExportAllVersion);
+//			setSubProcessesForExport(defName, options);
+//			setFormsForExport(defName,options);
+//
+//			FileOutputStream fos = new FileOutputStream(TEMP_DIRECTORY + defName + "\\errlog.txt");
+//			OutputStreamWriter osw = new OutputStreamWriter(fos);
+//			osw.write(_DUMMY_LIST_.toString());
+//			osw.close();
+//			fos.close();
+//
+//			CompressZip cz = new CompressZip();
+//			cz.zip(TEMP_DIRECTORY, defName+".zip", TEMP_DIRECTORY, ua);
+//
+//			DeleteDir.deleteDir(rootDirectory);
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
+//		}
+//	}
 	
 	private Hashtable setFormsForExport(String rootDirectory,Hashtable options) throws Exception {
 		UEngineArchive ua = (UEngineArchive) options.get(UEngineArchive.UENGINE_ARCHIVE);
@@ -2498,77 +2502,77 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		}
 	}
 	
-	public Hashtable importProcessAliasCheck(InputStream is) throws Exception {
-		Hashtable result = new Hashtable();
-
-		Hashtable inputStreamList = expandFiles(is);
-		String key = "manifest.xml";
-		String manifestXml = (String) inputStreamList.get(key);
-		UEngineArchive ua = (UEngineArchive) GlobalContext.deserialize(manifestXml);
-		ProcessDefinitionRemote[] pds = listProcessDefinitionRemotesLight();
-		boolean[] duplication = new boolean[ua.getDefinitionList().size()];
-
-		for (int i = 0; i < ua.getDefinitionList().size(); i++) {
-			DefinitionArchive da = (DefinitionArchive) ua.getDefinitionList().get(i);
-			ProcessDefinitionRemote pdr = null;
-			for (int j = 0; j < pds.length; j++) {
-				pdr = pds[j];
-				if (da.getAlias().equals(pdr.getAlias()) && UEngineUtil.isNotEmpty(da.getAlias())) {
-					duplication[i] = true;
-					break;
-				}
-			}
-		}
-
-		result.put((String) "duplicationProcessList", duplication);
-		result.put((String) "processDefinitionArchive", ua);
-
-		return result;
-	}
-	
-	public Vector importProcessDefinition(String parentFolder, 
-										  InputStream loadedZipFile, 
-										  UEngineArchive editedUa, 
-										  String[] command ) throws Exception {
-		try{
-			Hashtable newDefIdList = new Hashtable();
-			Hashtable newDefVerIdList = new Hashtable();
-			Hashtable newAliasList = new Hashtable();
-			
-			Hashtable inputStreamList = expandFiles(loadedZipFile);
-			
-			UEngineArchive ua = (UEngineArchive)GlobalContext.deserialize((String)inputStreamList.get("manifest.xml"));
-			
-			//step1 : import root-folder 
-			String newRootFolderName = editedUa.getMainProcessDefinition().getName();
-			String newRootFolderId = addFolder(newRootFolderName, parentFolder);
-			
-			String oldRootFolderId = ua.getMainProcessDefinition().getBelongingId();
-			newDefIdList.put(oldRootFolderId, newRootFolderId);
-					
-			//step2 : import child-folder 
-			importFolder(newRootFolderId, oldRootFolderId, ua,editedUa, newDefIdList);
-			
-			//step3 : import definitions
-			importDefinitions(inputStreamList, command, ua, editedUa, newDefIdList,newDefVerIdList,newAliasList);
-			
-			//step4 : relate sub-process and form
-			relateDefinitionsForImport(ua, editedUa, newDefIdList, newDefVerIdList, newAliasList);
-	
-			Vector defIdList = new Vector();
-			Enumeration keys = newDefIdList.keys();
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement(); //Old DefId
-				String toFindDefid = (String) newDefIdList.get(key); //New DefId
-				defIdList.add(toFindDefid);
-			}
-			return defIdList;
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
+//	public Hashtable importProcessAliasCheck(InputStream is) throws Exception {
+//		Hashtable result = new Hashtable();
+//
+//		Hashtable inputStreamList = expandFiles(is);
+//		String key = "manifest.xml";
+//		String manifestXml = (String) inputStreamList.get(key);
+//		UEngineArchive ua = (UEngineArchive) GlobalContext.deserialize(manifestXml);
+//		ProcessDefinitionRemote[] pds = listProcessDefinitionRemotesLight();
+//		boolean[] duplication = new boolean[ua.getDefinitionList().size()];
+//
+//		for (int i = 0; i < ua.getDefinitionList().size(); i++) {
+//			DefinitionArchive da = (DefinitionArchive) ua.getDefinitionList().get(i);
+//			ProcessDefinitionRemote pdr = null;
+//			for (int j = 0; j < pds.length; j++) {
+//				pdr = pds[j];
+//				if (da.getAlias().equals(pdr.getAlias()) && UEngineUtil.isNotEmpty(da.getAlias())) {
+//					duplication[i] = true;
+//					break;
+//				}
+//			}
+//		}
+//
+//		result.put((String) "duplicationProcessList", duplication);
+//		result.put((String) "processDefinitionArchive", ua);
+//
+//		return result;
+//	}
+//
+//	public Vector importProcessDefinition(String parentFolder,
+//										  InputStream loadedZipFile,
+//										  UEngineArchive editedUa,
+//										  String[] command ) throws Exception {
+//		try{
+//			Hashtable newDefIdList = new Hashtable();
+//			Hashtable newDefVerIdList = new Hashtable();
+//			Hashtable newAliasList = new Hashtable();
+//
+//			Hashtable inputStreamList = expandFiles(loadedZipFile);
+//
+//			UEngineArchive ua = (UEngineArchive)GlobalContext.deserialize((String)inputStreamList.get("manifest.xml"));
+//
+//			//step1 : import root-folder
+//			String newRootFolderName = editedUa.getMainProcessDefinition().getName();
+//			String newRootFolderId = addFolder(newRootFolderName, parentFolder);
+//
+//			String oldRootFolderId = ua.getMainProcessDefinition().getBelongingId();
+//			newDefIdList.put(oldRootFolderId, newRootFolderId);
+//
+//			//step2 : import child-folder
+//			importFolder(newRootFolderId, oldRootFolderId, ua,editedUa, newDefIdList);
+//
+//			//step3 : import definitions
+//			importDefinitions(inputStreamList, command, ua, editedUa, newDefIdList,newDefVerIdList,newAliasList);
+//
+//			//step4 : relate sub-process and form
+//			relateDefinitionsForImport(ua, editedUa, newDefIdList, newDefVerIdList, newAliasList);
+//
+//			Vector defIdList = new Vector();
+//			Enumeration keys = newDefIdList.keys();
+//			while (keys.hasMoreElements()) {
+//				String key = (String) keys.nextElement(); //Old DefId
+//				String toFindDefid = (String) newDefIdList.get(key); //New DefId
+//				defIdList.add(toFindDefid);
+//			}
+//			return defIdList;
+//
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
+//		}
+//	}
 
 	private void importFolder(String newRootFolderId,
 			                  String oldRootFolderId, 
@@ -2799,37 +2803,37 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		return retHtml;
 	}
 
-	private Hashtable expandFiles(InputStream is) throws Exception {
-		net.sf.jazzlib.ZipInputStream zipIn = new net.sf.jazzlib.ZipInputStream(is);
-		net.sf.jazzlib.ZipEntry zipEntry = zipIn.getNextEntry();
-		Hashtable inputStreamList = new Hashtable();
-		while (zipEntry != null) {
-			if (!zipEntry.isDirectory()) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				byte[] b = new byte[1024];
-				int len = 0;
-				while ((len = zipIn.read(b)) != -1) {
-					baos.write(b, 0, len);
-				}
-				String definitionDoc = baos.toString("UTF-8");
-
-				String zipEntryName = zipEntry.getName();
-				zipEntryName = zipEntryName.replace("//", "/");
-				zipEntryName = zipEntryName.replace("\\\\", "/");
-				zipEntryName = zipEntryName.replace("\\", "/");
-				
-				String key = (String) zipEntryName.substring(zipEntryName.lastIndexOf("/") + 1, zipEntryName.length());
-				inputStreamList.put((String) key, (String) definitionDoc);
-				baos.close();
-
-				zipEntry = zipIn.getNextEntry();
-			} else {
-				zipEntry = zipIn.getNextEntry();
-			}
-		}
-		zipIn.close();
-		return inputStreamList;
-	}
+//	private Hashtable expandFiles(InputStream is) throws Exception {
+//		net.sf.jazzlib.ZipInputStream zipIn = new net.sf.jazzlib.ZipInputStream(is);
+//		net.sf.jazzlib.ZipEntry zipEntry = zipIn.getNextEntry();
+//		Hashtable inputStreamList = new Hashtable();
+//		while (zipEntry != null) {
+//			if (!zipEntry.isDirectory()) {
+//				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//				byte[] b = new byte[1024];
+//				int len = 0;
+//				while ((len = zipIn.read(b)) != -1) {
+//					baos.write(b, 0, len);
+//				}
+//				String definitionDoc = baos.toString("UTF-8");
+//
+//				String zipEntryName = zipEntry.getName();
+//				zipEntryName = zipEntryName.replace("//", "/");
+//				zipEntryName = zipEntryName.replace("\\\\", "/");
+//				zipEntryName = zipEntryName.replace("\\", "/");
+//
+//				String key = (String) zipEntryName.substring(zipEntryName.lastIndexOf("/") + 1, zipEntryName.length());
+//				inputStreamList.put((String) key, (String) definitionDoc);
+//				baos.close();
+//
+//				zipEntry = zipIn.getNextEntry();
+//			} else {
+//				zipEntry = zipIn.getNextEntry();
+//			}
+//		}
+//		zipIn.close();
+//		return inputStreamList;
+//	}
 
 	public HashMap getInitiationParameterMap(String pvdid) throws RemoteException {
 		try {
@@ -2871,85 +2875,85 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 				encodingStyle, true);
 	}
 
-    @Override
-    public void importProcessDefinitionGraciously(String parentFolder, String itemId, String itemFilePath, String loggedUserGlobalCom) throws Exception {
-	// TODO get MarketItem's zip file by itemId
-	InputStream is = null;
-	try {
-	    is = new BufferedInputStream(new FileInputStream(itemFilePath));
-	} catch (FileNotFoundException e) {
-	    e.printStackTrace();
-	    throw e;
-	}
+//    @Override
+//    public void importProcessDefinitionGraciously(String parentFolder, String itemId, String itemFilePath, String loggedUserGlobalCom) throws Exception {
+//	// TODO get MarketItem's zip file by itemId
+//	InputStream is = null;
+//	try {
+//	    is = new BufferedInputStream(new FileInputStream(itemFilePath));
+//	} catch (FileNotFoundException e) {
+//	    e.printStackTrace();
+//	    throw e;
+//	}
+//
+//	// TODO import zip file to ProcessCodi
+//	// step 1 : unzip
+//	// step 2 : rename alias
+//	Hashtable result = processAliasReviseForPurchase(is, loggedUserGlobalCom + "_purchased_" + itemId + "_");
+//	//Hashtable result = importProcessAliasCheck(is);
+//
+//	// step 3 : import
+//	UEngineArchive editedUa = (UEngineArchive) result.get("editedUa");
+//	String[] command = (String[]) result.get("command");
+//	try {
+//	    is = new BufferedInputStream(new FileInputStream(itemFilePath));
+//
+//	    Vector newDefId = importProcessDefinition("-1", is, editedUa, command);
+//
+//	    AclManager dau = AclManager.getInstance(getTransactionContext());
+//	    for (int i = 0; i < newDefId.size(); i++) {
+//		String defId = (String) newDefId.get(i);
+//
+//		dau.setPermission(Integer.parseInt(defId), Authority.createAuthorityList(loggedUserGlobalCom, AclManager.ACL_FIELD_COM, loggedUserGlobalCom, new String[] { AclManager.PERMISSION_MANAGEMENT + "" }));
+//
+//		ProcessDefinitionDAO procDef = (ProcessDefinitionDAO) getTransactionContext().findSynchronizedDAO("BPM_PROCDEF", "DEFID", defId, ProcessDefinitionDAO.class);
+//		procDef.setComCode(loggedUserGlobalCom);
+//	    }
+//	} catch (FileNotFoundException e) {
+//	    e.printStackTrace();
+//	    throw e;
+//	}
+//    }
 
-	// TODO import zip file to ProcessCodi
-	// step 1 : unzip
-	// step 2 : rename alias
-	Hashtable result = processAliasReviseForPurchase(is, loggedUserGlobalCom + "_purchased_" + itemId + "_");
-	//Hashtable result = importProcessAliasCheck(is);
-
-	// step 3 : import
-	UEngineArchive editedUa = (UEngineArchive) result.get("editedUa");
-	String[] command = (String[]) result.get("command");
-	try {
-	    is = new BufferedInputStream(new FileInputStream(itemFilePath));
-
-	    Vector newDefId = importProcessDefinition("-1", is, editedUa, command);
-	    
-	    AclManager dau = AclManager.getInstance(getTransactionContext());
-	    for (int i = 0; i < newDefId.size(); i++) {
-		String defId = (String) newDefId.get(i);
-
-		dau.setPermission(Integer.parseInt(defId), Authority.createAuthorityList(loggedUserGlobalCom, AclManager.ACL_FIELD_COM, loggedUserGlobalCom, new String[] { AclManager.PERMISSION_MANAGEMENT + "" }));
-
-		ProcessDefinitionDAO procDef = (ProcessDefinitionDAO) getTransactionContext().findSynchronizedDAO("BPM_PROCDEF", "DEFID", defId, ProcessDefinitionDAO.class);
-		procDef.setComCode(loggedUserGlobalCom);
-	    }
-	} catch (FileNotFoundException e) {
-	    e.printStackTrace();
-	    throw e;
-	}
-    }
-
-    private Hashtable processAliasReviseForPurchase(InputStream is, String aliasHeader) throws Exception {
-	Hashtable result = new Hashtable();
-	try {
-	    Hashtable inputStreamList;
-
-	    inputStreamList = expandFiles(is);
-
-	    String key = "manifest.xml";
-	    String manifestXml = (String) inputStreamList.get(key);
-	    UEngineArchive ua = (UEngineArchive) GlobalContext.deserialize(manifestXml);
-	    ProcessDefinitionRemote[] pds = listProcessDefinitionRemotesLight();
-	    String[] command = new String[ua.getDefinitionList().size()];
-
-	    for (int i = 0; i < command.length; i++) {
-		command[i] = "new";
-	    }
-
-	    for (int i = 0; i < ua.getDefinitionList().size(); i++) {
-		DefinitionArchive da = (DefinitionArchive) ua.getDefinitionList().get(i);
-		if(!"folder".equals(da.getObjectType())) {
-		    da.setAlias(aliasHeader + da.getAlias());
-		}
-		ProcessDefinitionRemote pdr = null;
-		for (int j = 0; j < pds.length; j++) {
-		    pdr = pds[j];
-		    if (da.getAlias().equals(pdr.getAlias()) && UEngineUtil.isNotEmpty(da.getAlias())) {
-			command[i] = "update";
-			break;
-		    }
-		}
-	    }
-
-	    result.put((String) "command", command);
-	    result.put((String) "editedUa", ua);
-	    return result;
-	} catch (Exception e) {
-	    throw e;
-	}
-    }
+//    private Hashtable processAliasReviseForPurchase(InputStream is, String aliasHeader) throws Exception {
+//	Hashtable result = new Hashtable();
+//	try {
+//	    Hashtable inputStreamList;
+//
+//	    inputStreamList = expandFiles(is);
+//
+//	    String key = "manifest.xml";
+//	    String manifestXml = (String) inputStreamList.get(key);
+//	    UEngineArchive ua = (UEngineArchive) GlobalContext.deserialize(manifestXml);
+//	    ProcessDefinitionRemote[] pds = listProcessDefinitionRemotesLight();
+//	    String[] command = new String[ua.getDefinitionList().size()];
+//
+//	    for (int i = 0; i < command.length; i++) {
+//		command[i] = "new";
+//	    }
+//
+//	    for (int i = 0; i < ua.getDefinitionList().size(); i++) {
+//		DefinitionArchive da = (DefinitionArchive) ua.getDefinitionList().get(i);
+//		if(!"folder".equals(da.getObjectType())) {
+//		    da.setAlias(aliasHeader + da.getAlias());
+//		}
+//		ProcessDefinitionRemote pdr = null;
+//		for (int j = 0; j < pds.length; j++) {
+//		    pdr = pds[j];
+//		    if (da.getAlias().equals(pdr.getAlias()) && UEngineUtil.isNotEmpty(da.getAlias())) {
+//			command[i] = "update";
+//			break;
+//		    }
+//		}
+//	    }
+//
+//	    result.put((String) "command", command);
+//	    result.put((String) "editedUa", ua);
+//	    return result;
+//	} catch (Exception e) {
+//	    throw e;
+//	}
+//    }
 
     @Override
     public String exportProcessDefinitionForAddToMarket(String defId, String loggedUserGlobalCom) throws Exception {
@@ -2971,4 +2975,29 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 
 	return filePath;
     }
+
+	@Override
+	public void exportProcessDefinitionbyVersionId(String defVerId) throws Exception {
+
+	}
+
+	@Override
+	public Vector importProcessDefinition(String parentFolder, InputStream loadedZipFile, UEngineArchive editedUa, String[] command) throws Exception {
+		return null;
+	}
+
+	@Override
+	public Hashtable importProcessAliasCheck(InputStream is) throws Exception {
+		return null;
+	}
+
+	@Override
+	public DefinitionArchive[] importDefinitionArchiveList(InputStream is) throws RemoteException {
+		return new DefinitionArchive[0];
+	}
+
+	@Override
+	public void importProcessDefinitionGraciously(String parentFolder, String itemId, String itemFilePath, String loggedUserGlobalCom) throws Exception {
+
+	}
 }

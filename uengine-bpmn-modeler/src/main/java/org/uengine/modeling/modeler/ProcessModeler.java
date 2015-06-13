@@ -22,6 +22,7 @@ import org.uengine.modeling.IModel;
 import org.uengine.modeling.IRelation;
 import org.uengine.modeling.Palette;
 import org.uengine.modeling.RelationView;
+import org.uengine.modeling.modeler.palette.ModelerPalette;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
 
@@ -32,7 +33,7 @@ public class ProcessModeler extends DefaultModeler {
 	public ProcessModeler() {
 		setType(SUFFIX);
 		this.setCanvas(new ProcessCanvas(getType()));
-		Palette palette = new SimplePalette(getType());
+		Palette palette = new ModelerPalette(getType());
 		this.setPalette(palette);
 
 		setMetaworksContext(new MetaworksContext());

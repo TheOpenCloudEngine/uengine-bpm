@@ -1,9 +1,5 @@
 package org.uengine.modeling.modeler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.AutowiredToClient;
@@ -18,21 +14,20 @@ import org.uengine.kernel.UEngineException;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.kernel.bpmn.SequenceFlow;
+<<<<<<< HEAD
 import org.uengine.kernel.bpmn.face.RolePanel;
+=======
+import org.uengine.kernel.bpmn.SubProcess;
+>>>>>>> 120539f952a95cf03bf6bf663caab42543d65e60
 import org.uengine.kernel.bpmn.view.EventView;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
-import org.uengine.modeling.Canvas;
-import org.uengine.modeling.DefaultModeler;
-import org.uengine.modeling.ElementView;
-import org.uengine.modeling.IElement;
-import org.uengine.modeling.IModel;
-import org.uengine.modeling.IRelation;
-import org.uengine.modeling.Palette;
-import org.uengine.modeling.RelationView;
-import org.uengine.modeling.modeler.palette.AttributePalette;
-import org.uengine.modeling.modeler.palette.ModelerPalette;
+import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProcessModeler extends DefaultModeler {
 
@@ -69,19 +64,22 @@ public class ProcessModeler extends DefaultModeler {
 
 	@Override
 	public void setModel(IModel model) throws Exception {
-		ProcessDefinition pd = (ProcessDefinition)model;
 
-		if(model==null){
+		if(model==null)
 			return;
-		}
 
+<<<<<<< HEAD
 //		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getRolePanel().setRoleList(Arrays.asList(pd.getRoles()));
 //		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getProcessVariablePanel().setProcessVariableList(Arrays.asList(pd.getProcessVariables()));
-
-		List<ElementView> elementViewList = new ArrayList<ElementView>();
-		List<RelationView> relationViewList = new ArrayList<RelationView>();
-
+=======
 		ProcessDefinition def = (ProcessDefinition)model;
+>>>>>>> 120539f952a95cf03bf6bf663caab42543d65e60
+
+		((SimplePalette)getPalette()).getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
+		((SimplePalette)getPalette()).getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
+
+		final List<ElementView> elementViewList = new ArrayList<ElementView>();
+		List<RelationView> relationViewList = new ArrayList<RelationView>();
 
 
 //		for(IElement element : def.getPools()){
@@ -92,14 +90,61 @@ public class ProcessModeler extends DefaultModeler {
 //			elementViewList.add(elementView);
 //		}
 
-		for(IElement element : def.getChildActivities()){
-			ElementView elementView = element.getElementView();
-			element.setElementView(null); //prevent cyclic reference
-			elementView.setElement(element);
+		/**
+		 * on Load ProcessDefinition
+		 * if Acitivity is SubProcesss, get ChildActvities and adding to elementViewList
+		 */
+		ActivityFor addingElemenViewLoop = new ActivityFor(){
 
-			elementViewList.add(elementView);
+			@Override
+			public void logic(Activity activity) {
+				ElementView elementView = activity.getElementView();
+
+				activity.setElementView(null); //prevent cyclic reference
+				elementView.setElement(activity);
+
+				elementViewList.add(elementView);
+
+			}
+
+		};
+
+		for(Activity activity: def.getChildActivities()) {
+
+			addingElemenViewLoop.run(activity);
+
+			if(activity instanceof SubProcess) {
+				ArrayList<SequenceFlow> sequenceFlowList = ((SubProcess) activity).getSequenceFlows();
+
+				for(IRelation relation: sequenceFlowList) {
+
+					SequenceFlow sequenceFlow = (SequenceFlow) relation;
+					SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
+					sequenceFlow.setRelationView(null);
+					sequenceFlowView.setRelation(sequenceFlow);
+					relationViewList.add(sequenceFlowView);
+				}
+			}
+
 		}
 
+//		for(IElement element : def.getChildActivities()){
+//			ElementView elementView = element.getElementView();
+//
+//			if (elementView.getElement() instanceof FlowActivity){
+//				FlowActivity parentActivity = (FlowActivity) elementView.getElement();
+//				List<Activity> list = parentActivity.getChildActivities();
+//				for(Activity activity: list) {
+//					elementViewList.add(activity.getElementView());
+//				}
+//			}
+//
+//			element.setElementView(null); //prevent cyclic reference
+//			elementView.setElement(element);
+//
+//			elementViewList.add(elementView);
+//		}
+//
 		for(IRelation relation : def.getSequenceFlows()){
 			SequenceFlow sequenceFlow = (SequenceFlow) relation;
 			SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
@@ -171,12 +216,11 @@ public class ProcessModeler extends DefaultModeler {
 	public ProcessDefinition makeProcessDefinitionFromCanvas(Canvas canvas) throws Exception{
 		ProcessDefinition def = new ProcessDefinition();
 
-		List<FlowActivity> parentActivities = new ArrayList<FlowActivity>();
+		List<ElementView> parentElementView = new ArrayList<ElementView>();
 
 		for(ElementView elementView : canvas.getElementViewList()){
-			if (elementView.getElement() instanceof FlowActivity){
-				parentActivities.add((FlowActivity) elementView.getElement());
-			}
+
+			parentElementView.add(elementView);
 
 		}
 
@@ -203,11 +247,10 @@ public class ProcessModeler extends DefaultModeler {
 				}
 			}else if (elementView.getElement() instanceof Activity){
 				Activity activity = (Activity)elementView.getElement();
-
 				activity.setName(elementView.getLabel());
 				activity.setElementView(elementView);
 
-				FlowActivity parentActivity = findParentActivity(elementView, parentActivities);
+				FlowActivity parentActivity = findParentActivity(elementView, parentElementView);
 
 				if(parentActivity==null)
 					parentActivity = def;
@@ -217,9 +260,8 @@ public class ProcessModeler extends DefaultModeler {
 				if(activity instanceof Event){
 					Activity toAttachActivity = findAttachedActivity(elementView, canvas.getElementViewList());
 
-					if(toAttachActivity!=null) {
-						((Event) activity).setAttachedToRef(toAttachActivity.getTracingTag());
-					}
+					if(toAttachActivity!=null)
+						((Event)activity).setAttachedToRef(toAttachActivity.getTracingTag());
 				}
 			}
 
@@ -252,10 +294,13 @@ public class ProcessModeler extends DefaultModeler {
 			relationView.setRelation(null);
 			sequenceFlow.setRelationView((SequenceFlowView)relationView);
 
-			FlowActivity parentActivity = findParentActivity(relationView, parentActivities);
+			FlowActivity parentActivity = findParentActivity(relationView, parentElementView);
 
+			if(parentActivity==null)
+				parentActivity = def;
 
-			def.addSequenceFlow(sequenceFlow);
+			parentActivity.addSequenceFlow(sequenceFlow);
+
 		}
 
 		for(ElementView elementView : canvas.getElementViewList()){
@@ -295,13 +340,17 @@ public class ProcessModeler extends DefaultModeler {
 		return null;
 	}
 
-	private FlowActivity findParentActivity(Object what, List<FlowActivity> parentActivities) {
-		for(FlowActivity flowActivity : parentActivities){
+	private FlowActivity findParentActivity(Object what, List<ElementView> parentElementView) {
+		for(ElementView elementView : parentElementView){
 
 			long x = 0;
 			long y = 0;
 			long width = 0;
 			long height = 0;
+			long leftLine = 0;
+			long rightLine = 0;
+			long topLine = 0;
+			long bottomLine = 0;
 
 			if(what instanceof ElementView) {
 				ElementView activityView = (ElementView)what;
@@ -310,6 +359,12 @@ public class ProcessModeler extends DefaultModeler {
 				y = Long.parseLong(activityView.getY());
 				width = Long.parseLong(activityView.getWidth());
 				height = Long.parseLong(activityView.getHeight());
+
+				leftLine = x - width/2;
+				rightLine = x + width/2;
+				topLine = y + height/2;
+				bottomLine = y - height/2;
+
 			}else if(what instanceof RelationView){
 				RelationView relationView = (RelationView)what;
 
@@ -318,15 +373,27 @@ public class ProcessModeler extends DefaultModeler {
 				width = Long.parseLong(relationView.getWidth());
 				height = Long.parseLong(relationView.getHeight());
 
+				leftLine = x - width/2;
+				rightLine = x + width/2;
+				topLine = y + height/2;
+				bottomLine = y - height/2;
 			}
 
-			long p_x = Long.parseLong(flowActivity.getElementView().getX());
-			long p_y = Long.parseLong(flowActivity.getElementView().getY());
-			long p_width = Long.parseLong(flowActivity.getElementView().getWidth());
-			long p_height = Long.parseLong(flowActivity.getElementView().getHeight());
+			long p_x = Long.parseLong(elementView.getX());
+			long p_y = Long.parseLong(elementView.getY());
+			long p_width = Long.parseLong(elementView.getWidth());
+			long p_height = Long.parseLong(elementView.getHeight());
+			long p_leftLine = p_x - p_width/2;
+			long p_rightLine = p_x + p_width/2;
+			long p_topLine = p_y + p_height/2;
+			long p_bottomLine = p_y - p_height/2;
 
-			if(p_x < x && p_y < y){ //TODO
-				return flowActivity; //I'm your father..
+			if(p_leftLine < leftLine &&
+					p_rightLine > rightLine &&
+					p_topLine > topLine &&
+					p_bottomLine < bottomLine
+					){ //TODO
+				return (FlowActivity)elementView.getElement(); //I'm your father..
 			}
 		}
 

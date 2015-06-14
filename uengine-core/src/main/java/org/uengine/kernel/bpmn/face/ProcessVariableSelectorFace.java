@@ -14,7 +14,8 @@ public class ProcessVariableSelectorFace extends SelectBox implements Face<Proce
 
     @Override
     public void setValueToFace(ProcessVariable value) {
-        if(processVariablePanel!=null){
+
+        if(processVariablePanel!=null && processVariablePanel.getProcessVariableList() !=null){
             ArrayList<String> options = new ArrayList<String>();
 
             for(ProcessVariable processVariable : processVariablePanel.getProcessVariableList()){

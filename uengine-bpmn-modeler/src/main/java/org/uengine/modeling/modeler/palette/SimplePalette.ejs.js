@@ -6,12 +6,9 @@ var org_uengine_modeling_modeler_palette_SimplePalette = function(objectId, clas
     this.objectDiv = $('#' + this.objectDivId);
 
     this.objectDiv.css({
-        height: '100%',
+        height: '56%',
         overflow: 'auto'
     });
 
-    this.objectDiv.parent().css('height', '100%');
-    this.objectDiv.parent().parent().css('height', '50%');
-    this.objectDiv.parent().parent().parent().css('height', '50%');
-
+    $('[classname="org.uengine.kernel.bpmn.face.RolePanel"]').css('marginTop', '400px');
 }

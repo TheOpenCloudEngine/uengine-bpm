@@ -1,11 +1,8 @@
 package org.uengine.modeling.modeler.palette;
 
-<<<<<<< HEAD
 import org.uengine.kernel.bpmn.face.RolePanelButton;
-=======
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
->>>>>>> 120539f952a95cf03bf6bf663caab42543d65e60
 import org.uengine.kernel.bpmn.view.*;
 import org.uengine.kernel.view.*;
 import org.uengine.modeling.Palette;

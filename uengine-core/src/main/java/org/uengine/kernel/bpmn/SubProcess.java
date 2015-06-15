@@ -2,6 +2,7 @@ package org.uengine.kernel.bpmn;
 
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.Range;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.face.ProcessVariableSelectorFace;
@@ -958,6 +959,7 @@ public class SubProcess extends ScopeActivity{
         this.multipleInstanceOption = multipleInstanceOption;
     }
 
+    @Range(options={"Parallel", "Loop"}, values = {"parallel", "loop"})
     public String getMultipleInstanceOption() {
         return multipleInstanceOption;
     }

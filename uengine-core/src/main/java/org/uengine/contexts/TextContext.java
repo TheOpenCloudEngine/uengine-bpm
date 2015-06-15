@@ -39,8 +39,13 @@ public class TextContext implements Serializable{
 		public String getText() {
 			if(!GlobalContext.isDesignTime()){
 				String defaultLocale = GlobalContext.getDefaultLocale();
-				
-				if(defaultLocale!=null) return getText(defaultLocale);
+				String textInTheLocale = null;
+
+				if(defaultLocale!=null)
+					textInTheLocale = getText(defaultLocale);
+
+				if(textInTheLocale==null)
+					return text;
 			}
 			
 			if(getProcessDefinition()==null) return text;

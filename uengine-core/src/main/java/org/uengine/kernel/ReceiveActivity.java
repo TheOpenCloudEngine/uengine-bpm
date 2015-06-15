@@ -68,7 +68,6 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener{
 		}
 
 	ParameterContext[] parameters;
-	@Hidden
 		public ParameterContext[] getParameters() {
 			return parameters;
 		}

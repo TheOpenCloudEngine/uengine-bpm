@@ -2,25 +2,22 @@ package org.uengine.modeling.modeler;
 
 import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.TextContext;
-import org.uengine.kernel.Activity;
-import org.uengine.kernel.ProcessDefinition;
-import org.uengine.kernel.Role;
-import org.uengine.kernel.UEngineException;
+import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.kernel.bpmn.SequenceFlow;
-<<<<<<< HEAD
+import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
-=======
 import org.uengine.kernel.bpmn.SubProcess;
->>>>>>> 120539f952a95cf03bf6bf663caab42543d65e60
 import org.uengine.kernel.bpmn.view.EventView;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
+import org.uengine.kernel.view.ActivityView;
 import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
@@ -39,26 +36,26 @@ public class ProcessModeler extends DefaultModeler {
 		Palette palette = new SimplePalette(getType());
 		this.setPalette(palette);
 
-		setRolePanel(new RolePanel());
+//		setRolePanel(new RolePanel());
 
 		setMetaworksContext(new MetaworksContext());
 		getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
 	}
 
-	RolePanel rolePanel;
-//	@Hidden
-	@AutowiredToClient
-		public RolePanel getRolePanel() {
-			return rolePanel;
-		}
-		public void setRolePanel(RolePanel rolePanel) {
-			this.rolePanel = rolePanel;
-		}
+//	RolePanel rolePanel;
+////	@Hidden
+//	@AutowiredToClient
+//		public RolePanel getRolePanel() {
+//			return rolePanel;
+//		}
+//		public void setRolePanel(RolePanel rolePanel) {
+//			this.rolePanel = rolePanel;
+//		}
 
-	@ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
-	public ModalWindow openRolePanel(){
-		return new ModalWindow(getRolePanel());
-	}
+//	@ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
+//	public ModalWindow openRolePanel(){
+//		return new ModalWindow(getRolePanel());
+//	}
 
 
 
@@ -68,15 +65,13 @@ public class ProcessModeler extends DefaultModeler {
 		if(model==null)
 			return;
 
-<<<<<<< HEAD
-//		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getRolePanel().setRoleList(Arrays.asList(pd.getRoles()));
-//		((AttributePalette)((ModelerPalette)getPalette()).getChildPallet().get(1)).getProcessVariablePanel().setProcessVariableList(Arrays.asList(pd.getProcessVariables()));
-=======
 		ProcessDefinition def = (ProcessDefinition)model;
->>>>>>> 120539f952a95cf03bf6bf663caab42543d65e60
 
-		((SimplePalette)getPalette()).getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
-		((SimplePalette)getPalette()).getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
+		if(def.getRoles()!=null)
+			((SimplePalette)getPalette()).getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
+
+		if(def.getProcessVariables()!=null)
+			((SimplePalette)getPalette()).getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
 
 		final List<ElementView> elementViewList = new ArrayList<ElementView>();
 		List<RelationView> relationViewList = new ArrayList<RelationView>();
@@ -213,8 +208,25 @@ public class ProcessModeler extends DefaultModeler {
 		}
 	}
 
+
+	@AutowiredFromClient public RolePanel rolePanel;
+	@AutowiredFromClient public ProcessVariablePanel processVariablePanel;
+
 	public ProcessDefinition makeProcessDefinitionFromCanvas(Canvas canvas) throws Exception{
-		ProcessDefinition def = new ProcessDefinition();
+		ProcessDefinition def = createEmptyProcessDefinition();
+
+		if(rolePanel!=null && rolePanel.getRoleList()!=null){
+			Role[] roles = new Role[rolePanel.getRoleList().size()];
+			rolePanel.getRoleList().toArray(roles);
+			def.setRoles(roles);
+		}
+
+		if(processVariablePanel!=null && processVariablePanel.getProcessVariableList()!=null){
+			ProcessVariable processVariables[] = new ProcessVariable[processVariablePanel.getProcessVariableList().size()];
+			processVariablePanel.getProcessVariableList().toArray(processVariables);
+			def.setProcessVariables(processVariables);
+		}
+
 
 		List<ElementView> parentElementView = new ArrayList<ElementView>();
 
@@ -241,9 +253,11 @@ public class ProcessModeler extends DefaultModeler {
 				}else{
 					int prevLength = def.getRoles().length;
 					def.addRole(role);
-					if(prevLength == def.getRoles().length){
-						throw new UEngineException("There are duplicated names among lanes.");
-					}
+
+					//TODO: enable and introspect why in the future
+//					if(prevLength == def.getRoles().length){
+//						throw new UEngineException("There are duplicated names among lanes.");
+//					}
 				}
 			}else if (elementView.getElement() instanceof Activity){
 				Activity activity = (Activity)elementView.getElement();
@@ -311,6 +325,10 @@ public class ProcessModeler extends DefaultModeler {
 		return def;
 	}
 
+	protected ProcessDefinition createEmptyProcessDefinition() {
+		return new ProcessDefinition();
+	}
+
 	private Activity findAttachedActivity(ElementView eventView, List<ElementView> elementViews) {
 		// eventView size
 		Long event_x_min = Long.parseLong(eventView.getX()) - (Math.abs(Long.parseLong(eventView.getWidth()) / 2));
@@ -342,6 +360,9 @@ public class ProcessModeler extends DefaultModeler {
 
 	private FlowActivity findParentActivity(Object what, List<ElementView> parentElementView) {
 		for(ElementView elementView : parentElementView){
+
+			if(!(elementView instanceof ActivityView))
+				continue;
 
 			long x = 0;
 			long y = 0;
@@ -377,6 +398,8 @@ public class ProcessModeler extends DefaultModeler {
 				rightLine = x + width/2;
 				topLine = y + height/2;
 				bottomLine = y - height/2;
+			}else{
+				continue;
 			}
 
 			long p_x = Long.parseLong(elementView.getX());

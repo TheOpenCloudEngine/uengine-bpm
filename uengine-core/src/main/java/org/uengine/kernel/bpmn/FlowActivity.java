@@ -54,6 +54,12 @@ public class FlowActivity extends ComplexActivity {
 	}
 
 	private Activity getStartActivity() throws UEngineException {
+
+		//if the model is old version, returns the first child in the order.
+		if(getSequenceFlows()==null || getSequenceFlows().size()==0 && getChildActivities().size() > 0){
+			return getChildActivities().get(0);
+		}
+
 		Activity child = null;
 		// TODO 프로세스를 퍼블리싱하여 제공할때는 이벤트로 프로세스가 시작이 될수가 있다 이때를 위한 부분을 처리해야함
 		for (Iterator it = getChildActivities().iterator(); it.hasNext();) {
@@ -72,9 +78,14 @@ public class FlowActivity extends ComplexActivity {
 
 		// inconsistent xml or miss starting point
 		// it should be never triggered
-		UEngineException exception = new UEngineException("inconsistent xml or missing starting point");
-		exception.setErrorLevel(UEngineException.FATAL);
-		throw exception;
+
+		if(getSequenceFlows()!=null && getSequenceFlows().size()>0) {
+			UEngineException exception = new UEngineException("inconsistent process model - missing starting activity");
+			exception.setErrorLevel(UEngineException.FATAL);
+			throw exception;
+		}
+
+		return null;
 	}
 
 	@Override

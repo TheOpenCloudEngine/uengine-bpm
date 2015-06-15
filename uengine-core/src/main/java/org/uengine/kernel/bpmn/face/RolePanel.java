@@ -4,13 +4,10 @@ import org.metaworks.Refresh;
 import org.metaworks.Remover;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.Face;
-<<<<<<< HEAD
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.kernel.ProcessVariable;
-=======
->>>>>>> 120539f952a95cf03bf6bf663caab42543d65e60
 import org.uengine.kernel.Role;
 
 import javax.xml.ws.Service;

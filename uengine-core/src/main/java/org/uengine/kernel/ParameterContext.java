@@ -10,10 +10,7 @@ import org.metaworks.Refresh;
 import org.metaworks.Remover;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.Type;
-import org.metaworks.annotation.AutowiredFromClient;
-import org.metaworks.annotation.Face;
-import org.metaworks.annotation.Range;
-import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.*;
 import org.metaworks.component.SelectBox;
 import org.metaworks.inputter.RadioInput;
 import org.metaworks.widget.ModalWindow;
@@ -67,6 +64,7 @@ public class ParameterContext implements Serializable , ContextAware{
 		}
 
 	transient Object type;
+	@Hidden
 		public Object getType() {
 			return type;
 		}
@@ -84,6 +82,7 @@ public class ParameterContext implements Serializable , ContextAware{
 		}
 		
 	TransformerMapping transformerMapping;
+	@Hidden
 		public TransformerMapping getTransformerMapping() {
 			return transformerMapping;
 		}

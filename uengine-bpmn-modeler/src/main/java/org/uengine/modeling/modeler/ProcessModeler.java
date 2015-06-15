@@ -234,9 +234,18 @@ public class ProcessModeler extends DefaultModeler {
 
 			parentElementView.add(elementView);
 
+			//child activities in the getElement() should be removed before rearranging them
+			if(elementView.getElement() instanceof FlowActivity){
+				FlowActivity flowActivity = ((FlowActivity) elementView.getElement());
+
+				if(flowActivity.getChildActivities()!=null)
+					flowActivity.getChildActivities().clear();
+			}
+
 		}
 
 		for(ElementView elementView : canvas.getElementViewList()){
+
 			if(elementView.getElement() instanceof Role){
 
 				Role[] roles = null;

@@ -278,7 +278,11 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		
 	}
 	
-	public ProcessVariableValue getMultiple(ProcessInstance instance, String scope, String key) throws Exception{		
+	public ProcessVariableValue getMultiple(ProcessInstance instance, String scope, String key) throws Exception{
+
+		if(getName()==null)
+			throw new IllegalArgumentException("Process variable name is empty. fail to get process variable value.");
+
 		if(isDatabaseSynchronized()){
 			
 			Serializable value = getDatabaseSynchronizationOption().get(instance, scope);

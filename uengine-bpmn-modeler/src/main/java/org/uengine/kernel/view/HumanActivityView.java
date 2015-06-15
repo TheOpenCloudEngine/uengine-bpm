@@ -5,6 +5,7 @@ import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.ServiceMethod;
 import org.uengine.kernel.HumanActivity;
+import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.Symbol;

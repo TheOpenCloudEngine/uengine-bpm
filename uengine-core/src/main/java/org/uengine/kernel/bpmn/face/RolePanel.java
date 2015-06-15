@@ -25,12 +25,12 @@ public class RolePanel{
             this.roleList = roleList;
         }
 
-    @ServiceMethod(callByContent = true, target=ServiceMethodContext.TARGET_POPUP)
-    public void ok(){
-        RolePanelButton rolePanelButton = new RolePanelButton();
-        rolePanelButton.setRolePanel(this);
-
-        MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()), new Refresh(this));
-    }
+//    @ServiceMethod(callByContent = true, target=ServiceMethodContext.TARGET_POPUP)
+//    public void ok(){
+//        RolePanelButton rolePanelButton = new RolePanelButton();
+//        rolePanelButton.setRolePanel(this);
+//
+//        MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()), new Refresh(this));
+//    }
 
 }

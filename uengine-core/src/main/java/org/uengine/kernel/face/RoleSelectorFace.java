@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class RoleSelectorFace extends SelectBox implements Face <Role>{
 
     @AutowiredFromClient
-    RolePanel rolePanel;
+    public RolePanel rolePanel;
 
     @Override
     public void setValueToFace(Role value) {

@@ -12,6 +12,9 @@ import java.util.Date;
 
 
 public class TimerEvent extends Event{
+	public TimerEvent() {
+		setName("Timer");
+	}
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	public static final String WAITING_TYPE_PERIOD 				= "WAIT_PERIOD";

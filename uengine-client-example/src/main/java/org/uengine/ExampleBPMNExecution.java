@@ -2,6 +2,7 @@ package org.uengine;
 
 
 import org.uengine.kernel.*;
+import org.uengine.kernel.bpmn.EndEvent;
 import org.uengine.processpublisher.BPMNUtil;
 
 public class ExampleBPMNExecution {

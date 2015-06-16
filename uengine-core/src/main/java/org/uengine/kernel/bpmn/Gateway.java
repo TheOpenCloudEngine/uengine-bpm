@@ -9,6 +9,7 @@ import java.util.List;
 public class Gateway extends Activity {
 
 	public Gateway() {
+		setName("Gateway");
 	}
 	
 	public Gateway(String name) {

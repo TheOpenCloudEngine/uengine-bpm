@@ -10,6 +10,5 @@ public class ParallelGatewayView extends GatewayView {
 	
 	public ParallelGatewayView(){
 		setShapeId(SHAPE_ID);
-		setLabel(ELEMENT_CLASSNAME);
 	}
 }

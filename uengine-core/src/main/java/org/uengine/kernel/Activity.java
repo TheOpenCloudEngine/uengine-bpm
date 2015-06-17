@@ -141,7 +141,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 			firePropertyChangeEvent(new PropertyChangeEvent(this, "name", oldName, name));
 		}
 		public void setName(String name) {
-			if(this.name == null){
+			if(getName() == null){
 				TextContext textCtx = null;
 
 				if(getProcessDefinition() == null) {

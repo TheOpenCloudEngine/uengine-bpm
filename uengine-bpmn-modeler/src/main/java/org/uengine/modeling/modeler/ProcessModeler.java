@@ -96,6 +96,15 @@ public class ProcessModeler extends DefaultModeler {
 				ElementView elementView = activity.getElementView();
 
 				activity.setElementView(null); //prevent cyclic reference
+
+				if(elementView==null){
+
+					System.err.println("ElementView is not found for activity [" + activity + "]");
+					//TODO: should be generated if elementView is not valid
+					return;
+				}
+
+
 				elementView.setElement(activity);
 
 				elementViewList.add(elementView);
@@ -144,6 +153,13 @@ public class ProcessModeler extends DefaultModeler {
 			SequenceFlow sequenceFlow = (SequenceFlow) relation;
 			SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
 			sequenceFlow.setRelationView(null);
+
+			if(sequenceFlowView==null){
+
+				//TODO: view should be generated if null
+				continue;
+			}
+
 			sequenceFlowView.setRelation(sequenceFlow);
 			relationViewList.add(sequenceFlowView);
 		}
@@ -293,6 +309,9 @@ public class ProcessModeler extends DefaultModeler {
 		for(RelationView relationView : this.getCanvas().getRelationViewList()){
 			SequenceFlow sequenceFlow = (SequenceFlow) relationView.getRelation();
 
+			//TODO: fix later
+			if(sequenceFlow == null)
+				continue;
 
 			String sourceRef = relationView.getFrom().substring(0, relationView.getFrom().indexOf("_TERMINAL_"));
 			String targetRef = relationView.getTo().substring(0, relationView.getTo().indexOf("_TERMINAL_"));

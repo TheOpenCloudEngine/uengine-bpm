@@ -3,6 +3,7 @@ package org.uengine.kernel.bpmn.view;
 import org.uengine.kernel.bpmn.Gateway;
 import org.uengine.kernel.view.ActivityView;
 import org.uengine.modeling.IElement;
+import org.uengine.modeling.Symbol;
 
 public class GatewayView extends ActivityView {
 
@@ -13,4 +14,14 @@ public class GatewayView extends ActivityView {
 	public GatewayView(){
 		setShapeId(SHAPE_ID);
 	}
+
+	@Override
+	public Symbol createSymbol() {
+		Symbol symbol = super.createSymbol();
+		symbol.setHeight(30);
+		symbol.setWidth(30);
+
+		return symbol;
+	}
+
 }

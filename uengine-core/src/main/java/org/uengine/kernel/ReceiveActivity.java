@@ -91,10 +91,6 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener{
 		super("Receive");
 	}
 
-	public ReceiveActivity(String name) {
-		super(name);
-	}
-
 /*	protected void afterPreviousActivityExecute(ActivityInstance instance)
 		throws Exception {
 		super.afterPreviousActivityExecute(instance);

@@ -22,11 +22,11 @@ var org_uengine_modeling_Symbol = function(objectId, className){
 	};
 	
 	this.startLoading = function(){
-		
+
 	};
 
 	this.endLoading = function(){
-		
+
 	};
 
 };

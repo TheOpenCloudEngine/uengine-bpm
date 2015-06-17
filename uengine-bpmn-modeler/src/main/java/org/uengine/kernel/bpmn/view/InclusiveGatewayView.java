@@ -12,6 +12,5 @@ public class InclusiveGatewayView extends ActivityView {
 	
 	public InclusiveGatewayView(){
 		setShapeId(SHAPE_ID);
-		setLabel(ELEMENT_CLASSNAME);
 	}
 }

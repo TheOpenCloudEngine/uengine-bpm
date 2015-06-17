@@ -11,6 +11,5 @@ public class EscalationEventView extends EventView{
 
     public EscalationEventView(){
         setShapeId(SHAPE_ID);
-        setLabel(ELEMENT_CLASSNAME);
     }
 }

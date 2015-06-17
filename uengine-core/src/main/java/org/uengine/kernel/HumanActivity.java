@@ -379,7 +379,7 @@ public class HumanActivity extends ReceiveActivity {
 		
 	public HumanActivity(){
 		super();
-		setName("");
+		setName("Human");
 		setDescription("");
 		setDuration(5);
 		setTool("defaultHandler");

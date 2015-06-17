@@ -5,6 +5,9 @@ import org.uengine.kernel.ProcessInstance;
 import org.uengine.modeling.ElementView;
 
 public class StartEvent extends Event {
+	public StartEvent() {
+		setName("Start");
+	}
 			
 	@Override
 	protected void executeActivity(ProcessInstance instance) throws Exception {

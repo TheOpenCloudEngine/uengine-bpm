@@ -1,6 +1,6 @@
 package org.uengine.kernel.bpmn.view;
 
-import org.uengine.kernel.EndEvent;
+import org.uengine.kernel.bpmn.EndEvent;
 
 public class EndEventView extends EventView {
 
@@ -10,7 +10,6 @@ public class EndEventView extends EventView {
 	
 	public EndEventView(){
 		setShapeId(SHAPE_ID);
-		setLabel(ELEMENT_CLASSNAME);
 	}
 
 

@@ -14,4 +14,5 @@ public class SubProcessView extends ScopeActivityView{
         return super.showProperty();
     }
 
+
 }

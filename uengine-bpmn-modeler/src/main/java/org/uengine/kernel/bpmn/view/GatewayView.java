@@ -12,6 +12,5 @@ public class GatewayView extends ActivityView {
 	
 	public GatewayView(){
 		setShapeId(SHAPE_ID);
-		setLabel(ELEMENT_CLASSNAME);
 	}
 }

@@ -1,14 +1,17 @@
-package org.uengine.kernel;
-
-import java.util.Hashtable;
-import java.util.Map;
+package org.uengine.kernel.bpmn;
 
 import org.metaworks.FieldDescriptor;
 import org.metaworks.Type;
 import org.metaworks.inputter.RadioInput;
-import org.uengine.kernel.bpmn.StartEvent;
+import org.uengine.kernel.Activity;
+import org.uengine.kernel.ProcessInstance;
+import org.uengine.kernel.UEngineException;
+import org.uengine.kernel.ValidationContext;
 import org.uengine.persistence.processinstance.ProcessInstanceDAO;
 import org.uengine.persistence.processinstance.ProcessInstanceDAOType;
+
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * @author Jinyoung Jang
@@ -37,9 +40,9 @@ public class EndEvent extends StartEvent {
 				},
 				new Object[] {
 						EndEvent.STATUS_STOPPED,
-						EndEvent.STATUS_CANCELLED,
-						EndEvent.STATUS_FAULT,
-						EndEvent.STATUS_COMPLETED
+						org.uengine.kernel.bpmn.EndEvent.STATUS_CANCELLED,
+						org.uengine.kernel.bpmn.EndEvent.STATUS_FAULT,
+						org.uengine.kernel.bpmn.EndEvent.STATUS_COMPLETED
 				}
 			)
 		);
@@ -88,7 +91,7 @@ public class EndEvent extends StartEvent {
 	int status;
 		public int getStatus() {
 			if (this.status == 0 ) {
-				return EndEvent.STATUS_COMPLETED;
+				return org.uengine.kernel.bpmn.EndEvent.STATUS_COMPLETED;
 			}
 			return status;
 		}
@@ -99,18 +102,19 @@ public class EndEvent extends StartEvent {
 	public EndEvent() {
 		// TODO: 확인해야함
 		//super("terminate");
+		setName("End");
 	}
 
 	public void executeActivity(ProcessInstance instance) throws Exception{
 		
 		String terminateStatus = null;
-		if (this.getStatus() == EndEvent.STATUS_STOPPED) {
+		if (this.getStatus() == org.uengine.kernel.bpmn.EndEvent.STATUS_STOPPED) {
 			terminateStatus = Activity.STATUS_STOPPED;
-		} else if (this.getStatus() == EndEvent.STATUS_CANCELLED) {
+		} else if (this.getStatus() == org.uengine.kernel.bpmn.EndEvent.STATUS_CANCELLED) {
 			terminateStatus = Activity.STATUS_CANCELLED;
-		} else if (this.getStatus() == EndEvent.STATUS_FAULT) {
+		} else if (this.getStatus() == org.uengine.kernel.bpmn.EndEvent.STATUS_FAULT) {
 			terminateStatus = Activity.STATUS_FAULT;
-		} else if (this.getStatus() == EndEvent.STATUS_COMPLETED) {
+		} else if (this.getStatus() == org.uengine.kernel.bpmn.EndEvent.STATUS_COMPLETED) {
 			terminateStatus = Activity.STATUS_COMPLETED;
 		}
 		

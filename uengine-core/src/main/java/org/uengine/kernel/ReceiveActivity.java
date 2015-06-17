@@ -6,6 +6,7 @@ package org.uengine.kernel;
 import java.io.Serializable;
 import java.util.*;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.metaworks.annotation.Hidden;
 
 

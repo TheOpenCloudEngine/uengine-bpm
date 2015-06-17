@@ -35,12 +35,16 @@ public class SimplePalette extends Palette {
 		setType(type);
 
 		this.getSymbolList().add((new StartEventView()).createSymbol());
-		this.getSymbolList().add((new DefaultActivityView()).createSymbol());
+		this.getSymbolList().add((new EndEventView()).createSymbol());
+		//this.getSymbolList().add((new DefaultActivityView()).createSymbol());
 		this.getSymbolList().add((new GatewayView()).createSymbol());
+		this.getSymbolList().add((new InclusiveGatewayView()).createSymbol());
+		this.getSymbolList().add((new ParallelGatewayView()).createSymbol());
 		this.getSymbolList().add((new HumanActivityView()).createSymbol());
 		this.getSymbolList().add((new SubProcessView()).createSymbol());
-		this.getSymbolList().add((new MessageEventView()).createSymbol());
+		//this.getSymbolList().add((new MessageEventView()).createSymbol());
 		this.getSymbolList().add((new EscalationEventView()).createSymbol());
+		this.getSymbolList().add((new TimerEventView()).createSymbol());
 
 	}
 }

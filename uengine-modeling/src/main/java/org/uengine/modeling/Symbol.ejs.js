@@ -1,3 +1,5 @@
+var symbolIsDragging = false;
+
 var org_uengine_modeling_Symbol = function(objectId, className){
 	this.objectId = objectId;
 	this.className = className;
@@ -13,10 +15,13 @@ var org_uengine_modeling_Symbol = function(objectId, className){
 			zIndex: 100,
 			start: function(event, ui) {
 				eval(command);
+
 			},
 			drag: function() {
+				symbolIsDragging = true;
 			},
 			stop: function() {
+				symbolIsDragging = false;
 			}
 		});
 	};

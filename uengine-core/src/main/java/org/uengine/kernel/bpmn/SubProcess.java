@@ -26,7 +26,6 @@ public class SubProcess extends ScopeActivity{
 
     public SubProcess(){
         super();
-
         setName("Sub");
         setDescription("");
         setInstanceId("<%=Instance.Name%>");

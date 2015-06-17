@@ -379,7 +379,6 @@ public class HumanActivity extends ReceiveActivity {
 		
 	public HumanActivity(){
 		super();
-
 		setName("Human");
 		setDescription("");
 		setDuration(5);

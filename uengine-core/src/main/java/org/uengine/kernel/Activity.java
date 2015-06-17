@@ -143,7 +143,6 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setName(String name) {
 			if(getName() == null){
 				TextContext textCtx = null;
-
 				if(getProcessDefinition() == null) {
 					textCtx = TextContext.createInstance();
 
@@ -170,7 +169,6 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setDescription(String name) {
 			if(getDescription()==null){
 				TextContext textCtx = null;
-
 				if(getProcessDefinition() == null) {
 					textCtx = TextContext.createInstance();
 

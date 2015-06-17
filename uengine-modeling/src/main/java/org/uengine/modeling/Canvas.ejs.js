@@ -22,11 +22,11 @@ var org_uengine_modeling_Canvas = function(objectId, className){
 
 org_uengine_modeling_Canvas.prototype = {
 	startLoading : function(){
-
+		mw3.startLoading();
 	},
 
 	endLoading : function(){
-
+		mw3.endLoading();
 	},
 
 	load : function(){

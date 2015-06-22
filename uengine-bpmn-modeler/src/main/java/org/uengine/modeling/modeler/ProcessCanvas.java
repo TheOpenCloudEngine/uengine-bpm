@@ -9,7 +9,7 @@ import org.uengine.modeling.*;
 
 public class ProcessCanvas extends Canvas {
 
-	public final static String CANVAS_DROP = "drop";
+	public final static String CANVAS_DROP = "canvasdrop";
 
 	@AutowiredFromClient
 	public Clipboard clipboard;
@@ -42,7 +42,7 @@ public class ProcessCanvas extends Canvas {
 	}
 
 	@Available(when = { MetaworksContext.WHEN_NEW, MetaworksContext.WHEN_EDIT })
-	@ServiceMethod(payload = { "clipboard", "modelerType" }, target = ServiceMethodContext.TARGET_APPEND, mouseBinding = CANVAS_DROP)
+	@ServiceMethod(payload = { "clipboard", "modelerType" }, target = ServiceMethodContext.TARGET_APPEND, eventBinding = CANVAS_DROP)
 	public Object[] drop() {
 
 		ElementView elementView = null;

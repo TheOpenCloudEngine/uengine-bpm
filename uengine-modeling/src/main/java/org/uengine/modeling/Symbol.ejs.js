@@ -1,10 +1,10 @@
-var symbolIsDragging = false;
-
 var org_uengine_modeling_Symbol = function(objectId, className){
 	this.objectId = objectId;
 	this.className = className;
 	this.objectDivId = mw3._getObjectDivId(this.objectId);
 	this.objectDiv = $('#' + this.objectDivId);
+
+	symbolDragging = false;
 	
 	this.draggable = function(command){
 		this.objectDiv.find('img').draggable({
@@ -15,13 +15,11 @@ var org_uengine_modeling_Symbol = function(objectId, className){
 			zIndex: 100,
 			start: function(event, ui) {
 				eval(command);
-
+				symbolDragging = true;
 			},
 			drag: function() {
-				symbolIsDragging = true;
 			},
 			stop: function() {
-				symbolIsDragging = false;
 			}
 		});
 	};

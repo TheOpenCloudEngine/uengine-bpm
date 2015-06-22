@@ -3,7 +3,7 @@ var org_uengine_modeling_Canvas = function(objectId, className){
 	this.className = className;
 	this.object = mw3.objects[this.objectId];
 	this.objectDivId = mw3._getObjectDivId(this.objectId);
-	this.objectDiv = $(document.getElementById(this.objectDivId));
+	this.objectDiv = $('#' + this.objectDivId);
 	this.metaworksContext = mw3.objectContexts[this.objectId].__metaworksContext;
 
 	this.objectDiv.addClass('mw3_resize').addClass('canvas').css('height','100%');
@@ -84,6 +84,21 @@ org_uengine_modeling_Canvas.prototype = {
 	eventBinding: function(){
 		var canvasDivObj = document.getElementById(this.canvasDivId);
 
+		$(canvasDivObj).droppable({
+			greedy: true,
+			drop: function(event, ui){
+				mw3.dropX = event.pageX;
+				mw3.dropY = event.pageY;
+
+				eval(this['dropCommand']);
+
+				if(symbolDragging == true){
+					symbolDragging = false;
+					$(canvasDivObj).trigger("canvasdrop");
+				}
+			}
+		});
+
 		$(canvasDivObj).bind('connectShape', {objectId: this.objectId}, function(event, edge, from, to){
 			mw3.getFaceHelper(event.data.objectId).createTransitionView(edge, from, to);
 		});
@@ -118,8 +133,7 @@ org_uengine_modeling_Canvas.prototype = {
 		});
 
 		$(canvasDivObj).bind('change.' + this.objectId, {objectId: this.objectId}, function(event, element){
-			if(console)
-				console.log('change');
+
 			mw3.getFaceHelper(event.data.objectId).addHistory();
 		});
 

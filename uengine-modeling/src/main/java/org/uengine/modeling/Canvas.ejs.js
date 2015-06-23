@@ -83,7 +83,6 @@ org_uengine_modeling_Canvas.prototype = {
 
 	eventBinding: function(){
 		var canvasDivObj = document.getElementById(this.canvasDivId);
-
 		$(canvasDivObj).droppable({
 			greedy: true,
 			drop: function(event, ui){
@@ -92,8 +91,8 @@ org_uengine_modeling_Canvas.prototype = {
 
 				eval(this['dropCommand']);
 
-				if(symbolDragging == true){
-					symbolDragging = false;
+				if(isDroppable == true){
+					isDroppable = false;
 					$(canvasDivObj).trigger("canvasdrop");
 				}
 			}

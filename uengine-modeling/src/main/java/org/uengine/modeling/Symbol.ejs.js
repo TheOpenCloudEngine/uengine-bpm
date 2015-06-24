@@ -4,8 +4,6 @@ var org_uengine_modeling_Symbol = function(objectId, className){
 	this.objectDivId = mw3._getObjectDivId(this.objectId);
 	this.objectDiv = $('#' + this.objectDivId);
 
-	symbolDragging = false;
-	
 	this.draggable = function(command){
 		this.objectDiv.find('img').draggable({
 			appendTo: "body",
@@ -15,7 +13,7 @@ var org_uengine_modeling_Symbol = function(objectId, className){
 			zIndex: 100,
 			start: function(event, ui) {
 				eval(command);
-				symbolDragging = true;
+				isDroppable = true;
 			},
 			drag: function() {
 			},

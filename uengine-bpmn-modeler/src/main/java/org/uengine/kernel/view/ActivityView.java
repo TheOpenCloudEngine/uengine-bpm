@@ -59,7 +59,7 @@ public class ActivityView extends ElementView {
 		if(element!=null && element instanceof Activity){
 			Activity activity = (Activity) element;
 			setLabel(activity.getName());
-			setId(activity.getTracingTag());
+			//setId(activity.getTracingTag());
 		}
 
 		super.setElement(element);

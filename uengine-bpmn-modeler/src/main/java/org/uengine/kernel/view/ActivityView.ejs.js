@@ -1,11 +1,7 @@
 var org_uengine_kernel_view_ActivityView = function(objectId, className){
-
-
-
 	this.objectId = objectId;
 	this.className = className;
-
-
+	this.object = mw3.objects[this.objectId];
 
 	this.tracingTag = function(){
 		var modeler = mw3.getAutowiredObject('org.uengine.modeling.Modeler');
@@ -20,8 +16,10 @@ var org_uengine_kernel_view_ActivityView = function(objectId, className){
 
 		//this.prototype = org_uengine_modeling_ElementView.prototype;
 
-		if(this.object.element && !this.object.element.tracingTag)
+		if(this.object.element && (this.object.element.tracingTag == null || typeof this.object.element.tracingTag == "undefined")) {
 			this.tracingTag();
+		}
+
 	}
 
 

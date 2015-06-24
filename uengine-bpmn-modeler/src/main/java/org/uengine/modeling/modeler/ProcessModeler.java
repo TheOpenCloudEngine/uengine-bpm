@@ -422,14 +422,14 @@ public class ProcessModeler extends DefaultModeler {
 
 					Activity fromActivity = (Activity)elementView.getElement();
 					sequenceFlow.setSourceRef(fromActivity.getTracingTag());
-					relationView.setFrom(fromActivity.getTracingTag() + relationView.TERMINAL_IN_OUT);
+					relationView.setFrom(elementView.getId() + relationView.TERMINAL_IN_OUT);
 				}
 
 				if(targetRef.equals(elementView.getId())) {
 
 					Activity toActivity = (Activity)elementView.getElement();
 					sequenceFlow.setTargetRef(toActivity.getTracingTag());
-					relationView.setTo(toActivity.getTracingTag() + relationView.TERMINAL_IN_OUT);
+					relationView.setTo(elementView.getId() + relationView.TERMINAL_IN_OUT);
 				}
 
 			}

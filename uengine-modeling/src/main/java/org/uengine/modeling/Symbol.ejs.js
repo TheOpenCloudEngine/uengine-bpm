@@ -13,7 +13,7 @@ var org_uengine_modeling_Symbol = function(objectId, className){
 			zIndex: 100,
 			start: function(event, ui) {
 				eval(command);
-				isDroppable = true;
+				isCanvasDroppable = true;
 			},
 			drag: function() {
 			},

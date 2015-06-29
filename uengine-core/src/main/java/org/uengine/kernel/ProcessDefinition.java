@@ -720,7 +720,7 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 					}
 				}*/
 
-				Activity targetActivity = getActivity(scope);				
+				Activity targetActivity = getActivity(scope);
 				if(!(targetActivity instanceof MessageListener)) continue;
 				
 				MessageListener activityAsMessageListener = (MessageListener)targetActivity;

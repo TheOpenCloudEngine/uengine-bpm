@@ -14,13 +14,9 @@ public class PoolView extends ElementView{
 		setShapeId(SHAPE_ID);
 	}
 	
-	public PoolView(IElement element){
-		super(element);
-	}
-
 	public Symbol createSymbol() {
 		Symbol symbol = new Symbol();
-		symbol.setName("풀");
+		symbol.setName("Pool");
 		symbol.setShapeId(SHAPE_ID);
 		symbol.setHeight(200);
 		symbol.setWidth(400);

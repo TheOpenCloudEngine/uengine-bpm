@@ -34,6 +34,7 @@ public class SimplePalette extends Palette {
 		this.setName("BPMN Diagram");
 		setType(type);
 
+		this.getSymbolList().add(new PoolView().createSymbol());
 		this.getSymbolList().add((new StartEventView()).createSymbol());
 		this.getSymbolList().add((new EndEventView()).createSymbol());
 		//this.getSymbolList().add((new DefaultActivityView()).createSymbol());

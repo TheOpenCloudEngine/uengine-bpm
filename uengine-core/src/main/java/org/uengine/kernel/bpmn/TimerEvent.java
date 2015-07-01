@@ -59,15 +59,24 @@ public class TimerEvent extends Event{
 //TODO: quartz job 에 등록
 //		job.register("timer_" + getTracingTag(), instanceId);
 
-		String resultExpression = expression;
-		if( WAITING_TYPE_PERIOD.equals(duration)){
+		// 표현식. cronTrigger를 위해 사용
+		// example
+		/*
+			0 0 12 * * ?	Fire at 12pm (noon) every day
+			0 15 10 ? * *	Fire at 10:15am every day
+			0 15 10 * * ?	Fire at 10:15am every day
+			0 15 10 * * ? *	Fire at 10:15am every day
+		 */
+		String resultExpression = this.getExpression();
+		if( WAITING_TYPE_PERIOD.equals(this.getDuration())){
 			Calendar modifyCal = SchedulerUtil.getCalendarByCronExpression(resultExpression);
 			this.addSchedule(instance, this.getTracingTag(), modifyCal, resultExpression);
-		}else if( WAITING_TYPE_UNTIL.equals(duration) || WAITING_TYPE_UNTIL_WITH_DATE.equals(duration)){
+
+		}else if( WAITING_TYPE_UNTIL.equals(this.getDuration()) || WAITING_TYPE_UNTIL_WITH_DATE.equals(this.getDuration())){
 			Calendar modifyCal = Calendar.getInstance();
 
 			String[] exp = resultExpression.split(" ");
-			if( WAITING_TYPE_UNTIL_WITH_DATE.equals(duration) ){
+			if( WAITING_TYPE_UNTIL_WITH_DATE.equals(this.getDuration()) ){
 				String srcVariableName = exp[4];
 				Object val = instance.getBeanProperty(srcVariableName);
 				if( val != null && val instanceof Calendar){
@@ -125,11 +134,6 @@ public class TimerEvent extends Event{
 		return false;
 	}
 
-	@Override
-	public String getMessage() {
-		return "timer";
-	}
-
 	protected void addSchedule(ProcessInstance instance, String tracingTag, Calendar modifyCal, String expression) throws Exception {
 
 		DataSource dataSource = null;
@@ -138,7 +142,8 @@ public class TimerEvent extends Event{
 		ResultSet rs = null;
 		String sqlOldSchDelete =  "DELETE FROM SCHEDULE_TABLE WHERE INSTID = ? AND TRCTAG = ? ";
 		String sqlSEQ = "SELECT MAX(SCHE_IDX) FROM SCHEDULE_TABLE";
-		String sql = " INSERT INTO SCHEDULE_TABLE(SCHE_IDX, INSTID, TRCTAG, STARTDATE, expression, newInstance,defId,GLOBALCOM) VALUES(?, ?, ?, ?, ?, ?, ?, ?) ";
+		String sql = " INSERT INTO SCHEDULE_TABLE(SCHE_IDX, INSTID, TRCTAG, STARTDATE, expression, newInstance, defId, GLOBALCOM) " +
+							   "VALUES(?, ?, ?, ?, ?, ?, ?, ?) ";
 
 		try {
 			ApplicationContext xml = new ClassPathXmlApplicationContext("spring-config.xml");

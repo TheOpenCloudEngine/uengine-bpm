@@ -1,4 +1,4 @@
-var isCanvasDroppable = false;
+var isDroppable = false;
 
 var org_uengine_modeling_Canvas = function(objectId, className){
 	this.objectId = objectId;
@@ -93,8 +93,8 @@ org_uengine_modeling_Canvas.prototype = {
 
 				eval(this['dropCommand']);
 
-				if(isCanvasDroppable == true){
-					isCanvasDroppable = false;
+				if(isDroppable == true){
+					isDroppable = false;
 					$(canvasDivObj).trigger("canvasdrop");
 				}
 			}

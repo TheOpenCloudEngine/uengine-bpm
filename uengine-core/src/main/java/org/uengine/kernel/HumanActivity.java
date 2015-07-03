@@ -502,18 +502,21 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 			//if the activity is initiator, put the role mapping with the login user.
 			if(thisIsInitiationActivity && getProcessDefinition().isInitiateByFirstWorkitem()){
 				RoleMapping currentLogin = null;
+
+				Exception cause = null;
 				try{
 					if( instance.isSubProcess() ){
 						currentLogin = instance.getRootProcessInstance().getRoleMapping("Initiator");
 					}else{
 						currentLogin = (RoleMapping)instance.getProcessTransactionContext().getProcessManager().getGenericContext().get(GENERICCONTEXT_CURR_LOGGED_ROLEMAPPING);
 					}
-				}catch(Exception e){	
+				}catch(Exception e){
+					cause = e;
 				}
 				if(roleMapping==null){
 	
 					if(currentLogin==null){
-						throw new UEngineException("Couldn't get the actual user for the role [" + getName() + "]. The reason maybe among these: 1. you didn't assign any role for this activity. 2. you didn't give login information for the current login user");
+						throw new UEngineException("Couldn't get the actual user for the activity [" + getName() + "]"+ (getRole()!=null ? " The Role Name is ["+getRole().getName()+"]" : "") + ". The reason maybe among these: 1. you didn't assign any role for this activity. 2. you didn't give login information for the current login user", cause);
 					}
 					
 					roleMapping = currentLogin;

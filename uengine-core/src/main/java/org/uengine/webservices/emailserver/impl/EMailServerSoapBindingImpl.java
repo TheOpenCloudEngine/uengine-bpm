@@ -53,6 +53,7 @@ public class EMailServerSoapBindingImpl implements org.uengine.webservices.email
 		    	props.put("mail.smtp.host", smtpIP);
 			props.put("mail.smtp.starttls.enable","true");
 			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.localhost", "127.0.0.1");
 
 			Session session = Session.getInstance(props, new MyPasswordAuthenticator(userID, password));
 

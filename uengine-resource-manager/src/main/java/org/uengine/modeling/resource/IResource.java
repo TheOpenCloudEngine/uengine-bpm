@@ -1,10 +1,10 @@
-package org.uengine.modeling;
+package org.uengine.modeling.resource;
 
 import org.metaworks.ContextAware;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 
-@Face(ejsPath="dwr/metaworks/genericfaces/FormFace.ejs", ejsPathMappingByContext={"{how: 'tree', face: 'dwr/metaworks/genericfaces/TreeFace.ejs'}"})
+@Face(ejsPath="dwr/metaworks/genericfaces/TreeFace.ejs")
 public interface IResource extends ContextAware{
 	
 	public static String TYPE_FOLDER = "folder";
@@ -78,5 +78,6 @@ public interface IResource extends ContextAware{
 	
 	@Hidden
 	public boolean isContainer();
-	
+
+	public void setPath(String path);
 }

@@ -29,8 +29,10 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 		return (WorkListDAO)Proxy.newProxyInstance(
 			WorkListDAO.class.getClassLoader(),
 			new Class[]{WorkListDAO.class},
-			new GenericDAO(
-				getConnectionFactory(), 
+			new ConnectiveDAO(
+
+				getConnectionFactory(),
+					true,
 				"insert into BPM_WORKLIST(TASKID, TITLE, DESCRIPTION, ENDPOINT, RESNAME, STATUS, PRIORITY, STARTDATE, ENDDATE, DUEDATE, INSTID, ROOTINSTID, DEFID, DEFNAME, TRCTAG, TOOL, DISPATCHOPTION, PARAMETER, ROLENAME, REFROLENAME, DISPATCHPARAM1)	values(?TASKID, ?TITLE, ?DESCRIPTION, ?ENDPOINT, ?RESNAME, ?STATUS, ?PRIORITY, ?STARTDATE, ?ENDDATE, ?DUEDATE, ?INSTID, ?ROOTINSTID, ?DEFID, ?DEFNAME, ?TRCTAG, ?TOOL, ?DISPATCHOPTION, ?PARAMETER, ?ROLENAME, ?REFROLENAME, ?DISPATCHPARAM1)",
 				WorkListDAO.class
 			){
@@ -144,19 +146,19 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 						pstmt_insert_seq.executeUpdate();
 					}
 					
-					conn.commit();
+				//	conn.commit();
 					
 					return key;
 					
 				} catch (Exception e1) {
 
-					if(conn!=null)
-					try {
-
-						conn.rollback();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
+//					if(conn!=null)
+//					try {
+//
+//						conn.rollback();
+//					} catch (SQLException e) {
+//						e.printStackTrace();
+//					}
 					
 					throw new RuntimeException(e1);
 				} finally {
@@ -169,8 +171,8 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 					if (pstmt_update_seq != null) try { pstmt_update_seq.close(); } catch (SQLException e1) {}
 					if (pstmt_insert_seq != null) try { pstmt_insert_seq.close(); } catch (SQLException e1) {}
 					
-					if (conn != null) try { conn.setAutoCommit(true); } catch (SQLException e1) {}
-					if (conn != null) try { conn.close(); } catch (SQLException e) {}
+//					if (conn != null) try { conn.setAutoCommit(true); } catch (SQLException e1) {}
+//					if (conn != null) try { conn.close(); } catch (SQLException e) {}
 				}
 				
 //				TransactionContext tc = new SimpleTransactionContext();

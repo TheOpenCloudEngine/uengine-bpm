@@ -34,6 +34,11 @@
 			<artifactId>uengine-bpmn-modeler</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.uengine</groupId>
+			<artifactId>uengine-resource-manager</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

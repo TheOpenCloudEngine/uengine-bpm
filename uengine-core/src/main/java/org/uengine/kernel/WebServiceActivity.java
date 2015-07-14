@@ -85,7 +85,7 @@ public class WebServiceActivity extends DefaultActivity{
 		}
 		
 	public WebServiceActivity(){
-		setName("");
+		setName("WebService");
 		setStublessInvocation(true);
 	}
 

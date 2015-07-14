@@ -40,9 +40,9 @@ public class ServiceClassGenerator{
 			out.println();
 		}
 		
-		out.println("import org.uengine.webservice.*;");
+		out.println("import org.uengine.uengine.*;");
 		out.println();
-		out.println("public " + (isInterface ? "interface ":"class ") + procName + (isInterface ? "{":" extends org.uengine.webservice.ProcessWebService implements "+ options.get("interface") +"{"));
+		out.println("public " + (isInterface ? "interface ":"class ") + procName + (isInterface ? "{":" extends org.uengine.uengine.ProcessWebService implements "+ options.get("interface") +"{"));
 		out.println();
 		if(!isInterface){
 			out.println("	public "+ procName +"(){}");

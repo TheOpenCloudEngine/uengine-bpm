@@ -480,7 +480,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	public void setElementView(ElementView elementView) {
 		this.elementView = elementView;
 	}
-	
+
 	public void createDocument() {
 		// TODO Auto-generated method stub
 	}

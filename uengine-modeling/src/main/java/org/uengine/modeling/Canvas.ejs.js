@@ -351,6 +351,10 @@ org_uengine_modeling_Canvas.prototype = {
 		var sourceElementView = mw3.getAutowiredObject('org.uengine.modeling.ElementView@' + from.id);
 		var targetElementView = mw3.getAutowiredObject('org.uengine.modeling.ElementView@' + to.id);
 
+		//웹 서비스 액티비티 일 시 연결된 이벤트의 이름을 알아오기 위해서 by soo
+		if(sourceElementView.shapeId == "OG.shape.bpmn.A_WebServiceTask"){
+			sourceElementView.connectedService = targetElementView.label;
+		}
 
 		if(!sourceElementView) throw new Error("can't find sourceElementView of [" + from.id + "]");
 		if(!targetElementView) throw new Error("can't find targetElementView of [" + to.id + "]");

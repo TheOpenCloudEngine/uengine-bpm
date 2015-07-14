@@ -1,5 +1,6 @@
 var org_uengine_kernel_view_DynamicDrawGeom = function(objectId, className){
 
+	debugger;
 	this.objectId = objectId;
     this.className = className;
     
@@ -17,20 +18,23 @@ var org_uengine_kernel_view_DynamicDrawGeom = function(objectId, className){
         if( object.editorId ){
             canvasObject = mw3.getAutowiredObject('org.uengine.codi.mw3.webProcessDesigner.ProcessDesignerContentPanel@'+object.editorId);
         }else{
-            canvasObject = mw3.getAutowiredObject('org.uengine.codi.mw3.webProcessDesigner.ProcessDesignerContentPanel');
+            canvasObject = mw3.getAutowiredObject('org.uengine.modeling.Canvas');
         }
     }
     this.canvasObjectId = canvasObject.__objectId;
     this.canvasObjectFaceHelper = mw3.getFaceHelper(canvasObject.__objectId);
-    this.canvas = this.canvasObjectFaceHelper.icanvas;
+    this.canvas = this.canvasObjectFaceHelper.canvas;
     this.element;
 	
 };
 
 org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 	loaded: function(){
+		debugger;
 		var object = mw3.objects[this.objectId];
-		var poolElement = document.getElementById(object.parentGeomId);
+
+		var poolview = mw3.getAutowiredObject('org.uengine.kernel.bpmn.view.PoolView');
+		var poolElement = document.getElementById(poolview.id);
 		if( poolElement ){
 			
 			var coordinateX = poolElement.shape.geom.boundary._leftCenter.x; // 기준 x
@@ -60,7 +64,8 @@ org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 			if (object && object.activityList) {
 				for (var i = 0; i < object.activityList.length; i++) {
 					var activity = object.activityList[i];
-					var activityView = activity.activityView;
+					var activityView = activity.elementView;
+					activityView.element.elementView = null;
 					
 					if( i != 0 ){
 						firstGeomX = firstGeomX*1 + activityView.width*1 + 50 // 50을 더해주는 이유는 간격
@@ -71,7 +76,7 @@ org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 					// 엑티비티에 tracingTag 부여
 					activity.tracingTag = ++tracingTag;
 					activityView.tracingTag = activity.tracingTag;
-					var html = mw3.locateObject(activityView , activityView.____className);
+					var html = mw3.locateObject(activityView , activityView.__className);
 					canvasDivObj.append(html);
 					mw3.onLoadFaceHelperScript();
 					

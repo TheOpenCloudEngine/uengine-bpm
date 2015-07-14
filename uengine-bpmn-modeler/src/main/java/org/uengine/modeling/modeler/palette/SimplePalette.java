@@ -1,6 +1,5 @@
 package org.uengine.modeling.modeler.palette;
 
-import org.uengine.kernel.bpmn.face.RolePanelButton;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.kernel.bpmn.view.*;
@@ -42,10 +41,13 @@ public class SimplePalette extends Palette {
 		this.getSymbolList().add((new InclusiveGatewayView()).createSymbol());
 		this.getSymbolList().add((new ParallelGatewayView()).createSymbol());
 		this.getSymbolList().add((new HumanActivityView()).createSymbol());
+		this.getSymbolList().add((new RestWebServiceActivityView()).createSymbol());
 		this.getSymbolList().add((new SubProcessView()).createSymbol());
 		//this.getSymbolList().add((new MessageEventView()).createSymbol());
 		this.getSymbolList().add((new EscalationEventView()).createSymbol());
 		this.getSymbolList().add((new TimerEventView()).createSymbol());
+		this.getSymbolList().add((new ReceiveRestMessageEventActivityView()).createSymbol());
+
 
 	}
 }

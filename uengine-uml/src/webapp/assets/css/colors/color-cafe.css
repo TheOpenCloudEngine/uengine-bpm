@@ -1,0 +1,31 @@
+#sidebar{background-color: #31251e;} 
+
+/* Header */
+.navbar-inverse {background-color: #31251e;border-bottom: none} 
+.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {color: #707070;background-color: #110d0b;} 
+
+.navbar-center {color:#bebebe}
+.navbar-inverse .navbar-brand {background: url('../../img/logo.png') no-repeat center; width: 120px}
+.sidebar-toggle {color:#ADADAD;border-right:none} 
+.header-menu #notifications-header .glyph-icon {color:#fff} 
+.header-menu #messages-header .glyph-icon {color:#fff} 
+.header-menu .dropdown-menu .dropdown-header, .header-menu .dropdown-menu .dropdown-header:hover {background: #31251e;color: #FFF;}
+.header-menu .dropdown-menu:after {border-bottom: 6px solid #31251e;}
+
+/* Sidebar */
+.sidebar-nav a {color:#adadad} 
+.sidebar-nav a:hover {color:#fff;} 
+.sidebar-nav a:hover i {color:#E0BA41;}
+.sidebar-nav li.current a{color: #fff;background-color: #211914;border-left:3px solid #E0BA41;} 
+.sidebar-nav li.current li.current a{color: #fff;font-weight:500;background-color: #16191F;border-left:3px solid #00A2D9;} 
+.sidebar-nav li.current a:hover i, .sidebar-medium .sidebar-nav li.current a i, .sidebar-thin .sidebar-nav li.current a i {color: #E0BA41;}
+#sidebar ul.submenu a{background-color: #413128} 
+.footer-widget {background-color: #31251e;border-top:none;} 
+.footer-widget a:hover i{color: #F7F7F7} 
+.footer-gradient {background: url('../../img/gradient.png') repeat-x;width: 100%;} 
+#sidebar-charts {border-bottom: 1px solid #3C3C3C}
+.sidebar-charts-inner{border-bottom: none;} 
+.sidebar-chart-title {color:#fff;opacity: 0.4;} 
+.sidebar-chart-number {color:#fff} 
+#sidebar-charts hr.divider, li.divider {background: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(205, 205, 205, 0)), color-stop(50%, #4D4D4D), color-stop(100%, rgba(205, 205, 205, 0)));background: -webkit-linear-gradient(left, rgba(205, 205, 205, 0), #4D4D4D, rgba(205, 205, 205, 0));background: -moz-linear-gradient(left, rgba(205, 205, 205, 0), #4D4D4D, rgba(205, 205, 205, 0));background: -o-linear-gradient(left, rgba(205, 205, 205, 0),#4D4D4D, rgba(205, 205, 205, 0));background: linear-gradient(left, rgba(205, 205, 205, 0), #4D4D4D, rgba(205, 205, 205, 0))}
+.sidebar-footer .pull-left:hover {background-color:#413128;} 

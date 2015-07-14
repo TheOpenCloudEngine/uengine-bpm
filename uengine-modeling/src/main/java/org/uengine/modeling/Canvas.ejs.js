@@ -1,3 +1,5 @@
+var isDroppable = false;
+
 var org_uengine_modeling_Canvas = function(objectId, className){
 	this.objectId = objectId;
 	this.className = className;

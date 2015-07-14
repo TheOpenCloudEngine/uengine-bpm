@@ -1,0 +1,18 @@
+.diagram_icon {
+	clear:both;
+	margin:0px;
+	padding:0px;}
+.diagram_icon table {
+	float:left;
+	width:200px;
+	border:1px solid #eeeeee;
+	border-spacing: 0px;}
+.diagram_icon table td {
+	font-size:10pt;
+	font-weight:bold;
+	color:#6e6f71;
+	text-align:center;
+	padding:1px;
+	background-color:#fbfbfb;
+	border-bottom:2px dotted #dddddd;}
+	

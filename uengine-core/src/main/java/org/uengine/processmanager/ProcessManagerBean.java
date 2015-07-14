@@ -1953,7 +1953,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 			if(transactionContext==null) return;
 			transactionContext.commit(); //means one unit transaction
 			//transactionContext = new TransactionContext(this);
-			System.out.println("!!! pm.applyChanges() !!!");
+			//System.out.println("!!! pm.applyChanges() !!!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);

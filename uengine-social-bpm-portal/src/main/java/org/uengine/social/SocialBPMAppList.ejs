@@ -1,0 +1,19 @@
+<%
+	if(value){
+%>
+		<div>
+			<ul class="process_map2 allApp">
+				<li onClick="<%=methods.goSNS.caller()%>">
+                    <img src="images/waveStyle/app_social.png">
+                    <div style="text-align:center"><%=mw3.localize("$AppList.SNS")%></div>
+                </li>
+                <li onClick="<%=methods.goProcessAdmin.caller()%>">
+                    <img src="images/waveStyle/app_social.png">
+                    <div style="text-align:center"><%=mw3.localize("$AppList.ProcessAdmin")%></div>
+                </li>
+			</ul>
+		</div>
+
+<%
+	}
+%>

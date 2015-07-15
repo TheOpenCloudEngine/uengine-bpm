@@ -1,6 +1,7 @@
 package org.uengine.resource.editor;
 
 import org.uengine.modeling.resource.IEditor;
+import org.uengine.modeling.resource.IResource;
 import org.uengine.uml.model.ClassDefinition;
 
 /**
@@ -17,6 +18,12 @@ public class ClassEditor implements IEditor<ClassDefinition>{
 
     @Override
     public ClassDefinition getEditingObject() {
+        return classDefinition;
+    }
+
+    @Override
+    public ClassDefinition newObject(IResource resource) {
+        ClassDefinition classDefinition = new ClassDefinition();
         return classDefinition;
     }
 }

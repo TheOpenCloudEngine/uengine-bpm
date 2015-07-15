@@ -9,7 +9,7 @@ public class ProcessAdminWorkbench extends Workbench {
     public ProcessAdminWorkbench() {
         super(new ProcessAdminContainerResource());
 
-        getResourceNavigator().getRoot().setPath("./test");
+        getResourceNavigator().getRoot().setPath("");
     }
 }
 

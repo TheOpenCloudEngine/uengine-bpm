@@ -1,6 +1,10 @@
 package org.uengine.modeling.resource;
 
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ModalWindow;
+
+import static org.metaworks.dwr.MetaworksRemoteService.*;
 
 public class EditorPanel {
 
@@ -20,10 +24,28 @@ public class EditorPanel {
 			this.resourcePath = resourcePath;
 		}
 
+	boolean isNew;
+
+		public boolean isNew() {
+			return isNew;
+		}
+
+		public void setIsNew(boolean isNew) {
+			this.isNew = isNew;
+		}
 
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)
 	public void save() throws Exception {
-		new DefaultResource(getResourcePath()).save(getEditor().getEditingObject());
+//		if(isNew){
+//			wrapReturn(new ModalWindow());
+//		}
+
+
+		DefaultResource defaultResource = new DefaultResource(getResourcePath());
+
+		autowire(defaultResource);
+
+		defaultResource.save(getEditor().getEditingObject());
 	}
 
 }

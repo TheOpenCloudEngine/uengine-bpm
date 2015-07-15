@@ -6,6 +6,8 @@ import org.uengine.modeling.resource.ContainerResource;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.resources.ProcessResource;
 
+import static org.metaworks.dwr.MetaworksRemoteService.autowire;
+
 /**
  * Created by jangjinyoung on 15. 7. 12..
  */
@@ -18,18 +20,22 @@ public class ProcessAdminContainerResource extends ContainerResource {
         processResource.setPath("newProcess.process");
         processResource.setParent(this);
 
-        processResource.open();
+        processResource.newOpen();
     }
 
 
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
-    public void newForm() throws Exception {
+    public void newClass() throws Exception {
 
         DefaultResource resource = new DefaultResource();
-        resource.setPath("newForm.form");
+
+        autowire(resource);
+
+
+        resource.setPath("newForm.class");
         resource.setParent(this);
 
-        resource.open();
+        resource.newOpen();
     }
 
 

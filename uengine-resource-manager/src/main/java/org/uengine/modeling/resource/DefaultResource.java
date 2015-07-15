@@ -4,9 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.metaworks.*;
 import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
-import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.uengine.modeling.Modeler;
 
 import javax.persistence.Id;
 import java.io.File;
@@ -147,7 +145,6 @@ public class DefaultResource implements IResource {
 
 	@Order(6)
 	@Face(displayName = "open")
-	@Available(condition = "metaworksContext.how == 'tree' && metaworksContext.where == 'navigator'")
 	@ServiceMethod(callByContent = true, except = "children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu = true, target=ServiceMethodContext.TARGET_APPEND)
 	public void open() throws Exception {
 		EditorPanel editorPanel = new EditorPanel();
@@ -156,12 +153,12 @@ public class DefaultResource implements IResource {
 
 		String classNamePrefix = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
 
-		Class modelerClass = Thread.currentThread().getContextClassLoader().loadClass("org.uengine.modeling.modeler." + classNamePrefix + "Modeler");
+		Class editorClass = Thread.currentThread().getContextClassLoader().loadClass("org.uengine.resource.editor." + classNamePrefix + "Editor");
 
-		Modeler modeler = (Modeler) modelerClass.newInstance();
-		modeler.setModel(resourceManager.getStorage().getObject(this));
+		IEditor editor = (IEditor) editorClass.newInstance();
+		editor.setEditingObject(resourceManager.getStorage().getObject(this));
 
-		editorPanel.setModeler(modeler);
+		editorPanel.setEditor(editor);
 
 		wrapReturn(new Refresh(editorPanel));
 	}
@@ -235,5 +232,8 @@ public class DefaultResource implements IResource {
 	}
 
 
+	public void save(Object editingObject) throws Exception {
+		resourceManager.getStorage().save(this, editingObject);
+	}
 }
 

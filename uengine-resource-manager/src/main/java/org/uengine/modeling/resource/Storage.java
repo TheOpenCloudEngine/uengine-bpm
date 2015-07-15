@@ -12,4 +12,7 @@ public interface Storage {
     public List<IResource> listFiles(IContainer containerResource) throws Exception;
 
     IModel getObject(IResource resource) throws Exception;
+
+    public void save(IResource resource, Object object) throws Exception;
+
 }

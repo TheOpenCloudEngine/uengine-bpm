@@ -7,6 +7,7 @@ import org.uengine.modeling.IModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,13 @@ public class LocalFileStorage implements Storage{
     @Override
     public IModel getObject(IResource resource) throws Exception {
         return (IModel) Serializer.deserialize(new FileInputStream(getFile(resource)));
+    }
+
+    @Override
+    public void save(IResource resource, Object object) throws Exception {
+
+        Serializer.serialize(object, new FileOutputStream(getFile(resource)));
+
     }
 
     private File getFile(IResource fileResource) {

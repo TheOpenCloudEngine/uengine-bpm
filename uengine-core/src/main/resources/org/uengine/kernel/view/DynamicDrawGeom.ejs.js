@@ -79,6 +79,7 @@ org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 					var html = mw3.locateObject(activityView , activityView.__className);
 					canvasDivObj.append(html);
 					mw3.onLoadFaceHelperScript();
+					mw3.getFaceHelper(this.canvasObjectId).addView(activityView);
 					
 					if( i == (object.activityList.length -1) ){
 						// 마지막으로 한번더 늘려준다

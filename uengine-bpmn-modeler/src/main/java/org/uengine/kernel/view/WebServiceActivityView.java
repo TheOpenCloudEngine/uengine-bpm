@@ -12,9 +12,8 @@ import org.uengine.kernel.RestWebServiceActivity;
 import org.uengine.kernel.WebServiceActivity;
 import org.uengine.kernel.bpmn.Pool;
 import org.uengine.kernel.bpmn.view.PoolView;
-import org.uengine.modeling.IElement;
-import org.uengine.modeling.PropertySettingDialog;
-import org.uengine.modeling.Symbol;
+import org.uengine.modeling.*;
+import org.uengine.modeling.modeler.ProcessModeler;
 import org.uengine.processdesigner.ActivityWindow;
 import org.uengine.webservice.MethodProperty;
 import org.uengine.webservice.ResourceProperty;
@@ -46,8 +45,13 @@ public class WebServiceActivityView extends ActivityView {
 	}
 
 	@ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
-	public Object showProperty(@AutowiredFromClient PoolView poolView) throws Exception {
-		Pool pool = (Pool) poolView.getElement();
+	public Object showProperty(@AutowiredFromClient Canvas canvas) throws Exception {
+
+		ProcessModeler processModeler = new ProcessModeler();
+		ElementView elementView = processModeler.findConnectedEvent(this, canvas.getRelationViewList(), canvas.getElementViewList());
+		connectedService = elementView.getLabel();
+		Pool pool = processModeler.findParentPool(elementView, canvas.getElementViewList());
+
 		PropertySettingDialog propertySettingDialog = new PropertySettingDialog();
 		propertySettingDialog.setElementView(this);
 
@@ -87,6 +91,7 @@ public class WebServiceActivityView extends ActivityView {
 		propertySettingDialog.setHeight(700);
 
 		return propertySettingDialog;
+
 	}
 
 }

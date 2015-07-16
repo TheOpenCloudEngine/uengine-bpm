@@ -9,19 +9,18 @@ import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.Event;
-import org.uengine.kernel.bpmn.FlowActivity;
-import org.uengine.kernel.bpmn.SequenceFlow;
+import org.uengine.kernel.bpmn.*;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
-import org.uengine.kernel.bpmn.SubProcess;
 import org.uengine.kernel.bpmn.view.EventView;
+import org.uengine.kernel.bpmn.view.PoolView;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.kernel.view.ActivityView;
 import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
 
+import javax.lang.model.element.Element;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -281,6 +280,19 @@ public class ProcessModeler extends DefaultModeler {
 
 		}
 
+		if(def.getPools()!=null){
+			for(Pool pool : def.getPools()){
+				if(pool.getElementView() != null){
+					ElementView elementView = pool.getElementView();
+					pool.setElementView(null);
+					elementView.setElement(pool);
+
+					elementView.setLabel(pool.getDescription());
+					elementViewList.add(elementView);
+				}
+			}
+		}
+
 		this.getCanvas().setElementViewList(elementViewList);
 		this.getCanvas().setRelationViewList(relationViewList);
 
@@ -469,9 +481,9 @@ public class ProcessModeler extends DefaultModeler {
 
 		}
 
-		for(ElementView elementView : canvas.getElementViewList()){
+		for(ElementView elementView : canvas.getElementViewList()) {
 
-			if(elementView.getElement() instanceof Role){
+			if (elementView.getElement() instanceof Role) {
 
 				Role[] roles = null;
 				Role role = (Role) elementView.getElement();
@@ -479,12 +491,12 @@ public class ProcessModeler extends DefaultModeler {
 				role.setElementView(elementView);
 				role.setName(elementView.getLabel());
 				role.setDisplayName(elementView.getLabel());
-				if(def.getRoles() == null){
+				if (def.getRoles() == null) {
 					roles = new Role[1];
 					roles[0] = role;
 					def.setRoles(roles);
 
-				}else{
+				} else {
 					int prevLength = def.getRoles().length;
 					def.addRole(role);
 
@@ -493,6 +505,21 @@ public class ProcessModeler extends DefaultModeler {
 //						throw new UEngineException("There are duplicated names among lanes.");
 //					}
 				}
+			}else if(elementView.getElement() instanceof Pool){
+
+				Pool pool = (Pool) elementView.getElement();
+				elementView.setElement(null);
+				pool.setElementView(elementView);
+				pool.setName(elementView.getLabel());
+				pool.setDescription(elementView.getLabel());
+				if(def.getPools() == null){
+					List<Pool> pools = new ArrayList<Pool>();
+					pools.add(pool);
+					def.setPools(pools);
+				}else{
+					def.addPool(pool);
+				}
+
 			}else if (elementView.getElement() instanceof Activity){
 				Activity activity = (Activity)elementView.getElement();
 				activity.setName(elementView.getLabel());
@@ -516,6 +543,8 @@ public class ProcessModeler extends DefaultModeler {
 		}
 
 		for(RelationView relationView : this.getCanvas().getRelationViewList()){
+
+
 			SequenceFlow sequenceFlow = (SequenceFlow) relationView.getRelation();
 
 			//TODO: fix later
@@ -558,7 +587,6 @@ public class ProcessModeler extends DefaultModeler {
 			elementView.setElement(null);
 		}
 
-		def.setPools(null);
 		return def;
 	}
 
@@ -660,5 +688,59 @@ public class ProcessModeler extends DefaultModeler {
 		return null;
 	}
 
+	public Pool findParentPool(ElementView elementView, List<ElementView> elementViewList){
+		for(ElementView ev : elementViewList){
+			if(!(ev instanceof PoolView)){
+				continue;
+			}
+
+			long x = Long.parseLong(elementView.getX());
+			long y = Long.parseLong(elementView.getY());
+			long width = Long.parseLong(elementView.getWidth());
+			long height = Long.parseLong(elementView.getHeight());
+			long left = x - (width/2);
+			long right = x + (width/2);
+			long top = y - (height/2);
+			long bottom = y + (height/2);
+
+			long p_x = Long.parseLong(ev.getX());
+			long p_y = Long.parseLong(ev.getY());
+			long p_width = Long.parseLong(ev.getWidth());
+			long p_height = Long.parseLong(ev.getHeight());
+			long p_left = p_x - (p_width/2);
+			long p_right = p_x + (p_width/2);
+			long p_top = p_y - (p_height/2);
+			long p_bottom = p_y + (p_height/2);
+
+			if(p_left < left &&
+					p_right > right &&
+					p_top < top &&
+					p_bottom > bottom
+					){ //TODO
+				return (Pool) ev.getElement();
+			}
+		}
+
+		return null;
+	}
+
+	public ElementView findConnectedEvent(ElementView elementView, List<RelationView> relationViewList, List<ElementView> elementViewList){
+
+		String id = null;
+
+		for(RelationView relationView : relationViewList){
+			if(elementView.getToEdge().equals(relationView.getId())){
+				id = relationView.getTo().split("_TERMINAL")[0];
+			}
+		}
+
+		for(ElementView ev : elementViewList){
+			if(ev.getId().equals(id)){
+				return ev;
+			}
+		}
+
+		return null;
+	}
 
 }

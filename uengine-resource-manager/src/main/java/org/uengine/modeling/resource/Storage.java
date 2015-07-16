@@ -11,7 +11,7 @@ public interface Storage {
     public void rename(IResource resource, String newName);
     public List<IResource> listFiles(IContainer containerResource) throws Exception;
 
-    IModel getObject(IResource resource) throws Exception;
+    Object getObject(IResource resource) throws Exception;
 
     public void save(IResource resource, Object object) throws Exception;
 

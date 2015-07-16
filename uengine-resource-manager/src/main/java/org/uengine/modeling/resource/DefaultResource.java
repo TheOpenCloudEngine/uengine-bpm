@@ -27,7 +27,8 @@ public class DefaultResource implements IResource {
 	protected MetaworksContext metaworksContext;
 
 
-	@Autowired ResourceManager resourceManager;
+	@Autowired
+	public ResourceManager resourceManager;
 
 
 
@@ -53,16 +54,6 @@ public class DefaultResource implements IResource {
 		return StringUtils.substringAfterLast(path, File.separator);
 	}
 
-	public void setName(String name) {
-		StringBuilder newPath = new StringBuilder();
-		if (this.path == null || this.path.contains(File.separator)) {
-			newPath.append(StringUtils.substringBeforeLast(this.path, File.separator)).append(File.separator).append(name);
-		} else {
-			newPath.append(File.separator).append(name);
-		}
-		this.path = newPath.toString();
-	}
-
 	@Name
 	@Face(displayName = "name")
 	/**
@@ -81,20 +72,6 @@ public class DefaultResource implements IResource {
 		}
 	}
 
-	public void setDisplayName(String displayName) {
-		if(this.path != null){
-			StringBuffer sb = new StringBuffer();
-			// File.separatorChar로 파일경로에서의 마지막 파일이나 폴더의 경로에서의 위치를 가져온다.
-			int index = this.path.lastIndexOf(File.separatorChar) + 1;
-			// 경로에서 마지막 파일이나 폴더의 포인트 위치를 가져온다.
-			int pos = this.path.substring(index).indexOf(".");
-			sb.append(this.path.substring(0, index) + displayName);
-			if (pos != -1) {
-				sb.append(this.path.substring(index + pos));
-			}
-			setPath(sb.toString());
-		}
-	}
 
 	/**
 	 * type is filename extension if the file is folder String "folder" will be
@@ -115,17 +92,6 @@ public class DefaultResource implements IResource {
 		return StringUtils.substringAfter(getName(), ".");
 	}
 
-	public void setType(String type) {
-		StringBuilder newPath = new StringBuilder();
-		if (!TYPE_FOLDER.equals(type)) {
-			if(type.startsWith(".")){
-				newPath.append(StringUtils.substringBefore(this.path, ".")).append(type);
-			} else { 
-				newPath.append(StringUtils.substringBefore(this.path, ".")).append(".").append(type);
-			}
-			this.path = newPath.toString();
-		}
-	}
 
 	@Hidden
 	public IContainer getParent() {
@@ -147,7 +113,16 @@ public class DefaultResource implements IResource {
 	@Face(displayName = "open")
 	@ServiceMethod(callByContent = true, except = "children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu = true, target=ServiceMethodContext.TARGET_APPEND)
 	public void open() throws Exception {
+		_newAndOpen(false);
+	}
+
+	public void newOpen() throws Exception {
+		_newAndOpen(true);
+	}
+
+	private void _newAndOpen(boolean isNew) throws Exception {
 		EditorPanel editorPanel = new EditorPanel();
+		editorPanel.setResourcePath(getPath());
 
 		String type = getType();
 
@@ -156,7 +131,11 @@ public class DefaultResource implements IResource {
 		Class editorClass = Thread.currentThread().getContextClassLoader().loadClass("org.uengine.resource.editor." + classNamePrefix + "Editor");
 
 		IEditor editor = (IEditor) editorClass.newInstance();
-		editor.setEditingObject(resourceManager.getStorage().getObject(this));
+
+		if(isNew)
+			editor.setEditingObject(editor.newObject(this));
+		else
+			editor.setEditingObject(resourceManager.getStorage().getObject(this));
 
 		editorPanel.setEditor(editor);
 

@@ -17,9 +17,6 @@ import java.util.List;
 @Component
 public class LocalFileStorage implements Storage{
 
-    @Autowired
-    ResourceManager resourceManager;
-
     String localBasePath;
         public String getLocalBasePath() {
             return localBasePath;
@@ -55,8 +52,8 @@ public class LocalFileStorage implements Storage{
     }
 
     @Override
-    public IModel getObject(IResource resource) throws Exception {
-        return (IModel) Serializer.deserialize(new FileInputStream(getFile(resource)));
+    public Object getObject(IResource resource) throws Exception {
+        return Serializer.deserialize(new FileInputStream(getFile(resource)));
     }
 
     @Override
@@ -67,6 +64,6 @@ public class LocalFileStorage implements Storage{
     }
 
     private File getFile(IResource fileResource) {
-        return new File(getLocalBasePath() + fileResource.getPath());
+        return new File(getLocalBasePath() + File.separator + fileResource.getPath());
     }
 }

@@ -3,12 +3,13 @@ package org.uengine.social;
 import org.metaworks.annotation.Face;
 import org.uengine.codi.mw3.model.Application;
 import org.uengine.modeling.resource.example.ExampleWorkbench;
+import org.uengine.processadmin.ProcessAdminWorkbench;
 
 @Face(ejsPath="dwr/metaworks/genericfaces/CleanObjectFace.ejs")
 public class ProcessAdminApplication extends Application{
 
     public ProcessAdminApplication() throws Exception {
-        this.exampleWorkbench = new ExampleWorkbench();
+        this.processAdminWorkbench = new ProcessAdminWorkbench();
     }
 
 //    StandaloneProcessModeler standaloneProcessModeler;
@@ -20,13 +21,13 @@ public class ProcessAdminApplication extends Application{
 //        }
 
 
-    ExampleWorkbench exampleWorkbench;
-        public ExampleWorkbench getExampleWorkbench() {
-            return exampleWorkbench;
+    ProcessAdminWorkbench processAdminWorkbench;
+        public ProcessAdminWorkbench getProcessAdminWorkbench() {
+            return processAdminWorkbench;
         }
 
-        public void setExampleWorkbench(ExampleWorkbench exampleWorkbench) {
-            this.exampleWorkbench = exampleWorkbench;
+        public void setProcessAdminWorkbench(ProcessAdminWorkbench processAdminWorkbench) {
+            this.processAdminWorkbench = processAdminWorkbench;
         }
 
 

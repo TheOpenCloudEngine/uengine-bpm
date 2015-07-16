@@ -24,7 +24,7 @@
     </bean>
 
     <!--<context:component-scan base-package="org.uengine.codi.mw3;org.uengine.codi.scheduler"/>-->
-    <context:component-scan base-package="org.uengine"/>
+	<context:component-scan base-package="org.uengine"/>
     <context:annotation-config/>
     <aop:aspectj-autoproxy/>
 
@@ -42,6 +42,20 @@
         <property name="password" value="${codi.jdbc.password}"/>
         <property name="validationQuery" value="${codi.jdbc.validationQuery}"/>
     </bean>
+
+
+	<!-- ============================================================= -->
+	<!-- Resource Manager Settings -->
+	<!-- ============================================================= -->
+
+
+	<bean id="localFileStorage" class="org.uengine.modeling.resource.LocalFileStorage">
+		<property name="localBasePath" value="."/>
+	</bean>
+
+	<bean class="org.uengine.modeling.resource.ResourceManager" scope="singleton">
+		<property name="storage" ref="localFileStorage"/>
+	</bean>
 
 
 	<!-- ============================================================= -->

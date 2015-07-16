@@ -17,7 +17,7 @@ public class ExampleContainerResource extends ContainerResource {
         processResource.setPath("newProcess.process");
         processResource.setParent(this);
 
-        processResource.open();
+        processResource.newOpen();
     }
 
 

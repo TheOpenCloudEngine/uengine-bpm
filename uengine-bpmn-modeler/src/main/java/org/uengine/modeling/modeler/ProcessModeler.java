@@ -603,20 +603,22 @@ public class ProcessModeler extends DefaultModeler {
 
 		for(ElementView elementView : elementViews) {
 			if (!(elementView instanceof EventView)) {
-				// elementView size
-				Long element_x_min = Long.parseLong(elementView.getX()) - (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
-				Long element_x_max = Long.parseLong(elementView.getX()) + (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
-				Long element_y_min = Long.parseLong(elementView.getY()) - (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
-				Long element_y_max = Long.parseLong(elementView.getY()) + (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
+				if(elementView.getX() != null) {
+					// elementView size
+					Long element_x_min = Long.parseLong(elementView.getX()) - (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
+					Long element_x_max = Long.parseLong(elementView.getX()) + (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
+					Long element_y_min = Long.parseLong(elementView.getY()) - (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
+					Long element_y_max = Long.parseLong(elementView.getY()) + (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
 
-				boolean checkMinX = (element_x_min <= event_x_min) && (event_x_min <= element_x_max);
-				boolean checkMaxX = (element_x_min <= event_x_max) && (event_x_max <= element_x_max);
+					boolean checkMinX = (element_x_min <= event_x_min) && (event_x_min <= element_x_max);
+					boolean checkMaxX = (element_x_min <= event_x_max) && (event_x_max <= element_x_max);
 
-				boolean checkMinY = (element_y_min <= event_y_min) && (event_y_min <= element_y_max);
-				boolean checkMaxY = (element_y_min <= event_y_max) && (event_y_max <= element_y_max);
+					boolean checkMinY = (element_y_min <= event_y_min) && (event_y_min <= element_y_max);
+					boolean checkMaxY = (element_y_min <= event_y_max) && (event_y_max <= element_y_max);
 
-				if ((checkMinX || checkMaxX) && (checkMinY || checkMaxY)) {
-					return (Activity) elementView.getElement();
+					if ((checkMinX || checkMaxX) && (checkMinY || checkMaxY)) {
+						return (Activity) elementView.getElement();
+					}
 				}
 			}
 		}
@@ -667,21 +669,23 @@ public class ProcessModeler extends DefaultModeler {
 				continue;
 			}
 
-			long p_x = Long.parseLong(elementView.getX());
-			long p_y = Long.parseLong(elementView.getY());
-			long p_width = Long.parseLong(elementView.getWidth());
-			long p_height = Long.parseLong(elementView.getHeight());
-			long p_leftLine = p_x - p_width/2;
-			long p_rightLine = p_x + p_width/2;
-			long p_topLine = p_y + p_height/2;
-			long p_bottomLine = p_y - p_height/2;
+			if(elementView.getX() != null) {
+				long p_x = Long.parseLong(elementView.getX());
+				long p_y = Long.parseLong(elementView.getY());
+				long p_width = Long.parseLong(elementView.getWidth());
+				long p_height = Long.parseLong(elementView.getHeight());
+				long p_leftLine = p_x - p_width / 2;
+				long p_rightLine = p_x + p_width / 2;
+				long p_topLine = p_y + p_height / 2;
+				long p_bottomLine = p_y - p_height / 2;
 
-			if(p_leftLine < leftLine &&
-					p_rightLine > rightLine &&
-					p_topLine > topLine &&
-					p_bottomLine < bottomLine
-					){ //TODO
-				return (FlowActivity)elementView.getElement(); //I'm your father..
+				if (p_leftLine < leftLine &&
+						p_rightLine > rightLine &&
+						p_topLine > topLine &&
+						p_bottomLine < bottomLine
+						) { //TODO
+					return (FlowActivity) elementView.getElement(); //I'm your father..
+				}
 			}
 		}
 
@@ -729,13 +733,16 @@ public class ProcessModeler extends DefaultModeler {
 		String id = null;
 
 		for(RelationView relationView : relationViewList){
-			if(elementView.getToEdge().equals(relationView.getId())){
-				id = relationView.getTo().split("_TERMINAL")[0];
+			for(String toedge : elementView.getToEdge().split(",")){
+				if(toedge.equals(relationView.getId())){
+					id = relationView.getTo().split("_TERMINAL")[0];
+					break;
+				}
 			}
 		}
 
 		for(ElementView ev : elementViewList){
-			if(ev.getId().equals(id)){
+			if((ev.getId() != null) && (ev.getId().equals(id))){
 				return ev;
 			}
 		}

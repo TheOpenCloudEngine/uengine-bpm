@@ -126,31 +126,57 @@ public class JaxRSWebServiceConnector implements WebServiceConnector, Serializab
         ArrayList<ResourceProperty> list = wsd.getResourceList();
 
         // 같은 패스별로 엑티비티를 만들기 위하여 HashMap을 사용
-        HashMap<String, ArrayList<ResourceProperty>> map = new HashMap<String, ArrayList<ResourceProperty>>();
-        for (ResourceProperty resourceProperty : list) {
-            String key = resourceProperty.getPath();
-            ArrayList<ResourceProperty> rp;
-            if (map.containsKey(key)) {
-                rp = map.get(key);
-            } else {
-                rp = new ArrayList<ResourceProperty>();
-            }
-            rp.add(resourceProperty);
-            if ("/hello/user".equals(key) && resourceProperty.getMethods().get(0).getId().equals("setUser")) {
-                rp = new ArrayList<ResourceProperty>();
-                rp.add(resourceProperty);
-            }
-            map.put(key, rp);
-        }
-        Iterator<String> itr = map.keySet().iterator();
-        while (itr.hasNext()) {
-            String key = (String) itr.next();
-            ArrayList<ResourceProperty> rpList = map.get(key);
-            ReceiveRestMessageEventActivity activity = new ReceiveRestMessageEventActivity();
-            activity.setUrl(key);
+//        HashMap<String, ArrayList<ResourceProperty>> map = new HashMap<String, ArrayList<ResourceProperty>>();
+//        for (ResourceProperty resourceProperty : list) {
+//            String key = resourceProperty.getPath();
+//            ArrayList<ResourceProperty> rp;
+//            if (map.containsKey(key)) {
+//                rp = map.get(key);
+//            } else {
+//                rp = new ArrayList<ResourceProperty>();
+//            }
+//            rp.add(resourceProperty);
+//            if ("/hello/user".equals(key) && resourceProperty.getMethods().get(0).getId().equals("setUser")) {
+//                rp = new ArrayList<ResourceProperty>();
+//                rp.add(resourceProperty);
+//            }
+//            map.put(key, rp);
+//        }
+//        Iterator<String> itr = map.keySet().iterator();
+//        while (itr.hasNext()) {
+//            String key = (String) itr.next();
+//            ArrayList<ResourceProperty> rpList = map.get(key);
+//            ReceiveRestMessageEventActivity activity = new ReceiveRestMessageEventActivity();
+//            activity.setUrl(key);
+//
+//            // 이름을 셋팅하는 부분이기때문에 가장 상위에 하나만 가져와서 셋팅함
+//            ResourceProperty resourceProperty = rpList.get(0);
+//            MethodProperty methodProperty = resourceProperty.getMethods().get(0);
+//
+//            TextContext name = new TextContext();
+//            name.setText(methodProperty.getId());
+//            activity.setName(methodProperty.getId());
+//            activity.setDescription(name);
+//
+//            ActivityView activityView = new ActivityView();
+//            activityView.setWidth("30");
+//            activityView.setHeight("30");
+////			activityView.setClassType("Activity");
+////			activityView.setShapeType("GEOM");
+//            activityView.setShapeId("OG.shape.bpmn.E_Start_Message");
+////			activityView.setActivityClass(activity.getClass().getName());
+//			activityView.setElement(activity);
+////
+//            activity.setElementView(activityView);
+//
+////            activity.getElementView().getElement().setElementView(null);
+//            activityList.add(activity);
+//        }
 
-            // 이름을 셋팅하는 부분이기때문에 가장 상위에 하나만 가져와서 셋팅함
-            ResourceProperty resourceProperty = rpList.get(0);
+        Iterator iterator = list.iterator();
+        while(iterator.hasNext()){
+            ReceiveRestMessageEventActivity activity = new ReceiveRestMessageEventActivity();
+            ResourceProperty resourceProperty = (ResourceProperty) iterator.next();
             MethodProperty methodProperty = resourceProperty.getMethods().get(0);
 
             TextContext name = new TextContext();
@@ -161,15 +187,10 @@ public class JaxRSWebServiceConnector implements WebServiceConnector, Serializab
             ActivityView activityView = new ActivityView();
             activityView.setWidth("30");
             activityView.setHeight("30");
-//			activityView.setClassType("Activity");
-//			activityView.setShapeType("GEOM");
             activityView.setShapeId("OG.shape.bpmn.E_Start_Message");
-//			activityView.setActivityClass(activity.getClass().getName());
 			activityView.setElement(activity);
-//
             activity.setElementView(activityView);
 
-//            activity.getElementView().getElement().setElementView(null);
             activityList.add(activity);
         }
 

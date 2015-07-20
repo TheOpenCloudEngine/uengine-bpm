@@ -85,6 +85,7 @@ public class ProcessTransactionContext extends TransactionContext{
 		this.processManagerBean = processManagerBean;
 		
 		setAutoCloseConnection(processManagerBean.isAutoCloseConnection());
+		setManagedTransaction(processManagerBean.isManagedTransaction()); //who removed this? this causes the transaction mismatch
 	}
 	
 	public ServletRequest getServletRequest() {

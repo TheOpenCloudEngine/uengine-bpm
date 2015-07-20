@@ -1,9 +1,6 @@
 package org.uengine.kernel.bpmn;
 
-import org.metaworks.ContextAware;
-import org.metaworks.MetaworksContext;
-import org.metaworks.Remover;
-import org.metaworks.ServiceMethodContext;
+import org.metaworks.*;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Name;
@@ -12,9 +9,11 @@ import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.GlobalContext;
+import org.uengine.kernel.view.DynamicDrawGeom;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.util.UEngineUtil;
+import org.uengine.webservice.ApplyProperties;
 
 @Face(ejsPath="genericfaces/ActivityFace.ejs", options={"fieldOrder"},values={"name,description"})
 public class Pool implements IElement, java.io.Serializable, ContextAware{
@@ -26,7 +25,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 		public void setMetaworksContext(MetaworksContext metaworksContext) {
 			this.metaworksContext = metaworksContext;
 		}
-	
+
 	String name;
 	@Face(displayName="$activityName")
 	@Order(1)
@@ -59,6 +58,10 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 				String poolResolutionContexts = GlobalContext.getPropertyString("poolresolutioncontexts", null);
 				if( poolResolutionContexts != null ){
 					try{
+						Class<?> clazz = Class.forName(poolResolutionContexts);
+//						if( clazz.equals(DefaultCompanyPoolResolutionContext.class)){
+							poolResolutionContext = (PoolResolutionContext) clazz.newInstance();
+//						}
 					}catch(Exception e){
 						e.printStackTrace();
 					}
@@ -83,14 +86,23 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 		setMetaworksContext(new MetaworksContext());
 		this.setDescription("");
 	}
-	
+
 	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
-	public Object[] apply(){
-		
+	public Object[] apply() throws Exception {
+
 		if ( this.getDescription() == null || "".equals(this.getDescription())){
 			this.setDescription(this.getName());
 		}
-		return null;
+
+
+		DynamicDrawGeom ddg = this.getPoolResolutionContext().drawActivitysOnDesigner();
+
+//		ModalWindow modalWindow = new ModalWindow();
+//		String viewId = this.getElementView().getId();
+//		modalWindow.setId(viewId);
+//		this.setElementView(null);
+
+		return new Object[]{ddg};
 	}
 
 	

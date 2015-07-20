@@ -17,10 +17,8 @@ import javax.ws.rs.core.Response;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.metaworks.annotation.Available;
-import org.metaworks.annotation.Face;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Order;
+import org.metaworks.Remover;
+import org.metaworks.annotation.*;
 import org.metaworks.component.Tree;
 import org.metaworks.component.TreeNode;
 
@@ -28,11 +26,12 @@ import org.metaworks.component.TreeNode;
 //import org.uengine.codi.mw3.webProcessDesigner.MappingTree;
 //import org.uengine.codi.mw3.webProcessDesigner.PoolMappingTree;
 
+import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.MappingContext;
+import org.uengine.contexts.MappingTree;
+import org.uengine.kernel.designer.MappingCanvas;
 import org.uengine.util.UEngineUtil;
-import org.uengine.webservice.MethodProperty;
-import org.uengine.webservice.ParameterProperty;
-//import org.uengine.webservice.WebServiceDefinition;
+import org.uengine.webservice.*;
 
 //public class RestWebServiceActivity extends DefaultActivity implements IDrawDesigner{
 public class RestWebServiceActivity extends DefaultActivity {
@@ -44,8 +43,8 @@ public class RestWebServiceActivity extends DefaultActivity {
 
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
-	public RestWebServiceActivity(){
-		super("restWebService");
+	public RestWebServiceActivity() throws Exception {
+		super("RestWebService");
 		method = new MethodProperty();
 	}
 
@@ -66,7 +65,8 @@ public class RestWebServiceActivity extends DefaultActivity {
 		public void setParentEditorId(String parentEditorId) {
 			this.parentEditorId = parentEditorId;
 		}
-/*	transient WebServiceDefinition webServiceDefinition;
+
+	transient WebServiceDefinition webServiceDefinition;
 	@Order(3)
 	@Face(displayName="연결 선택")
 		public WebServiceDefinition getWebServiceDefinition() {
@@ -74,7 +74,8 @@ public class RestWebServiceActivity extends DefaultActivity {
 		}
 		public void setWebServiceDefinition(WebServiceDefinition webServiceDefinition) {
 			this.webServiceDefinition = webServiceDefinition;
-		}*/
+		}
+
 	MappingContext mappingContext;
 	@Order(4)
 	@Face(displayName="$dataMapping")
@@ -309,8 +310,7 @@ public class RestWebServiceActivity extends DefaultActivity {
 		}
 		return vc;
 	}
-	/*
-	@Override
+
 	public void drawInit() throws Exception {
 		Tree leftTree;
 		Tree rightTree;
@@ -354,5 +354,5 @@ public class RestWebServiceActivity extends DefaultActivity {
 			mappingContextOut.setMappingTreeRight(rightTreeOut);
 		}
 	}
-	*/
+
 }

@@ -113,8 +113,15 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void clearParentActivity() {
 			this.parentActivity = null;
 		}
-		
-	
+
+	String viewId;
+		public String getViewId() {
+			return viewId;
+		}
+		public void setViewId(String viewId) {
+			this.viewId = viewId;
+		}
+
 
 	TextContext name;
 		@Name

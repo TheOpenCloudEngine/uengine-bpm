@@ -1,5 +1,4 @@
-package org.uengine.modeling;
-
+package org.uengine.modeling.resource;
 
 
 public interface IResourceVisitor {

@@ -353,7 +353,6 @@ org_uengine_modeling_Canvas.prototype = {
 		var sourceElementView = mw3.getAutowiredObject('org.uengine.modeling.ElementView@' + from.id);
 		var targetElementView = mw3.getAutowiredObject('org.uengine.modeling.ElementView@' + to.id);
 
-
 		if(!sourceElementView) throw new Error("can't find sourceElementView of [" + from.id + "]");
 		if(!targetElementView) throw new Error("can't find targetElementView of [" + to.id + "]");
 

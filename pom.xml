@@ -6,10 +6,12 @@
   <version>4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
+	  <module>uengine-commons</module>
 	  <module>uengine-modeling</module>
 	  <module>uengine-uml</module>
 	  <module>uengine-core</module>
 	  <module>uengine-bpmn-modeler</module>
+	  <module>uengine-resource-manager</module>
 	  <module>bpmn-model</module>
 	  <module>uengine-client-example</module>
 	  <module>uengine-social-bpm-portal</module>

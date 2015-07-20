@@ -16,8 +16,6 @@ public class Attribute {
 
     String type;
     @Range(options={"Text", "Number", "Date"}, values={"java.lang.String", "java.lang.Long", "java.util.Calendar"})
-
-
         public String getType() {
             return type;
         }

@@ -1,4 +1,4 @@
-var org_uengine_codi_mw3_webProcessDesigner_MappingCanvas= function(objectId, className){
+var org_uengine_kernel_designer_MappingCanvas= function(objectId, className){
 	// default setting
 	this.objectId = objectId;
 	this.className = className;
@@ -168,7 +168,7 @@ var org_uengine_codi_mw3_webProcessDesigner_MappingCanvas= function(objectId, cl
     this.callCount = 1;
 };
 
-org_uengine_codi_mw3_webProcessDesigner_MappingCanvas.prototype = {
+org_uengine_kernel_designer_MappingCanvas.prototype = {
 		drawTerminals : function(treeDivId, isLeft , canvas, callback, isAppend) {
 			var treeObjectId = null;
 			if(isLeft){
@@ -286,7 +286,7 @@ org_uengine_codi_mw3_webProcessDesigner_MappingCanvas.prototype = {
 			if( elements != null ){
 				for(var i = 0; i < elements.length; i++){
 					var toId = 'TO_' + elements[i].argument.text;
-					var fromId = 'FROM_' + elements[i].variable.name;
+					var fromId = 'FROM_' + elements[i].variable.selectedText;
 					// "." 을 "-" 로 변경
 					toId = toId.replace(/\./gi, "-");
 					fromId = fromId.replace(/\./gi, "-");

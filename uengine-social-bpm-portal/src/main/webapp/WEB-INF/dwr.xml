@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN" "http://getahead.org/dwr/dwr30.dtd">
+
+
+<dwr>
+
+	<init>
+	    <converter id="metaworks" class="org.metaworks.dwr.MetaworksConverter"/>
+ </init>
+
+  <allow>
+
+
+	  <convert converter="metaworks" match="org.uengine.modeling.resource.*"/>
+	  <convert converter="metaworks" match="org.uengine.modeling.*"/>
+
+
+	  <!--
+    <create creator="new" javascript="JavascriptChat" scope="page">
+      <param name="class" value="com.okmindmap.collaboration.JavascriptChat"/>
+    </create>
+    -->
+
+    <create creator="spring" javascript="Metaworks" scope="page">
+      <param name="beanName" value="MetaworksRemoteService"/>
+    </create>
+  	
+	<convert converter="bean" match="org.metaworks.dwr.*"/>
+	<convert converter="metaworks" match="org.metaworks.example.*"/>
+	
+	<convert converter="metaworks" match="java.lang.Class"/>
+	  <convert converter="metaworks" match="java.lang.Object"/>
+	  <convert converter="metaworks" match="java.io.Serializable"/>
+
+
+
+
+	  <convert converter="metaworks" match="org.uengine.codi.mw3.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.common.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.model.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.admin.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.knowledge.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.widget.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.process.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.project.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.processexplorer.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.menu.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.marketplace.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.marketplace.category.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.marketplace.searchbox.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.ide.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.ide.editor.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.ide.editor.java.*"/>
+	<convert converter="metaworks" match="org.uengine.codi.mw3.ide.editor.process.*"/>
+	
+	<convert converter="metaworks" match="org.uengine.processmarket.*"/>
+	
+	<convert converter="metaworks" match="org.uengine.codi.mw3.webProcessDesigner.*"/>
+	<convert converter="metaworks" match="org.uengine.kernel.*"/>
+	<convert converter="metaworks" match="org.uengine.contexts.*"/>
+	
+	<convert converter="metaworks" match="org.uengine.codi.activitytypes.wih.*"/>
+	<convert converter="metaworks" match="com.defaultcompany.sample.*"/>
+
+	<convert converter="metaworks" match="example.*"/>
+	<convert converter="metaworks" match="examples.*"/>
+
+	<convert converter="metaworks" match="org.uengine.oce.*"/>
+	<convert converter="metaworks" match="org.uengine.oce.dashboard.*"/>
+	
+	<convert converter="metaworks" match="org.uengine.webservice.*"/>
+
+	<convert match="java.lang.Exception" converter="exception">
+  		<param name='include' value='message,lineNumber'/>
+	</convert>
+
+  </allow>
+
+</dwr>
+

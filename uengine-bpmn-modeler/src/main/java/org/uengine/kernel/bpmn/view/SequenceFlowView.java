@@ -44,9 +44,7 @@ public class SequenceFlowView extends RelationView {
 
 	@ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
 	public Object showProperty() throws Exception {
-        ConditionPanel conditionPanel = new ConditionPanel();
-        conditionPanel.load();
-        this.setConditionPanel(conditionPanel);
+
 
         return super.showProperty();
 	}

@@ -15,7 +15,7 @@ public class RelationPropertiesView extends ModalWindow{
 
 	public RelationPropertiesView(RelationView relationView){
 		this.setRelationView(relationView);
-        setPanel(this.getRelationView());
+        setPanel(this.getRelationView().getRelation());
 	}
 
 	@ServiceMethod(callByContent=true)

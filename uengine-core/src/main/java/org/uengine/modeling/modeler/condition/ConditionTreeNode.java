@@ -4,6 +4,7 @@ import org.metaworks.*;
 import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Id;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.Face;
 import org.metaworks.component.TreeNode;
 import org.uengine.kernel.ProcessVariable;
 import org.uengine.kernel.Role;
@@ -11,6 +12,7 @@ import org.uengine.kernel.Role;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Face(ejsPath="dwr/metaworks/org/metaworks/component/TreeNode.ejs")
 public class ConditionTreeNode  implements ContextAware{
 	
 	public final static String CONDITION_AND				= "And";

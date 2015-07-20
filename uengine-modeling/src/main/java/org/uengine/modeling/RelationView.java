@@ -1,13 +1,19 @@
 package org.uengine.modeling;
 
-import java.io.Serializable;
+import org.metaworks.ContextAware;
+import org.metaworks.EventContext;
+import org.metaworks.MetaworksContext;
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.Face;
+import org.metaworks.annotation.ServiceMethod;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * @author jyj
  */
-public class RelationView implements Serializable, Cloneable {
+public class RelationView implements Serializable, ContextAware, Cloneable {
 
     private static final long serialVersionUID = 1234L;
     public final static String SHAPE_ID = "OG.shape.bpmn.C_Flow";
@@ -144,12 +150,23 @@ public class RelationView implements Serializable, Cloneable {
 
     IRelation relation;
 
+    @Face(ejsPath = "dwr/metaworks/genericfaces/HiddenFace.ejs")
     public IRelation getRelation() {
         return relation;
     }
 
     public void setRelation(IRelation relation) {
         this.relation = relation;
+    }
+
+    transient MetaworksContext metaworksContext;
+
+    public MetaworksContext getMetaworksContext() {
+        return metaworksContext;
+    }
+
+    public void setMetaworksContext(MetaworksContext metaworksContext) {
+        this.metaworksContext = metaworksContext;
     }
 
     public RelationView() {
@@ -199,6 +216,11 @@ public class RelationView implements Serializable, Cloneable {
         return symbol;
     }
 
+    @ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
+    public Object showProperty() throws Exception {
+        return new RelationPropertiesView(this);
+    }
+
     /**
      * convert main object from RelationView to IRelation
      *
@@ -210,4 +232,5 @@ public class RelationView implements Serializable, Cloneable {
         relation.setRelationView(this);
         return relation;
     }
+
 }

@@ -1,16 +1,23 @@
 package org.uengine.modeling;
 
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.widget.ModalWindow;
 
-public class RelationPropertiesView {
+public class RelationPropertiesView extends ModalWindow{
 
-	public RelationPropertiesView(){
-		
+	RelationView relationView;
+		public RelationView getRelationView() {
+			return relationView;
+		}
+		public void setRelationView(RelationView relationView) {
+			this.relationView = relationView;
+		}
+
+	public RelationPropertiesView(RelationView relationView){
+		this.setRelationView(relationView);
+        setPanel(this.getRelationView().getRelation());
 	}
-	
-	public RelationPropertiesView(IRelation relation){
-	}
-	
+
 	@ServiceMethod(callByContent=true)
 	public void apply(){
 		

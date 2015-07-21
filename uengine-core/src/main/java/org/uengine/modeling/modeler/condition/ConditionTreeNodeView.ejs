@@ -1,0 +1,21 @@
+<%
+if(value){
+%>
+<div  style="padding-top:10px; margin-top:10px; margin-left:15px;">
+	<div style="float:left;line-height:30px;">레이블명 </div>
+	<div style="padding-right:17px;"><%=fields.conditionLabel.here()%></div>
+	<div class="clear"></div>
+</div>
+<div style="margin:15px 17px 0 0;">
+	<div id="conditionTree" style="width:45%; height: 400px; float: left; background-color: #f6f6f6; border:1px solid #B4B3B5;margin-left:15px;" align="left"><%=fields.conditionTree.here()%></div>
+	<div id="conditionView" style="width:50%; height: 400px;  float: right;   background-color: #f6f6f6; border:1px solid #B4B3B5; margin-left:15px;">
+		<%=fields.conditionExPressionPanel.here()%>
+	</div>
+	<div class="clear"></div>
+</div>
+
+<div style="float:right; margin:20px 17px"><a id="wBtn" href="#" onClick="<%=methods.saveCondition.caller()%>"><span><%=mw3.localize("$save")%></span></a></div>
+<div class="clear"></div>
+<%
+}
+%>

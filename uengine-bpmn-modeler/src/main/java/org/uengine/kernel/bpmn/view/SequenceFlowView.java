@@ -1,20 +1,26 @@
 package org.uengine.kernel.bpmn.view;
 
 import org.metaworks.EventContext;
+import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.ServiceMethod;
-import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.IRelation;
 import org.uengine.modeling.RelationPropertiesView;
 import org.uengine.modeling.RelationView;
-import org.uengine.modeling.Symbol;
-
-//import org.uengine.essencia.modeling.ConnectorSymbol;
-
+import org.uengine.modeling.modeler.condition.ConditionPanel;
 
 public class SequenceFlowView extends RelationView {
 	public final static String SHAPE_ID = "OG.shape.bpmn.C_Sequence";
-	
-	public SequenceFlowView(){
+
+    ConditionPanel conditionPanel;
+        public ConditionPanel getConditionPanel() {
+            return conditionPanel;
+        }
+
+        public void setConditionPanel(ConditionPanel conditionPanel) {
+            this.conditionPanel = conditionPanel;
+        }
+
+    public SequenceFlowView(){
 		super();
 	}
 	
@@ -36,6 +42,12 @@ public class SequenceFlowView extends RelationView {
 //	}
 //
 
+	@ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
+	public Object showProperty() throws Exception {
+
+
+        return super.showProperty();
+	}
 	
 }
 

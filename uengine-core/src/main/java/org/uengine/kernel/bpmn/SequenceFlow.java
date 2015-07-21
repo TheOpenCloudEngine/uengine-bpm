@@ -11,6 +11,7 @@ import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.ScopeActivity;
 import org.uengine.modeling.Relation;
 import org.uengine.modeling.RelationView;
+import org.uengine.modeling.modeler.condition.ConditionPanel;
 import org.uengine.util.UEngineUtil;
 
 
@@ -44,12 +45,23 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		}
 		
 	Condition condition;
+	@Hidden
 		public Condition getCondition() {
 			return condition;
 		}
 		public void setCondition(Condition condition) {
 			this.condition = condition;
 		}
+
+
+	ConditionPanel conditionPanel;
+		public ConditionPanel getConditionPanel() {
+			return conditionPanel;
+		}
+		public void setConditionPanel(ConditionPanel conditionPanel) {
+			this.conditionPanel = conditionPanel;
+		}
+
 
 	public Activity getSourceActivity(){
 		return (Activity)this.getSourceElement();
@@ -67,11 +79,25 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 	}
 	
 	public SequenceFlow() {
+		try {
+			conditionPanel = new ConditionPanel();
+			conditionPanel.load();
+			this.setConditionPanel(conditionPanel);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public SequenceFlow(String source, String target) {
 		setSourceRef(source);
 		setTargetRef(target);
+		try {
+			conditionPanel = new ConditionPanel();
+			conditionPanel.load();
+			this.setConditionPanel(conditionPanel);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 

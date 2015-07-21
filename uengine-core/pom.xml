@@ -20,7 +20,7 @@
 
 		<dependency>
 			<groupId>org.uengine</groupId>
-			<artifactId>uengine-modeling</artifactId>
+			<artifactId>uengine-resource-manager</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -155,6 +155,18 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<version>${org.springframework-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.0</version>
 		</dependency>
 	</dependencies>
 

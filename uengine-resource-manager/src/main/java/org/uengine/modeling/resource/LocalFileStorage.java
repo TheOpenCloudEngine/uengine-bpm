@@ -1,5 +1,6 @@
 package org.uengine.modeling.resource;
 
+import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.uengine.modeling.IModel;
@@ -44,8 +45,20 @@ public class LocalFileStorage implements Storage{
     public List<IResource> listFiles(IContainer containerResource) throws Exception {
         List<IResource> resourceList = new ArrayList<IResource>();
 
-        for(File file : getFile(containerResource).listFiles()){
-            resourceList.add(DefaultResource.createResource(file.getPath()));
+        File directory = getFile(containerResource);
+
+        if(!directory.exists())
+            directory.mkdirs();
+
+        for(File file : directory.listFiles()){
+
+            if(file.isDirectory()){
+                ContainerResource containerResource1 = (ContainerResource) containerResource.getClass().newInstance();
+                containerResource1.setPath(file.getPath());
+
+                resourceList.add(containerResource1);
+            }else
+                resourceList.add(DefaultResource.createResource(file.getPath()));
         }
 
         return resourceList;
@@ -64,6 +77,14 @@ public class LocalFileStorage implements Storage{
     }
 
     private File getFile(IResource fileResource) {
-        return new File(getLocalBasePath() + File.separator + fileResource.getPath());
+        String tenantId = TenantContext.getThreadLocalInstance().getTenantId();
+
+        if(tenantId==null){
+            tenantId = ".default";
+        }
+
+        return new File(getLocalBasePath() + File.separator
+                + (tenantId != null ? tenantId + File.separator : "")
+                + fileResource.getPath());
     }
 }

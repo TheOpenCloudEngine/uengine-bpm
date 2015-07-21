@@ -8,6 +8,11 @@ public class Workbench {
 		this.editorPanel = new EditorPanel();
 	}
 
+	public Workbench(ResourceNavigator resourceNavigator) {
+		this.resourceNavigator = resourceNavigator;
+		this.editorPanel = new EditorPanel();
+	}
+
 	private ResourceNavigator resourceNavigator;
 
 		public ResourceNavigator getResourceNavigator() {

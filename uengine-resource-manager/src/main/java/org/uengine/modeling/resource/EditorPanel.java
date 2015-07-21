@@ -34,15 +34,10 @@ public class EditorPanel {
 			this.isNew = isNew;
 		}
 
+
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)
 	public void save() throws Exception {
-//		if(isNew){
-//			wrapReturn(new ModalWindow());
-//		}
-
-
-		DefaultResource defaultResource = new DefaultResource(getResourcePath());
-
+		IResource defaultResource = DefaultResource.createResource(getResourcePath());
 		autowire(defaultResource);
 
 		defaultResource.save(getEditor().getEditingObject());

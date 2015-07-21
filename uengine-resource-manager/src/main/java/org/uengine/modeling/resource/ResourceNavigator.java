@@ -6,6 +6,19 @@ package org.uengine.modeling.resource;
  */
 public class ResourceNavigator {
 
+    public ResourceNavigator(){
+        setSelectedResource(new SelectedResource());
+    }
+
+    SelectedResource selectedResource;
+        public SelectedResource getSelectedResource() {
+            return selectedResource;
+        }
+        public void setSelectedResource(SelectedResource selectedResource) {
+            this.selectedResource = selectedResource;
+        }
+
+
     IContainer root;
         public IContainer getRoot() {
             return root;

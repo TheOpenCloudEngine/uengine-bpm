@@ -1,4 +1,4 @@
-package org.uengine.processadmin;
+package processadmin;
 
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.ServiceMethod;

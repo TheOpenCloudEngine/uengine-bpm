@@ -6,6 +6,8 @@ import org.uengine.modeling.resource.ContainerResource;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.resources.ProcessResource;
 
+import java.io.File;
+
 import static org.metaworks.dwr.MetaworksRemoteService.autowire;
 
 /**
@@ -17,7 +19,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
     public void newProcess() throws Exception {
 
         ProcessResource processResource = new ProcessResource();
-        processResource.setPath("newProcess.process");
+        processResource.setPath(getPath() + File.separator + "newProcess.process");
         processResource.setParent(this);
 
         processResource.newOpen();
@@ -32,7 +34,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
         autowire(resource);
 
 
-        resource.setPath("newForm.class");
+        resource.setPath(getPath() + File.separator + "newForm.class");
         resource.setParent(this);
 
         resource.newOpen();

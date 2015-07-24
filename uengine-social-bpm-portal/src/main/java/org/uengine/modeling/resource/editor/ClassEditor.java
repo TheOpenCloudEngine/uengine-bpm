@@ -1,4 +1,4 @@
-package org.uengine.resource.editor;
+package org.uengine.modeling.resource.editor;
 
 import org.uengine.modeling.resource.IEditor;
 import org.uengine.modeling.resource.IResource;

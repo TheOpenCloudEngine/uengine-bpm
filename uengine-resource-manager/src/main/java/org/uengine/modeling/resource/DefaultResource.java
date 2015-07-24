@@ -41,6 +41,7 @@ public class DefaultResource implements IResource {
 
 
 
+
 	public DefaultResource() {
 	}
 
@@ -133,13 +134,20 @@ public class DefaultResource implements IResource {
 
 	@Order(6)
 	@Face(displayName = "open")
-	@ServiceMethod(callByContent = true, except = "children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu = true, target=ServiceMethodContext.TARGET_APPEND)
-	public void open() throws Exception {
-		_newAndOpen(false);
+	@ServiceMethod(callByContent = true, except = "children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu = true)
+	public void open(@AutowiredFromClient
+							  ResourceControlDelegate resourceControlDelegate
+
+	) throws Exception {
+
+		if(resourceControlDelegate!=null)
+			resourceControlDelegate.onDoubleClicked(this);
+		else
+			_newAndOpen(false);
 	}
 
 
-	@ServiceMethod(callByContent = true, except = "children", mouseBinding = "left", inContextMenu = true)
+	@ServiceMethod(callByContent = true, except = "children", inContextMenu = true)
 	public SelectedResource select() throws Exception {
 		SelectedResource selectedResource = new SelectedResource();
 
@@ -160,7 +168,7 @@ public class DefaultResource implements IResource {
 
 		String classNamePrefix = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
 
-		Class editorClass = Thread.currentThread().getContextClassLoader().loadClass("org.uengine.resource.editor." + classNamePrefix + "Editor");
+		Class editorClass = Thread.currentThread().getContextClassLoader().loadClass("org.uengine.modeling.resource.editor." + classNamePrefix + "Editor");
 
 		IEditor editor = (IEditor) editorClass.newInstance();
 

@@ -1,4 +1,4 @@
-package org.uengine.resource.editor;
+package org.uengine.modeling.resource.editor;
 
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.modeling.modeler.ProcessModeler;

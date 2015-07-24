@@ -46,19 +46,36 @@ public class LocalFileStorage implements Storage{
         List<IResource> resourceList = new ArrayList<IResource>();
 
         File directory = getFile(containerResource);
+//
+//        if(!directory.exists())
+//            directory.mkdirs();
+//
 
-        if(!directory.exists())
-            directory.mkdirs();
+        String tenantBasePath = getTenantBasePath();
 
+        File tenantBase = new File(tenantBasePath);
+        if(!tenantBase.exists()){
+            tenantBase.mkdirs();
+        }
+
+        String abstractTenantBasePath = new File(tenantBasePath).getAbsolutePath();
+
+        if(directory!=null && directory.exists())
         for(File file : directory.listFiles()){
+
+            String relativePath = file.getAbsolutePath();
+
+            relativePath = relativePath.substring(abstractTenantBasePath.length() + 1);
 
             if(file.isDirectory()){
                 ContainerResource containerResource1 = (ContainerResource) containerResource.getClass().newInstance();
-                containerResource1.setPath(file.getPath());
+
+
+                containerResource1.setPath(relativePath);
 
                 resourceList.add(containerResource1);
             }else
-                resourceList.add(DefaultResource.createResource(file.getPath()));
+                resourceList.add(DefaultResource.createResource(relativePath));
         }
 
         return resourceList;
@@ -72,19 +89,32 @@ public class LocalFileStorage implements Storage{
     @Override
     public void save(IResource resource, Object object) throws Exception {
 
+        File directory = getFile(resource).getParentFile();
+
+        if(!directory.exists())
+            directory.mkdirs();
+
+
         Serializer.serialize(object, new FileOutputStream(getFile(resource)));
 
     }
 
     private File getFile(IResource fileResource) {
+        String tenantBasePath = getTenantBasePath();
+
+
+        return new File(tenantBasePath
+                + fileResource.getPath());
+    }
+
+    private String getTenantBasePath() {
         String tenantId = TenantContext.getThreadLocalInstance().getTenantId();
 
         if(tenantId==null){
             tenantId = ".default";
         }
 
-        return new File(getLocalBasePath() + File.separator
-                + (tenantId != null ? tenantId + File.separator : "")
-                + fileResource.getPath());
+        return getLocalBasePath() + File.separator
+                + (tenantId != null ? tenantId + File.separator : "");
     }
 }

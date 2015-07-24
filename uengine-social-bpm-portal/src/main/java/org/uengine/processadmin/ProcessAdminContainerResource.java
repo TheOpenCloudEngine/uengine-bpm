@@ -1,10 +1,11 @@
-package processadmin;
+package org.uengine.processadmin;
 
 import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.ServiceMethod;
+import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.ContainerResource;
 import org.uengine.modeling.resource.DefaultResource;
-import org.uengine.modeling.resource.resources.ProcessResource;
 
 import java.io.File;
 
@@ -15,10 +16,12 @@ import static org.metaworks.dwr.MetaworksRemoteService.autowire;
  */
 public class ProcessAdminContainerResource extends ContainerResource {
 
+    @AutowiredFromClient public Session session;
+
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     public void newProcess() throws Exception {
 
-        ProcessResource processResource = new ProcessResource();
+        DefaultResource processResource = new DefaultResource();
         processResource.setPath(getPath() + File.separator + "newProcess.process");
         processResource.setParent(this);
 

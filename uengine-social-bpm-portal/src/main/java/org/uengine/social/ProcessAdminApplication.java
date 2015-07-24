@@ -2,7 +2,7 @@ package org.uengine.social;
 
 import org.metaworks.annotation.Face;
 import org.uengine.codi.mw3.model.Application;
-import processadmin.ProcessAdminWorkbench;
+import org.uengine.processadmin.ProcessAdminWorkbench;
 
 @Face(ejsPath="dwr/metaworks/genericfaces/CleanObjectFace.ejs")
 public class ProcessAdminApplication extends Application{

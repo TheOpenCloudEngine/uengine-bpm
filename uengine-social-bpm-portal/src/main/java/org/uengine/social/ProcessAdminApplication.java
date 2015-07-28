@@ -2,7 +2,6 @@ package org.uengine.social;
 
 import org.metaworks.annotation.Face;
 import org.uengine.codi.mw3.model.Application;
-import org.uengine.modeling.resource.example.ExampleWorkbench;
 import org.uengine.processadmin.ProcessAdminWorkbench;
 
 @Face(ejsPath="dwr/metaworks/genericfaces/CleanObjectFace.ejs")

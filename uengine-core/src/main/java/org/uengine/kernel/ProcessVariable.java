@@ -10,13 +10,7 @@ import javax.xml.namespace.QName;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Id;
-import org.metaworks.annotation.Order;
-import org.metaworks.annotation.Range;
-import org.metaworks.annotation.Validator;
-import org.metaworks.annotation.ValidatorContext;
-import org.metaworks.annotation.ValidatorSet;
+import org.metaworks.annotation.*;
 import org.metaworks.dwr.SerializationSensitive;
 import org.uengine.contexts.DatabaseSynchronizationOption;
 import org.uengine.contexts.TextContext;
@@ -106,7 +100,8 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 	transient String typeInputter;
 		@Order(3)
-		@Range(options={"Text","Date","Complex"}, values={"java.lang.String","java.util.Date","org.uengine.contexts.ComplexType"})
+		//@Range(options={"Text","Date","Complex"}, values={"java.lang.String","java.util.Date","org.uengine.contexts.ComplexType"})
+		@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector")
 		public String getTypeInputter() {
 			return typeInputter;
 		}
@@ -195,6 +190,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 	Object defaultValue = null;
 	@Order(4)
+	@Face(faceClassName="org.uengine.kernel.face.ProcessVariableDefaultValueFace")
 		public Object getDefaultValue() {
 			return defaultValue;
 		}

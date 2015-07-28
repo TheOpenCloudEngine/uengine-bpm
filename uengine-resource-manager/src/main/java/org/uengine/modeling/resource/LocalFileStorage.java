@@ -1,5 +1,6 @@
 package org.uengine.modeling.resource;
 
+import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.uengine.modeling.IModel;
@@ -44,26 +45,72 @@ public class LocalFileStorage implements Storage{
     public List<IResource> listFiles(IContainer containerResource) throws Exception {
         List<IResource> resourceList = new ArrayList<IResource>();
 
-        for(File file : getFile(containerResource).listFiles()){
-            resourceList.add(DefaultResource.createResource(file.getPath()));
+        File directory = getFile(containerResource);
+//
+//        if(!directory.exists())
+//            directory.mkdirs();
+//
+
+        String tenantBasePath = getTenantBasePath();
+
+        File tenantBase = new File(tenantBasePath);
+        if(!tenantBase.exists()){
+            tenantBase.mkdirs();
+        }
+
+        String abstractTenantBasePath = new File(tenantBasePath).getAbsolutePath();
+
+        if(directory!=null && directory.exists())
+        for(File file : directory.listFiles()){
+
+            String relativePath = file.getAbsolutePath();
+
+            relativePath = relativePath.substring(abstractTenantBasePath.length() + 1);
+
+            if(file.isDirectory()){
+                ContainerResource containerResource1 = (ContainerResource) containerResource.getClass().newInstance();
+
+
+                containerResource1.setPath(relativePath);
+
+                resourceList.add(containerResource1);
+            }else
+                resourceList.add(DefaultResource.createResource(relativePath));
         }
 
         return resourceList;
     }
 
-    @Override
-    public Object getObject(IResource resource) throws Exception {
-        return Serializer.deserialize(new FileInputStream(getFile(resource)));
-    }
 
     @Override
     public void save(IResource resource, Object object) throws Exception {
+
+        File directory = getFile(resource).getParentFile();
+
+        if(!directory.exists())
+            directory.mkdirs();
+
 
         Serializer.serialize(object, new FileOutputStream(getFile(resource)));
 
     }
 
     private File getFile(IResource fileResource) {
-        return new File(getLocalBasePath() + File.separator + fileResource.getPath());
+        String tenantBasePath = getTenantBasePath();
+
+
+        return new File(tenantBasePath
+                + fileResource.getPath());
+    }
+
+    private String getTenantBasePath() {
+        String tenantId = TenantContext.getThreadLocalInstance().getTenantId();
+
+        if(tenantId==null){
+            tenantId = "default";
+        }
+
+        return getLocalBasePath() + File.separator
+                + (tenantId != null ? tenantId + File.separator : "");
     }
 }

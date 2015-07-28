@@ -3,6 +3,7 @@ package org.uengine.modeling.resource;
 import org.metaworks.ContextAware;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.Name;
 
 @Face(ejsPath="dwr/metaworks/genericfaces/TreeFace.ejs")
 public interface IResource extends ContextAware{
@@ -36,6 +37,7 @@ public interface IResource extends ContextAware{
 	 *
 	 * @return      only file name will be returned
 	 */
+	 @Name
 	public String getDisplayName();
 	
 	/**
@@ -46,6 +48,7 @@ public interface IResource extends ContextAware{
 	 *
 	 * @return      file name includ filename extension except folder 
 	 */
+
 	public String getName();
 	
 	/**
@@ -80,4 +83,6 @@ public interface IResource extends ContextAware{
 	public boolean isContainer();
 
 	public void setPath(String path);
+
+	void save(Object editingObject) throws Exception;
 }

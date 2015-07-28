@@ -25,10 +25,20 @@ public class DefaultResource implements IResource {
 
 	private IContainer parent;
 	protected MetaworksContext metaworksContext;
+//
+//	boolean isSelected;
+//		public boolean isSelected() {
+//			return isSelected;
+//		}
+//		public void setIsSelected(boolean isSelected) {
+//			this.isSelected = isSelected;
+//		}
+
 
 
 	@Autowired
 	public ResourceManager resourceManager;
+
 
 
 
@@ -47,6 +57,8 @@ public class DefaultResource implements IResource {
 	 */
 	public String getName() {
 
+		if(path==null)
+			return null;
 
 		if (path.indexOf(File.separator) == StringUtils.INDEX_NOT_FOUND) {
 			return path;
@@ -62,6 +74,10 @@ public class DefaultResource implements IResource {
 	 */
 	public String getDisplayName() {
 		// File.separatorChar로 파일경로에서의 마지막 파일이나 폴더의 경로에서의 위치를 가져온다.
+
+		if(path==null)
+			return null;
+
 		int index = this.path.lastIndexOf(File.separatorChar) + 1;
 		// 경로에서 마지막 파일이나 폴더의 포인트 위치를 가져온다.
 		int pos = this.path.substring(index).indexOf(".");
@@ -70,6 +86,9 @@ public class DefaultResource implements IResource {
 		} else {
 			return this.path.substring(index, index + pos);
 		}
+	}
+
+	public void setDisplayName(String displayName){
 	}
 
 
@@ -86,6 +105,10 @@ public class DefaultResource implements IResource {
 	 * @return filename extension
 	 */
 	public String getType() {
+
+		if(path==null)
+			return null;
+
 		if (getName().indexOf(".") == StringUtils.INDEX_NOT_FOUND) {
 			return TYPE_FOLDER;
 		}
@@ -111,9 +134,26 @@ public class DefaultResource implements IResource {
 
 	@Order(6)
 	@Face(displayName = "open")
-	@ServiceMethod(callByContent = true, except = "children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu = true, target=ServiceMethodContext.TARGET_APPEND)
-	public void open() throws Exception {
-		_newAndOpen(false);
+	@ServiceMethod(callByContent = true, except = "children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu = true)
+	public void open(@AutowiredFromClient
+							  ResourceControlDelegate resourceControlDelegate
+
+	) throws Exception {
+
+		if(resourceControlDelegate!=null)
+			resourceControlDelegate.onDoubleClicked(this);
+		else
+			_newAndOpen(false);
+	}
+
+
+	@ServiceMethod(callByContent = true, except = "children", inContextMenu = true)
+	public SelectedResource select() throws Exception {
+		SelectedResource selectedResource = new SelectedResource();
+
+		selectedResource.setPath(getPath());
+
+		return selectedResource;
 	}
 
 	public void newOpen() throws Exception {
@@ -128,7 +168,7 @@ public class DefaultResource implements IResource {
 
 		String classNamePrefix = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
 
-		Class editorClass = Thread.currentThread().getContextClassLoader().loadClass("org.uengine.resource.editor." + classNamePrefix + "Editor");
+		Class editorClass = Thread.currentThread().getContextClassLoader().loadClass("org.uengine.modeling.resource.editor." + classNamePrefix + "Editor");
 
 		IEditor editor = (IEditor) editorClass.newInstance();
 
@@ -211,6 +251,7 @@ public class DefaultResource implements IResource {
 	}
 
 
+	@Override
 	public void save(Object editingObject) throws Exception {
 		resourceManager.getStorage().save(this, editingObject);
 	}

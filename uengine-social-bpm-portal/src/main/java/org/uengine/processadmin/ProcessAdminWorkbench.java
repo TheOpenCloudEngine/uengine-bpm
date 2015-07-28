@@ -7,10 +7,12 @@ import org.uengine.modeling.resource.Workbench;
  */
 public class ProcessAdminWorkbench extends Workbench {
     public ProcessAdminWorkbench() {
-        super(new ProcessAdminContainerResource());
-
-        getResourceNavigator().getRoot().setPath("");
+        super(new ProcessAdminResourceNavigator());
     }
+
 }
+
+
+
 
 

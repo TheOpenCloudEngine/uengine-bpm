@@ -81,6 +81,10 @@ public class LocalFileStorage implements Storage{
         return resourceList;
     }
 
+    @Override
+    public Object getObject(IResource resource) throws Exception {
+        return Serializer.deserialize(new FileInputStream(getFile(resource)));
+    }
 
     @Override
     public void save(IResource resource, Object object) throws Exception {

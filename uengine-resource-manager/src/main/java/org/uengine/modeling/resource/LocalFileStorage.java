@@ -81,10 +81,6 @@ public class LocalFileStorage implements Storage{
         return resourceList;
     }
 
-    @Override
-    public Object getObject(IResource resource) throws Exception {
-        return Serializer.deserialize(new FileInputStream(getFile(resource)));
-    }
 
     @Override
     public void save(IResource resource, Object object) throws Exception {
@@ -111,7 +107,7 @@ public class LocalFileStorage implements Storage{
         String tenantId = TenantContext.getThreadLocalInstance().getTenantId();
 
         if(tenantId==null){
-            tenantId = ".default";
+            tenantId = "default";
         }
 
         return getLocalBasePath() + File.separator

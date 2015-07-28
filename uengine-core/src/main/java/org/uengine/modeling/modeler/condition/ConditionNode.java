@@ -1,7 +1,7 @@
 package org.uengine.modeling.modeler.condition;
 
 import org.metaworks.*;
-import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.*;
 import org.metaworks.component.SelectBox;
 import org.metaworks.component.TreeNode;
 import org.uengine.kernel.ProcessVariable;
@@ -10,14 +10,15 @@ import org.uengine.kernel.Role;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class ConditionNode  implements Cloneable, ContextAware{
+public class ConditionNode implements Cloneable, ContextAware{
 	
 	MetaworksContext metaworksContext;
-	public MetaworksContext getMetaworksContext() {
-		return metaworksContext;
-	}
-	public void setMetaworksContext(MetaworksContext metaworksContext) {
+        public MetaworksContext getMetaworksContext() {
+            return metaworksContext;
+        }
+        public void setMetaworksContext(MetaworksContext metaworksContext) {
 		this.metaworksContext = metaworksContext;
 	}
 
@@ -28,21 +29,24 @@ public class ConditionNode  implements Cloneable, ContextAware{
 		public void setValiableChoice(VariableSelectBox valiableChoice) {
 			this.valiableChoice = valiableChoice;
 		}
-	SelectBox signChoice;
+
+    SelectBox signChoice;
 		public SelectBox getSignChoice() {
 			return signChoice;
 		}
 		public void setSignChoice(SelectBox signChoice) {
 			this.signChoice = signChoice;
 		}
-	SelectBox expressionChoice;
+
+    SelectBox expressionChoice;
 		public SelectBox getExpressionChoice() {
 			return expressionChoice;
 		}
 		public void setExpressionChoice(SelectBox expressionChoice) {
 			this.expressionChoice = expressionChoice;
 		}
-	ConditionInput conditionInput;
+
+    ConditionInput conditionInput;
 		public ConditionInput getConditionInput() {
 			return conditionInput;
 		}
@@ -66,22 +70,23 @@ public class ConditionNode  implements Cloneable, ContextAware{
 			this.parentTreeNode = parentTreeNode;
 		}
 
-	public ArrayList<Role>	 roleList;
-		public ArrayList<Role> getRoleList() {
-			return roleList;
-		}
-		public void setRoleList(ArrayList<Role> roleList) {
-			this.roleList = roleList;
-		}
-	public ArrayList<ProcessVariable> variableList;
-		public ArrayList<ProcessVariable> getVariableList() {
-			return variableList;
-		}
-		public void setVariableList(ArrayList<ProcessVariable> variableList) {
-			this.variableList = variableList;
-		}
+	public List<Role> roleList;
+        public List<Role> getRoleList() {
+            return roleList;
+        }
+        public void setRoleList(List<Role> roleList) {
+            this.roleList = roleList;
+        }
 
-	public ConditionNode(){
+    public List<ProcessVariable> processVariableList;
+        public List<ProcessVariable> getProcessVariableList() {
+            return processVariableList;
+        }
+        public void setProcessVariableList(List<ProcessVariable> processVariableList) {
+            this.processVariableList = processVariableList;
+        }
+
+    public ConditionNode(){
 		setMetaworksContext(new MetaworksContext());
 		getMetaworksContext().setWhen("edit");
 	}
@@ -95,20 +100,18 @@ public class ConditionNode  implements Cloneable, ContextAware{
 				String displayName = role.getDisplayName() == null ? role.getName() : role.getDisplayName().getText();
 				choice.add("[ROLE]"+displayName, role.getName());
 			}
+
 		}
-		if( this.getVariableList() != null){
-			choice.setVariableList(getVariableList());
-			for(int i = 0; i < variableList.size(); i++){
-				ProcessVariable processVariable = variableList.get(i);
+
+		if( this.getProcessVariableList() != null){
+			choice.setProcessVariableList(this.getProcessVariableList());
+			for(int i = 0; i < this.getProcessVariableList().size(); i++){
+				ProcessVariable processVariable = this.getProcessVariableList().get(i);
 				String nameAttr = processVariable.getName();
 				String displayName = processVariable.getDisplayName() == null ? nameAttr : processVariable.getDisplayName().getText();
 				choice.add("[VARIABLE]"+displayName, nameAttr);
 			}
 		}
-
-		choice.add("[INSTANCE].InstanceId", "[instance].InstanceId");
-		choice.add("[INSTANCE].Name", "[instance].Name");
-		choice.add("[INSTANCE].DueDate", "[instance].DueDate");
 
 		setValiableChoice(choice);
 	}
@@ -218,7 +221,7 @@ public class ConditionNode  implements Cloneable, ContextAware{
 		selectBox.setId("makeSecondKey");
 		selectBox.setOptionNames(valiableChoice.getOptionNames());
 		selectBox.setOptionValues(valiableChoice.getOptionValues());
-		selectBox.setVariableList(getVariableList());
+		selectBox.setProcessVariableList(this.getProcessVariableList());
 		conditionInput.setValiableChoice(selectBox);
 	}
 
@@ -228,8 +231,8 @@ public class ConditionNode  implements Cloneable, ContextAware{
 			parentNode = new ConditionTreeNode();
 			parentNode.setId("rootNode");
 			parentNode.setName("Condition");
-			parentNode.setRoleList(roleList);
-			parentNode.setVariableList(variableList);
+			parentNode.setRoleList(this.getRoleList());
+			parentNode.setProcessVariableList(this.getProcessVariableList());
 			parentNode.setType(TreeNode.TYPE_FOLDER);
 			parentNode.setConditionType(ConditionTreeNode.CONDITION_OR);
 			this.setParentTreeNode(parentNode);
@@ -240,8 +243,8 @@ public class ConditionNode  implements Cloneable, ContextAware{
 		node.setId(idByTime.toString());
 		node.setParentNode(this.getParentTreeNode());
 		node.setParentId(this.getParentTreeNode().getId());
-		node.setVariableList(this.getVariableList());
-		node.setRoleList(this.getRoleList());
+        node.setRoleList(this.getRoleList());
+        node.setProcessVariableList(this.getProcessVariableList());
 		node.setLoaded(true);
 		return node;
 	}
@@ -283,8 +286,7 @@ public class ConditionNode  implements Cloneable, ContextAware{
 	}
 
 	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
-	public Object newExpression() throws Exception{
-
+    public Object newExpression() throws Exception{
 		if( this.getConditionType() == null ){
 			this.setConditionType(ConditionTreeNode.CONDITION_AND);
 		}

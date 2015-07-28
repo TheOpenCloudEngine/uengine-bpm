@@ -78,7 +78,7 @@ public class ConditionPanel implements ContextAware {
 	public ConditionPanel(String conditionLabel) throws Exception{
 		setConditionLabel(conditionLabel);
 	}
-	public void load()  throws Exception{
+	public void load(Condition condition)  throws Exception{
 		conditionTree = new ConditionTree();
 		conditionTree.setId("tree");
 		
@@ -91,15 +91,15 @@ public class ConditionPanel implements ContextAware {
 		treeNode.setSelected(true);
 		treeNode.setId("rootNode");
 		treeNode.setName("조건선택");  //TODO: locale
-		/*treeNode.setRoleList(roleList);
-		treeNode.setVariableList(variableList);*/
+		//treeNode.setRoleList(roleList);
+		//treeNode.setProcessVariableList(variableList);
 		treeNode.setType(TreeNode.TYPE_FOLDER);
 		treeNode.setConditionType(ConditionTreeNode.CONDITION_AND);
 		treeNode.getMetaworksContext().setHow("root");
 		
-		/*if( this.getTransition().getCondition() != null ){
-			makeChildTreeNode(treeNode , this.getTransition().getCondition()); 
-		}*/
+		if( condition != null ){
+			makeChildTreeNode(treeNode , condition);
+		}
 		conditionTree.setNode(treeNode);
 			
 		ConditionExPressionPanel conditionExPressionPanel = new ConditionExPressionPanel();
@@ -108,14 +108,13 @@ public class ConditionPanel implements ContextAware {
 		conditionTreeNode.setParentId(treeNode.getId());
 		conditionTreeNode.setParentNode(treeNode);
 		conditionTreeNode.getConditionNode().setParentTreeNode(treeNode);
-		/*conditionTreeNode.getConditionNode().setVariableList(getVariableList());
-		conditionTreeNode.getConditionNode().setRoleList(getRoleList());*/
+		//conditionTreeNode.getConditionNode().setRoleList(getRoleList());
 		conditionTreeNode.getConditionNode().getMetaworksContext().setHow("folder");
 		setConditionExPressionPanel(conditionExPressionPanel);
-		
-	}
-	
-	public void makeChildTreeNode( ConditionTreeNode rootNode , Condition condition ) throws Exception{
+
+    }
+
+    public void makeChildTreeNode( ConditionTreeNode rootNode , Condition condition ) throws Exception{
 		Condition[] condis = ((And)condition).getConditions();
 		if( condis != null){
 			for( int i=0; i< condis.length; i++){

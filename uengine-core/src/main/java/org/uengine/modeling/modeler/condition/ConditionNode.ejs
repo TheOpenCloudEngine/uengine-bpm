@@ -1,0 +1,40 @@
+<%
+if(value){
+    if( mw3.how == "folder" ){
+    %>
+    <div class="ide_edit_option">
+        <button type="button" class="btn btn-default btn-lg" onClick="<%=methods.newAND.caller()%>">  <span class="glyphicon">&</span> and </button>
+        <button type="button" class="btn btn-default btn-lg" onClick="<%=methods.newOR.caller()%>">  <span class="glyphicon ">||</span> or </button>
+        <button type="button" class="btn btn-default btn-lg" onClick="<%=methods.newOtherwise.caller()%>">  <span class="glyphicon ">...</span> otherwise </button>
+        <button type="button" class="btn btn-default btn-lg" onClick="<%=methods.newExpression.caller()%>">  <span class="glyphicon ">$</span> expression </button>
+
+    </div>
+    <%
+    }else	if( mw3.how == "expression" ){
+    %>
+    <div class="form_table2">
+        <table style="width: 100%; border-top:none" border="1" cellspacing="0">
+            <tr height="30">
+                <th width=100 style="padding-left:15px;"><%=mw3.localize("$ProcessVariable")%></th>
+                <td><%=fields.valiableChoice.here()%></td>
+            </tr>
+            <tr height="30">
+                <th style="padding-left:15px;"><%=mw3.localize("$Operation")%></th>
+                <td><%=fields.signChoice.here()%></td>
+            </tr>
+            <tr height="30">
+                <th style="padding-left:15px;"><%=mw3.localize("$Value")%></th>
+                <td><%=fields.expressionChoice.here()%></td>
+            </tr>
+            <tr height="30">
+                <th style="padding-left:15px;"></th>
+                <td>
+                    <%=fields.conditionInput.here()%>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <%
+    }
+}
+%>

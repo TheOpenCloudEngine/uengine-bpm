@@ -2,12 +2,13 @@
 if(value){
 %>
 <div  style="padding-top:10px; margin-top:10px; margin-left:15px;">
-		<div style="float:left;line-height:30px;">레이블명 </div>
-		<div class="clear"></div>
+        <div style="float:left;line-height:30px;">레이블명 </div>
+        <div style="padding-right:17px;"><%=fields.conditionLabel.here()%></div>
+        <div class="clear"></div>
 </div>
 <div style="margin:15px 17px 0 0;">
-        <div id="conditionTree" style="width:45%; height: 400px; float: left; background-color: #f6f6f6; border:1px solid #B4B3B5;margin-left:15px;" align="left"><%= fields.conditionTree.here() %></div>
-        <div id="conditionView" style="width:50%; height: 400px;  float: right;   background-color: #f6f6f6; border:1px solid #B4B3B5; margin-left:15px;">
+        <div id="conditionTree" style="width:47%; height: 400px; float: left; background-color: #f6f6f6; border:1px solid #B4B3B5;margin-left:15px;" align="left"><%= fields.conditionTree.here() %></div>
+        <div id="conditionView" style="width:47%; height: 400px;  float: right;   background-color: #f6f6f6; border:1px solid #B4B3B5; margin-left:15px;">
         	<%= fields.conditionExPressionPanel.here() %>
         </div>
         <div class="clear"></div>

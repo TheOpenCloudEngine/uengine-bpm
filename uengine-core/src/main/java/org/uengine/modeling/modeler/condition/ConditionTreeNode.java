@@ -1,16 +1,17 @@
 package org.uengine.modeling.modeler.condition;
 
 import org.metaworks.*;
-import org.metaworks.annotation.Available;
-import org.metaworks.annotation.Id;
-import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
 import org.metaworks.component.TreeNode;
 import org.uengine.kernel.ProcessVariable;
 import org.uengine.kernel.Role;
+import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
+import org.uengine.kernel.bpmn.face.RolePanel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Face(ejsPath="dwr/metaworks/org/metaworks/component/TreeNode.ejs")
 public class ConditionTreeNode  implements ContextAware{
@@ -132,35 +133,40 @@ public class ConditionTreeNode  implements ContextAware{
 		public void setExpression(String expression) {
 			this.expression = expression;
 		}
-	String conditionType;
+
+    String conditionType;
 		public String getConditionType() {
 			return conditionType;
 		}
 		public void setConditionType(String conditionType) {
 			this.conditionType = conditionType;
 		}
-	ConditionNode conditionNode;
+
+    ConditionNode conditionNode;
 		public ConditionNode getConditionNode() {
 			return conditionNode;
 		}
 		public void setConditionNode(ConditionNode conditionNode) {
 			this.conditionNode = conditionNode;
 		}
-	public ArrayList<Role>	 roleList;
-		public ArrayList<Role> getRoleList() {
-			return roleList;
-		}
-		public void setRoleList(ArrayList<Role> roleList) {
-			this.roleList = roleList;
-		}
-	public ArrayList<ProcessVariable> variableList;
-		public ArrayList<ProcessVariable> getVariableList() {
-			return variableList;
-		}
-		public void setVariableList(ArrayList<ProcessVariable> variableList) {
-			this.variableList = variableList;
-		}
-	public ConditionTreeNode() {
+
+	List<Role> roleList;
+        public List<Role> getRoleList() {
+            return roleList;
+        }
+        public void setRoleList(List<Role> roleList) {
+            this.roleList = roleList;
+        }
+
+    public List<ProcessVariable> processVariableList;
+        public List<ProcessVariable> getProcessVariableList() {
+            return processVariableList;
+        }
+        public void setProcessVariableList(List<ProcessVariable> processVariableList) {
+            this.processVariableList = processVariableList;
+        }
+
+    public ConditionTreeNode() {
 		this.setMetaworksContext(new MetaworksContext());
 		ArrayList<ConditionTreeNode> child = new ArrayList<ConditionTreeNode>();
 		
@@ -174,8 +180,8 @@ public class ConditionTreeNode  implements ContextAware{
 		
 	public void conditionInit() throws Exception{
 		ConditionNode conditionNode = new ConditionNode();
-		conditionNode.setRoleList(getRoleList());
-		conditionNode.setVariableList(getVariableList());
+		conditionNode.setRoleList(this.getRoleList());
+		conditionNode.setProcessVariableList(this.getProcessVariableList());
 		conditionNode.init();
 		
 		setConditionNode(conditionNode);
@@ -187,9 +193,9 @@ public class ConditionTreeNode  implements ContextAware{
 		node.setId(idByTime.toString());
 		node.setParentNode(this);
 		node.setParentId(this.getId());
-		node.setVariableList(this.getVariableList());
-		node.setRoleList(this.getRoleList());
-		node.setLoaded(true);
+        node.setRoleList(this.getRoleList());
+        node.setProcessVariableList(this.getProcessVariableList());
+        node.setLoaded(true);
 		node.setType("page_white_text");	// TODO 아이콘 관련이기때문에.. 추후 변경
 		return node;
 	}
@@ -232,10 +238,13 @@ public class ConditionTreeNode  implements ContextAware{
 	
 	@ServiceMethod(inContextMenu=true, callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
 	@Available(how={"folder","root"})
-	public Object[] newExpression() throws Exception{
+	public Object[] newExpression(@AutowiredFromClient ProcessVariablePanel processVariablePanel, @AutowiredFromClient RolePanel rolePanel) throws Exception{
 		if( this.getConditionType() == null ){
 			return null;
 		}else{
+            this.setProcessVariableList(processVariablePanel.getProcessVariableList());
+            this.setRoleList(rolePanel.getRoleList());
+
 			ConditionTreeNode node = this.makeConditionNode();
 			node.setName(CONDITION_DEFAULT_EXPRESSION);
 			node.setConditionType(CONDITION_EXPRESSION);
@@ -257,7 +266,7 @@ public class ConditionTreeNode  implements ContextAware{
 		conditionTreeNode.setParentNode(parentNode);
 		conditionTreeNode.getConditionNode().setParentTreeNode(parentNode);
 		conditionTreeNode.getConditionNode().setRoleList(parentNode.getRoleList());
-		conditionTreeNode.getConditionNode().setVariableList(parentNode.getVariableList());
+		conditionTreeNode.getConditionNode().setProcessVariableList(parentNode.getProcessVariableList());
 		conditionTreeNode.getConditionNode().getMetaworksContext().setHow("folder");
 
 		return new Object[]{new Remover(this, true), new Refresh(conditionExPressionPanel)};
@@ -267,21 +276,24 @@ public class ConditionTreeNode  implements ContextAware{
 	public Object select() throws Exception {
 		ConditionExPressionPanel conditionExPressionPanel = new ConditionExPressionPanel();
 		ConditionTreeNodeView conditionTreeNode = conditionExPressionPanel.getConditionTreeNode();
+
 		if( this.folder ){
 			conditionTreeNode.setParentId(this.getId());
 			conditionTreeNode.setParentNode(this);
 			conditionTreeNode.getConditionNode().setParentTreeNode(this);
-			conditionTreeNode.getConditionNode().setRoleList(getRoleList());
-			conditionTreeNode.getConditionNode().setVariableList(getVariableList());
+			conditionTreeNode.getConditionNode().setRoleList(this.getRoleList());
+			conditionTreeNode.getConditionNode().setProcessVariableList(this.getProcessVariableList());
 			conditionTreeNode.getConditionNode().getMetaworksContext().setHow("folder");
 			
 			return conditionExPressionPanel;
+
 		}else if( CONDITION_OTHERWISE.equals(this.getConditionType())){
 			return conditionExPressionPanel;
+
 		}else{
 			conditionTreeNode.setId("expression");
-			conditionTreeNode.setRoleList(getRoleList());
-			conditionTreeNode.setVariableList(getVariableList());
+			conditionTreeNode.setRoleList(this.getRoleList());
+			conditionTreeNode.setProcessVariableList(this.getProcessVariableList());
 			conditionTreeNode.setConditionNode(getConditionNode());
 			conditionTreeNode.getConditionNode().getMetaworksContext().setHow("expression");
 			conditionExPressionPanel.setConditionTreeNode(conditionTreeNode);

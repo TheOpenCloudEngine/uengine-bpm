@@ -11,6 +11,7 @@ import org.uengine.contexts.ComplexType;
 import org.uengine.kernel.ProcessVariable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class VariableSelectBox extends SelectBox {
 	
@@ -21,6 +22,7 @@ public class VariableSelectBox extends SelectBox {
 		public void setChildSelectBox(VariableSelectBox childSelectBox) {
 			this.childSelectBox = childSelectBox;
 		}
+
 	String selectedDepthString;
 		public String getSelectedDepthString() {
 			return selectedDepthString;
@@ -28,14 +30,16 @@ public class VariableSelectBox extends SelectBox {
 		public void setSelectedDepthString(String selectedDepthString) {
 			this.selectedDepthString = selectedDepthString;
 		}
-	public ArrayList<ProcessVariable> variableList;
-		public ArrayList<ProcessVariable> getVariableList() {
-			return variableList;
-		}
-		public void setVariableList(ArrayList<ProcessVariable> variableList) {
-			this.variableList = variableList;
-		}
-	public VariableSelectBox(){
+
+	public List<ProcessVariable> processVariableList;
+        public List<ProcessVariable> getProcessVariableList() {
+            return processVariableList;
+        }
+        public void setProcessVariableList(List<ProcessVariable> processVariableList) {
+            this.processVariableList = processVariableList;
+        }
+
+    public VariableSelectBox(){
 		super();
 	}
 	
@@ -47,9 +51,9 @@ public class VariableSelectBox extends SelectBox {
 		this.setSelectedDepthString(this.getSelected());
 		VariableSelectBox childSelectBox = null;
 		
-		if( variableList != null){
-			for(int i = 0; i < variableList.size(); i++){
-				ProcessVariable processVariable = variableList.get(i);
+		if( this.getProcessVariableList() != null){
+			for(int i = 0; i < this.getProcessVariableList().size(); i++){
+				ProcessVariable processVariable = this.getProcessVariableList().get(i);
 				String nameAttr = processVariable.getName();
 				if( nameAttr.equals(this.getSelected()) ){
 					Object typeAttr = processVariable.getDefaultValue();
@@ -138,9 +142,9 @@ public class VariableSelectBox extends SelectBox {
 		this.setSelectedDepthString(this.getSelected());
 		VariableSelectBox childSelectBox = null;
 		
-		if( variableList != null){
-			for(int i = 0; i < variableList.size(); i++){
-				ProcessVariable processVariable = variableList.get(i);
+		if( this.getProcessVariableList() != null){
+			for(int i = 0; i < this.getProcessVariableList().size(); i++){
+				ProcessVariable processVariable = this.getProcessVariableList().get(i);
 				String nameAttr = processVariable.getName();
 				if( nameAttr.equals(this.getSelected()) ){
 					Object typeAttr = processVariable.getDefaultValue();

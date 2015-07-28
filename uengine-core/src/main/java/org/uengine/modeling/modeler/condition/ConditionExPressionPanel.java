@@ -2,7 +2,7 @@ package org.uengine.modeling.modeler.condition;
 
 public class ConditionExPressionPanel {
 
-	ConditionTreeNodeView conditionTreeNode;
+	ConditionTreeNodeView	conditionTreeNode;
 		public ConditionTreeNodeView getConditionTreeNode() {
 			return conditionTreeNode;
 		}

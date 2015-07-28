@@ -1,6 +1,5 @@
 var org_uengine_kernel_view_DynamicDrawGeom = function(objectId, className){
 
-	debugger;
 	this.objectId = objectId;
     this.className = className;
     
@@ -30,13 +29,11 @@ var org_uengine_kernel_view_DynamicDrawGeom = function(objectId, className){
 
 org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 	loaded: function(){
-		debugger;
 		var object = mw3.objects[this.objectId];
 
-		var poolview = mw3.getAutowiredObject('org.uengine.kernel.bpmn.view.PoolView');
-		var poolElement = document.getElementById(poolview.id);
+		var poolElement = document.getElementById(object.parentGeomId);
 		if( poolElement ){
-			
+
 			var coordinateX = poolElement.shape.geom.boundary._leftCenter.x; // 기준 x
 			var coordinateY = poolElement.shape.geom.boundary._leftCenter.y; // 기준 y
 			var poolwidth = poolElement.shape.geom.boundary._width; // pool element width
@@ -51,11 +48,11 @@ org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 					}
 				}
 			}
-			
+
 			// 첫번째로 그려질 엑티비티의 위치정보 계산
 			var firstGeomX = coordinateX + 90;
 			var firstGeomY = coordinateY;
-			
+
 			var tracingTag = 0;
 			if (this.canvasObjectFaceHelper.tracingTag) {
 				tracingTag = this.canvasObjectFaceHelper.tracingTag;
@@ -66,7 +63,7 @@ org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 					var activity = object.activityList[i];
 					var activityView = activity.elementView;
 					activityView.element.elementView = null;
-					
+
 					if( i != 0 ){
 						firstGeomX = firstGeomX*1 + activityView.width*1 + 50 // 50을 더해주는 이유는 간격
 					}
@@ -80,13 +77,13 @@ org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 					canvasDivObj.append(html);
 					mw3.onLoadFaceHelperScript();
 					mw3.getFaceHelper(this.canvasObjectId).addView(activityView);
-					
+
 					if( i == (object.activityList.length -1) ){
 						// 마지막으로 한번더 늘려준다
                         firstGeomX = firstGeomX*1 + activityView.width*1 ;
                     }
 				}
-				
+
 				if( (firstGeomX - coordinateX) > poolwidth ){
 					this.canvas._RENDERER.resize(poolElement, [0,0,0,(firstGeomX - coordinateX) - poolwidth]);
 					this.canvas._RENDERER.removeGuide(poolElement);
@@ -96,6 +93,6 @@ org_uengine_kernel_view_DynamicDrawGeom.prototype = {
 				}
 			}
 		}
-		
+
 	}
 };

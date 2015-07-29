@@ -11,14 +11,14 @@ import org.uengine.modeling.modeler.condition.ConditionPanel;
 public class SequenceFlowView extends RelationView {
 	public final static String SHAPE_ID = "OG.shape.bpmn.C_Sequence";
 
-    ConditionPanel conditionPanel;
-        public ConditionPanel getConditionPanel() {
-            return conditionPanel;
-        }
-
-        public void setConditionPanel(ConditionPanel conditionPanel) {
-            this.conditionPanel = conditionPanel;
-        }
+//    ConditionPanel conditionPanel;
+//        public ConditionPanel getConditionPanel() {
+//            return conditionPanel;
+//        }
+//
+//        public void setConditionPanel(ConditionPanel conditionPanel) {
+//            this.conditionPanel = conditionPanel;
+//        }
 
     public SequenceFlowView(){
 		super();

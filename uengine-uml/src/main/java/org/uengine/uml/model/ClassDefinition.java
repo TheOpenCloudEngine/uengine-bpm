@@ -6,12 +6,13 @@ import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.uml.model.face.AttributeListFace;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
-public class ClassDefinition {
+public class ClassDefinition implements Serializable{
 
     List<Attribute> attributeList = new ArrayList<Attribute>();
     @Face(faceClass = AttributeListFace.class)

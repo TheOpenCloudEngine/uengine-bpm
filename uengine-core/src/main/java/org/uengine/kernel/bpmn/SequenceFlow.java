@@ -54,13 +54,13 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		}
 
 
-	ConditionPanel conditionPanel;
-		public ConditionPanel getConditionPanel() {
-			return conditionPanel;
-		}
-		public void setConditionPanel(ConditionPanel conditionPanel) {
-			this.conditionPanel = conditionPanel;
-		}
+//	ConditionPanel conditionPanel;
+//		public ConditionPanel getConditionPanel() {
+//			return conditionPanel;
+//		}
+//		public void setConditionPanel(ConditionPanel conditionPanel) {
+//			this.conditionPanel = conditionPanel;
+//		}
 
 
 	public Activity getSourceActivity(){
@@ -79,25 +79,25 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 	}
 	
 	public SequenceFlow() {
-		try {
-			conditionPanel = new ConditionPanel();
-			conditionPanel.load();
-			this.setConditionPanel(conditionPanel);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			conditionPanel = new ConditionPanel();
+//			conditionPanel.load();
+//			this.setConditionPanel(conditionPanel);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	public SequenceFlow(String source, String target) {
 		setSourceRef(source);
 		setTargetRef(target);
-		try {
-			conditionPanel = new ConditionPanel();
-			conditionPanel.load();
-			this.setConditionPanel(conditionPanel);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			conditionPanel = new ConditionPanel();
+//			conditionPanel.load();
+//			this.setConditionPanel(conditionPanel);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 

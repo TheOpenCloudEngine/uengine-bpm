@@ -2,9 +2,10 @@ package org.uengine.uml.model;
 
 import org.metaworks.annotation.Range;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class Attribute {
+public class Attribute implements Serializable{
 
     String name;
         public String getName() {
@@ -28,13 +29,7 @@ public class Attribute {
 
         Object value = null;
 
-//        if(typeClass.isPrimitive()){
-//            if(typeClass == java.lang.Long){
-//
-//            }
-//        }
-
-//        typeClass.newInstance();
+        //typeClass.newInstance();
 
         if(typeClass == Calendar.class){
             value = Calendar.getInstance();
@@ -43,7 +38,7 @@ public class Attribute {
         AttributeInstance attributeInstance = new AttributeInstance();
         attributeInstance.setName(getName());
         attributeInstance.setType(getType());
-  //      attributeInstance.setValue(value);
+        attributeInstance.setValue(value);
 
         return attributeInstance;
 

@@ -1,5 +1,6 @@
 package org.uengine.kernel.bpmn.view;
 
+import org.metaworks.EventContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.ServiceMethod;
 import org.uengine.kernel.Activity;
@@ -7,6 +8,7 @@ import org.uengine.kernel.bpmn.Pool;
 import org.uengine.kernel.view.ActivityView;
 import org.uengine.kernel.view.DynamicDrawGeom;
 import org.uengine.modeling.ElementView;
+import org.uengine.modeling.PropertySettingDialog;
 import org.uengine.modeling.Symbol;
 
 import java.util.ArrayList;
@@ -44,5 +46,14 @@ public class PoolView extends ElementView{
 			activityView.setViewType(this.getViewType());
 		}
 		return new Object[]{ddg};
+	}
+
+	@Override
+	@ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
+	public Object showProperty() throws Exception {
+		PropertySettingDialog propertySettingDialog = new PropertySettingDialog(this);
+		((Pool) propertySettingDialog.getElementView().getElement()).setViewId(propertySettingDialog.getElementView().getId());
+
+		return propertySettingDialog;
 	}
 }

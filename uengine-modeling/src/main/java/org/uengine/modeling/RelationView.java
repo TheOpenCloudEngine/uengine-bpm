@@ -216,10 +216,10 @@ public class RelationView implements Serializable, ContextAware, Cloneable {
         return symbol;
     }
 
-    @ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
-    public Object showProperty() throws Exception {
-        return new RelationPropertiesView(this);
-    }
+//    @ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
+//    public Object showProperty() throws Exception {
+//        return new RelationPropertiesView(this);
+//    }
 
     /**
      * convert main object from RelationView to IRelation

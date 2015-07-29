@@ -87,6 +87,15 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 		this.setDescription("");
 	}
 
+	String viewId;
+	@Hidden
+		public String getViewId() {
+			return viewId;
+		}
+		public void setViewId(String viewId) {
+			this.viewId = viewId;
+		}
+
 	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
 	public Object[] apply() throws Exception {
 
@@ -94,13 +103,8 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 			this.setDescription(this.getName());
 		}
 
-
 		DynamicDrawGeom ddg = this.getPoolResolutionContext().drawActivitysOnDesigner();
-
-//		ModalWindow modalWindow = new ModalWindow();
-//		String viewId = this.getElementView().getId();
-//		modalWindow.setId(viewId);
-//		this.setElementView(null);
+		ddg.setParentGeomId(this.getViewId());
 
 		return new Object[]{ddg};
 	}
@@ -121,7 +125,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 
 		return elementView;
 	}
-
+	@Hidden
 	public ElementView getElementView() {
 		return this.elementView;
 	}

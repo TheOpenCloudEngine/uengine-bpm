@@ -1,24 +1,26 @@
 package org.uengine.kernel.bpmn;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Id;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.Condition;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.ScopeActivity;
+import org.uengine.kernel.bpmn.face.ConditionFace;
 import org.uengine.modeling.Relation;
 import org.uengine.modeling.RelationView;
-import org.uengine.modeling.modeler.condition.ConditionPanel;
 import org.uengine.util.UEngineUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SequenceFlow extends Relation implements java.io.Serializable {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	private String sourceRef;
+    @Hidden
 		public String getSourceRef() {
 			return sourceRef;
 		}
@@ -27,6 +29,7 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		}
 		
 	private String targetRef;
+    @Hidden
 		public String getTargetRef() {
 			return targetRef;
 		}
@@ -45,7 +48,7 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		}
 		
 	Condition condition;
-	@Hidden
+    @Face(faceClass=ConditionFace.class)
 		public Condition getCondition() {
 			return condition;
 		}
@@ -53,16 +56,7 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 			this.condition = condition;
 		}
 
-
-//	ConditionPanel conditionPanel;
-//		public ConditionPanel getConditionPanel() {
-//			return conditionPanel;
-//		}
-//		public void setConditionPanel(ConditionPanel conditionPanel) {
-//			this.conditionPanel = conditionPanel;
-//		}
-
-
+    @Hidden
 	public Activity getSourceActivity(){
 		return (Activity)this.getSourceElement();
 	}
@@ -70,7 +64,7 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		this.setSourceElement(activity);
 	}
 	
-
+    @Hidden
 	public Activity getTargetActivity(){
 		return (Activity)this.getTargetElement();
 	}
@@ -79,25 +73,11 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 	}
 	
 	public SequenceFlow() {
-//		try {
-//			conditionPanel = new ConditionPanel();
-//			conditionPanel.load();
-//			this.setConditionPanel(conditionPanel);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 	}
 
 	public SequenceFlow(String source, String target) {
 		setSourceRef(source);
 		setTargetRef(target);
-//		try {
-//			conditionPanel = new ConditionPanel();
-//			conditionPanel.load();
-//			this.setConditionPanel(conditionPanel);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 	}
 	
 

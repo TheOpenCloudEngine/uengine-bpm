@@ -1,14 +1,13 @@
 package org.uengine.modeling.modeler.condition;
 
 import org.metaworks.*;
-import org.metaworks.annotation.*;
+import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.component.SelectBox;
 import org.metaworks.component.TreeNode;
 import org.uengine.kernel.ProcessVariable;
 import org.uengine.kernel.Role;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,11 +21,11 @@ public class ConditionNode implements Cloneable, ContextAware{
 		this.metaworksContext = metaworksContext;
 	}
 
-	VariableSelectBox valiableChoice;
-		public VariableSelectBox getValiableChoice() {
+	ConditionVariableSelectBox valiableChoice;
+		public ConditionVariableSelectBox getValiableChoice() {
 			return valiableChoice;
 		}
-		public void setValiableChoice(VariableSelectBox valiableChoice) {
+		public void setValiableChoice(ConditionVariableSelectBox valiableChoice) {
 			this.valiableChoice = valiableChoice;
 		}
 
@@ -70,7 +69,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 			this.parentTreeNode = parentTreeNode;
 		}
 
-	public List<Role> roleList;
+	protected List<Role> roleList;
         public List<Role> getRoleList() {
             return roleList;
         }
@@ -78,7 +77,7 @@ public class ConditionNode implements Cloneable, ContextAware{
             this.roleList = roleList;
         }
 
-    public List<ProcessVariable> processVariableList;
+    protected List<ProcessVariable> processVariableList;
         public List<ProcessVariable> getProcessVariableList() {
             return processVariableList;
         }
@@ -91,7 +90,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 		getMetaworksContext().setWhen("edit");
 	}
 	public void makeValiableChoice() throws Exception{
-		VariableSelectBox choice = new VariableSelectBox();
+		ConditionVariableSelectBox choice = new ConditionVariableSelectBox();
 		choice.setId("makeKey");
 		choice.add("선택해 주세요", "null");
 		if( this.getRoleList() != null){
@@ -118,20 +117,25 @@ public class ConditionNode implements Cloneable, ContextAware{
 
 	@ServiceMethod( callByContent=true, eventBinding="change", bindingFor={"valiableChoice"})
 	public Object[] makeValiableChoiceChild() throws Exception{
-		VariableSelectBox parentSelectBox = this.getValiableChoice();
+		ConditionVariableSelectBox parentSelectBox = this.getValiableChoice();
 		parentSelectBox.conditionNode = this;
+
 		return parentSelectBox.makeValiableChoice();
 	}
+
 	@ServiceMethod( callByContent=true ,target=ServiceMethodContext.TARGET_APPEND, eventBinding="change", bindingFor={"signChoice"})
 	public Object[] toEventReceive() throws Exception{
 		return new Object[]{new ToEvent(ServiceMethodContext.TARGET_SELF, "saveCondition") };
 	}
+
 	@ServiceMethod( callByContent=true ,target=ServiceMethodContext.TARGET_APPEND, eventBinding="change", bindingFor={"expressionChoice"})
 	public Object[] toEventReceiveExpression() throws Exception{
 		this.getConditionInput().setChangeType(this.getExpressionChoice().getSelected());
 		this.getConditionInput().changeInput();
+
 		return new Object[]{new Refresh(this.getConditionInput()), new ToEvent(ServiceMethodContext.TARGET_SELF, "saveCondition") };
 	}
+
 	public void makeSignChoice() throws Exception{
 		SelectBox choice = new SelectBox();
 		choice.setId("sign");
@@ -145,6 +149,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 		choice.add("not contains", "not contains");
 		setSignChoice(choice);
 	}
+
 	public void makeExpressionChoice() throws Exception{
 		SelectBox choice = new SelectBox();
 		choice.setId("expression");
@@ -195,11 +200,14 @@ public class ConditionNode implements Cloneable, ContextAware{
 				}
 			}
 			nodeName =  val1 + " " +val2 + " " + val3;
+
 		}else if( conditionType != null && conditionType.equals(ConditionTreeNode.CONDITION_OTHERWISE) ){
 			nodeName = "otherwise";
+
 		}else{
 			nodeName = "오류";
 		}
+
 		// 왼쪽 트리 변경
 		ConditionTreeNode node = getParentTreeNode();
 		node.setName(nodeName);
@@ -216,8 +224,9 @@ public class ConditionNode implements Cloneable, ContextAware{
 
 		conditionInput = new ConditionInput();
 		conditionInput.init();
+
 		// 두개를 동시에 쓰는 경우가 생기기 때문에 객체를 분리하여 주었다
-		VariableSelectBox selectBox = new VariableSelectBox();
+		ConditionVariableSelectBox selectBox = new ConditionVariableSelectBox();
 		selectBox.setId("makeSecondKey");
 		selectBox.setOptionNames(valiableChoice.getOptionNames());
 		selectBox.setOptionValues(valiableChoice.getOptionValues());
@@ -227,6 +236,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 
 	public ConditionTreeNode makeConditionTreeNode() throws Exception{
 		ConditionTreeNode parentNode = this.getParentTreeNode();
+
 		if( parentNode == null ){
 			parentNode = new ConditionTreeNode();
 			parentNode.setId("rootNode");
@@ -235,6 +245,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 			parentNode.setProcessVariableList(this.getProcessVariableList());
 			parentNode.setType(TreeNode.TYPE_FOLDER);
 			parentNode.setConditionType(ConditionTreeNode.CONDITION_OR);
+
 			this.setParentTreeNode(parentNode);
 		}
 
@@ -246,6 +257,7 @@ public class ConditionNode implements Cloneable, ContextAware{
         node.setRoleList(this.getRoleList());
         node.setProcessVariableList(this.getProcessVariableList());
 		node.setLoaded(true);
+
 		return node;
 	}
 
@@ -258,6 +270,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 		node.setExpanded(true);
 		node.setType(TreeNode.TYPE_FOLDER);
 		node.getMetaworksContext().setHow("folder");
+
 		return new ToAppend(this.getParentTreeNode() , node);
 	}
 
@@ -271,6 +284,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 		node.setExpanded(true);
 		node.setType(TreeNode.TYPE_FOLDER);
 		node.getMetaworksContext().setHow("folder");
+
 		return new ToAppend(this.getParentTreeNode() , node);
 
 	}
@@ -282,6 +296,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 		node.setName(ConditionTreeNode.CONDITION_OTHERWISE);
 		node.setConditionType(ConditionTreeNode.CONDITION_OTHERWISE);
 		node.setType("page_white_text");
+
 		return new ToAppend(this.getParentTreeNode() , node);
 	}
 
@@ -297,6 +312,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 		node.conditionInit();
 		node.getConditionNode().setConditionType(this.getConditionType());
 		node.getConditionNode().setParentTreeNode(node);
+
 		return new ToAppend(this.getParentTreeNode() , node);
 	}
 }

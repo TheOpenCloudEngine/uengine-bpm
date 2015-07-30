@@ -13,13 +13,13 @@ import org.uengine.kernel.ProcessVariable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariableSelectBox extends SelectBox {
+public class ConditionVariableSelectBox extends SelectBox {
 	
-	VariableSelectBox childSelectBox;
-		public VariableSelectBox getChildSelectBox() {
+	ConditionVariableSelectBox childSelectBox;
+		public ConditionVariableSelectBox getChildSelectBox() {
 			return childSelectBox;
 		}
-		public void setChildSelectBox(VariableSelectBox childSelectBox) {
+		public void setChildSelectBox(ConditionVariableSelectBox childSelectBox) {
 			this.childSelectBox = childSelectBox;
 		}
 
@@ -39,7 +39,7 @@ public class VariableSelectBox extends SelectBox {
             this.processVariableList = processVariableList;
         }
 
-    public VariableSelectBox(){
+    public ConditionVariableSelectBox(){
 		super();
 	}
 	
@@ -49,7 +49,7 @@ public class VariableSelectBox extends SelectBox {
 	@ServiceMethod( callByContent=true )
 	public Object[] makeValiableChoice() throws Exception{
 		this.setSelectedDepthString(this.getSelected());
-		VariableSelectBox childSelectBox = null;
+		ConditionVariableSelectBox childSelectBox = null;
 		
 		if( this.getProcessVariableList() != null){
 			for(int i = 0; i < this.getProcessVariableList().size(); i++){
@@ -60,7 +60,7 @@ public class VariableSelectBox extends SelectBox {
 					if( typeAttr instanceof ComplexType){
 						ComplexType complexType = (ComplexType)typeAttr;
 						String typeIdAttr = complexType.getTypeId();
-						childSelectBox = new VariableSelectBox();
+						childSelectBox = new ConditionVariableSelectBox();
 						childSelectBox.setId(this.getId() +"."+ this.getSelected());
 						childSelectBox.setMetaworksContext(this.getMetaworksContext());
 						
@@ -103,7 +103,7 @@ public class VariableSelectBox extends SelectBox {
 		childSelectBox.setChildSelectBox(null);
 		int beginIndex = selectVal.indexOf("[");
 		int endIndex = selectVal.indexOf("]");
-		VariableSelectBox child = null;
+		ConditionVariableSelectBox child = null;
 		String selectClass = selectVal.substring(beginIndex+1, endIndex);
 		String childId = selectVal.substring(endIndex+1);
 		childSelectBox.setSelectedDepthString(this.getSelectedDepthString()+"."+childId);
@@ -111,7 +111,7 @@ public class VariableSelectBox extends SelectBox {
 			WebObjectType wot2 = MetaworksRemoteService.getInstance().getMetaworksType(selectClass); 
 			WebFieldDescriptor wfields2[] = wot2.getFieldDescriptors();
 			FieldDescriptor fields2[] = wot2.metaworks2Type().getFieldDescriptors();
-			child = new VariableSelectBox();
+			child = new ConditionVariableSelectBox();
 			child.setId(childSelectBox.getId()+"."+childId);
 			for(int k=0; k<fields2.length; k++){
 				WebFieldDescriptor wfd2 = wfields2[k];
@@ -127,7 +127,7 @@ public class VariableSelectBox extends SelectBox {
 		childSelectBox.setMetaworksContext(this.getMetaworksContext());
 		
 		// TODO hardcode 
-		VariableSelectBox rootSelectBox = null;
+		ConditionVariableSelectBox rootSelectBox = null;
 		if( this.getId().startsWith((conditionNode.getValiableChoice().getId()))){
 			rootSelectBox = conditionNode.getValiableChoice();
 		}else{
@@ -140,7 +140,7 @@ public class VariableSelectBox extends SelectBox {
 	
 	public void loadRoot() throws Exception{
 		this.setSelectedDepthString(this.getSelected());
-		VariableSelectBox childSelectBox = null;
+		ConditionVariableSelectBox childSelectBox = null;
 		
 		if( this.getProcessVariableList() != null){
 			for(int i = 0; i < this.getProcessVariableList().size(); i++){
@@ -151,7 +151,7 @@ public class VariableSelectBox extends SelectBox {
 					if( typeAttr instanceof ComplexType){
 						ComplexType complexType = (ComplexType)typeAttr;
 						String typeIdAttr = complexType.getTypeId();
-						childSelectBox = new VariableSelectBox();
+						childSelectBox = new ConditionVariableSelectBox();
 						childSelectBox.setId(this.getId() +"."+ this.getSelected());
 						childSelectBox.setMetaworksContext(this.getMetaworksContext());
 						
@@ -179,7 +179,7 @@ public class VariableSelectBox extends SelectBox {
 	}
 	public void loadChild(int index, String selectedVal) throws Exception{
 		// index 만큼 child를 찾아오는 로직
-		VariableSelectBox childSelectBox = this;
+		ConditionVariableSelectBox childSelectBox = this;
 		for( int i=0; i < index; i++){
 			childSelectBox = childSelectBox.getChildSelectBox();
 		}
@@ -197,7 +197,7 @@ public class VariableSelectBox extends SelectBox {
 		childSelectBox.setChildSelectBox(null);
 		int beginIndex = selectVal.indexOf("[");
 		int endIndex = selectVal.indexOf("]");
-		VariableSelectBox child = null;
+		ConditionVariableSelectBox child = null;
 		String selectClass = selectVal.substring(beginIndex+1, endIndex);
 		String childId = selectVal.substring(endIndex+1);
 		childSelectBox.setSelectedDepthString(this.getSelectedDepthString()+"."+childId);
@@ -205,7 +205,7 @@ public class VariableSelectBox extends SelectBox {
 			WebObjectType wot2 = MetaworksRemoteService.getInstance().getMetaworksType(selectClass); 
 			WebFieldDescriptor wfields2[] = wot2.getFieldDescriptors();
 			FieldDescriptor fields2[] = wot2.metaworks2Type().getFieldDescriptors();
-			child = new VariableSelectBox();
+			child = new ConditionVariableSelectBox();
 			child.setId(childSelectBox.getId()+"."+childId);
 			for(int k=0; k<fields2.length; k++){
 				WebFieldDescriptor wfd2 = wfields2[k];
@@ -221,7 +221,7 @@ public class VariableSelectBox extends SelectBox {
 		childSelectBox.setMetaworksContext(this.getMetaworksContext());
 	}
 	
-	public void fillChildSelectBox(VariableSelectBox selectBox){
+	public void fillChildSelectBox(ConditionVariableSelectBox selectBox){
 		if( selectBox != null ){
 			if( this.getId().equals(selectBox.getId())){
 				selectBox.setChildSelectBox(childSelectBox);
@@ -233,7 +233,7 @@ public class VariableSelectBox extends SelectBox {
 		}
 	}
 	
-	public String findChildDepthString(VariableSelectBox selectBox) throws Exception{
+	public String findChildDepthString(ConditionVariableSelectBox selectBox) throws Exception{
 		if( selectBox != null ){
 			if( selectBox.getChildSelectBox() != null ){
 				return findChildDepthString(selectBox.getChildSelectBox());

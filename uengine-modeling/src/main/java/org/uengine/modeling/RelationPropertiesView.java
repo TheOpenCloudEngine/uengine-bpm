@@ -27,12 +27,11 @@ public class RelationPropertiesView extends ModalWindow {
     }
 
     @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_APPEND)
-    public Object apply(){
+    public Object[] apply(){
         IRelation relation = (IRelation)getPanel();
-
         getRelationView().setRelation(relation);
 
-        return new Object[]{new Remover(new PropertySettingDialog()), new Refresh(getRelationView(), true)};
+        return new Object[]{new Remover(new RelationPropertiesView()), new Refresh(getRelationView(), true)};
 
     }
 }

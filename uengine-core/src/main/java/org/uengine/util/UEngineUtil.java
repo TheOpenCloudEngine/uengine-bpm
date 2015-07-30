@@ -1815,4 +1815,9 @@ public class UEngineUtil {
         }
         return map;
     }
+
+    public static boolean isNumeric(String value){
+        Pattern pattern = Pattern.compile("[+-]?\\d+");
+        return pattern.matcher(value).matches();
+    }
 }

@@ -51,11 +51,11 @@ public class ConditionInput implements ContextAware {
 			this.changeType = changeType;
 		}
 		
-	VariableSelectBox valiableChoice;
-		public VariableSelectBox getValiableChoice() {
+	ConditionVariableSelectBox valiableChoice;
+		public ConditionVariableSelectBox getValiableChoice() {
 			return valiableChoice;
 		}
-		public void setValiableChoice(VariableSelectBox valiableChoice) {
+		public void setValiableChoice(ConditionVariableSelectBox valiableChoice) {
 			this.valiableChoice = valiableChoice;
 		}
 
@@ -63,14 +63,12 @@ public class ConditionInput implements ContextAware {
 		this.setMetaworksContext(new MetaworksContext());
 		getMetaworksContext().setWhen("edit");
 	}
+
 	public void init(){
 		expressionDate = new Date();
-		valiableChoice = new VariableSelectBox();
+		valiableChoice = new ConditionVariableSelectBox();
 	}
-	public void load() throws Exception{
-		
-	}
-		
+
 	@ServiceMethod( payload={"changeType" , "valiableChoice"},eventBinding="change", bindingFor={"changeType"} )
 	public void changeInput() throws Exception{
 		this.getMetaworksContext().setHow(changeType);

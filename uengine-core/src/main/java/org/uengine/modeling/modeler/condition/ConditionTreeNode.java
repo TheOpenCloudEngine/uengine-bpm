@@ -150,7 +150,7 @@ public class ConditionTreeNode  implements ContextAware{
 			this.conditionNode = conditionNode;
 		}
 
-	List<Role> roleList;
+	protected List<Role> roleList;
         public List<Role> getRoleList() {
             return roleList;
         }
@@ -158,7 +158,7 @@ public class ConditionTreeNode  implements ContextAware{
             this.roleList = roleList;
         }
 
-    public List<ProcessVariable> processVariableList;
+    protected List<ProcessVariable> processVariableList;
         public List<ProcessVariable> getProcessVariableList() {
             return processVariableList;
         }
@@ -260,7 +260,7 @@ public class ConditionTreeNode  implements ContextAware{
 		ConditionTreeNode parentNode = this.getParentNode();
 		parentNode.setSelected(true);
 		
-		ConditionExPressionPanel conditionExPressionPanel = new ConditionExPressionPanel();
+		ConditionEditorExtension conditionExPressionPanel = new ConditionEditorExtension();
 		ConditionTreeNodeView conditionTreeNode = conditionExPressionPanel.getConditionTreeNode();
 		conditionTreeNode.setParentId(parentNode.getId());
 		conditionTreeNode.setParentNode(parentNode);
@@ -274,7 +274,7 @@ public class ConditionTreeNode  implements ContextAware{
 
 	@ServiceMethod(callByContent = true , target=ServiceMethodContext.TARGET_AUTO)
 	public Object select() throws Exception {
-		ConditionExPressionPanel conditionExPressionPanel = new ConditionExPressionPanel();
+		ConditionEditorExtension conditionExPressionPanel = new ConditionEditorExtension();
 		ConditionTreeNodeView conditionTreeNode = conditionExPressionPanel.getConditionTreeNode();
 
 		if( this.folder ){

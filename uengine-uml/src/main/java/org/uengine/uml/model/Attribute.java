@@ -1,5 +1,7 @@
 package org.uengine.uml.model;
 
+import org.metaworks.ContextAware;
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.Range;
 
 import java.io.Serializable;
@@ -24,8 +26,13 @@ public class Attribute implements Serializable{
             this.type = type;
         }
 
-    public AttributeInstance createInstance() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Class<?> typeClass = Thread.currentThread().getContextClassLoader().loadClass(getType());
+    public AttributeInstance createInstance() {
+        Class<?> typeClass = null;
+        try {
+            typeClass = Thread.currentThread().getContextClassLoader().loadClass(getType());
+        } catch (ClassNotFoundException e) {
+            new RuntimeException(e);
+        }
 
         Object value = null;
 
@@ -33,7 +40,12 @@ public class Attribute implements Serializable{
 
         if(typeClass == Calendar.class){
             value = Calendar.getInstance();
+        }else if(typeClass == String.class){
+            value = "";
+        }else if(Number.class.isAssignableFrom(typeClass)){
+            value = 0l;
         }
+
 
         AttributeInstance attributeInstance = new AttributeInstance();
         attributeInstance.setName(getName());
@@ -43,4 +55,7 @@ public class Attribute implements Serializable{
         return attributeInstance;
 
     }
+
+
+
 }

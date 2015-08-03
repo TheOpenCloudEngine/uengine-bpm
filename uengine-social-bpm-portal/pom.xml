@@ -82,7 +82,6 @@
 
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
-
 			</resource>
 
 		</resources>

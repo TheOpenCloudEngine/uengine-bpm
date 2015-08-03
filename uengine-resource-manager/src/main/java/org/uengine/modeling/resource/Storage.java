@@ -9,6 +9,7 @@ import java.util.List;
 public interface Storage {
     public void delete(IResource resource);
     public void rename(IResource resource, String newName);
+    public void copy(IResource src, String desPath) throws Exception;
     public List<IResource> listFiles(IContainer containerResource) throws Exception;
 
     Object getObject(IResource resource) throws Exception;

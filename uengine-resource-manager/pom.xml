@@ -30,6 +30,11 @@
 			<artifactId>uengine-modeling</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jets3t</groupId>
+			<artifactId>jets3t</artifactId>
+			<version>0.9.3</version>
+		</dependency>
 	</dependencies>
 	
 	<build>

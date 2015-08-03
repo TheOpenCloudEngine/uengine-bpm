@@ -11,10 +11,8 @@ import java.io.*;
 /**
  * Created by jangjinyoung on 15. 7. 12..
  */
-@Component
 public class ResourceManager {
 
-    @Autowired
     Storage storage;
 
         public Storage getStorage() {

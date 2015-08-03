@@ -1,0 +1,26 @@
+#sidebar{background-color: #FFFFFF;} 
+
+/* Header */
+.navbar-inverse {background-color: #FFFFFF;border-bottom: none} 
+.navbar-center {color:#bebebe}
+.navbar-inverse .navbar-brand {background: url('../../img/logo.png') no-repeat center; width: 120px; background-size: contain;}
+.sidebar-toggle {color:#ADADAD;border-right:none} 
+.header-menu #notifications-header .glyph-icon {color:#fff} 
+.header-menu #messages-header .glyph-icon {color:#fff} 
+
+/* Sidebar */
+.sidebar-nav a {color:#adadad} 
+.sidebar-nav a:hover {color:#fff;} 
+.sidebar-nav li.current a:hover i {color:#fff;} 
+.sidebar-nav li.current a{color: #fff;background-color: #16191F;border-left:3px solid #00A2D9;} 
+.sidebar-nav li.current li.current a{color: #fff;font-weight:500;background-color: #16191F;border-left:3px solid #00A2D9;} 
+#sidebar ul.submenu a{background-color: #34383F} 
+.footer-widget {background-color: #2B2E33;border-top:none;} 
+.footer-widget a:hover i{color: #F7F7F7} 
+.footer-gradient {background: url('../../img/gradient.png') repeat-x;} 
+#sidebar-charts {border-bottom: 1px solid #3C3C3C}
+.sidebar-charts-inner{border-bottom: none;} 
+.sidebar-chart-title {color:#fff;opacity: 0.4;} 
+.sidebar-chart-number {color:#fff} 
+#sidebar-charts hr.divider, li.divider {background: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(205, 205, 205, 0)), color-stop(50%, #4D4D4D), color-stop(100%, rgba(205, 205, 205, 0)));background: -webkit-linear-gradient(left, rgba(205, 205, 205, 0), #4D4D4D, rgba(205, 205, 205, 0));background: -moz-linear-gradient(left, rgba(205, 205, 205, 0), #4D4D4D, rgba(205, 205, 205, 0));background: -o-linear-gradient(left, rgba(205, 205, 205, 0),#4D4D4D, rgba(205, 205, 205, 0));background: linear-gradient(left, rgba(205, 205, 205, 0), #4D4D4D, rgba(205, 205, 205, 0))}
+.sidebar-footer .pull-left:hover {background-color:#373a41;} 

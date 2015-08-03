@@ -1,12 +1,16 @@
 package org.uengine.modeling;
 
+import org.metaworks.annotation.Hidden;
+
 /**
  * @author jyj
  */
 public interface IRelation {
 
+    @Hidden
     IElement getSourceElement();
 
+    @Hidden
     IElement getTargetElement();
 
     RelationView createView();

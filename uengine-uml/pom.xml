@@ -30,21 +30,7 @@
 			<artifactId>uengine-modeling</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.uengine</groupId>
-			<artifactId>uengine-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.uengine</groupId>
-			<artifactId>uengine-modeling</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.uengine</groupId>
-			<artifactId>bpmn-model</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+
 
 
 	</dependencies>

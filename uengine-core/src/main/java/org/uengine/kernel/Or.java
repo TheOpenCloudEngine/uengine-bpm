@@ -1,12 +1,15 @@
 package org.uengine.kernel;
 
+import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Name;
 import org.uengine.kernel.GlobalContext;
+import org.uengine.modeling.modeler.condition.OrConditionFace;
 
 
 /**
  * @author Jinyoung Jang
  */
-
+//@Face(faceClass= OrConditionFace.class)
 public class Or extends And{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
@@ -38,5 +41,16 @@ public class Or extends And{
 			
 		return false;
 	}
+
+	@Override
+	@Name
+	public String getName(){
+
+		if(getMetaworksContext()!=null && getMetaworksContext().getWhere().equals("removed"))
+			return "<strike> OR </strike>";
+		else
+			return "OR";
+	}
+
 
 }

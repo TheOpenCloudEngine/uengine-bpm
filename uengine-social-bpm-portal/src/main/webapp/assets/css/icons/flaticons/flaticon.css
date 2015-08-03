@@ -1,0 +1,363 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("flaticon.eot");
+	src: url("flaticon.eot#iefix") format("embedded-opentype"),
+	url("flaticon.woff") format("woff"),
+	url("flaticon.ttf") format("truetype"),
+	url("flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+	font-family: Flaticon;
+font-style: normal;
+margin-left: 20px;
+}.flaticon-a5:before {
+	content: "\e000";
+}
+.flaticon-advanced:before {
+	content: "\e001";
+}
+.flaticon-forms:before {
+	content: "\e002";
+}
+.flaticon-ascendant5:before {
+	content: "\e003";
+}
+.flaticon-charts2:before {
+	content: "\e004";
+}
+.flaticon-bars25:before {
+	content: "\e005";
+}
+.flaticon-bars31:before {
+	content: "\e006";
+}
+.flaticon-black285:before {
+	content: "\e007";
+}
+.flaticon-businessman63:before {
+	content: "\e008";
+}
+.flaticon-bust:before {
+	content: "\e009";
+}
+.flaticon-calendar5:before {
+	content: "\e00a";
+}
+.flaticon-calendar:before {
+	content: "\e00b";
+}
+.flaticon-calendar53:before {
+	content: "\e00c";
+}
+.flaticon-church2:before {
+	content: "\e00d";
+}
+.flaticon-circular114:before {
+	content: "\e00e";
+}
+.flaticon-circular116:before {
+	content: "\e00f";
+}
+.flaticon-circular14:before {
+	content: "\e010";
+}
+.flaticon-class6:before {
+	content: "\e011";
+}
+.flaticon-cloud122:before {
+	content: "\e012";
+}
+.flaticon-computer87:before {
+	content: "\e013";
+}
+.flaticon-curriculum:before {
+	content: "\e014";
+}
+.flaticon-doc2:before {
+	content: "\e015";
+}
+.flaticon-pages:before {
+	content: "\e016";
+}
+.flaticon-orders:before {
+	content: "\e017";
+}
+.flaticon-earth49:before {
+	content: "\e018";
+}
+.flaticon-education12:before {
+	content: "\e019";
+}
+.flaticon-education25:before {
+	content: "\e01a";
+}
+.flaticon-educational:before {
+	content: "\e01b";
+}
+.flaticon-educational21:before {
+	content: "\e01c";
+}
+.flaticon-educational8:before {
+	content: "\e01d";
+}
+.flaticon-notifications:before {
+	content: "\e01e";
+}
+.flaticon-facebook5:before {
+	content: "\e01f";
+}
+.flaticon-folder63:before {
+	content: "\e020";
+}
+.flaticon-forms2:before {
+	content: "\e021";
+}
+.flaticon-fullscreen2:before {
+	content: "\e022";
+}
+.flaticon-fullscreen3:before {
+	content: "\e023";
+}
+.flaticon-gallery1:before {
+	content: "\e024";
+}
+.flaticon-gallery2:before {
+	content: "\e025";
+}
+.flaticon-gif3:before {
+	content: "\e026";
+}
+.flaticon-graph2:before {
+	content: "\e027";
+}
+.flaticon-great1:before {
+	content: "\e028";
+}
+.flaticon-group44:before {
+	content: "\e029";
+}
+.flaticon-hands-shake:before {
+	content: "\e02a";
+}
+.flaticon-heart13:before {
+	content: "\e02b";
+}
+.flaticon-html9:before {
+	content: "\e02c";
+}
+.flaticon-images11:before {
+	content: "\e02d";
+}
+.flaticon-gallery:before {
+	content: "\e02e";
+}
+.flaticon-information33:before {
+	content: "\e02f";
+}
+.flaticon-information38:before {
+	content: "\e030";
+}
+.flaticon-instructor:before {
+	content: "\e031";
+}
+.flaticon-instructor1:before {
+	content: "\e032";
+}
+.flaticon-jpg3:before {
+	content: "\e033";
+}
+.flaticon-light28:before {
+	content: "\e034";
+}
+.flaticon-widgets:before {
+	content: "\e035";
+}
+.flaticon-list40:before {
+	content: "\e036";
+}
+.flaticon-lock12:before {
+	content: "\e037";
+}
+.flaticon-lock39:before {
+	content: "\e038";
+}
+.flaticon-logout:before {
+	content: "\e039";
+}
+.flaticon-map30:before {
+	content: "\e03a";
+}
+.flaticon-map42:before {
+	content: "\e03b";
+}
+.flaticon-marketing6:before {
+	content: "\e03c";
+}
+.flaticon-messages5:before {
+	content: "\e03d";
+}
+.flaticon-mobile26:before {
+	content: "\e03e";
+}
+.flaticon-incomes:before {
+	content: "\e03f";
+}
+.flaticon-outcoming:before {
+	content: "\e040";
+}
+.flaticon-outcoming1:before {
+	content: "\e041";
+}
+.flaticon-padlock23:before {
+	content: "\e042";
+}
+.flaticon-padlock27:before {
+	content: "\e043";
+}
+.flaticon-email:before {
+	content: "\e044";
+}
+.flaticon-people3:before {
+	content: "\e045";
+}
+.flaticon-frontend:before {
+	content: "\e046";
+}
+.flaticon-pins38:before {
+	content: "\e047";
+}
+.flaticon-plus16:before {
+	content: "\e048";
+}
+.flaticon-printer11:before {
+	content: "\e049";
+}
+.flaticon-printer73:before {
+	content: "\e04a";
+}
+.flaticon-responsive4:before {
+	content: "\e04b";
+}
+.flaticon-seo15:before {
+	content: "\e04c";
+}
+.flaticon-settings13:before {
+	content: "\e04d";
+}
+.flaticon-settings21:before {
+	content: "\e04e";
+}
+.flaticon-shopping100:before {
+	content: "\e04f";
+}
+.flaticon-shopping102:before {
+	content: "\e050";
+}
+.flaticon-shopping2:before {
+	content: "\e051";
+}
+.flaticon-shopping27:before {
+	content: "\e052";
+}
+.flaticon-shopping80:before {
+	content: "\e053";
+}
+.flaticon-small52:before {
+	content: "\e054";
+}
+.flaticon-speech76:before {
+	content: "\e055";
+}
+.flaticon-speedometer10:before {
+	content: "\e056";
+}
+.flaticon-speedometer2:before {
+	content: "\e057";
+}
+.flaticon-speedometer3:before {
+	content: "\e058";
+}
+.flaticon-spreadsheet4:before {
+	content: "\e059";
+}
+.flaticon-squares7:before {
+	content: "\e05a";
+}
+.flaticon-star105:before {
+	content: "\e05b";
+}
+.flaticon-tables:before {
+	content: "\e05c";
+}
+.flaticon-teacher4:before {
+	content: "\e05d";
+}
+.flaticon-text70:before {
+	content: "\e05e";
+}
+.flaticon-three91:before {
+	content: "\e05f";
+}
+.flaticon-panels:before {
+	content: "\e060";
+}
+.flaticon-tools6:before {
+	content: "\e061";
+}
+.flaticon-two35:before {
+	content: "\e062";
+}
+.flaticon-two80:before {
+	content: "\e063";
+}
+.flaticon-unknown:before {
+	content: "\e064";
+}
+.flaticon-visitors:before {
+	content: "\e065";
+}
+.flaticon-user90:before {
+	content: "\e066";
+}
+.flaticon-account:before {
+	content: "\e067";
+}
+.flaticon-user92:before {
+	content: "\e068";
+}
+.flaticon-users6:before {
+	content: "\e069";
+}
+.flaticon-viral:before {
+	content: "\e06a";
+}
+.flaticon-warning24:before {
+	content: "\e06b";
+}
+.flaticon-ui-elements2:before {
+	content: "\e06c";
+}
+.flaticon-wide6:before {
+	content: "\e06d";
+}
+.flaticon-wifi42:before {
+	content: "\e06e";
+}
+.flaticon-world30:before {
+	content: "\e06f";
+}
+.flaticon-world:before {
+	content: "\e070";
+}
+
+.glyph-icon {
+	display: inline-block;
+	font-family:"Flaticon";
+	line-height: 1;
+}
+.glyph-icon:before {
+	margin-left: 0;
+}

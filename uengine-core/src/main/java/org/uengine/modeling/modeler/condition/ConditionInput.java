@@ -44,6 +44,7 @@ public class ConditionInput implements ContextAware {
 		}
 		
 	String changeType;
+	@Range(options={"Text", "Date", "Boolean", "Variable"}, values={""})
 		public String getChangeType() {
 			return changeType;
 		}

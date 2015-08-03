@@ -23,6 +23,7 @@ import org.uengine.util.ActivityFor;
 import javax.lang.model.element.Element;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProcessModeler extends DefaultModeler {
@@ -452,6 +453,8 @@ public class ProcessModeler extends DefaultModeler {
 	public ProcessDefinition makeProcessDefinitionFromCanvas(Canvas canvas) throws Exception{
 		ProcessDefinition def = createEmptyProcessDefinition();
 
+		HashMap<String, String> tracingTags = new HashMap<String, String>();
+
 		if(rolePanel!=null && rolePanel.getRoleList()!=null){
 			Role[] roles = new Role[rolePanel.getRoleList().size()];
 			rolePanel.getRoleList().toArray(roles);
@@ -477,6 +480,20 @@ public class ProcessModeler extends DefaultModeler {
 
 				if(flowActivity.getChildActivities()!=null)
 					flowActivity.getChildActivities().clear();
+			}
+
+			if (elementView.getElement() instanceof Activity) {
+				Activity activity = (Activity) elementView.getElement();
+				activity.setName(elementView.getLabel());
+
+				try {
+					long tracingTagNumber = Long.parseLong(activity.getTracingTag());
+					if(def.getActivitySequence() < tracingTagNumber){
+						def.setActivitySequence(tracingTagNumber);
+					}
+				}catch (Exception e){
+
+				}
 			}
 
 		}
@@ -530,7 +547,13 @@ public class ProcessModeler extends DefaultModeler {
 				if(parentActivity==null)
 					parentActivity = def;
 
+				//TODO:  if tracingTag collision occurs, issue new id. This may cause undesired operation.
+				if(tracingTags.containsKey(activity.getTracingTag()))
+					activity.setTracingTag(""+def.getNextActivitySequence());
+
 				parentActivity.addChildActivity(activity);
+				tracingTags.put(activity.getTracingTag(), activity.getTracingTag());
+
 
 				if(activity instanceof Event){
 					Activity toAttachActivity = findAttachedActivity(elementView, canvas.getElementViewList());

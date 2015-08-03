@@ -1,5 +1,7 @@
 package org.uengine.modeling;
 
+import org.metaworks.annotation.Hidden;
+
 import java.io.Serializable;
 
 
@@ -34,6 +36,7 @@ public class Relation implements Serializable, IRelation{
 	 */
 	transient IElement sourceElement;
 		@Override
+		@Hidden
 		public IElement getSourceElement() {
 			return this.sourceElement;
 		}
@@ -46,6 +49,7 @@ public class Relation implements Serializable, IRelation{
 	 */
 	transient IElement targetElement;
 		@Override
+		@Hidden
 		public IElement getTargetElement() {
 			return this.targetElement;
 		}

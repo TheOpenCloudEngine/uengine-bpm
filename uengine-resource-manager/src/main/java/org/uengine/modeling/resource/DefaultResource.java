@@ -132,9 +132,13 @@ public class DefaultResource implements IResource {
 
 
 
+	/**
+	 * 
+	 * @param resourceControlDelegate
+	 */
 	@Order(6)
-	@Face(displayName = "open")
-	@ServiceMethod(callByContent = true, except = "children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu = true)
+	@Face(displayName="open")
+	@ServiceMethod(callByContent=true, except="children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu=true)
 	public void open(@AutowiredFromClient
 							  ResourceControlDelegate resourceControlDelegate
 

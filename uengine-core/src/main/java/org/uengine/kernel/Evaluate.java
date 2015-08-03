@@ -4,9 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import org.metaworks.FieldDescriptor;
-import org.metaworks.ObjectInstance;
+import org.metaworks.*;
+import org.metaworks.annotation.*;
+import org.metaworks.annotation.Face;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ModalWindow;
+import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
+import org.uengine.kernel.face.GenericValueFace;
+import org.uengine.kernel.face.ProcessVariableExpressionFace;
 import org.uengine.processmanager.SimulatorTransactionContext;
 import org.uengine.util.UEngineUtil;
 
@@ -15,8 +20,7 @@ import org.uengine.util.UEngineUtil;
 /**
  * @author Kinam Jung, Jinyoung Jang
  */
-
-public class Evaluate extends Condition{
+public class Evaluate extends Condition implements ContextAware{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	String key;
 	ProcessVariable pv;
@@ -288,19 +292,25 @@ public class Evaluate extends Condition{
 	}
 	
 	public String toString(){
-		if(getDescription().getText()!=null)
+		if(getDescription().getText()!=null && getDescription().getText().length() > 0)
 			return getDescription().getText();
 		
 		Object k = key;
 		
 		if(pv!=null)
 			k = pv;				
-		
+
+		if(k==null){
+			return "[Evaluate] Not Set (right-click-'Edit' to edit)";
+		}
+
 		String returnVal = k + " " + condition + " " + val;
 		
 		return returnVal;
 	}
 
+	@Face(faceClass = ProcessVariableExpressionFace.class)
+	@Order(1)
 	public String getKey() {
 		return key;
 	}
@@ -309,6 +319,8 @@ public class Evaluate extends Condition{
 		this.key = key;
 	}
 
+	@Order(3)
+	@Face(faceClass = GenericValueFace.class)
 	public Object getValue(){
 		return val;
 	}
@@ -316,6 +328,9 @@ public class Evaluate extends Condition{
 		this.val = value;
 	}
 
+	@Range(options={"==", "!=", ">=", ">", "<", "<=", "contains", "not contains"}
+			, values={"==", "!=", ">=", ">", "<", "<=", "contains", "not contains"})
+	@Order(2)
 	public String getCondition() {
 		return condition;
 	}
@@ -324,6 +339,7 @@ public class Evaluate extends Condition{
 		this.condition = condition;
 	}
 
+	@Hidden
 	public String getType() {
 		return type;
 	}
@@ -405,5 +421,38 @@ public class Evaluate extends Condition{
 		
 		return contain;
 	}
-	
+
+
+	@Name
+	@NonEditable
+	public String getTitle(){
+		if(getMetaworksContext()!=null && getMetaworksContext().getWhere().equals("removed"))
+			return "<strike> "+ toString() +" </strike>";
+		else
+			return toString();
+	}
+	public void setTitle(String title){}
+
+
+	@ServiceMethod(target = ServiceMethodContext.TARGET_POPUP, callByContent = true, inContextMenu = true)
+	public ModalWindow edit(@AutowiredFromClient ProcessVariablePanel processVariablePanel){
+		ModalWindow modalWindow = new ModalWindow(this);
+		modalWindow.setMetaworksContext(new MetaworksContext());
+		modalWindow.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+		modalWindow.getMetaworksContext().setHow("full-fledged");
+
+		return modalWindow;
+	}
+
+	MetaworksContext metaworksContext;
+		@Override
+		public MetaworksContext getMetaworksContext() {
+			return metaworksContext;
+		}
+		@Override
+		public void setMetaworksContext(MetaworksContext metaworksContext) {
+			this.metaworksContext = metaworksContext;
+		}
+
+
 }

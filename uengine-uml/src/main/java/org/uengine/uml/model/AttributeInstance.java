@@ -1,15 +1,18 @@
 package org.uengine.uml.model;
 
+import org.metaworks.ContextAware;
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.Available;
+import org.metaworks.annotation.Hidden;
 
 import java.io.Serializable;
 import java.util.Calendar;
 
-public class AttributeInstance extends Attribute{
+public class AttributeInstance extends Attribute implements ContextAware{
 
 
     private Object value;
-
+    @Hidden
         public Object getValue() {
             return value;
         }
@@ -27,21 +30,21 @@ public class AttributeInstance extends Attribute{
     }
 
     public void setValueString(String valueString) {
-        if (valueString != null)
-            this.value = valueString;
+        if (valueString instanceof String)
+            setValue(valueString);
     }
 
 
     @Available(condition = "type=='java.lang.Long'")
-    public long getValueLong() {
+    public Long getValueLong() {
         if (value instanceof Long)
             return (Long) value;
         else
-            return 0;
+            return null;
     }
 
-    public void setValueLong(long valueLong) {
-        this.value = valueLong;
+    public void setValueLong(Long valueLong) {
+        setValue(valueLong);
     }
 
     @Available(condition = "type=='java.util.Calendar'")
@@ -54,7 +57,19 @@ public class AttributeInstance extends Attribute{
 
     public void setValueDate(Calendar valueDate) {
         if(valueDate != null)
-            this.value = valueDate;
+            setValue(valueDate);
     }
+
+    MetaworksContext metaworksContext;
+        @Override
+        public MetaworksContext getMetaworksContext() {
+            return metaworksContext;
+        }
+
+        @Override
+        public void setMetaworksContext(MetaworksContext metaworksContext) {
+            this.metaworksContext = metaworksContext;
+        }
+
 
 }

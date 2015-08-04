@@ -7,17 +7,15 @@ import java.io.Serializable;
 import java.util.*;
 
 import com.sun.org.apache.regexp.internal.RE;
+import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
+import org.uengine.kernel.bpmn.face.ParameterContextArrayFace;
+import org.uengine.kernel.bpmn.face.ParameterContextListFace;
 
 
 public class ReceiveActivity extends DefaultActivity implements MessageListener{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
-	/**
-	 * @deprecated messageDefinition will be used instead
-	 * 
-	 * @uml.property name="message"
-	 */
 	String message;
 		@Hidden
 		public String getMessage() {
@@ -27,36 +25,10 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener{
 			return message;
 		}
 
-		/**
-		 * @deprecated setMessageDefinition will be used instead
-		 * 
-		 * @uml.property name="message"
-		 */
 		public void setMessage(String value) {
 			message = value;
 		}
 
-	/**
-	 * @deprecated parameters will be used instead
-	 * 
-	 * ProcessVariable output;	
-	 * /**
-	 * @deprecated getParameters will be used instead
-	 * 
-	 * public ProcessVariable getOutput(){
-	 * return output;
-	 * }
-	 * /**
-	 * @deprecated setParameters will be used instead
-	 * 
-	 * public void setOutput(ProcessVariable value){
-	 * output = value;
-	 * }
-	 */
-	 /** @uml.property name="messageDefinition"
-	 * @uml.associationEnd 
-	 * @uml.property name="messageDefinition" multiplicity="(0 1)"
-	 */
 	MessageDefinition messageDefinition;
 		@Hidden
 		public MessageDefinition getMessageDefinition() {
@@ -69,6 +41,7 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener{
 		}
 
 	ParameterContext[] parameters;
+	@Face(faceClass= ParameterContextArrayFace.class)
 		public ParameterContext[] getParameters() {
 			return parameters;
 		}
@@ -91,13 +64,6 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener{
 		super("Receive");
 	}
 
-/*	protected void afterPreviousActivityExecute(ActivityInstance instance)
-		throws Exception {
-		super.afterPreviousActivityExecute(instance);
-		
-		System.out.println("ReceiveActivity::waiting for message : "+message);
-		getProcessDefinition().addMessageListener(message, instance, getTracingTag()); //subscribes to JMS topic
-	}*/
 
 	protected void executeActivity(ProcessInstance instance) throws Exception{
 		System.out.println("ReceiveActivity::waiting for message : "+message);

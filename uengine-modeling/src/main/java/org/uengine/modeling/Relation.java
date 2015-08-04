@@ -22,6 +22,7 @@ public class Relation implements Serializable, IRelation{
 
 
 	RelationView relationView;
+	@Hidden
 		public RelationView getRelationView() {
 			return relationView;
 		}

@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.uengine.modeling.IModel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +28,26 @@ public class LocalFileStorage implements Storage{
 
     @Override
     public void delete(IResource fileResource) {
-
         getFile(fileResource).delete();
-
     }
 
     @Override
     public void rename(IResource fileResource, String newName) {
         getFile(fileResource).renameTo(new File(newName));
+    }
 
+    @Override
+    public void copy(IResource src, String desPath) throws IOException {
+        File destinationFile = new File(getTenantBasePath() + desPath);
+        File sourceFile = getFile(src);
+
+        if(sourceFile.isDirectory()){
+            destinationFile.mkdirs();
+        }else{
+            destinationFile.getParentFile().mkdirs();
+        }
+
+        Files.copy(getFile(src).toPath(), destinationFile.toPath());
     }
 
     @Override
@@ -102,7 +111,6 @@ public class LocalFileStorage implements Storage{
     private File getFile(IResource fileResource) {
         String tenantBasePath = getTenantBasePath();
 
-
         return new File(tenantBasePath
                 + fileResource.getPath());
     }
@@ -114,7 +122,6 @@ public class LocalFileStorage implements Storage{
             tenantId = "default";
         }
 
-        return getLocalBasePath() + File.separator
-                + (tenantId != null ? tenantId + File.separator : "");
+        return getLocalBasePath() + File.separator + tenantId + File.separator;
     }
 }

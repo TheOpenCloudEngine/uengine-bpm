@@ -19,6 +19,7 @@ public class ProcessResourceTest {
         ctx =  new ClassPathXmlApplicationContext("applicationContext.xml");
     }
 
+    @Ignore
     @Test
     public void testSave() throws Exception {
         // resource object contain file location and others.

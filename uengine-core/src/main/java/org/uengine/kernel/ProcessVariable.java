@@ -14,6 +14,7 @@ import org.metaworks.annotation.*;
 import org.metaworks.dwr.SerializationSensitive;
 import org.uengine.contexts.DatabaseSynchronizationOption;
 import org.uengine.contexts.TextContext;
+import org.uengine.kernel.face.GenericValueFace;
 import org.uengine.util.UEngineUtil;
 
 /**
@@ -190,7 +191,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 	Object defaultValue = null;
 	@Order(4)
-	@Face(faceClassName="org.uengine.kernel.face.ProcessVariableDefaultValueFace")
+	@Face(faceClass= GenericValueFace.class)
 		public Object getDefaultValue() {
 			return defaultValue;
 		}

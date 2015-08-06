@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.Id;
 import java.io.File;
 
+import static org.metaworks.dwr.MetaworksRemoteService.getComponent;
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
 public class DefaultResource implements IResource {
@@ -165,7 +166,7 @@ public class DefaultResource implements IResource {
 	}
 
 	private void _newAndOpen(boolean isNew) throws Exception {
-		EditorPanel editorPanel = new EditorPanel();
+		EditorPanel editorPanel = getComponent(EditorPanel.class);
 		editorPanel.setResourcePath(getPath());
 
 		String type = getType();

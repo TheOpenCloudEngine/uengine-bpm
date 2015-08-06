@@ -85,14 +85,6 @@ public class And extends Condition{
 }
 
 
-	@Name  //only stands for metaworks tree
-	public String getName(){
-		if(getMetaworksContext()!=null && "removed".equals(getMetaworksContext().getWhere()))
-			return "<strike> AND </strike>";
-
-		return "AND";
-	}
-	public void setName(String name){}
 
 	/* (non-Javadoc)
 	 * @see org.uengine.kernel.Validatable#validate()
@@ -112,7 +104,7 @@ public class And extends Condition{
 
 
 	@ServiceMethod(inContextMenu = true, callByContent = true)
-	@Order(3)
+	@Order(6)
 	public void newAnd(){
 		if(getConditionsVt()==null)
 			setConditionsVt(new Vector());
@@ -121,7 +113,7 @@ public class And extends Condition{
 	}
 
 	@ServiceMethod(inContextMenu = true, callByContent = true)
-	@Order(2)
+	@Order(5)
 	public void newOr(){
 		if(getConditionsVt()==null)
 			setConditionsVt(new Vector());
@@ -139,7 +131,16 @@ public class And extends Condition{
 	}
 
 	@ServiceMethod(inContextMenu = true, callByContent = true)
-	@Order(1)
+	@Order(2)
+	public void newScriptEvaluation(){
+		if(getConditionsVt()==null)
+			setConditionsVt(new Vector());
+
+		getConditionsVt().add(new ExpressionEvaluteCondition());
+	}
+
+	@ServiceMethod(inContextMenu = true, callByContent = true)
+	@Order(10)
 	public void refresh(){
 		if(getConditionsVt()!=null) {
 
@@ -172,4 +173,8 @@ public class And extends Condition{
 	}
 
 
+	@Override
+	public String toString() {
+		return "And";
+	}
 }

@@ -15,4 +15,9 @@ public class EventView extends ActivityView {
 
 		return symbol;
 	}
+
+	@Override
+	public String getLabel() {
+		return null;
+	}
 }

@@ -3,6 +3,13 @@ package org.uengine.kernel;
 
 import org.apache.bsf.BSFEngine;
 import org.apache.bsf.BSFManager;
+import org.metaworks.MetaworksContext;
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.AutowiredFromClient;
+import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.widget.ModalWindow;
+import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
+import org.uengine.util.UEngineUtil;
 
 
 public class ExpressionEvaluteCondition extends Condition {
@@ -15,11 +22,13 @@ public class ExpressionEvaluteCondition extends Condition {
             this.conditionExpression = conditionExpression;
         }
 
+    public ExpressionEvaluteCondition(){
+        super();
+    }
 
     public ExpressionEvaluteCondition(String conditionExpression) {
         super();
-        setConditionExpression(conditionExpression
-        );
+        setConditionExpression(conditionExpression);
     }
 
     @Override
@@ -67,4 +76,24 @@ public class ExpressionEvaluteCondition extends Condition {
 
 
     }
+
+    @Override
+    public String toString() {
+        if(UEngineUtil.isNotEmpty(getConditionExpression())) {
+            return getConditionExpression();
+        }else{
+            return "New Expression (Right click - 'edit' to edit)";
+        }
+    }
+
+    @ServiceMethod(target = ServiceMethodContext.TARGET_POPUP, callByContent = true, inContextMenu = true)
+    public ModalWindow edit(@AutowiredFromClient ProcessVariablePanel processVariablePanel){
+        ModalWindow modalWindow = new ModalWindow(this);
+        modalWindow.setMetaworksContext(new MetaworksContext());
+        modalWindow.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+        modalWindow.getMetaworksContext().setHow("full-fledged");
+
+        return modalWindow;
+    }
+
 }

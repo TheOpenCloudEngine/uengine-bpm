@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="applicationContext.xml"/>
+
+    <bean id="storage" class="org.uengine.modeling.resource.LocalFileStorage">
+        <property name="localBasePath" value="${codebase}"/>
+    </bean>
+
+    <!--<bean id="storage" class="org.uengine.modeling.resource.AmazonS3Storage">-->
+        <!--<property name="amazonS3Bucket" value="${Amazon.S3.Bucket}"/>-->
+        <!--<property name="awsAccessKey" value="${Amazon.AccessKeyID}"/>-->
+        <!--<property name="awsSecretAccessKey" value="${Amazon.SecretAccessKey}"/>-->
+    <!--</bean>-->
+
+    <bean class="org.uengine.modeling.resource.ResourceManager" scope="singleton">
+        <property name="storage" ref="storage"/>
+    </bean>
+
+    <bean class="org.quartz.impl.StdSchedulerFactory">
+
+        <!--<property name="quartzProperties">-->
+            <!--<props>-->
+                <!--<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>-->
+                <!--<prop key="org.quartz.threadPool.threadCount">5</prop>-->
+                <!--<prop key="org.quartz.threadPool.threadPriority">4</prop>-->
+                <!--<prop key="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</prop>-->
+                <!--<prop key="org.quartz.jobStore.misfireThreshold">60000</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+
+    </bean>
+</beans>

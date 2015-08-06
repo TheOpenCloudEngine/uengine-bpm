@@ -26,6 +26,8 @@ public abstract class Modeler implements ContextAware {
 		this.model = model;
 	}
 
+	abstract public IModel createModel();
+
 	public Canvas getCanvas() {
 		return canvas;
 	}

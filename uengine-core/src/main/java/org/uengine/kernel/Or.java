@@ -42,15 +42,9 @@ public class Or extends And{
 		return false;
 	}
 
+
 	@Override
-	@Name
-	public String getName(){
-
-		if(getMetaworksContext()!=null && getMetaworksContext().getWhere().equals("removed"))
-			return "<strike> OR </strike>";
-		else
-			return "OR";
+	public String toString() {
+		return "Or";
 	}
-
-
 }

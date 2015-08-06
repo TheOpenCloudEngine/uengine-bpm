@@ -119,6 +119,17 @@ public class AmazonS3Storage implements Storage{
     }
 
     @Override
+    public void createFolder(IContainer containerResource) throws Exception {
+        //TODO:  please implement this
+    }
+
+    @Override
+    public boolean exists(IResource resource) throws Exception {
+        //TODO:  please implement this
+        return false;
+    }
+
+    @Override
     public Object getObject(IResource resource) throws Exception {
         S3Object s3Object = restS3Service.getObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
 

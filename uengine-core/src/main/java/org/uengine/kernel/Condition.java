@@ -6,10 +6,7 @@ import java.util.Vector;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
-import org.metaworks.annotation.Available;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Order;
-import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.*;
 import org.uengine.contexts.TextContext;
 
 /**
@@ -63,5 +60,15 @@ public abstract class Condition implements Validatable, Serializable, ContextAwa
 			this.metaworksContext = metaworksContext;
 		}
 
+
+	@Name  //only stands for metaworks tree
+	@NonEditable
+	public String getName(){
+		if(getMetaworksContext()!=null && "removed".equals(getMetaworksContext().getWhere()))
+			return "<strike> "+toString()+" </strike>";
+
+		return toString();
+	}
+	public void setName(String name){}
 
 }

@@ -20,7 +20,7 @@ import org.uengine.util.UEngineUtil;
 /**
  * @author Kinam Jung, Jinyoung Jang
  */
-public class Evaluate extends Condition implements ContextAware{
+public class Evaluate extends Condition{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	String key;
 	ProcessVariable pv;
@@ -301,7 +301,7 @@ public class Evaluate extends Condition implements ContextAware{
 			k = pv;				
 
 		if(k==null){
-			return "[Evaluate] Not Set (right-click-'Edit' to edit)";
+			return "[Evaluate] Not Set (Right click - 'Edit' to edit)";
 		}
 
 		String returnVal = k + " " + condition + " " + val;
@@ -423,17 +423,6 @@ public class Evaluate extends Condition implements ContextAware{
 	}
 
 
-	@Name
-	@NonEditable
-	public String getTitle(){
-		if(getMetaworksContext()!=null && getMetaworksContext().getWhere().equals("removed"))
-			return "<strike> "+ toString() +" </strike>";
-		else
-			return toString();
-	}
-	public void setTitle(String title){}
-
-
 	@ServiceMethod(target = ServiceMethodContext.TARGET_POPUP, callByContent = true, inContextMenu = true)
 	public ModalWindow edit(@AutowiredFromClient ProcessVariablePanel processVariablePanel){
 		ModalWindow modalWindow = new ModalWindow(this);
@@ -443,16 +432,6 @@ public class Evaluate extends Condition implements ContextAware{
 
 		return modalWindow;
 	}
-
-	MetaworksContext metaworksContext;
-		@Override
-		public MetaworksContext getMetaworksContext() {
-			return metaworksContext;
-		}
-		@Override
-		public void setMetaworksContext(MetaworksContext metaworksContext) {
-			this.metaworksContext = metaworksContext;
-		}
 
 
 }

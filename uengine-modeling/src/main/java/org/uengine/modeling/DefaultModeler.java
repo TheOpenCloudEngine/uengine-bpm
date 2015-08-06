@@ -20,6 +20,13 @@ public class DefaultModeler extends Modeler {
         super();
     }
 
+    @Override
+    public IModel createModel() {
+
+        //TODO :  implement default modeling format - e.g. uml xmi
+        return null;
+    }
+
     public int getLastTracingTag() {
         return lastTracingTag;
     }

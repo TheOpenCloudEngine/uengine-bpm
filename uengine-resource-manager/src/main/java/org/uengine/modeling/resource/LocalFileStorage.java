@@ -72,6 +72,8 @@ public class LocalFileStorage implements Storage{
         if(directory!=null && directory.exists())
         for(File file : directory.listFiles()){
 
+            if(file.getName().startsWith(".")) continue;
+
             String relativePath = file.getAbsolutePath();
 
             relativePath = relativePath.substring(abstractTenantBasePath.length() + 1);
@@ -88,6 +90,18 @@ public class LocalFileStorage implements Storage{
         }
 
         return resourceList;
+    }
+
+    @Override
+    public void createFolder(IContainer containerResource) throws Exception {
+        File directory = getFile(containerResource);
+
+        directory.mkdirs();
+    }
+
+    @Override
+    public boolean exists(IResource resource) throws Exception {
+        return getFile(resource).exists();
     }
 
     @Override

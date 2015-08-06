@@ -1,16 +1,20 @@
 package org.uengine.modeling.resource;
 
+import org.metaworks.dwr.MetaworksRemoteService;
+
+import static org.metaworks.dwr.MetaworksRemoteService.*;
+
 public class Workbench {
 
 	public Workbench(IContainer root) {
 		this.resourceNavigator = new ResourceNavigator();
 		this.resourceNavigator.setRoot(root);
-		this.editorPanel = new EditorPanel();
+		this.editorPanel = getComponent(EditorPanel.class);
 	}
 
 	public Workbench(ResourceNavigator resourceNavigator) {
 		this.resourceNavigator = resourceNavigator;
-		this.editorPanel = new EditorPanel();
+		this.editorPanel = getComponent(EditorPanel.class);
 	}
 
 	private ResourceNavigator resourceNavigator;

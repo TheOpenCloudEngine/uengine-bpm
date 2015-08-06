@@ -21,6 +21,7 @@ public class AmazonS3StorageTest {
         ctx =  new ClassPathXmlApplicationContext("applicationContext.xml");
     }
 
+    @Ignore
     @Test
     public void testSave() throws Exception {
         AmazonS3Storage amazonS3Storage = (AmazonS3Storage) ctx.getBean("storage");

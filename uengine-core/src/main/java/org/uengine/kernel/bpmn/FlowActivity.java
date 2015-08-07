@@ -51,6 +51,37 @@ public class FlowActivity extends ComplexActivity {
                 sequenceFlow.setTargetActivity(targetActivity);
 			}
 		}
+
+		// for each events:   getProcessDefinition().addMessageListener(instance, eventActivity);
+		for(Activity childActivity: getChildActivities()){
+			if(childActivity instanceof Event && "Catching".equals(((Event)childActivity).getEventType())
+					&& (childActivity.getIncomingSequenceFlows() == null || childActivity.getIncomingSequenceFlows().size() == 0)){
+
+				final Event event = (Event)childActivity;
+				if(event.getAttachedToRef() != null){
+					getProcessDefinition().getActivity(event.getAttachedToRef()).addEventListener(
+							new ActivityEventListener(){
+								@Override
+								public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
+									getProcessDefinition().addMessageListener(instance, event);
+
+									queueActivity(event, instance);
+								}
+
+								@Override
+								public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
+									getProcessDefinition().removeMessageListener(instance, event);
+								}
+							}
+					);
+
+
+				}
+			}
+		}
+
+
+
 	}
 
 	private Activity getStartActivity() throws UEngineException {
@@ -99,33 +130,6 @@ public class FlowActivity extends ComplexActivity {
 				getProcessDefinition().addMessageListener(instance, (MessageListener)childActivity);
 			}
 		}
-
-		// for each events:   getProcessDefinition().addMessageListener(instance, eventActivity);
-		for(Activity childActivity: getChildActivities()){
-			if(childActivity instanceof Event && "Catching".equals(((Event)childActivity).getEventType())
-					&& (childActivity.getIncomingSequenceFlows() == null || childActivity.getIncomingSequenceFlows().size() == 0)){
-
-				final Event event = (Event)childActivity;
-				if(event.getAttachedToRef() != null){
-					getProcessDefinition().getActivity(event.getAttachedToRef()).addEventListener(
-							new ActivityEventListener(){
-								@Override
-								public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
-									getProcessDefinition().addMessageListener(instance, event);
-								}
-
-								@Override
-								public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
-									getProcessDefinition().removeMessageListener(instance, event);
-								}
-							}
-					);
-
-
-				}
-			}
-		}
-
 
 
 		if (getSequenceFlows().size() == 0) {

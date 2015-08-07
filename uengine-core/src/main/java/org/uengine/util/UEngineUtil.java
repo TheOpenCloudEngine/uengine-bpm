@@ -71,8 +71,13 @@ public class UEngineUtil {
 
 
     static public Object addArrayElement(Object array, Object newElement) {
+        return addArrayElement(array, newElement, newElement.getClass());
+    }
+
+
+    static public Object addArrayElement(Object array, Object newElement, Class type) {
         int length = array != null ? Array.getLength(array) : 0;
-        Object newArray = Array.newInstance(newElement.getClass(), length + 1);
+        Object newArray = Array.newInstance(type, length + 1);
 
         if (length > 0)
             System.arraycopy(array, 0, newArray, 0, length);

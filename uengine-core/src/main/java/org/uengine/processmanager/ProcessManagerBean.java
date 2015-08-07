@@ -186,7 +186,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		log(methodName, message.toString(), src.toString());
 	}
 	//
-	
+
 	transient private ProcessTransactionContext transactionContext;
 		public ProcessTransactionContext getTransactionContext() {
 			if(transactionContext==null)
@@ -194,8 +194,12 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 			
 			return transactionContext;
 		}
-		
-    ConnectionFactory connectionFactory;
+		public void setTransactionContext(ProcessTransactionContext transactionContext) {
+			this.transactionContext = transactionContext;
+		}
+
+
+	ConnectionFactory connectionFactory;
 		public ConnectionFactory getConnectionFactory() {
 			return connectionFactory;
 		}

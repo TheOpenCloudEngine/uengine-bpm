@@ -32,6 +32,10 @@ public class Event extends DefaultActivity implements MessageListener{
 			return attachedToRef;
 		}
 		public void setAttachedToRef(String attachedToRef) {
+			if(attachedToRef!=null){
+				setEventType("Catching");
+			}
+
 			this.attachedToRef = attachedToRef;
 		}
 

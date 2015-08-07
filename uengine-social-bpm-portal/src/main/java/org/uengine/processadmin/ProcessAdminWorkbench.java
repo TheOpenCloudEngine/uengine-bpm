@@ -26,8 +26,8 @@ public class ProcessAdminWorkbench extends Workbench {
     }
 
 
-    @Autowired
-    public StdSchedulerFactory schedulerFactoryBean;
+//    @Autowired
+//    public StdSchedulerFactory schedulerFactoryBean;
 
 //    @ServiceMethod(inContextMenu = true)
 //    public void startJob() throws SchedulerException {

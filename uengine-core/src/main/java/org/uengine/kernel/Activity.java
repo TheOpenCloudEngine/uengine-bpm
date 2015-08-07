@@ -1677,7 +1677,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 			public void onDeploy(ProcessDefinition definition) throws Exception {
 				//not implemented
 			}
-		});
+		}, ActivityFilter.class);
 
 		getProcessDefinition().setActivityFilters(activityFilters);
 

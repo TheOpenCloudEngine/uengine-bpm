@@ -1565,19 +1565,20 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean checkStartsWithEventActivity() throws Exception {
+	public boolean checkStartsWithBoundaryEventActivity() throws Exception {
 		boolean check = false;
 		for (Iterator<SequenceFlow> it = getIncomingSequenceFlows().iterator(); it.hasNext(); ) {
 			SequenceFlow ts = (SequenceFlow)it.next();
 			Activity beforeActivity = ts.getSourceActivity();
-			if(beforeActivity instanceof Event && beforeActivity instanceof MessageListener ){
+
+			if(beforeActivity instanceof Event && beforeActivity instanceof MessageListener && ((Event)beforeActivity).getAttachedToRef()!=null){
 //				if( "STOP_ACTIVITY".equals(((Event)beforeActivity).getActivityStop()) ){
 //					return false;
 //				}else{
 					return true;
 //				}
 			}else{
-				check = beforeActivity.checkStartsWithEventActivity();
+				check = beforeActivity.checkStartsWithBoundaryEventActivity();
 			}
 		}
 		return check;

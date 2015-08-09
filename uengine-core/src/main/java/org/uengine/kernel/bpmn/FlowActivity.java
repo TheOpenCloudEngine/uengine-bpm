@@ -100,9 +100,11 @@ public class FlowActivity extends ComplexActivity {
 				continue;
 //				return null;
 			}else	if (child.getIncomingSequenceFlows().size() == 0) {
-				if( child instanceof Event && child instanceof MessageListener ){
-					continue;
-				}
+
+				////// TODO: why does following implementation try to ignore event activities as a start activity?
+//				if( child instanceof Event && child instanceof MessageListener ){
+//					continue;
+//				}
 				return child;
 			}
 		}
@@ -167,7 +169,7 @@ public class FlowActivity extends ComplexActivity {
 			
 			if (possibleNextActivities.size() == 0) {
 				// fireComplete(instance);
-				 if( !currentActivity.checkStartsWithEventActivity() ){
+				 if( !currentActivity.checkStartsWithBoundaryEventActivity() ){
 					 setStatus(instance, STATUS_COMPLETED);
 					 fireComplete(instance);
 				 }

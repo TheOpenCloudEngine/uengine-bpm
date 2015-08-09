@@ -3,15 +3,12 @@ package org.uengine.kernel.test;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.test.TestMetaworksRemoteService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.TimerEvent;
 import org.uengine.processmanager.ProcessManagerBean;
 import org.uengine.processmanager.ProcessManagerRemote;
 
-import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -19,6 +16,8 @@ import java.util.Vector;
 public class TimerEventTest extends UEngineTest{
 
     ProcessDefinition processDefinition;
+
+    final int timeInterval = 3000;
 
     /**
      * build a graph as follows:
@@ -35,6 +34,7 @@ public class TimerEventTest extends UEngineTest{
      */
     public void setUp() throws Exception {
 
+        //Set application context for testing
         new TestMetaworksRemoteService(
                 new ClassPathXmlApplicationContext(
                           getClass().getName().replaceAll("\\.", "\\/") + "Context.xml"
@@ -65,7 +65,7 @@ public class TimerEventTest extends UEngineTest{
                 TimerEvent event = new TimerEvent();
                 event.setName("a5");
                 event.setAttachedToRef("a1");
-                event.setExpression("0/10 * * * * ?");
+                event.setExpression("0/" + timeInterval / 1000 + " * * * * ?");
 
                 a1 = event;
             }
@@ -165,14 +165,14 @@ public class TimerEventTest extends UEngineTest{
         Vector mls = instance.getMessageListeners("event");
 
 
-        Thread.sleep(10000 + 5000); //after 10+ seconds later, the first timer event must be triggered.
+        Thread.sleep((long) (timeInterval * 1.2)); //after 10+ seconds later, the first timer event must be triggered.
 
         assertExecutionPathEquals("Triggering Event First Occurance", new String[]{
                 "a10", "a9", "a5", "a6", "a4"
         }, instance);
 
 
-        Thread.sleep(10000); //after 20+ seconds later, the scond timer event must be triggered.
+        Thread.sleep(timeInterval); //after 20+ seconds later, the scond timer event must be triggered.
 
         assertExecutionPathEquals("Triggering Event Second Occurance", new String[]{
                 "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4"
@@ -185,7 +185,7 @@ public class TimerEventTest extends UEngineTest{
         }, instance);
 
 
-        Thread.sleep(10000);
+        Thread.sleep(timeInterval * 2);
 
 
         instance.getProcessDefinition().fireMessage("event", instance, "a5");

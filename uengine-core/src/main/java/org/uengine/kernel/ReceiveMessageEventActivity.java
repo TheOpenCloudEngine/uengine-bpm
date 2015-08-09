@@ -26,4 +26,19 @@ public class ReceiveMessageEventActivity extends EventActivity implements Messag
     public String getMessage() {
         return this.getName();
     }
+
+    @Override
+    public void beforeRegistered(ProcessInstance instance) throws Exception {
+
+    }
+
+    @Override
+    public void afterRegistered(ProcessInstance instance) throws Exception {
+
+    }
+
+    @Override
+    public void afterUnregistered(ProcessInstance instance) throws Exception {
+
+    }
 }

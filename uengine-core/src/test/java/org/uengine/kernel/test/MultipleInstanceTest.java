@@ -82,7 +82,7 @@ public class MultipleInstanceTest extends UEngineTest{
             t1.setSourceRef("a9");
             t1.setTargetRef("sub");
 
-            subProcess.addSequenceFlow(t1);
+            processDefinition.addSequenceFlow(t1);
         }
         {
             SequenceFlow t1 = new SequenceFlow();
@@ -111,7 +111,7 @@ public class MultipleInstanceTest extends UEngineTest{
 
         ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
-        GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
+       // GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
 
     }
 

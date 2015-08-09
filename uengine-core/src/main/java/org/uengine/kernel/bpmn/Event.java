@@ -49,6 +49,7 @@ public class Event extends DefaultActivity implements MessageListener{
 
 	String eventType;
 	@Hidden
+	@Range(options={"Catching","Throwing", "Non-Interrupting"}, values={"Catching", "Throwing", "Non-Interrupting"})
 		public String getEventType() {
 			return eventType;
 		}
@@ -88,5 +89,19 @@ public class Event extends DefaultActivity implements MessageListener{
 	@Override
 	public String getMessage() {
 		return "event";
+	}
+
+	@Override
+	public void beforeRegistered(ProcessInstance instance) throws Exception {
+
+	}
+
+	@Override
+	public void afterRegistered(ProcessInstance instance) throws Exception {
+
+	}
+
+	@Override
+	public void afterUnregistered(ProcessInstance instance) throws Exception {
 	}
 }

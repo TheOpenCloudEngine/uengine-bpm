@@ -134,7 +134,7 @@ public class EventTest extends UEngineTest{
 
         ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
-        GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
+       // GlobalContext.serialize(processDefinition, new FileOutputStream(getClass().getName()+ ".process"), String.class);
 
     }
 

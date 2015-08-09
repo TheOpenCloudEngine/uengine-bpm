@@ -38,9 +38,16 @@ public class TimerEventJob implements Job {
     public void fireEvent(JobDataMap jobDataMap) throws Exception {
         String instanceId = jobDataMap.getString("instanceId");
         String tracingTag = jobDataMap.getString("tracingTag");
+        String executionScope = jobDataMap.getString("executionScope");
 
 
-        processManagerRemote.sendMessage(instanceId, "event", tracingTag);
+        System.out.println("triggered for [instId: " + instanceId + "] and [execScope: " + executionScope + "] and [trcTag: "+ tracingTag + "]");
+
+        processManagerRemote.sendMessage(
+                instanceId + (executionScope != null ? "@" + executionScope : ""),
+                "event",
+                tracingTag
+        );
 
     }
 }

@@ -511,6 +511,8 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 
 	public ArrayList getExecutionScopeContexts(){
 		try {
+			setExecutionScopeContext(null); //this lets the caller exactly obtain the executionScopeContext.
+
 			ArrayList executionScopeList = ((ArrayList)getProperty("", PVKEY_EXECUTION_SCOPES));
 			if(executionScopeList!=null)
 				return executionScopeList;

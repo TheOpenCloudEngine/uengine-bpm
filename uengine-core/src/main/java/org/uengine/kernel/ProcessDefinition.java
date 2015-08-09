@@ -646,7 +646,11 @@ System.out.println("length of childs : " + pd.getChildActivities().size());
 	}
 
 	public void addMessageListener(ProcessInstance instance, MessageListener ml) throws Exception{
+		ml.beforeRegistered(instance);
+
 		addMessageListener(ml.getMessage(), instance, ml.getTracingTag());
+
+		ml.afterRegistered(instance);
 	}
 
 	protected void addMessageListener(String message, ProcessInstance instance, String scope) throws Exception{
@@ -691,6 +695,8 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 	
 	public void removeMessageListener(ProcessInstance instance, MessageListener ml) throws Exception{
 		removeMessageListener(ml.getMessage(), instance, ml.getTracingTag());
+
+		ml.afterUnregistered(instance);
 	}
 	
 	//TODO: hotspot

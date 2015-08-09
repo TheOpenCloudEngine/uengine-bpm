@@ -25,7 +25,7 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener{
 			return message;
 		}
 
-		public void setMessage(String value) {
+	public void setMessage(String value) {
 			message = value;
 		}
 
@@ -191,5 +191,22 @@ System.out.println("ReceiveActivity::payload is " + payload);
 		
 		return true;
 	}
+
+	@Override
+	public void beforeRegistered(ProcessInstance instance) throws Exception {
+
+	}
+
+	@Override
+	public void afterRegistered(ProcessInstance instance) throws Exception {
+
+	}
+
+	@Override
+	public void afterUnregistered(ProcessInstance instance) throws Exception {
+
+	}
+
+
 
 }

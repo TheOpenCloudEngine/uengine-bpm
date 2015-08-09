@@ -303,7 +303,9 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 	public String getMessage() {
 		return "event";
 	}
-	
+
+
+
 	public boolean registerToProcessDefinition(boolean autoTagging, boolean checkCollision) {
 		
 		EventHandler[] eventHandlers = getEventHandlers();
@@ -392,7 +394,25 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 		
 		return vc;
 	}
-	
 
-	
+
+////// implementations for MessageLister Framework //////
+	@Override
+	public void beforeRegistered(ProcessInstance instance) throws Exception {
+
+	}
+
+	@Override
+	public void afterRegistered(ProcessInstance instance) throws Exception {
+
+	}
+
+	@Override
+	public void afterUnregistered(ProcessInstance instance) throws Exception {
+
+	}
+
+////// End of implementations for MessageLister Framework //////
+
+
 }

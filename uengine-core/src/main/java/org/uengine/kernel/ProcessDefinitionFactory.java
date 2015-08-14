@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.ejb.ObjectNotFoundException;
 
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.persistence.dao.DAOFactory;
 import org.uengine.persistence.dao.UniqueKeyGenerator;
 import org.uengine.persistence.processdefinition.ProcessDefinitionRepositoryHomeLocal;
@@ -70,23 +71,7 @@ public class ProcessDefinitionFactory {
 	public static ProcessDefinitionFactory getInstance(
 			ProcessTransactionContext tc) {
 
-		if (USE_CLASS == null) {
-			try {
-				USE_CLASS = Thread.currentThread().getContextClassLoader().loadClass(GlobalContext
-						.getPropertyString("processdefinitionfactory.class","org.uengine.codi.CodiProcessDefinitionFactory"));
-			} catch (Exception e) {
-				USE_CLASS = ProcessDefinitionFactory.class;
-			}
-		}
-
-		try {
-			return (ProcessDefinitionFactory) USE_CLASS.getConstructor(
-					new Class[] { ProcessTransactionContext.class })
-					.newInstance(new Object[] { tc });
-		} catch (Exception e) {
-
-			return new ProcessDefinitionFactory(tc);
-		}
+		return MetaworksRemoteService.getComponent(ProcessDefinitionFactory.class);
 	}
 
 	protected ProcessDefinitionFactory(ProcessTransactionContext tc) {

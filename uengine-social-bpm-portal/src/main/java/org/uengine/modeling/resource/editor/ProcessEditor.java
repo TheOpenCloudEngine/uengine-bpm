@@ -26,7 +26,7 @@ public class ProcessEditor extends StandaloneProcessModeler implements IEditor<P
     }
 
     @Override
-    public ProcessDefinition getEditingObject() {
+    public ProcessDefinition createEditedObject() {
         try {
             return (ProcessDefinition) getProcessModeler().createModel();
         } catch (Exception e) {

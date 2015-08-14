@@ -40,7 +40,8 @@ public class EditorPanel {
 		IResource defaultResource = DefaultResource.createResource(getResourcePath());
 		autowire(defaultResource);
 
-		defaultResource.save(getEditor().getEditingObject());
+		defaultResource.save(getEditor().createEditedObject());
+
 	}
 
 }

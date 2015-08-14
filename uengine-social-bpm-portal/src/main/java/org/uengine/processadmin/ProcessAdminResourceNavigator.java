@@ -1,8 +1,8 @@
 package org.uengine.processadmin;
 
 import org.metaworks.annotation.AutowiredToClient;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.uengine.bean.factory.MetaworksSpringBeanFactory;
 import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.modeling.resource.ResourceControlDelegate;
 import org.uengine.modeling.resource.ResourceNavigator;
@@ -20,7 +20,7 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
         ResourceManager resourceManager;
 
         try {
-            resourceManager = MetaworksSpringBeanFactory.getBean(ResourceManager.class);
+            resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
             if(!resourceManager.getStorage().exists(getRoot())){
                 resourceManager.getStorage().createFolder(getRoot());

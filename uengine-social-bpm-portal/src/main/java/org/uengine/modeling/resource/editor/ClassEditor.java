@@ -17,7 +17,7 @@ public class ClassEditor implements IEditor<ClassDefinition>{
     }
 
     @Override
-    public ClassDefinition getEditingObject() {
+    public ClassDefinition createEditedObject() {
         return classDefinition;
     }
 

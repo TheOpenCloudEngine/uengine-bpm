@@ -5,7 +5,7 @@ package org.uengine.modeling.resource;
  */
 public interface IEditor<T> {
     public void setEditingObject(T object);
-    public T getEditingObject();
+    public T createEditedObject();
 
     public T newObject(IResource resource);
 }

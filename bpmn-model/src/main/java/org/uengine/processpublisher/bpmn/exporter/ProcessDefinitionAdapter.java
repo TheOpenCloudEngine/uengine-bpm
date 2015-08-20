@@ -11,6 +11,7 @@ import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
 import org.uengine.processpublisher.ObjectFactoryUtil;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -21,19 +22,51 @@ import java.util.List;
 public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDefinitions> {
     @Override
     public TDefinitions convert(ProcessDefinition src, Hashtable keyedContext) throws Exception {
+        // make hashtable
+        Hashtable context = new Hashtable();
+
         // make TDefinitions
         TDefinitions tDefinitions = ObjectFactoryUtil.createBPMNObject(TDefinitions.class);
         tDefinitions.setId(src.getId());
+        tDefinitions.setName(src.getName());
 
         // make TProcess
         TProcess tProcess = ObjectFactoryUtil.createBPMNObject(TProcess.class);
-        tProcess.setName(src.getName());
+
+        // make TCollaboration
+        TCollaboration tCollaboration = ObjectFactoryUtil.createBPMNObject(TCollaboration.class);
+        tCollaboration.setId("tCollaboration");
+        tCollaboration.setName("tCollaboration");
+
+        // make TParticipant
+        TParticipant tParticipant = ObjectFactoryUtil.createBPMNObject(TParticipant.class);
+        tParticipant.setId("Participant");
+        tParticipant.setName("Pool");
+        // set TProcess's attribute
+        tProcess.setId("process" + tParticipant.getId());
+        tProcess.setName(tParticipant.getName());
+        // set tParticipant's processRef
+        tParticipant.setProcessRef(new QName(tProcess.getId()));
+        // add TParticipant to TCollaboration
+        tCollaboration.getParticipant().add(tParticipant);
+        // add TCollaboration to TDefinitions
+        JAXBElement<TCollaboration> tCollaborationElement = ObjectFactoryUtil.createDefaultJAXBElement(TCollaboration.class, tCollaboration);
+        tDefinitions.getRootElement().add(tCollaborationElement);
 
         // make BPMNDiagram
         BPMNDiagram bpmnDiagram = ObjectFactoryUtil.createBPMNObject(BPMNDiagram.class);
         //TODO: bpmndiagram id? name?
         bpmnDiagram.setId("bpmnDiagram");
         bpmnDiagram.setName("bpmnDiagram");
+
+        // make BPMNPLane
+        BPMNPlane bpmnPlane = ObjectFactoryUtil.createBPMNObject(BPMNPlane.class);
+        // bpmnShape's bpmnElement = tProcess's id
+        bpmnPlane.setBpmnElement(new QName(tProcess.getId()));
+        // BPMNDiagram set BPMNPLane
+        bpmnDiagram.setBPMNPlane(bpmnPlane);
+
+        context.put("bpmnDiagram", bpmnDiagram);
 
         // find Role
         if (src.getRoles() != null && src.getRoles().length > 0) {
@@ -43,24 +76,12 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
             tLaneSet.setId("laneSetId");
             tLaneSet.setName("laneSetName");
 
-            // make BPMNPLane
-            BPMNPlane bpmnPlane = ObjectFactoryUtil.createBPMNObject(BPMNPlane.class);
-            // BPMNDiagram set BPMNPLane
-            bpmnDiagram.setBPMNPlane(bpmnPlane);
-
             // uengine role = bpmn Lane
             for (Role role : src.getRoles()) {
                 // role adapter -> TLane make and setting
-                TLane tLane = (TLane) BPMNUtil.export(role);
+                TLane tLane = (TLane) BPMNUtil.export(role, context);
                 tLaneSet.getLane().add(tLane);
 
-                // find Role's elementView
-                if(role.getElementView() != null) {
-                    // element adapter -> BPMNShape make and setting
-                    BPMNShape bpmnShape = (BPMNShape) BPMNUtil.export(role.getElementView());
-                    // make diagramElement and PLane add bpmnShape
-                    bpmnDiagram.getBPMNPlane().getDiagramElement().add(ObjectFactoryUtil.createDefaultJAXBElement(BPMNShape.class, bpmnShape));
-                }
             }
             tProcess.getLaneSet().add(tLaneSet);
         }
@@ -71,17 +92,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
                 // if HumanActivity
                 if (activity instanceof HumanActivity) {
                     HumanActivity humanActivity = (HumanActivity) activity;
-
                     // humanActivity adapter -> TUserTask create and setting
-                    TUserTask tUserTask = (TUserTask) BPMNUtil.export(humanActivity);
-
-                    // find humanActiviy's elementView
-                    if(humanActivity.getElementView() != null) {
-                        // element adapter -> BPMNShape make and setting
-                        BPMNShape bpmnShape = (BPMNShape) BPMNUtil.export(humanActivity.getElementView());
-                        // make diagramElement and PLane add bpmnShape
-                        bpmnDiagram.getBPMNPlane().getDiagramElement().add(ObjectFactoryUtil.createDefaultJAXBElement(BPMNShape.class, bpmnShape));
-                    }
+                    TUserTask tUserTask = (TUserTask) BPMNUtil.export(humanActivity, context);
 
                     if(humanActivity.getRole() != null) {
                         // find TLaneSet
@@ -95,16 +107,16 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
                                 for(TLane tLane : tLaneList) {
                                     if(tLane.getId().equals(humanActivity.getRole().getElementView().getId())) {
                                         // ObjectMethod used only model ObjectFactory
-                                        JAXBElement<Object> element = ObjectFactoryUtil.createObjectJAXBElement("TLaneFlowNodeRef", tUserTask);
-                                        tLane.getFlowNodeRef().add(element);
+                                        JAXBElement<Object> tLaneFlowNodeRefElement = ObjectFactoryUtil.createObjectJAXBElement("TLaneFlowNodeRef", tUserTask);
+                                        tLane.getFlowNodeRef().add(tLaneFlowNodeRefElement);
                                     }
                                 }
                             }
                         }
                     }
                     // make JAXB Element and add TUserTask
-                    JAXBElement<TUserTask> element = ObjectFactoryUtil.createDefaultJAXBElement(TUserTask.class, tUserTask);
-                    tProcess.getFlowElement().add(element);
+                    JAXBElement<TUserTask> tUserElement = ObjectFactoryUtil.createDefaultJAXBElement(TUserTask.class, tUserTask);
+                    tProcess.getFlowElement().add(tUserElement);
 
                 } else {
                     // TODO : etc Activities...
@@ -116,7 +128,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
         if (src.getSequenceFlows() != null && src.getSequenceFlows().size() > 0) {
             for (SequenceFlow sequenceFlow : src.getSequenceFlows()) {
                 // SequenceFlowAdapter -> TSequenceFlow make and setting
-                TSequenceFlow tSequenceFlow = (TSequenceFlow) BPMNUtil.export(sequenceFlow);
+                TSequenceFlow tSequenceFlow = (TSequenceFlow) BPMNUtil.export(sequenceFlow, context);
 
                 // find process's all elements
                 if(tProcess.getFlowElement() != null && tProcess.getFlowElement().size() > 0) {
@@ -144,19 +156,12 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
                 // make JAXB Element and add TSequenceFlow
                 JAXBElement<TSequenceFlow> sequenceShapeElement = ObjectFactoryUtil.createDefaultJAXBElement(TSequenceFlow.class, tSequenceFlow);
                 tProcess.getFlowElement().add(sequenceShapeElement);
-
-                // find relationView
-                if(sequenceFlow.getRelationView() != null) {
-                    // element adapter -> BPMNEdge make and setting
-                    BPMNEdge bpmnEdge = (BPMNEdge) BPMNUtil.export(sequenceFlow.getRelationView());
-                    // make diagramElement and PLane add BPMNEdge
-                    bpmnDiagram.getBPMNPlane().getDiagramElement().add(ObjectFactoryUtil.createDefaultJAXBElement(BPMNEdge.class, bpmnEdge));
-                }
             }
         }
+
         // add TProcess to TDefinitions
-        JAXBElement<TProcess> element = ObjectFactoryUtil.createDefaultJAXBElement(TProcess.class, tProcess);
-        tDefinitions.getRootElement().add(element);
+        JAXBElement<TProcess> tProcessElement = ObjectFactoryUtil.createDefaultJAXBElement(TProcess.class, tProcess);
+        tDefinitions.getRootElement().add(tProcessElement);
 
         // add BPMNDiagram to TDefinitions
         tDefinitions.getBPMNDiagram().add(bpmnDiagram);

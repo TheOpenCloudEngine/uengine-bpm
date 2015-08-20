@@ -20,10 +20,10 @@ public class Export2BPMNTest {
 
         RoleView roleView1 = new RoleView();
         roleView1.setId("roleView1");
-        roleView1.setX(80);
-        roleView1.setY(85);
-        roleView1.setWidth(500);
-        roleView1.setHeight(400);
+        roleView1.setX(294);
+        roleView1.setY(152);
+        roleView1.setWidth(745);
+        roleView1.setHeight(85);
         roleView1.setShapeId("OG.shape.HorizontalLaneShape");
 
         role1.setElementView(roleView1);
@@ -33,10 +33,10 @@ public class Export2BPMNTest {
 
         RoleView roleView2 = new RoleView();
         roleView2.setId("roleView2");
-        roleView2.setX(70);
-        roleView2.setY(75);
-        roleView2.setWidth(500);
-        roleView2.setHeight(400);
+        roleView2.setX(294);
+        roleView2.setY(269);
+        roleView2.setWidth(745);
+        roleView2.setHeight(81);
         roleView2.setShapeId("OG.shape.HorizontalLaneShape");
 
         role2.setElementView(roleView2);
@@ -47,10 +47,10 @@ public class Export2BPMNTest {
 
         HumanActivityView humanActivityView1 = new HumanActivityView();
         humanActivityView1.setId("humanView1");
-        humanActivityView1.setX(60);
-        humanActivityView1.setY(65);
-        humanActivityView1.setWidth(96);
-        humanActivityView1.setHeight(96);
+        humanActivityView1.setX(375);
+        humanActivityView1.setY(187);
+        humanActivityView1.setWidth(70);
+        humanActivityView1.setHeight(40);
         humanActivityView1.setShapeId("OG.shape.bpmn.A_HumanTask");
 
         activity1.setElementView(humanActivityView1);
@@ -63,10 +63,10 @@ public class Export2BPMNTest {
 
         HumanActivityView humanActivityView2 = new HumanActivityView();
         humanActivityView2.setId("humanView2");
-        humanActivityView2.setX(50);
-        humanActivityView2.setY(55);
-        humanActivityView2.setWidth(96);
-        humanActivityView2.setHeight(96);
+        humanActivityView2.setX(818);
+        humanActivityView2.setY(300);
+        humanActivityView2.setWidth(70);
+        humanActivityView2.setHeight(40);
         humanActivityView2.setShapeId("OG.shape.bpmn.A_HumanTask");
 
         activity2.setElementView(humanActivityView2);
@@ -77,17 +77,17 @@ public class Export2BPMNTest {
         // sequenceFlow
         SequenceFlow sequenceFlow = new SequenceFlow();
         sequenceFlow.setName("sequenceFlow");
-        sequenceFlow.setTracingTag("1");
+        sequenceFlow.setTracingTag("3");
         sequenceFlow.setSourceRef(activity1.getElementView().getId());
         sequenceFlow.setTargetRef(activity2.getElementView().getId());
 
         SequenceFlowView sequenceFlowView = new SequenceFlowView();
         sequenceFlowView.setId("OG_9423_8");
         sequenceFlowView.setShapeId("OG.shape.EdgeShape");
-        sequenceFlowView.setX("552");
-        sequenceFlowView.setY("192");
-        sequenceFlowView.setWidth("224");
-        sequenceFlowView.setHeight("16");
+        sequenceFlowView.setX("375");
+        sequenceFlowView.setY("187");
+        sequenceFlowView.setWidth("818");
+        sequenceFlowView.setHeight("300");
         sequenceFlow.setRelationView(sequenceFlowView);
 
         // processDefinition

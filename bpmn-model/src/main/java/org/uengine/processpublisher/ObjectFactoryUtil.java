@@ -34,7 +34,7 @@ public class ObjectFactoryUtil {
 
     }
 
-    public static <T> JAXBElement<T> createJAXBElement(Class<T> targetClass, Object targetObject) {
+    public static <T> JAXBElement<T> createDefaultJAXBElement(Class<T> targetClass, Object targetObject) {
         JAXBElement<T> jaxbElement = null;
 
         // find ObjectFactory
@@ -64,6 +64,28 @@ public class ObjectFactoryUtil {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return jaxbElement;
+    }
+
+    public static <T> JAXBElement<T> createObjectJAXBElement(String targetMethodName, Object targetObject) {
+        // ObjectMethod used only model.ObjectFactory
+        org.omg.spec.bpmn._20100524.model.ObjectFactory objectFactory = new org.omg.spec.bpmn._20100524.model.ObjectFactory();
+        JAXBElement<T> jaxbElement = null;
+
+        // find ObjectFactory
+        try {
+            // Object Method's parameter is Object.class
+            Method method = objectFactory.getClass().getMethod("create" + targetMethodName, Object.class);
+            jaxbElement = (JAXBElement<T>) method.invoke(objectFactory, targetObject);
+
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 

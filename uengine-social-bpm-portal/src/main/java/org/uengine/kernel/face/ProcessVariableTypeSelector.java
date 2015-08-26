@@ -88,7 +88,7 @@ public class ProcessVariableTypeSelector implements Face<String>, ContextAware {
 
         ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
 
-        classResourceNavigator.setProcessAdminResourceControlDelegate(new ResourceControlDelegateForProcessVariableSelector());
+        classResourceNavigator.setResourceControlDelegate(new ResourceControlDelegateForProcessVariableSelector());
 
         setClassResourceNavigator(classResourceNavigator);
 

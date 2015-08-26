@@ -165,7 +165,7 @@ public class DefaultResource implements IResource {
 		_newAndOpen(true);
 	}
 
-	private void _newAndOpen(boolean isNew) throws Exception {
+	protected void _newAndOpen(boolean isNew) throws Exception {
 		EditorPanel editorPanel = getComponent(EditorPanel.class);
 		editorPanel.setResourcePath(getPath());
 

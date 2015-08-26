@@ -49,7 +49,7 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 	public void load() {
 
 		setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator());
-		getProcessAdminResourceNavigator().setProcessAdminResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
+		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
 
 
 	}

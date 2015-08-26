@@ -14,7 +14,7 @@ public class BPMNUtil {
 
     static Hashtable adapters = new Hashtable();
 
-    public static Adapter getAdapter(Class activityType){
+    public static Adapter getAdapter(Class activityType, boolean isImporter){
 
         Class originalType = activityType;
 
@@ -26,7 +26,7 @@ public class BPMNUtil {
             try{
                 String activityTypeName = org.uengine.util.UEngineUtil.getClassNameOnly(activityType);
 
-                adapter = (Adapter)Thread.currentThread().getContextClassLoader().loadClass("org.uengine.processpublisher.bpmn.importer." + activityTypeName + "Adapter").newInstance();
+                adapter = (Adapter)Thread.currentThread().getContextClassLoader().loadClass("org.uengine.processpublisher.bpmn." + (isImporter ? "importer" : "exporter") + "." + activityTypeName + "Adapter").newInstance();
 
                 if(adapter!=null)
                     adapters.put(activityType.getName(), adapter);
@@ -47,11 +47,19 @@ public class BPMNUtil {
     }
 
     public static Object adapt(Object value, Hashtable context) throws Exception {
-        return getAdapter(value.getClass()).convert(value, context);
+        return getAdapter(value.getClass(), true).convert(value, context);
+    }
+
+    public static Object export(Object value, Hashtable context) throws Exception {
+        return getAdapter(value.getClass(), false).convert(value, context);
     }
 
     public static Object adapt(Object value) throws Exception {
-        return getAdapter(value.getClass()).convert(value, null);
+        return getAdapter(value.getClass(), true).convert(value, null);
+    }
+
+    public static Object export(Object value) throws Exception {
+        return getAdapter(value.getClass(), false).convert(value, null);
     }
 
 

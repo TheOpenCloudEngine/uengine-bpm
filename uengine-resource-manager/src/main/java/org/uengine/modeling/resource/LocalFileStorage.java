@@ -106,7 +106,7 @@ public class LocalFileStorage implements Storage{
 
     @Override
     public Object getObject(IResource resource) throws Exception {
-        return Serializer.deserialize(new FileInputStream(getFile(resource)));
+        return Serializer.deserialize(getInputStream(resource));
     }
 
     @Override
@@ -118,8 +118,18 @@ public class LocalFileStorage implements Storage{
             directory.mkdirs();
 
 
-        Serializer.serialize(object, new FileOutputStream(getFile(resource)));
+        Serializer.serialize(object, getOutputStream(resource));
 
+    }
+
+    @Override
+    public InputStream getInputStream(IResource resource) throws Exception {
+        return new FileInputStream(getFile(resource));
+    }
+
+    @Override
+    public OutputStream getOutputStream(IResource resource) throws Exception {
+        return new FileOutputStream(getFile(resource));
     }
 
     private File getFile(IResource fileResource) {

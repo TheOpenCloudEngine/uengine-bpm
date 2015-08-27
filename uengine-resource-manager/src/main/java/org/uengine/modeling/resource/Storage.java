@@ -1,6 +1,9 @@
 package org.uengine.modeling.resource;
 
 import org.uengine.modeling.IModel;
+
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -20,5 +23,9 @@ public interface Storage {
     Object getObject(IResource resource) throws Exception;
 
     public void save(IResource resource, Object object) throws Exception;
+
+    public InputStream getInputStream(IResource resource) throws Exception;
+    public OutputStream getOutputStream(IResource resource) throws Exception;
+
 
 }

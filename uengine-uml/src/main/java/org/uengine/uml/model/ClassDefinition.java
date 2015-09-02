@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.metaworks.dwr.MetaworksRemoteService.metaworksCall;
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
 public class ClassDefinition implements Serializable{
@@ -32,7 +33,7 @@ public class ClassDefinition implements Serializable{
 
         }
 
-        wrapReturn(new ModalWindow(objectInstance));
+        if(metaworksCall()) wrapReturn(new ModalWindow(objectInstance));
 
         return objectInstance;
     }

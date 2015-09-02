@@ -1271,15 +1271,15 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 		}
 	}
 	
-	transient String parentEditorId;
-	@Hidden
-		public String getParentEditorId() {
-			return parentEditorId;
-		}
-		public void setParentEditorId(String parentEditorId) {
-			this.parentEditorId = parentEditorId;
-		}
-	
+//	transient String parentEditorId;
+//	@Hidden
+//		public String getParentEditorId() {
+//			return parentEditorId;
+//		}
+//		public void setParentEditorId(String parentEditorId) {
+//			this.parentEditorId = parentEditorId;
+//		}
+//
 	MappingContext mappingContext;
 	@Face(displayName="$dataMapping")
 	@Hidden

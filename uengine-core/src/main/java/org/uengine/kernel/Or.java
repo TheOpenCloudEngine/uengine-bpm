@@ -32,7 +32,9 @@ public class Or extends And{
 		
 		Condition[] condis = getConditions();
 //		boolean matched = false;
-		
+		if(condis == null || condis.length==0 )
+			return true;
+
 		for( int i=0; i< condis.length; i++){
 		
 			if( condis[i].isMet( instance, scope))

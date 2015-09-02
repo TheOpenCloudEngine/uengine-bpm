@@ -34,9 +34,9 @@ public class VariableTreeNode extends TreeNode {
 		for(int i = 0; i < prcsValiableList.size(); i++){
 			ProcessVariable processVariable = prcsValiableList.get(i);
 			String nameAttr = processVariable.getName();
-			// TODO 처음에 로딩할 필요가 없다면 아래 루프 부분은 클릭시 작동하는걸로 뺀다. 
-			Class type = Class.forName(processVariable.getTypeInputter());
-			if( type == null ) continue;
+//			// TODO 처음에 로딩할 필요가 없다면 아래 루프 부분은 클릭시 작동하는걸로 뺀다.
+//			Class type = Class.forName(processVariable.getTypeInputter());
+//			if( type == null ) continue;
 			
 			VariableTreeNode node = new VariableTreeNode();
 			node.setId(nameAttr);
@@ -48,6 +48,8 @@ public class VariableTreeNode extends TreeNode {
 			node.setExpanded(true);
 			node.setFolder(true);
 			node.setAlign(this.getAlign());
+
+			Class type = processVariable.getType();
 			
 			if( type == ComplexType.class){
 				try {

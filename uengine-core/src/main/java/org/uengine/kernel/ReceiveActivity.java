@@ -13,7 +13,7 @@ import org.uengine.kernel.bpmn.face.ParameterContextArrayFace;
 import org.uengine.kernel.bpmn.face.ParameterContextListFace;
 
 
-public class ReceiveActivity extends DefaultActivity implements MessageListener{
+public class ReceiveActivity extends DefaultActivity implements MessageListener, NeedArrangementToSerialize{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	String message;
@@ -40,7 +40,7 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener{
 			setMessage(definition.getName());
 		}
 
-	ParameterContext[] parameters;
+	ParameterContext[] parameters; //TODO 이게 널일때 어떻게 할것인가>?????
 	@Face(faceClass= ParameterContextArrayFace.class)
 		public ParameterContext[] getParameters() {
 			return parameters;
@@ -208,5 +208,22 @@ System.out.println("ReceiveActivity::payload is " + payload);
 	}
 
 
+	@Override
+	public void beforeSerialization() {
+
+		if(getParameters()!=null)
+			for(ParameterContext parameterContext : getParameters()){
+				if(parameterContext.getVariable()!=null){
+					//parameterContext.getVariable().setName(parameterContext.getArgument().getText());
+					ProcessVariable realPV = getProcessDefinition().getProcessVariable(parameterContext.getVariable().getName());
+					parameterContext.setVariable(realPV);
+				}
+			}
+	}
+
+	@Override
+	public void afterDeserialization() {
+
+	}
 
 }

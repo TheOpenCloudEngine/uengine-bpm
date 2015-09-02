@@ -97,13 +97,11 @@ public class ProcessVariableTypeSelector implements Face<String>, ContextAware {
 
     @Override
     public void setValueToFace(String value) {
-//        setOptionNames(new ArrayList<String>());
-//        getOptionNames().add("Text");
-//        getOptionNames().add("Number");
-//        getOptionNames().add("Date");
+        setSelectedClassName(value);
 
-
-
+        if(value!=null && value.indexOf(".") > 0){
+            setType("org.uengine.contexts.ComplexType");
+        }
     }
 
 

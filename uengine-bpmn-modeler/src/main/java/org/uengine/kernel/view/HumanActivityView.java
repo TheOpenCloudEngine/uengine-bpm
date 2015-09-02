@@ -27,7 +27,10 @@ public class HumanActivityView extends ActivityView{
 	}
 
 	@ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
-	public Object showProperty(@AutowiredFromClient RolePanel rolePanel) throws Exception {
+	public Object showProperty(
+			@AutowiredFromClient RolePanel rolePanel,
+			@AutowiredFromClient ProcessVariablePanel processVariablePanel
+	) throws Exception {
 		return super.showProperty();
 	}
 }

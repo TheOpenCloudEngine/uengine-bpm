@@ -126,7 +126,9 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		processInstanceDAO.setStatus(Activity.STATUS_READY);
 		processInstanceDAO.setDefName(procDef.getName());
 		processInstanceDAO.setInstId(instanceId);
-		processInstanceDAO.setDefModDate(procDef.getModifiedDate().getTime());
+
+		if(procDef.getModifiedDate()!=null)
+			processInstanceDAO.setDefModDate(procDef.getModifiedDate().getTime());
 
 		setInstanceId(""+processInstanceDAO.getInstId());
 

@@ -1539,7 +1539,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 				if( condition.isMet(instance, scope) ){
 					if( condition instanceof Or){
 						Condition[] condis =  ((Or) condition).getConditions();
-						if( condis[0] instanceof Otherwise){
+						if( condis.length > 0 && condis[0] instanceof Otherwise){
 							// 순서가 없다보니 Otherwise가 먼저와서 무조건 true 가 발생하는 경우가 생김
 							// Otherwise가 먼저 올 경우는 일단 스킵했다가 다시 해준다.
 							otherwiseFlag = true;

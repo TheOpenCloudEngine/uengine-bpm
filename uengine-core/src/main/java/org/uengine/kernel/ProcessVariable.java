@@ -11,10 +11,15 @@ import javax.xml.namespace.QName;
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.*;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.dwr.SerializationSensitive;
+import org.uengine.contexts.ComplexType;
 import org.uengine.contexts.DatabaseSynchronizationOption;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.face.GenericValueFace;
+import org.uengine.modeling.resource.DefaultResource;
+import org.uengine.modeling.resource.ResourceManager;
+import org.uengine.uml.model.ClassDefinition;
 import org.uengine.util.UEngineUtil;
 
 /**
@@ -90,25 +95,24 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 
 	private String typeClassName;
-
-	public String getTypeClassName() {
-		return typeClassName;
-	}
-
-	public void setTypeClassName(String typeClassName) {
+	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector")
+		public String getTypeClassName() {
+			return typeClassName;
+		}
+		public void setTypeClassName(String typeClassName) {
 		this.typeClassName = typeClassName;
 	}
 
-	transient String typeInputter;
-		@Order(3)
-		//@Range(options={"Text","Date","Complex"}, values={"java.lang.String","java.util.Date","org.uengine.contexts.ComplexType"})
-		@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector")
-		public String getTypeInputter() {
-			return typeInputter;
-		}
-		public void setTypeInputter(String typeInputter) {
-			this.typeInputter = typeInputter;
-		}
+//	transient String typeInputter;
+//		@Order(3)
+//		//@Range(options={"Text","Date","Complex"}, values={"java.lang.String","java.util.Date","org.uengine.contexts.ComplexType"})
+//		@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector")
+//		public String getTypeInputter() {
+//			return typeInputter;
+//		}
+//		public void setTypeInputter(String typeInputter) {
+//			this.typeInputter = typeInputter;
+//		}
 	
 		
 	Role openRole;
@@ -193,6 +197,9 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 	@Order(4)
 	@Face(faceClass= GenericValueFace.class)
 		public Object getDefaultValue() {
+			if(getType()==ComplexType.class)
+				return null;
+
 			return defaultValue;
 		}
 		public void setDefaultValue(Object object) {
@@ -331,7 +338,12 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 
 		try {
 			if (UEngineUtil.isNotEmpty(getTypeClassName())) {
-				setType(Thread.currentThread().getContextClassLoader().loadClass(getTypeClassName()));
+
+				if(getTypeClassName().indexOf(".") > 0){
+					setType(ComplexType.class);
+				}else {
+					setType(Thread.currentThread().getContextClassLoader().loadClass(getTypeClassName()));
+				}
 			}
 		}catch (ClassNotFoundException e){
 			e.printStackTrace();
@@ -425,5 +437,51 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
+	}
+
+	public Serializable createNewValue(){
+
+		Serializable processVariableValue = null;
+
+		Class variableType = getType();
+
+		if (variableType == ComplexType.class || (variableType == null && typeClassName!=null)) {
+
+			ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+
+			ClassDefinition classDefinition = null;
+			try {
+
+													///// Need to be cached.
+				classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(getTypeClassName()));
+
+				processVariableValue = classDefinition.createObjectInstance();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
+		} else {
+
+			if (variableType == Boolean.class) {
+				processVariableValue = new Boolean(false);
+			} else if (variableType == Number.class) {
+				processVariableValue = new Integer(0);
+			} else if (variableType == String.class) {
+				if (processVariableValue == null) {
+					processVariableValue = new String();
+				}
+			} else
+				try {
+					processVariableValue = (Serializable) variableType.newInstance();
+				} catch (InstantiationException e) {
+					throw new RuntimeException(e);
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
+		}
+
+
+		return processVariableValue;
+
 	}
 }

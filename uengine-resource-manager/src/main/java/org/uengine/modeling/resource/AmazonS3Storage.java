@@ -13,10 +13,7 @@ import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
@@ -155,6 +152,16 @@ public class AmazonS3Storage implements Storage{
         s3Object = restS3Service.putObject(getAmazonS3Bucket(),s3Object);
 
         xstream.toXML(s3Object,System.out);
+    }
+
+    @Override
+    public InputStream getInputStream(IResource resource) throws Exception {
+        return null; //TODO: must be implemented
+    }
+
+    @Override
+    public OutputStream getOutputStream(IResource resource) throws Exception {
+        return null; //TODO: must be implemented
     }
 
 

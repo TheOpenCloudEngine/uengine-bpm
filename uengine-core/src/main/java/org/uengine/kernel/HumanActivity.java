@@ -18,9 +18,12 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.component.Tree;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.contexts.MappingContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.StartEvent;
+import org.uengine.modeling.IModelingTimeSensitive;
 import org.uengine.persistence.dao.DAOFactory;
 import org.uengine.persistence.worklist.WorklistDAOType;
 import org.uengine.util.ActivityForLoop;
@@ -35,7 +38,7 @@ import org.uengine.webservices.worklist.WorkListServiceLocator;
  */
 
 //@Face(ejsPath="dwr/metaworks/genericfaces/FormFace.ejs")
-public class HumanActivity extends ReceiveActivity {
+public class HumanActivity extends ReceiveActivity implements IModelingTimeSensitive {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	public static final String GENERICCONTEXT_CURR_LOGGED_ROLEMAPPING = "currentLoggedRoleMapping";
 
@@ -1282,7 +1285,6 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 //
 	MappingContext mappingContext;
 	@Face(displayName="$dataMapping")
-	@Hidden
 		public MappingContext getMappingContext() {
 			return mappingContext;
 		}
@@ -1292,5 +1294,33 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	
 	protected void dataMapping(ProcessInstance instance) throws Exception {
 	}
-	
+
+	@Override
+	public void onModelingTime() {
+		mappingContext = new MappingContext(this, null);
+
+		MetaworksRemoteService.autowire(mappingContext);
+
+		try {
+			mappingContext.getMappingTreeLeft().init();
+			mappingContext.getMappingTreeLeft().init();
+
+			mappingContext.getMappingCanvas().setMappingElements(getParameters());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void afterModelingTime() {
+
+		ParameterContext[] mappingElements =
+				mappingContext.getMappingCanvas().getMappingElements();
+
+		setParameters(mappingElements);
+
+		setMappingContext(null);
+
+	}
 }

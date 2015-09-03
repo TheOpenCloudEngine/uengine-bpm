@@ -14,6 +14,10 @@ import org.metaworks.component.TreeNode;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.contexts.ComplexType;
 import org.uengine.kernel.ProcessVariable;
+import org.uengine.modeling.resource.DefaultResource;
+import org.uengine.modeling.resource.ResourceManager;
+import org.uengine.uml.model.Attribute;
+import org.uengine.uml.model.ClassDefinition;
 
 public class VariableTreeNode extends TreeNode {
 	
@@ -54,13 +58,26 @@ public class VariableTreeNode extends TreeNode {
 			if( type == ComplexType.class){
 				try {
 					Object typeAttr = processVariable.getDefaultValue();
-					ComplexType complexType = (ComplexType)typeAttr;
-					String typeIdAttr = complexType.getTypeId();
-					if( typeIdAttr != null && !"".equals(typeIdAttr) ){
-						String formName = typeIdAttr.substring(1, typeIdAttr.length() -1); 
-						node.setClassName(formName);
+
+					// this is old version
+					if(typeAttr!=null && typeAttr instanceof ComplexType){
+						ComplexType complexType = (ComplexType)typeAttr;
+						String typeIdAttr = complexType.getTypeId();
+						if( typeIdAttr != null && !"".equals(typeIdAttr) ){
+							String formName = typeIdAttr.substring(1, typeIdAttr.length() -1);
+							node.setClassName(formName);
+						}
+						node.setChild(loadJavaClassProperties(node));
+					}else
+					// new version of class system
+					if(processVariable.getTypeClassName()!=null && processVariable.getTypeClassName().indexOf(".") > 0){
+						ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+						ClassDefinition classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(processVariable.getTypeClassName()));
+
+						if(classDefinition!=null){
+							node.setChild(loadClassProperties(node, classDefinition));
+						}
 					}
-					node.setChild(loadExpand(node));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -68,7 +85,33 @@ public class VariableTreeNode extends TreeNode {
 			this.add(node);
 		}
 	}
-	public ArrayList<TreeNode> loadExpand(VariableTreeNode node) throws Exception{
+
+
+	private ArrayList<TreeNode> loadClassProperties(VariableTreeNode node, ClassDefinition classDefinition) throws Exception{
+
+		ArrayList<TreeNode> child = new ArrayList<TreeNode>();
+
+		List<Attribute> fields = classDefinition.getAttributeList();
+		for(Attribute attribute : fields){
+			VariableTreeNode childNode = new VariableTreeNode();
+
+			childNode.setId(node.getId() + "-" + attribute.getName());
+			childNode.setTreeId(node.getTreeId());
+			childNode.setName(attribute.getName());
+			childNode.setParentId(node.getId());
+			childNode.setAlign(node.getAlign());
+
+			childNode.setFolder(false);
+			childNode.setType(TreeNode.TYPE_FILE_TEXT);
+
+			child.add(childNode);
+		}
+
+		return child;
+	}
+
+
+	private ArrayList<TreeNode> loadJavaClassProperties(VariableTreeNode node) throws Exception{
 		ArrayList<TreeNode> child = new ArrayList<TreeNode>();
 		WebObjectType wot = MetaworksRemoteService.getInstance().getMetaworksType( node.getClassName() ); 
 		WebFieldDescriptor wfields[] = wot.getFieldDescriptors();
@@ -104,7 +147,7 @@ public class VariableTreeNode extends TreeNode {
 		if( this.getClassName() != null ){
 			Tree parentTree = new Tree();
 			parentTree.setId(this.getTreeId());
-			return new ToAppend( parentTree , this.loadExpand(this));
+			//return new ToAppend( parentTree , this.loadClassProperties(this));
 		}
 		return null;
 	}

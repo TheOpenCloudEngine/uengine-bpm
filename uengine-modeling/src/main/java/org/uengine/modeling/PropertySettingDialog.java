@@ -38,6 +38,10 @@ public class PropertySettingDialog extends ModalWindow{
 
         IElement element = elementView.getElement();
 
+        if(element instanceof IModelingTimeSensitive){
+            ((IModelingTimeSensitive) element).onModelingTime();
+        }
+
         if(element instanceof ContextAware){
             ContextAware contextAwaredElement = (ContextAware) element;
 
@@ -54,6 +58,10 @@ public class PropertySettingDialog extends ModalWindow{
     @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_APPEND)
     public Object apply(){
         IElement element = (IElement)getPanel();
+
+        if(element instanceof IModelingTimeSensitive){
+            ((IModelingTimeSensitive) element).afterModelingTime();
+        }
 
         getElementView().setElement(element);
 

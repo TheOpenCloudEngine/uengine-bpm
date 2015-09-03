@@ -4,12 +4,47 @@ import java.io.Serializable;
 
 import org.metaworks.annotation.Id;
 import org.metaworks.component.Tree;
+import org.metaworks.component.TreeNode;
+import org.uengine.kernel.Activity;
 import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.ParameterContext;
+import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.designer.MappingCanvas;
+import org.uengine.webservice.PoolMappingTree;
 
 
 public class MappingContext implements Serializable{
+
+	public MappingContext(){}
+
+	public MappingContext(Activity activity, ProcessInstance instance){
+
+		MappingTree leftTree;
+		MappingTree rightTree;
+		leftTree = new MappingTree();
+		//((MappingTree) leftTree).setParentEditorId(this.getParentEditorId());
+
+		leftTree.setId(TreeNode.ALIGN_LEFT);
+		leftTree.setAlign(TreeNode.ALIGN_LEFT);
+
+
+		rightTree = new MappingTree();
+		rightTree.setId(TreeNode.ALIGN_RIGHT);
+		rightTree.setAlign(TreeNode.ALIGN_RIGHT);
+
+		MappingCanvas canvas = new MappingCanvas();
+		canvas.setCanvasId("mappingCanvas");
+		canvas.setLeftTreeId(leftTree.getId());
+		canvas.setRightTreeId(rightTree.getId());
+		setMappingCanvas(canvas);
+
+		setMappingTreeLeft(leftTree);
+		setMappingTreeRight(rightTree);
+
+
+	}
+
+
 	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
 
 	ParameterContext[] mappingElements;
@@ -32,21 +67,23 @@ public class MappingContext implements Serializable{
 		this.id = id;
 	}
 
-	transient Tree mappingTreeLeft;
-	public Tree getMappingTreeLeft() {
-		return mappingTreeLeft;
-	}
-	public void setMappingTreeLeft(Tree mappingTreeLeft) {
-		this.mappingTreeLeft = mappingTreeLeft;
-	}
+	transient MappingTree mappingTreeLeft;
+		public MappingTree getMappingTreeLeft() {
+			return mappingTreeLeft;
+		}
 
-	transient Tree mappingTreeRight;
-	public Tree getMappingTreeRight() {
-		return mappingTreeRight;
-	}
-	public void setMappingTreeRight(Tree mappingTreeRight) {
-		this.mappingTreeRight = mappingTreeRight;
-	}
+		public void setMappingTreeLeft(MappingTree mappingTreeLeft) {
+			this.mappingTreeLeft = mappingTreeLeft;
+		}
+
+	transient MappingTree mappingTreeRight;
+		public MappingTree getMappingTreeRight() {
+			return mappingTreeRight;
+		}
+
+		public void setMappingTreeRight(MappingTree mappingTreeRight) {
+			this.mappingTreeRight = mappingTreeRight;
+		}
 
 	MappingCanvas mappingCanvas;
 	public MappingCanvas getMappingCanvas() {

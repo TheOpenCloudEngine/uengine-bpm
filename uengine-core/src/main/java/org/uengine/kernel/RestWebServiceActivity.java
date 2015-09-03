@@ -312,8 +312,8 @@ public class RestWebServiceActivity extends DefaultActivity {
 	}
 
 	public void drawInit() throws Exception {
-		Tree leftTree;
-		Tree rightTree;
+		MappingTree leftTree;
+		MappingTree rightTree;
 		leftTree = new MappingTree();
 		((MappingTree) leftTree).setParentEditorId(this.getParentEditorId());
 		leftTree.setId(TreeNode.ALIGN_LEFT);
@@ -334,12 +334,12 @@ public class RestWebServiceActivity extends DefaultActivity {
 		mappingContext.setMappingTreeLeft(leftTree);
 		mappingContext.setMappingTreeRight(rightTree);
 		if( mappingContextOut != null ){
-			Tree leftTreeOut = new PoolMappingTree();
+			MappingTree leftTreeOut = new PoolMappingTree();
 			((PoolMappingTree) leftTreeOut).setActivity(this);
 			((PoolMappingTree) leftTreeOut).setInOut(MappingTree.MAPPING_OUT);
 			leftTreeOut.setId(TreeNode.ALIGN_LEFT+"Out");
 			leftTreeOut.setAlign(TreeNode.ALIGN_LEFT);
-			Tree rightTreeOut = new MappingTree();
+			MappingTree rightTreeOut = new MappingTree();
 			((MappingTree) rightTreeOut).setParentEditorId(this.getParentEditorId());
 			rightTreeOut.setId(TreeNode.ALIGN_RIGHT+"Out");
 			rightTreeOut.setAlign(TreeNode.ALIGN_RIGHT);

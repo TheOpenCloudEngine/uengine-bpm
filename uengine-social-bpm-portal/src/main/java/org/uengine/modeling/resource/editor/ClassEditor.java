@@ -10,6 +10,13 @@ import org.uengine.uml.model.ClassDefinition;
 public class ClassEditor implements IEditor<ClassDefinition>{
 
     ClassDefinition classDefinition;
+        public ClassDefinition getClassDefinition() {
+            return classDefinition;
+        }
+        public void setClassDefinition(ClassDefinition classDefinition) {
+            this.classDefinition = classDefinition;
+        }
+
 
     @Override
     public void setEditingObject(ClassDefinition classDefinition) {

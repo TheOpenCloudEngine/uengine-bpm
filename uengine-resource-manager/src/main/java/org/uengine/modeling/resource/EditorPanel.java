@@ -1,12 +1,14 @@
 package org.uengine.modeling.resource;
 
+import org.metaworks.ContextAware;
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 
 import static org.metaworks.dwr.MetaworksRemoteService.*;
 
-public class EditorPanel {
+public class EditorPanel implements ContextAware{
 
 	IEditor editor;
 		public IEditor getEditor() {
@@ -33,6 +35,18 @@ public class EditorPanel {
 		public void setIsNew(boolean isNew) {
 			this.isNew = isNew;
 		}
+
+	MetaworksContext metaworksContext;
+		@Override
+		public MetaworksContext getMetaworksContext() {
+			return metaworksContext;
+		}
+
+		@Override
+		public void setMetaworksContext(MetaworksContext metaworksContext) {
+			this.metaworksContext = metaworksContext;
+		}
+
 
 
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)

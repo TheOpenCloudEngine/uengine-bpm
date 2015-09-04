@@ -2,7 +2,9 @@ package org.uengine.uml.model;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
+import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Range;
+import org.uengine.uml.model.face.AttributeTypeSelector;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -18,7 +20,7 @@ public class Attribute implements Serializable{
         }
 
     String type;
-    @Range(options={"Text", "Number", "Date"}, values={"java.lang.String", "java.lang.Long", "java.util.Calendar"})
+    @Face(faceClass=AttributeTypeSelector.class)
         public String getType() {
             return type;
         }

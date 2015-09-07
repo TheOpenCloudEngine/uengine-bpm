@@ -1,5 +1,6 @@
 package org.uengine.kernel.face;
 
+import com.itextpdf.text.Meta;
 import org.metaworks.ContextAware;
 import org.metaworks.Face;
 import org.metaworks.MetaworksContext;
@@ -7,6 +8,9 @@ import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.NonEditable;
 import org.metaworks.annotation.Range;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.uengine.contexts.ComplexType;
 import org.uengine.modeling.resource.ResourceNavigator;
 import org.uengine.modeling.resource.SelectedResource;
@@ -16,7 +20,9 @@ import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelecto
 /**
  * Created by jangjinyoung on 15. 7. 18..
  */
-public class ProcessVariableTypeSelector implements Face<String>, ContextAware {
+@Component
+@Scope("prototype")
+public class CodiProcessVariableTypeSelector extends ProcessVariableTypeSelector implements ContextAware{
 
     String type;
     @Range(options={"Text","Number", "Date","Complex"}, values={"java.lang.String","java.lang.Long", "java.util.Date","org.uengine.contexts.ComplexType"})
@@ -84,9 +90,11 @@ public class ProcessVariableTypeSelector implements Face<String>, ContextAware {
     }
 
 
-    public ProcessVariableTypeSelector(){
+    public CodiProcessVariableTypeSelector(){
 
         ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
+
+        MetaworksRemoteService.autowire(classResourceNavigator);
 
         classResourceNavigator.setResourceControlDelegate(new ResourceControlDelegateForProcessVariableSelector());
 

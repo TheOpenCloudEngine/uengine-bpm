@@ -1,18 +1,15 @@
 package org.uengine.modeling.resource;
 
-<<<<<<< HEAD
-import org.metaworks.annotation.Order;
-=======
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
->>>>>>> bc44bb68d7bfdd0f8af4a4d80e57f88110c743da
+import org.metaworks.annotation.Order;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 
 import static org.metaworks.dwr.MetaworksRemoteService.*;
 
-public class EditorPanel implements ContextAware{
+public class EditorPanel implements ContextAware {
 
 	IEditor editor;
 		public IEditor getEditor() {

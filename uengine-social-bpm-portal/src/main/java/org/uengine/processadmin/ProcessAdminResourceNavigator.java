@@ -3,6 +3,7 @@ package org.uengine.processadmin;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.uengine.modeling.resource.ContainerResource;
 import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.modeling.resource.ResourceControlDelegate;
 import org.uengine.modeling.resource.ResourceNavigator;
@@ -27,6 +28,16 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
             }
         } catch (Exception e) {
             throw new RuntimeException("Error when to create root folder for tenant", e);
+        }
+
+
+        try {
+
+            MetaworksRemoteService.autowire(getRoot());
+
+            ((ContainerResource) getRoot()).refresh();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

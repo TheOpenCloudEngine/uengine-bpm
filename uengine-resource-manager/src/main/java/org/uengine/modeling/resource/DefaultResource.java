@@ -168,6 +168,8 @@ public class DefaultResource implements IResource {
 	protected void _newAndOpen(boolean isNew) throws Exception {
 		EditorPanel editorPanel = getComponent(EditorPanel.class);
 		editorPanel.setResourcePath(getPath());
+		editorPanel.setMetaworksContext(new MetaworksContext());
+		editorPanel.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 
 		String type = getType();
 

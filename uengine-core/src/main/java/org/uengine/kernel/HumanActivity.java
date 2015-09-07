@@ -1350,14 +1350,17 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 
 		MetaworksRemoteService.autowire(mapper);
 
+		mapper.getMappingCanvas().setMappingElements(getMappingContexts());
+
 		try {
 			mapper.getMappingTreeLeft().init();
 			mapper.getMappingTreeLeft().init();
 
-			mapper.getMappingCanvas().setMappingElements(getMappingContexts());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+
 
 	}
 

@@ -2,13 +2,14 @@ package org.uengine.modeling.resource;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
+import org.metaworks.annotation.Order;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 
 import static org.metaworks.dwr.MetaworksRemoteService.*;
 
-public class EditorPanel implements ContextAware{
+public class EditorPanel implements ContextAware {
 
 	IEditor editor;
 		public IEditor getEditor() {
@@ -26,12 +27,25 @@ public class EditorPanel implements ContextAware{
 			this.resourcePath = resourcePath;
 		}
 
-	boolean isNew;
+	String resourceName;
+		public String getResourceName() {
+			if(resourceName==null && resourcePath!=null){
+				try {
+					resourceName = resourcePath.substring(resourcePath.lastIndexOf("/") + 1, resourcePath.lastIndexOf("."));
+				}catch (Exception e){
+				}
+			}
 
+			return resourceName;
+		}
+		public void setResourceName(String resourceName) {
+			this.resourceName = resourceName;
+		}
+
+	boolean isNew;
 		public boolean isNew() {
 			return isNew;
 		}
-
 		public void setIsNew(boolean isNew) {
 			this.isNew = isNew;
 		}
@@ -50,7 +64,20 @@ public class EditorPanel implements ContextAware{
 
 
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)
+	@Order(1)
 	public void save() throws Exception {
+
+		if(isNew() && getResourceName()==null){
+			throw new Exception("Please enter a file name");
+		}
+
+		if(getResourceName()!=null){
+			String currResourcePath = getResourcePath();
+			currResourcePath = currResourcePath.substring(0, currResourcePath.lastIndexOf("/") + 1) + getResourceName() + currResourcePath.substring(currResourcePath.lastIndexOf("."));
+
+			setResourcePath(currResourcePath);
+		}
+
 		IResource defaultResource = DefaultResource.createResource(getResourcePath());
 		autowire(defaultResource);
 
@@ -59,5 +86,42 @@ public class EditorPanel implements ContextAware{
 		defaultResource.save(getEditor().createEditedObject());
 
 	}
+
+	@ServiceMethod
+	@Order(2)
+	public void saveAs() throws Exception {
+		throw new Exception("Not implemented");
+	}
+
+	@ServiceMethod
+	@Order(3)
+	public void rename() throws Exception {
+		throw new Exception("Not implemented");
+	}
+
+	@ServiceMethod
+	@Order(4)
+	public void moveTo() throws Exception {
+		throw new Exception("Not implemented");
+	}
+
+	@ServiceMethod
+	@Order(5)
+	public void download() throws Exception {
+		throw new Exception("Not implemented");
+	}
+
+	@ServiceMethod
+	@Order(6)
+	public void upload() throws Exception {
+		throw new Exception("Not implemented");
+	}
+
+	@ServiceMethod
+	@Order(7)
+	public void delete() throws Exception {
+		throw new Exception("Not implemented");
+	}
+
 
 }

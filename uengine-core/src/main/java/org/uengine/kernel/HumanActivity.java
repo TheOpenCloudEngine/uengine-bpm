@@ -1294,6 +1294,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 
 
 	ParameterContext[] mappingContexts;
+	@Hidden
 		public ParameterContext[] getMappingContexts() {
 			return mappingContexts;
 		}

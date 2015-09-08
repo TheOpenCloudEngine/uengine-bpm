@@ -31,6 +31,12 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.uengine</groupId>
+			<artifactId>uengine-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 
 
 	</dependencies>

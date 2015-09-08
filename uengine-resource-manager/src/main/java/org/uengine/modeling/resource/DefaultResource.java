@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.metaworks.*;
 import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Id;
@@ -241,7 +242,7 @@ public class DefaultResource implements IResource {
 
 			Class resourceClass = Thread.currentThread().getContextClassLoader().loadClass(DefaultResource.class.getPackage().getName() + ".resources." + classNamePrefix + "Resource");
 
-			IResource resource = (IResource) resourceClass.newInstance();
+			IResource resource = (IResource) MetaworksRemoteService.getComponent(resourceClass);
 			resource.setPath(path);
 
 			return resource;

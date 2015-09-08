@@ -22,7 +22,7 @@ public class GenericValueFace extends AttributeInstance implements Face{
         //create default value for the type
         if(getValue()==null){
             AttributeInstance instance = createInstance();
-            setValue(instance.getValue());
+            setValueObject(instance.getValue());
         }else{
             //some conversions between value
         }
@@ -34,10 +34,10 @@ public class GenericValueFace extends AttributeInstance implements Face{
     public void setValueToFace(Object value) {
         if(value!=null) {
             setType(value.getClass().getName());
-            setValue(value);
+            setValueObject(value);
         }else{
             setType(String.class.getName());
-            setValue("");
+            setValueObject("");
         }
     }
 

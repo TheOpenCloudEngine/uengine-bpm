@@ -58,7 +58,10 @@ public class InstanceMonitorPanel {
 
             AttributeInstance attributeInstance = new AttributeInstance();
             attributeInstance.setName(processVariable.getName());
-            attributeInstance.setValue(processVariable.get(processInstance, ""));
+            attributeInstance.setValueObject(processVariable.get(processInstance, ""));
+
+            if(attributeInstance.getValue()!=null)
+                attributeInstance.setType(attributeInstance.getValue().getClass().getName());
 
             getProcessVariables().getAttributeInstanceList().add(attributeInstance);
         }

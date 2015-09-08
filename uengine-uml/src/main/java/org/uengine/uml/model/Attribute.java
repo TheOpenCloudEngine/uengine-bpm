@@ -52,7 +52,7 @@ public class Attribute implements Serializable{
         AttributeInstance attributeInstance = new AttributeInstance();
         attributeInstance.setName(getName());
         attributeInstance.setType(getType());
-        attributeInstance.setValue(value);
+        attributeInstance.setValueObject(value);
 
         return attributeInstance;
 

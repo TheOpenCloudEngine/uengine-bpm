@@ -40,7 +40,7 @@ public class ObjectInstance implements Serializable, ContextAware, BeanPropertyR
 
         for(AttributeInstance attributeInstance : getAttributeInstanceList()){
             if(key.equals(attributeInstance.getName())){
-                attributeInstance.setValue(value);
+                attributeInstance.setValueObject(value);
 
                 set = true;
 
@@ -50,7 +50,7 @@ public class ObjectInstance implements Serializable, ContextAware, BeanPropertyR
         if(!set) {
             AttributeInstance newAttrInst = new AttributeInstance();
             newAttrInst.setName(key);
-            newAttrInst.setValue(value);
+            newAttrInst.setValueObject(value);
 
             getAttributeInstanceList().add(newAttrInst);
         }

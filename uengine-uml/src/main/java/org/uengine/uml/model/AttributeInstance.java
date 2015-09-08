@@ -21,7 +21,7 @@ public class AttributeInstance extends Attribute implements ContextAware{
         }
 
 
-    @Available(condition = "type=='java.lang.String'")
+    @Available(condition = "type=='java.lang.String' || type._realValue=='java.lang.String'")
     public String getValueString() {
         if (value instanceof String)
             return (String) value;
@@ -35,7 +35,7 @@ public class AttributeInstance extends Attribute implements ContextAware{
     }
 
 
-    @Available(condition = "type=='java.lang.Long'")
+    @Available(condition = "type=='java.lang.Long' || type._realValue=='java.lang.Long'")
     public Long getValueLong() {
         if (value instanceof Long)
             return (Long) value;
@@ -47,7 +47,7 @@ public class AttributeInstance extends Attribute implements ContextAware{
         setValue(valueLong);
     }
 
-    @Available(condition = "type=='java.util.Calendar'")
+    @Available(condition = "type=='java.util.Calendar' || type._realValue=='java.util.Calendar'")
     public Calendar getValueDate() {
         if (value instanceof Calendar){
             return (Calendar) value;

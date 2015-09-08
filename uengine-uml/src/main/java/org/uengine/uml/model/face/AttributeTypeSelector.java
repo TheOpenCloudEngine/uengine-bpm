@@ -1,6 +1,7 @@
 package org.uengine.uml.model.face;
 
 import org.metaworks.Face;
+import org.metaworks.annotation.Hidden;
 import org.metaworks.component.SelectBox;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class AttributeTypeSelector extends SelectBox implements Face<String>{
 
     @Override
     public void setValueToFace(String value) {
+        set_realValue(value);
         setSelected(value);
     }
 
@@ -35,4 +37,15 @@ public class AttributeTypeSelector extends SelectBox implements Face<String>{
     public String createValueFromFace() {
         return getSelected();
     }
+
+
+    String _realValue;
+    @Hidden
+        public String get_realValue() {
+            return _realValue;
+        }
+        public void set_realValue(String _realValue) {
+            this._realValue = _realValue;
+        }
+
 }

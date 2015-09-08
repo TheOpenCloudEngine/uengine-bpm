@@ -1,4 +1,4 @@
-package org.uengine.kernel.face;
+package org.uengine.social;
 
 import com.itextpdf.text.Meta;
 import org.metaworks.ContextAware;
@@ -12,6 +12,7 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.contexts.ComplexType;
+import org.uengine.kernel.face.ProcessVariableTypeSelector;
 import org.uengine.modeling.resource.ResourceNavigator;
 import org.uengine.modeling.resource.SelectedResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
@@ -22,7 +23,7 @@ import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelecto
  */
 @Component
 @Scope("prototype")
-public class CodiProcessVariableTypeSelector extends ProcessVariableTypeSelector implements ContextAware{
+public class SocialBPMProcessVariableTypeSelector extends ProcessVariableTypeSelector implements ContextAware{
 
     String type;
     @Range(options={"Text","Number", "Date","Complex"}, values={"java.lang.String","java.lang.Long", "java.util.Date","org.uengine.contexts.ComplexType"})
@@ -90,7 +91,7 @@ public class CodiProcessVariableTypeSelector extends ProcessVariableTypeSelector
     }
 
 
-    public CodiProcessVariableTypeSelector(){
+    public SocialBPMProcessVariableTypeSelector(){
 
         ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
 

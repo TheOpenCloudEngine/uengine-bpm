@@ -22,7 +22,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
     public void newProcess() throws Exception {
 
         DefaultResource processResource = new DefaultResource();
-        processResource.setPath(getPath() + File.separator + "newProcess.process");
+        processResource.setPath(getPath() + File.separator + "New Process.process");
         processResource.setParent(this);
 
         processResource.newOpen();
@@ -37,11 +37,24 @@ public class ProcessAdminContainerResource extends ContainerResource {
         autowire(resource);
 
 
-        resource.setPath(getPath() + File.separator + "newForm.class");
+        resource.setPath(getPath() + File.separator + "New Form.class");
         resource.setParent(this);
 
         resource.newOpen();
     }
 
+    @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
+    public void newURLApplication() throws Exception {
+
+        DefaultResource resource = new DefaultResource();
+
+        autowire(resource);
+
+
+        resource.setPath(getPath() + File.separator + "New URL Application.urlapp");
+        resource.setParent(this);
+
+        resource.newOpen();
+    }
 
 }

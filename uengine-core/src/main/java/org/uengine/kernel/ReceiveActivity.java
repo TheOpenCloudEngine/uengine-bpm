@@ -236,23 +236,22 @@ System.out.println("ReceiveActivity::payload is " + payload);
 	///// implementation of ModelingTimeSensitive features. /////
 
 	MappingContext mapper;
-	public MappingContext getMapper() {
-		return mapper;
-	}
-
-	public void setMapper(MappingContext mapper) {
-		this.mapper = mapper;
-	}
+		public MappingContext getMapper() {
+			return mapper;
+		}
+		public void setMapper(MappingContext mapper) {
+			this.mapper = mapper;
+		}
 
 
 	ParameterContext[] mappingContexts;
-	@Hidden
-	public ParameterContext[] getMappingContexts() {
-		return mappingContexts;
-	}
-	public void setMappingContexts(ParameterContext[] mappingContexts) {
-		this.mappingContexts = mappingContexts;
-	}
+		@Hidden
+		public ParameterContext[] getMappingContexts() {
+			return mappingContexts;
+		}
+		public void setMappingContexts(ParameterContext[] mappingContexts) {
+			this.mappingContexts = mappingContexts;
+		}
 
 
 

@@ -70,7 +70,11 @@ public class VariableTreeNode extends TreeNode {
 						node.setChild(loadJavaClassProperties(node));
 					}else
 					// new version of class system
-					if(processVariable.getTypeClassName()!=null && processVariable.getTypeClassName().indexOf(".class") > 0){
+					if(processVariable.getTypeClassName()!=null &&
+							(	processVariable.getTypeClassName().indexOf(".class") > 0
+								|| processVariable.getTypeClassName().indexOf(".urlapp") > 0
+							)
+							){
 						ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 						ClassDefinition classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(processVariable.getTypeClassName()));
 

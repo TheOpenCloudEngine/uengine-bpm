@@ -39,7 +39,7 @@ public class MappingContext implements Serializable{
 		rightTree.setAlign(TreeNode.ALIGN_RIGHT);
 
 		MetaworksRemoteService.autowire(rightTree);
-
+//
 //		try {
 //			rightTree.init();
 //		}catch (Exception e){

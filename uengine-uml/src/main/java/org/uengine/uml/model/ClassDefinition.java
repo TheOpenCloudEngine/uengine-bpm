@@ -26,7 +26,7 @@ public class ClassDefinition implements Serializable{
 
     @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_POPUP)
     public ObjectInstance createObjectInstance() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        ObjectInstance objectInstance = new ObjectInstance();
+        ObjectInstance objectInstance = newObjectInstance();
 
         for(Attribute attribute : getAttributeList()){
             objectInstance.getAttributeInstanceList().add(attribute.createInstance());
@@ -36,6 +36,10 @@ public class ClassDefinition implements Serializable{
         if(metaworksCall()) wrapReturn(new ModalWindow(objectInstance));
 
         return objectInstance;
+    }
+
+    protected ObjectInstance newObjectInstance() {
+        return new ObjectInstance();
     }
 
 

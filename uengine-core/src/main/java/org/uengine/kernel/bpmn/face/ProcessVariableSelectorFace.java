@@ -33,6 +33,7 @@ public class ProcessVariableSelectorFace extends SelectBox implements Face<Proce
                 setOptionValues(options);
             }
             setSelectedValue(value.getName());
+            setSelectedText(value.getName()); //sometimes the value can contains "."
         }
     }
 

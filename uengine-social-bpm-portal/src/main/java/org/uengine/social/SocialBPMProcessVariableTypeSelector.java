@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.contexts.ComplexType;
 import org.uengine.kernel.face.ProcessVariableTypeSelector;
+import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.ResourceNavigator;
 import org.uengine.modeling.resource.SelectedResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
@@ -93,19 +94,30 @@ public class SocialBPMProcessVariableTypeSelector extends ProcessVariableTypeSel
 
     public SocialBPMProcessVariableTypeSelector(){
 
-        ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
-
-        MetaworksRemoteService.autowire(classResourceNavigator);
-
-        classResourceNavigator.setResourceControlDelegate(new ResourceControlDelegateForProcessVariableSelector());
-
-        setClassResourceNavigator(classResourceNavigator);
 
     }
 
 
     @Override
     public void setValueToFace(String value) {
+
+        ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
+
+
+        MetaworksRemoteService.autowire(classResourceNavigator);
+
+
+        DefaultResource primitive = new DefaultResource();
+        primitive.setPath("java.lang.String");
+        classResourceNavigator.getRoot().getChildren().add(0, primitive);
+        classResourceNavigator.getRoot().setMetaworksContext(new MetaworksContext());
+        classResourceNavigator.getRoot().getMetaworksContext().setWhen(MetaworksContext.WHEN_VIEW);
+
+        classResourceNavigator.setResourceControlDelegate(new ResourceControlDelegateForProcessVariableSelector());
+
+        setClassResourceNavigator(classResourceNavigator);
+
+
         setSelectedClassName(value);
 
         if(value!=null && value.indexOf(".") > 0){

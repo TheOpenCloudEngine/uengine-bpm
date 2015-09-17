@@ -1,0 +1,233 @@
+
+<%
+
+	if(value!=null){
+
+
+		objectMetadata = value.classDefinition;
+
+		value = value.valueMap;
+
+		fields = [];
+
+		for(var i=0; i<objectMetadata.fieldDescriptors.length; i++){
+			var fd = objectMetadata.fieldDescriptors[i];
+
+			if(!fd.displayName || fd.displayName.trim().length==0){
+			   fd.displayName = fd.name;
+			}
+
+			fields[fd.name] = new FieldRef(value, objectId, fd);
+		}
+
+		methods = [];
+
+		if(objectMetadata.serviceMethodContexts){
+		   for(var key in objectMetadata.serviceMethodContexts){
+				var methodContext = objectMetadata.serviceMethodContexts[key];
+
+				methods[methodContext.methodName] = new MethodRef(value, objectId, methodContext);
+		   }
+		}
+
+	}
+
+%>
+
+<%
+	if (value != null) {
+		var groups = [];
+
+		$.each(objectMetadata.fieldDescriptors, function(index, field){
+			if(mw3.isHidden(fields[field.name]) || field.name == 'metaworksContext'){
+				return true;
+			}
+
+			var group = field.attributes ? field.attributes.group : null;
+
+			if(group == undefined){
+				group = "undefined";
+			}
+
+			if(groups.indexOf(group) == -1){
+				groups.push(group);
+			}
+
+			if(groups[group] == undefined){
+				groups[group] = [];
+				groups[group].push(field);
+			}else{
+				groups[group].push(field);
+			}
+		});
+		var showTitle = !(objectMetadata.faceOptions && objectMetadata.faceOptions['hideTitle']);
+		var showViewBox = !(objectMetadata.faceOptions && objectMetadata.faceOptions['hideViewBox']);
+		var showNewBtn = !(objectMetadata.faceOptions && objectMetadata.faceOptions['hideNewBtn']);
+       	var showLabel = !(objectMetadata.faceOptions && objectMetadata.faceOptions['hideLabels']);
+      	var showEditBtn = !(objectMetadata.faceOptions && objectMetadata.faceOptions['hideEditBtn']);
+
+  if(showViewBox){
+%>
+	<div class="view_box3" style="background:#fff;">
+		<div class="guide">
+			<span class="tl"></span>
+			<span class="tr"></span>
+		</div>
+<%
+  }
+%>
+		<div class="cont" style="padding-bottom:3px;">
+<%
+  if(showTitle){
+
+  			var objectName;
+
+  			if(value.__toString != null){
+				objectName = value.__toString();
+			}
+			if(!objectName){
+				objectName = objectMetadata.displayName;
+			}
+
+
+%>
+			<p class="title"><%=mw3.localize(objectName)%></p>
+<%
+  }
+%>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			    <tbody><tr>
+			        <td style="padding:2px 12px 0 0;">
+
+		<!-- field를 화명에 뿌려줌 -->
+		<% if(groups.length>1){ %>
+			<div class="tabbable"> <!-- Only required for left/right tabs -->
+				<!-- Group 이름으로 Tab을 만듬 -->
+				<ul class="nav nav-tabs">
+				<%
+					$.each(groups, function(index, group){
+						if(index == 0){ %>
+							<li class="active"><a href="#<%=group%>" data-toggle="tab"><%=group%></a></li>
+						<% }else{ %>
+							<li><a href="#<%=group%>" data-toggle="tab"><%=group%></a></li>
+						<% }
+					});
+				%>
+				</ul>
+				<!-- Group 이름으로 Tab을 만듬 -->
+
+				<!-- Tab에 있는 내용을 만듬 -->
+				<div class="tab-content">
+					<% $.each(groups, function(index, group){
+						if(group == undefined){
+                			group = "undefined";
+                		}
+                	%>
+                		<!-- 첫번째 탭을 활성화하기 위해선 active가 필요하다. -->
+						<div class="tab-pane <%=index==0?'active':''%>" id="<%=group%>">
+							<table width="*" border="0" cellspacing="0" cellpadding="0">
+                        		<tbody>
+						<% $.each(groups[group], function(fieldIndex, fieldDescriptor){ %>
+							<tr height="25" valign="middle">
+
+								<% if(showLabel){ %>
+									<td bgcolor=white> <b><%=mw3.localize(fieldDescriptor.displayName)%></b> </td>
+								<% } %>
+
+								<td bgcolor=white>
+
+								<% var fieldValue = value[fieldDescriptor.name];
+
+								if(fieldDescriptor.attributes && fieldDescriptor.attributes['imagepath']){
+
+									if(fieldValue){ %>
+										<img src="<%=fieldValue%>" width=100>
+									<% }
+
+								}else{ %>
+									<%=fields[fieldDescriptor.name] ? fields[fieldDescriptor.name].here() : "XXX"%>
+								<% } %>
+
+							</td></tr>
+					<%	}); %>
+							</tbody>
+						</table>
+					</div>
+					<% }); %>
+				</div>
+				<!-- Tab에 있는 내용을 만듬 -->
+			</div>
+		<% }else { %>
+			<table width="*" border="0" cellspacing="0" cellpadding="0">
+        		<tbody>
+			<% for (var i=0; i<objectMetadata.fieldDescriptors.length; i++){
+
+				var fd = objectMetadata.fieldDescriptors[i];
+
+				if(mw3.isHidden(fields[fd.name])) continue;
+				if(fd.name == 'metaworksContext') continue;
+
+				var fieldValue = value[fd.name];
+		%>
+
+				<tr height="25" valign="middle">
+
+				<% if(showLabel){ %>
+				<td bgcolor=white> <b><%=mw3.localize(fd.displayName)%></b> </td>
+				<% } %>
+
+				<td bgcolor=white>
+
+				<%	if(fd.attributes && fd.attributes['imagepath']){
+						if(fieldValue){ %> <img src="<%=fieldValue%>" width=100> <% }
+					}else{ %>  <%=fields[fd.name] ? fields[fd.name].here() : "XXX"%> <% } %>
+
+				</td></tr>
+
+			<%
+				}
+			}
+			%>
+		<!-- field를 화명에 뿌려줌 -->
+			            </tbody></table>
+			        </td>
+
+			    </tr>
+
+			    <tr>
+			    <td <%=showLabel ? "colspan=2" : ""%>>
+			    <%
+
+   if(objectMetadata.serviceMethodContexts)
+   for(var i=0; i<objectMetadata.serviceMethodContexts.length; i++){
+   	   		var serviceMethod = objectMetadata.serviceMethodContexts[i];
+
+   	   		if(serviceMethod.inContextMenu)
+   	   			continue;
+%><%=methods[serviceMethod.methodName].here()%> <%
+   }
+
+   if(mw3.when != mw3.WHEN_EDIT && showEditBtn){
+%>
+<!-- <input type=button onclick="<%=editFunction%>" value="Edit"> -->
+
+<%}%>
+			    </td>
+			    </tr>
+			</tbody></table>
+
+
+		</div>
+<%
+  if(showViewBox){
+%>
+		<div class="guide">
+			<span class="lb"></span>
+			<span class="rb"></span>
+		</div>
+	</div>
+<%
+  }
+%>
+<%}else if(showNewBtn){%>
+<%}%>

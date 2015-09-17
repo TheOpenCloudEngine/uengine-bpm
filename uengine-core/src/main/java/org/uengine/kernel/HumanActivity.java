@@ -33,12 +33,14 @@ import org.uengine.webservices.worklist.SimulatorWorkList;
 import org.uengine.webservices.worklist.WorkList;
 import org.uengine.webservices.worklist.WorkListServiceLocator;
 
+import static org.metaworks.dwr.MetaworksRemoteService.autowire;
+
 /**
  * @author Jinyoung Jang
  */
 
 //@Face(ejsPath="dwr/metaworks/genericfaces/FormFace.ejs")
-public class HumanActivity extends ReceiveActivity implements IModelingTimeSensitive {
+public class HumanActivity extends ReceiveActivity{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	public static final String GENERICCONTEXT_CURR_LOGGED_ROLEMAPPING = "currentLoggedRoleMapping";
 
@@ -1283,97 +1285,5 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 //			this.parentEditorId = parentEditorId;
 //		}
 //
-	MappingContext mapper;
-		public MappingContext getMapper() {
-			return mapper;
-		}
 
-		public void setMapper(MappingContext mapper) {
-			this.mapper = mapper;
-		}
-
-
-	ParameterContext[] mappingContexts;
-	@Hidden
-		public ParameterContext[] getMappingContexts() {
-			return mappingContexts;
-		}
-
-		public void setMappingContexts(ParameterContext[] mappingContexts) {
-			this.mappingContexts = mappingContexts;
-		}
-
-
-
-	protected void dataMapping(ProcessInstance instance) throws Exception {
-
-		for(ParameterContext param : getMappingContexts()){
-
-			String srcVariableName = null;
-			String targetFieldName = param.getArgument().getText();
-			Object value = null;
-
-			if(param.getVariable() == null && param.getTransformerMapping() != null){
-				value = param.getTransformerMapping().getTransformer().letTransform(instance, param.getTransformerMapping().getLinkedArgumentName());
-			}else{
-				srcVariableName = param.getVariable().getName();
-				if( srcVariableName.startsWith("[activities]") || srcVariableName.startsWith("[instance]")  || srcVariableName.startsWith("[roles]") ){
-					value = instance.getBeanProperty(srcVariableName); // varA
-				}else{
-					String [] wholePartPath = srcVariableName.replace('.','@').split("@");
-					// wholePartPath.length >= 1 이 되는 이유는 안쪽에 객체의 값을 참조하려고 하는 부분이기때문에 따로 값을 가져와야함
-					if( wholePartPath.length >= 2 ){
-						String rootObjectName = wholePartPath[1] ;
-						if( wholePartPath.length > 2 ){
-							for(int j = 2 ; j < wholePartPath.length; j++){
-								rootObjectName += "."+ wholePartPath[j];
-							}
-						}
-						// 이걸 바로 호출
-						Object rootObject = instance.getBeanProperty(wholePartPath[0]);
-						if( rootObject != null ){
-							value = UEngineUtil.getBeanProperty(rootObject, rootObjectName);
-						}
-					}else{
-						value = instance.getBeanProperty(srcVariableName); // varA
-					}
-				}
-			}
-
-			instance.setBeanProperty(targetFieldName, value);
-		}
-
-	}
-
-	@Override
-	public void onModelingTime() {
-		mapper = new MappingContext(this, null);
-
-		MetaworksRemoteService.autowire(mapper);
-
-		mapper.getMappingCanvas().setMappingElements(getMappingContexts());
-
-		try {
-			mapper.getMappingTreeLeft().init();
-			mapper.getMappingTreeLeft().init();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-
-
-	}
-
-	@Override
-	public void afterModelingTime() {
-
-		ParameterContext[] mappingElements =
-				mapper.getMappingCanvas().getMappingElements();
-
-		setMappingContexts(mappingElements);
-
-		setMapper(null);
-
-	}
 }

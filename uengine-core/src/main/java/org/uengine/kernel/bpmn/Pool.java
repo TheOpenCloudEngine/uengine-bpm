@@ -27,7 +27,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 		}
 
 	String name;
-	@Face(displayName="$activityName")
+	@Face(displayName="$poolName")
 	@Order(1)
 	public String getName() {
 		return name;
@@ -38,7 +38,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 		
 	TextContext description = TextContext.createInstance();
 	@Name
-	@Face(displayName="$activityDisplayName")
+	@Face(displayName="$poolDisplayName")
 	@Order(2)
 		public String getDescription() {
 			return description.getText();

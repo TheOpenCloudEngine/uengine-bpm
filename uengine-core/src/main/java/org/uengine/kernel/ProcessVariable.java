@@ -95,7 +95,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 
 	private String typeClassName;
-	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector")
+	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector", displayName = "$Type")
 		public String getTypeClassName() {
 			return typeClassName;
 		}
@@ -195,9 +195,10 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 	Object defaultValue = null;
 	@Order(4)
+	@Hidden
 	@Face(faceClass= GenericValueFace.class)
 		public Object getDefaultValue() {
-			if(getType()==ComplexType.class)
+			if(getType()==ComplexType.class || getType()==null)
 				return null;
 
 			return defaultValue;

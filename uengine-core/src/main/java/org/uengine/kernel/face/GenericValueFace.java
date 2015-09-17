@@ -21,8 +21,9 @@ public class GenericValueFace extends AttributeInstance implements Face{
 
         //create default value for the type
         if(getValue()==null){
-            AttributeInstance instance = createInstance();
-            setValue(instance.getValue());
+            //TODO: implement this in other ways
+           // AttributeInstance instance = createInstance();
+           // setValueObject(instance.getValue());
         }else{
             //some conversions between value
         }
@@ -33,11 +34,11 @@ public class GenericValueFace extends AttributeInstance implements Face{
     @Override
     public void setValueToFace(Object value) {
         if(value!=null) {
-            setType(value.getClass().getName());
-            setValue(value);
+            setClassName(value.getClass().getName());
+            setValueObject(value);
         }else{
-            setType(String.class.getName());
-            setValue("");
+            setClassName(String.class.getName());
+            setValueObject("");
         }
     }
 

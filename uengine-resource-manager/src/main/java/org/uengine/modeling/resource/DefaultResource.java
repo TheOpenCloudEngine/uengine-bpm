@@ -172,6 +172,8 @@ public class DefaultResource implements IResource {
 		editorPanel.setMetaworksContext(new MetaworksContext());
 		editorPanel.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 
+		editorPanel.setIsNew(isNew);
+
 		String type = getType();
 
 		String classNamePrefix = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();

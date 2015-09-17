@@ -1,15 +1,16 @@
-package org.uengine.uml.model.face;
+package org.uengine.social;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
+import org.uengine.uml.model.face.AttributeTypeSelector;
 
 /**
  * Created by jangjinyoung on 15. 9. 4..
  */
 @Component
 @Scope("prototype")
-public class ProcessClassAttributeFace extends AttributeTypeSelector{
+public class SocialBPMClassAttributeFace extends AttributeTypeSelector {
 
     ProcessAdminResourceNavigator processAdminResourceNavigator;
         public ProcessAdminResourceNavigator getProcessAdminResourceNavigator() {
@@ -19,7 +20,7 @@ public class ProcessClassAttributeFace extends AttributeTypeSelector{
             this.processAdminResourceNavigator = processAdminResourceNavigator;
         }
 
-    public ProcessClassAttributeFace(){
+    public SocialBPMClassAttributeFace(){
         super();
 
         setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator());

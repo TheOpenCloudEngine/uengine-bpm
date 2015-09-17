@@ -16,12 +16,15 @@ public class AttributeInstance extends Attribute implements ContextAware{
         public Object getValue() {
             return value;
         }
-        public void setValue(Object value) {
-            this.value = value;
+//        private void setValue(Object value) {  //must be private to prevent DWR to set this value.
+//            this.value = value;
+//        }
+        public void setValueObject(Object value){ //use this instead.
+            this.value = (value);
         }
 
 
-    @Available(condition = "type=='java.lang.String'")
+    @Available(condition = "type=='java.lang.String' || type._realValue=='java.lang.String'")
     public String getValueString() {
         if (value instanceof String)
             return (String) value;
@@ -31,11 +34,11 @@ public class AttributeInstance extends Attribute implements ContextAware{
 
     public void setValueString(String valueString) {
         if (valueString instanceof String)
-            setValue(valueString);
+            setValueObject(valueString);
     }
 
 
-    @Available(condition = "type=='java.lang.Long'")
+    @Available(condition = "type=='java.lang.Long' || type._realValue=='java.lang.Long'")
     public Long getValueLong() {
         if (value instanceof Long)
             return (Long) value;
@@ -44,10 +47,11 @@ public class AttributeInstance extends Attribute implements ContextAware{
     }
 
     public void setValueLong(Long valueLong) {
-        setValue(valueLong);
+        if (value instanceof Long)
+            setValueObject(valueLong);
     }
 
-    @Available(condition = "type=='java.util.Calendar'")
+    @Available(condition = "type=='java.util.Calendar' || type._realValue=='java.util.Calendar'")
     public Calendar getValueDate() {
         if (value instanceof Calendar){
             return (Calendar) value;
@@ -57,8 +61,22 @@ public class AttributeInstance extends Attribute implements ContextAware{
 
     public void setValueDate(Calendar valueDate) {
         if(valueDate != null)
-            setValue(valueDate);
+            setValueObject(valueDate);
     }
+
+    @Available(condition = "type=='org.uengine.uml.model.ObjectInstance' || type._realValue=='org.uengine.uml.model.ObjectInstance'")
+    public ObjectInstance getValueObjectInstance() {
+        if (value instanceof ObjectInstance){
+            return (ObjectInstance) value;
+        }else
+            return null;
+    }
+
+    public void setValueObjectInstance(ObjectInstance valueObjectInstance) {
+        if(valueObjectInstance != null)
+            setValueObject(valueObjectInstance);
+    }
+
 
     MetaworksContext metaworksContext;
         @Override

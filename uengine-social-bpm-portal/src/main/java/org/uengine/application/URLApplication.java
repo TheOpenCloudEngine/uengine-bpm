@@ -42,11 +42,13 @@ public class URLApplication extends ProcessApplication {
     public void onLoad() throws Exception {
         StringBuffer queryString = new StringBuffer();
 
-        for(AttributeInstance attributeInstance : getAttributeInstanceList()){
+        for(Object key : getValueMap().keySet()){
+            Object value = getValueMap().get(key);
+
             queryString
-                    .append(attributeInstance.getName())
+                    .append(key)
                     .append("=")
-                    .append(attributeInstance.getValue());
+                    .append(value);
 
         }
 

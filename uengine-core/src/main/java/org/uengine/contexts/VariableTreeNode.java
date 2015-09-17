@@ -95,7 +95,7 @@ public class VariableTreeNode extends TreeNode {
 
 		ArrayList<TreeNode> child = new ArrayList<TreeNode>();
 
-		List<Attribute> fields = classDefinition.getAttributeList();
+		Attribute[] fields = classDefinition.getFieldDescriptors();
 		for(Attribute attribute : fields){
 			VariableTreeNode childNode = new VariableTreeNode();
 

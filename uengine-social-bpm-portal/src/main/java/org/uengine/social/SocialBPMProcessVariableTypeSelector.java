@@ -4,11 +4,9 @@ import com.itextpdf.text.Meta;
 import org.metaworks.ContextAware;
 import org.metaworks.Face;
 import org.metaworks.MetaworksContext;
-import org.metaworks.annotation.AutowiredFromClient;
-import org.metaworks.annotation.NonEditable;
-import org.metaworks.annotation.Range;
-import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ModalWindow;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.contexts.ComplexType;
@@ -24,34 +22,14 @@ import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelecto
  */
 @Component
 @Scope("prototype")
+@org.metaworks.annotation.Face(ejsPath="genericfaces/CleanObjectFace.ejs")
 public class SocialBPMProcessVariableTypeSelector extends ProcessVariableTypeSelector implements ContextAware{
 
-    String type;
-    @Range(options={"Text","Number", "Date","Complex"}, values={"java.lang.String","java.lang.Long", "java.util.Date","org.uengine.contexts.ComplexType"})
-        public String getType() {
-            return type;
-        }
-        public void setType(String primitypeTypeName) {
-            this.type = primitypeTypeName;
-        }
-
-
-//    ProcessAdminContainerResource classRoot;
-//    //@Available(condition = "primitypeTypeName == 'org.uengine.contexts.ComplexType'")
-//        public ProcessAdminContainerResource getClassRoot() {
-//            return classRoot;
-//        }
-//        public void setClassRoot(ProcessAdminContainerResource classRoot) {
-//            this.classRoot = classRoot;
-//        }
-
-    ResourceNavigator classResourceNavigator;
-        public ResourceNavigator getClassResourceNavigator() {
-            return classResourceNavigator;
-        }
-        public void setClassResourceNavigator(ResourceNavigator classResourceNavigator) {
-            this.classResourceNavigator = classResourceNavigator;
-        }
+    @Override
+    @Hidden
+    public String getType() {
+        return super.getType();
+    }
 
     String selectedClassName;
     @NonEditable
@@ -75,19 +53,10 @@ public class SocialBPMProcessVariableTypeSelector extends ProcessVariableTypeSel
 
 
 
-    @ServiceMethod(callByContent = true, eventBinding = "change", bindingFor = "primitypeTypeName")
-    public void select(@AutowiredFromClient SelectedResource selectedComplexClassResource){
+    @ServiceMethod(callByContent = true, target=ServiceMethod.TARGET_POPUP)
+    public ModalWindow select(){
 
-        if(ComplexType.class.getName().equals(getType())){
-            if(selectedComplexClassResource!=null)
-                setSelectedClassName(selectedComplexClassResource.getPath());
-        }else{
-
-            setSelectedClassName(getType());
-        }
-
-        setMetaworksContext(new MetaworksContext());
-        getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+        return new ModalWindow(new SocialBPMProcessVariableTypeSelectorPopup());
 
     }
 
@@ -100,23 +69,6 @@ public class SocialBPMProcessVariableTypeSelector extends ProcessVariableTypeSel
 
     @Override
     public void setValueToFace(String value) {
-
-        ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
-
-
-        MetaworksRemoteService.autowire(classResourceNavigator);
-
-
-        DefaultResource primitive = new DefaultResource();
-        primitive.setPath("java.lang.String");
-        classResourceNavigator.getRoot().getChildren().add(0, primitive);
-        classResourceNavigator.getRoot().setMetaworksContext(new MetaworksContext());
-        classResourceNavigator.getRoot().getMetaworksContext().setWhen(MetaworksContext.WHEN_VIEW);
-
-        classResourceNavigator.setResourceControlDelegate(new ResourceControlDelegateForProcessVariableSelector());
-
-        setClassResourceNavigator(classResourceNavigator);
-
 
         setSelectedClassName(value);
 

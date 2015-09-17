@@ -1,0 +1,74 @@
+package org.uengine.social;
+
+import org.metaworks.MetaworksContext;
+import org.metaworks.Remover;
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.ToOpener;
+import org.metaworks.annotation.*;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ModalWindow;
+import org.uengine.contexts.ComplexType;
+import org.uengine.modeling.resource.DefaultResource;
+import org.uengine.modeling.resource.ResourceNavigator;
+import org.uengine.modeling.resource.SelectedResource;
+import org.uengine.processadmin.ProcessAdminResourceNavigator;
+import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelector;
+
+/**
+ * Created by jangjinyoung on 15. 9. 17..
+ */
+public class SocialBPMProcessVariableTypeSelectorPopup {
+
+    String type;
+    @Range(options={"Text","Number", "Date","Complex"}, values={"java.lang.String","java.lang.Long", "java.util.Date","org.uengine.contexts.ComplexType"})
+    public String getType() {
+        return type;
+    }
+    public void setType(String primitypeTypeName) {
+        this.type = primitypeTypeName;
+    }
+
+
+    ResourceNavigator classResourceNavigator;
+    public ResourceNavigator getClassResourceNavigator() {
+        return classResourceNavigator;
+    }
+    public void setClassResourceNavigator(ResourceNavigator classResourceNavigator) {
+        this.classResourceNavigator = classResourceNavigator;
+    }
+
+
+    @ServiceMethod(callByContent = true, eventBinding = "change", bindingFor = "primitypeTypeName", target= ServiceMethodContext.TARGET_APPEND)
+    public SocialBPMProcessVariableTypeSelector select(@AutowiredFromClient SelectedResource selectedComplexClassResource){
+        SocialBPMProcessVariableTypeSelector socialBPMProcessVariableTypeSelector = new SocialBPMProcessVariableTypeSelector();
+        socialBPMProcessVariableTypeSelector.setSelectedClassName(selectedComplexClassResource.getPath());
+
+
+        MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
+
+        return socialBPMProcessVariableTypeSelector;
+    }
+
+
+    public SocialBPMProcessVariableTypeSelectorPopup(){
+        ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
+
+
+        MetaworksRemoteService.autowire(classResourceNavigator);
+
+
+        DefaultResource primitive = new DefaultResource();
+        primitive.setPath("java.lang.String");
+        classResourceNavigator.getRoot().getChildren().add(0, primitive);
+        classResourceNavigator.getRoot().setMetaworksContext(new MetaworksContext());
+        classResourceNavigator.getRoot().getMetaworksContext().setWhen(MetaworksContext.WHEN_VIEW);
+
+        classResourceNavigator.setResourceControlDelegate(new ResourceControlDelegateForProcessVariableSelector());
+
+        setClassResourceNavigator(classResourceNavigator);
+
+
+    }
+
+
+}

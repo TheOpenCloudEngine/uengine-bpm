@@ -7,7 +7,7 @@ import org.uengine.kernel.bpmn.Gateway;
 public class ExclusiveGateway extends Gateway {
 	
 	public ExclusiveGateway() {
-		super("Xor");
+		//super("Xor");
 	}
 
 	@Override

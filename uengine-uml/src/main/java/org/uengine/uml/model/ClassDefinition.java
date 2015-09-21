@@ -50,6 +50,7 @@ public class ClassDefinition extends WebObjectType implements Serializable{
         objectInstance.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 
         objectInstance.setClassDefinition(this);
+        objectInstance.setClassName(getName());
 
 //        for(Attribute attribute : getAttributeList()){
 //            objectInstance.getAttributeInstanceList().add(attribute.createInstance());
@@ -71,6 +72,7 @@ public class ClassDefinition extends WebObjectType implements Serializable{
 
     @Override
     @Order(1)
+    @Hidden
     public String getName() {
         return super.getName();
     }

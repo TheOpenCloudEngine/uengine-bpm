@@ -39,9 +39,9 @@ public class ClassDefinition extends WebObjectType implements Serializable{
         return (Attribute[]) super.getFieldDescriptors();
     }
 
-//    public void setFieldDescriptors(Attribute[] fieldDescriptors) {
-//        super.setFieldDescriptors(fieldDescriptors);
-//    }
+    public void setFieldDescriptors(Attribute[] fieldDescriptors) {
+        super.setFieldDescriptors(fieldDescriptors);
+    }
 
     @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_POPUP)
     public ObjectInstance createObjectInstance() throws IllegalAccessException, InstantiationException, ClassNotFoundException {

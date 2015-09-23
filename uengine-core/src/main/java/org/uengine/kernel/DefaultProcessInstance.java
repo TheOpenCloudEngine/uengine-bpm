@@ -251,19 +251,21 @@ public class DefaultProcessInstance extends ProcessInstance{
 
 	public Serializable get(String scopeByTracingTag, String key) throws Exception{
 	   String firstPart = key;
+
+		boolean resolvePartNeeded = false;
 	   if(key.indexOf('.') > 0){
 			String [] wholePartPath = key.replace('.','@').split("@");
 			firstPart = wholePartPath [0];
+
+		   resolvePartNeeded = true;
+
 	   }
 
 		Serializable sourceValue = getSourceValue(scopeByTracingTag, firstPart);
 		
-		sourceValue = resolveParts(sourceValue, key);
-		
-		
 		if(sourceValue instanceof IndexedProcessVariableMap){
-			ProcessVariableValue pvv = getMultiple(scopeByTracingTag, key);			
-			return pvv.getValue();
+			ProcessVariableValue pvv = getMultiple(scopeByTracingTag, key);
+			sourceValue = pvv.getValue();
 		}else if(sourceValue == null){
 			ProcessDefinition pd = getProcessDefinition();
 			if(pd != null){
@@ -271,14 +273,29 @@ public class DefaultProcessInstance extends ProcessInstance{
 				if(pv!=null)
 					return (Serializable)pv.getDefaultValue();
 			}
-		}else{
-			return sourceValue;
 		}
-		
-		return null;
+
+		if(resolvePartNeeded)
+			sourceValue = resolveParts(sourceValue, key);
+
+
+		return sourceValue;
 	}
 	
 	protected Serializable resolveParts(Serializable sourceValue, String key) throws Exception{
+
+		try {
+			int indexOfDot = key.indexOf(".");
+			if (indexOfDot > 0 && sourceValue instanceof BeanPropertyResolver) {
+
+				String beanPath = key.substring(indexOfDot + 1);
+
+				return (Serializable) ((BeanPropertyResolver) sourceValue).getBeanProperty(beanPath);
+			}
+		}catch(ClassCastException e){
+			throw new Exception("Process variable's property value must be serializable", e);
+		}
+
 		//resolve parts
 		if(getProcessDefinition()!=null && sourceValue!=null){
 			ProcessVariable pv = getProcessDefinition().getProcessVariable(key);

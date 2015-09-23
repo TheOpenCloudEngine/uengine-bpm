@@ -4,7 +4,12 @@ import org.metaworks.ContextAware;
 import org.metaworks.AllChildFacesAreIgnored;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Payload;
+import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.kernel.BeanPropertyResolver;
+import org.uengine.modeling.resource.DefaultResource;
+import org.uengine.modeling.resource.ResourceManager;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -103,5 +108,19 @@ public class ObjectInstance implements Serializable, ContextAware, BeanPropertyR
 
         return getValueMap().get(key);
 
+    }
+
+
+    @ServiceMethod(callByContent = true, target = ServiceMethod.TARGET_NONE)
+    public ObjectInstance fillClassDefinition(@Payload("className") String className) throws Exception {
+
+        ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+
+        DefaultResource classDefinitionResource = new DefaultResource( className);
+        ClassDefinition definition = (ClassDefinition) resourceManager.getStorage().getObject(classDefinitionResource);
+
+        setClassDefinition(definition);
+
+        return this;
     }
 }

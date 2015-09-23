@@ -4,11 +4,33 @@
 	if(value!=null){
 
 
+		if((!value.classDefinition || !value.classDefinition.fieldDescriptors) && value.className){
+
+			if(mw3.uengineUML){
+				value.classDefinition = mw3.uengineUML.classDefinitions[value.className];
+			}else{
+				mw3.uengineUML = {classDefinitions:{}};
+			}
+
+			if(!value.classDefinition || !value.classDefinition.fieldDescriptors){
+				value = value.fillClassDefinition(); //try to fill in
+				mw3.uengineUML.classDefinitions[value.className] = value.classDefinition;
+			}
+		}
+
 		objectMetadata = value.classDefinition;
 
 		value = value.valueMap;
 
 		fields = [];
+
+
+
+		if(objectMetadata && !objectMetadata.fieldDescriptors){
+			throw new Error("Class " + objectMetadata.name + " doesn't have fieldDescriptors: Illegal Status.");
+		}
+
+
 
 		for(var i=0; i<objectMetadata.fieldDescriptors.length; i++){
 			var fd = objectMetadata.fieldDescriptors[i];

@@ -226,8 +226,11 @@ public class ProcessModeler extends DefaultModeler {
 					SequenceFlow sequenceFlow = (SequenceFlow) relation;
 					SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
 					sequenceFlow.setRelationView(null);
-					sequenceFlowView.setRelation(sequenceFlow);
-					relationViewList.add(sequenceFlowView);
+
+					if(sequenceFlowView!=null){
+						sequenceFlowView.setRelation(sequenceFlow);
+						relationViewList.add(sequenceFlowView);
+					}
 				}
 			}
 
@@ -369,8 +372,11 @@ public class ProcessModeler extends DefaultModeler {
 					SequenceFlow sequenceFlow = (SequenceFlow) relation;
 					SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
 					sequenceFlow.setRelationView(null);
-					sequenceFlowView.setRelation(sequenceFlow);
-					relationViewList.add(sequenceFlowView);
+
+					if(sequenceFlowView!=null) {
+						sequenceFlowView.setRelation(sequenceFlow);
+						relationViewList.add(sequenceFlowView);
+					}
 				}
 			}
 

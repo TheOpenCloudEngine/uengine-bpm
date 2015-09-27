@@ -70,6 +70,10 @@ public class ObjectInstance implements Serializable, ContextAware, BeanPropertyR
     @Override
     public void setBeanProperty(String key, Object value) {
 
+
+        if(valueMap==null) valueMap = new HashMap();
+
+
         getValueMap().put(key, value);
 //        boolean set = false;
 //

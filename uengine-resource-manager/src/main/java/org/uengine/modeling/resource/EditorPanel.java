@@ -2,14 +2,28 @@ package org.uengine.modeling.resource;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
+import org.metaworks.MetaworksFile;
+import org.metaworks.Refresh;
 import org.metaworks.annotation.Order;
 import org.metaworks.annotation.ServiceMethod;
-import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.Download;
 import org.metaworks.widget.ModalWindow;
+
+import javax.activation.MimetypesFileTypeMap;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.metaworks.dwr.MetaworksRemoteService.*;
 
 public class EditorPanel implements ContextAware {
+
+	public static final String WHEN_SAVEAS = "SaveAs";
+	public static final String WHEN_RENAME = "Rename";
+	public static final String WHEN_UPLOAD = "Upload";
+	public static final String WHEN_MOVETO = "MoveTo";
 
 	IEditor editor;
 		public IEditor getEditor() {
@@ -31,7 +45,7 @@ public class EditorPanel implements ContextAware {
 		public String getResourceName() {
 			if(resourceName==null && resourcePath!=null){
 				try {
-					resourceName = resourcePath.substring(resourcePath.lastIndexOf("/") + 1, resourcePath.lastIndexOf("."));
+					resourceName = resourcePath.substring(resourcePath.lastIndexOf(File.separator) + 1, resourcePath.lastIndexOf("."));
 				}catch (Exception e){
 				}
 			}
@@ -46,7 +60,7 @@ public class EditorPanel implements ContextAware {
 		public boolean isNew() {
 			return isNew;
 		}
-		public void setIsNew(boolean isNew) {
+		public void setNew(boolean isNew) {
 			this.isNew = isNew;
 		}
 
@@ -55,25 +69,21 @@ public class EditorPanel implements ContextAware {
 		public MetaworksContext getMetaworksContext() {
 			return metaworksContext;
 		}
-
 		@Override
 		public void setMetaworksContext(MetaworksContext metaworksContext) {
 			this.metaworksContext = metaworksContext;
 		}
 
-
-
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)
 	@Order(1)
 	public void save() throws Exception {
-
 		if(isNew() && getResourceName()==null){
 			throw new Exception("Please enter a file name");
 		}
 
 		if(getResourceName()!=null){
 			String currResourcePath = getResourcePath();
-			currResourcePath = currResourcePath.substring(0, currResourcePath.lastIndexOf("/") + 1) + getResourceName() + currResourcePath.substring(currResourcePath.lastIndexOf("."));
+			currResourcePath = currResourcePath.substring(0, currResourcePath.lastIndexOf(File.separator) + 1) + getResourceName() + currResourcePath.substring(currResourcePath.lastIndexOf("."));
 
 			setResourcePath(currResourcePath);
 		}
@@ -85,43 +95,97 @@ public class EditorPanel implements ContextAware {
 
 		defaultResource.save(getEditor().createEditedObject());
 
+		setNew(false);
 	}
 
-	@ServiceMethod
+	@ServiceMethod(callByContent = true)
 	@Order(2)
-	public void saveAs() throws Exception {
-		throw new Exception("Not implemented");
+	public ModalWindow saveAs() throws Exception {
+		EditorPanelPopup editorPanelPopup = getComponent(EditorPanelPopup.class);
+		editorPanelPopup.setMetaworksContext(new MetaworksContext());
+		editorPanelPopup.getMetaworksContext().setWhen(WHEN_SAVEAS);
+
+		ModalWindow modalWindow = new ModalWindow(editorPanelPopup, 300, 200, "Save As");
+		return modalWindow;
 	}
 
-	@ServiceMethod
+	@ServiceMethod(callByContent = true)
 	@Order(3)
 	public void rename() throws Exception {
-		throw new Exception("Not implemented");
+		if(WHEN_RENAME.equals(getMetaworksContext().getWhen())){
+			IResource defaultResource = DefaultResource.createResource(getResourcePath());
+			autowire(defaultResource);
+
+			String srcResourcePath = getResourcePath();
+			String desResourcePath = srcResourcePath.substring(0, srcResourcePath.lastIndexOf(File.separator) + 1) + getResourceName() + srcResourcePath.substring(srcResourcePath.lastIndexOf("."));;
+			defaultResource.rename(desResourcePath);
+
+			getMetaworksContext().setWhen(metaworksContext.WHEN_EDIT);
+		}else{
+			getMetaworksContext().setWhen(WHEN_RENAME);
+		}
 	}
 
-	@ServiceMethod
+	@ServiceMethod(callByContent = true)
 	@Order(4)
-	public void moveTo() throws Exception {
-		throw new Exception("Not implemented");
+	public ModalWindow moveTo() throws Exception {
+		ResourceNavigator resourceNavigator = getComponent(ResourceNavigator.class);
+		filterResource(resourceNavigator.getRoot());
+
+		ModalWindow modalWindow = new ModalWindow(resourceNavigator, 300, 400, "Move To");
+
+		return modalWindow;
 	}
 
-	@ServiceMethod
+	@ServiceMethod(callByContent=true, except="fileTransfer", target="append")
 	@Order(5)
-	public void download() throws Exception {
-		throw new Exception("Not implemented");
+	public Download download() throws FileNotFoundException, IOException, Exception{
+		this.save();
+
+		String fileName = getResourceName() + getResourcePath().substring(getResourcePath().lastIndexOf("."));
+		MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
+
+		IResource defaultResource = DefaultResource.createResource(getResourcePath());
+		return defaultResource.download(fileName, mimetypesFileTypeMap.getContentType(fileName));
 	}
 
-	@ServiceMethod
+	@ServiceMethod(callByContent = true)
 	@Order(6)
-	public void upload() throws Exception {
-		throw new Exception("Not implemented");
+	public ModalWindow upload() throws Exception {
+		EditorPanelPopup editorPanelPopup = getComponent(EditorPanelPopup.class);
+		editorPanelPopup.setMetaworksContext(new MetaworksContext());
+		editorPanelPopup.getMetaworksContext().setWhen(WHEN_UPLOAD);
+
+		MetaworksFile metaworksFile = new MetaworksFile();
+		editorPanelPopup.setMetaworksFile(metaworksFile);
+
+		ModalWindow modalWindow = new ModalWindow(editorPanelPopup, 300, 200, "Upload");
+		return modalWindow;
 	}
 
-	@ServiceMethod
+	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	@Order(7)
 	public void delete() throws Exception {
-		throw new Exception("Not implemented");
+		IResource defaultResource = DefaultResource.createResource(getResourcePath());
+		autowire(defaultResource);
+		defaultResource.delete();
+
+		this.setEditor(null);
+		wrapReturn(new Refresh(this));
 	}
 
+	protected void filterResource(IContainer container){
+		List<IResource> resourceList = container.getChildren();
+		Iterator<IResource> resourceIterator = resourceList.iterator();
+
+		while(resourceIterator.hasNext()){
+			IResource resource = resourceIterator.next();
+			if(resource instanceof ContainerResource){
+				filterResource((ContainerResource)resource);
+			}else{
+				resourceIterator.remove();;
+			}
+		}
+	}
 
 }

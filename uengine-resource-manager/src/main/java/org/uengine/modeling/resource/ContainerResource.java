@@ -89,4 +89,9 @@ public class ContainerResource extends DefaultResource implements IContainer {
 	public String getResourceType(){
 		return null;
 	}
+
+	@Override
+	public void createFolder() throws Exception {
+		resourceManager.getStorage().createFolder(this);
+	}
 }

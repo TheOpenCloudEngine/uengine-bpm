@@ -29,7 +29,7 @@ public class ProcessResourceTest {
         // sample object to save in aws s3
         EditorPanel editorPanel = new EditorPanel();
         editorPanel.setResourcePath("테스트 케이스");
-        editorPanel.setIsNew(true);
+        editorPanel.setNew(true);
 
         processResource.save(editorPanel);
     }

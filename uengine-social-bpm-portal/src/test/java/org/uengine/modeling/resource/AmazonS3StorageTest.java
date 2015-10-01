@@ -16,6 +16,7 @@ import java.util.List;
 public class AmazonS3StorageTest {
     static ApplicationContext ctx;
 
+
     @BeforeClass
     public static void beforeMethod(){
         ctx =  new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -32,7 +33,7 @@ public class AmazonS3StorageTest {
         // sample object to save in aws s3
         EditorPanel editorPanel = new EditorPanel();
         editorPanel.setResourcePath("???");
-        editorPanel.setIsNew(true);
+        editorPanel.setNew(true);
 
         amazonS3Storage.save(processResource,editorPanel);
     }

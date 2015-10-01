@@ -1,0 +1,10 @@
+<% if(mw3.when == 'SaveAs'){ %>
+    <%= fields.saveAsFileName.here({when: 'edit'}) %>
+    <%= methods.saveAs.here() %>
+    <%= methods.cancelSaveAs.here() %>
+<% } %>
+
+<% if(mw3.when == 'Upload'){ %>
+    <%=fields.metaworksFile.here({when: 'edit'})%>
+    <%= methods.upload.here() %>
+<% } %>

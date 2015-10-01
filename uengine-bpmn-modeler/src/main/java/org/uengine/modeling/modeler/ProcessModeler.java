@@ -1,12 +1,6 @@
 package org.uengine.modeling.modeler;
 
 import org.metaworks.MetaworksContext;
-import org.metaworks.ServiceMethodContext;
-import org.metaworks.annotation.AutowiredFromClient;
-import org.metaworks.annotation.AutowiredToClient;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.ServiceMethod;
-import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.*;
@@ -20,7 +14,6 @@ import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
 
-import javax.lang.model.element.Element;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,27 +23,33 @@ public class ProcessModeler extends DefaultModeler {
 
 	public final static String SUFFIX = ".process";
 
+	public RolePanel rolePanel;
+	public RolePanel getRolePanel() {
+		return rolePanel;
+	}
+	public void setRolePanel(RolePanel rolePanel) {
+		this.rolePanel = rolePanel;
+	}
+
+	public ProcessVariablePanel processVariablePanel;
+	public ProcessVariablePanel getProcessVariablePanel() {
+		return processVariablePanel;
+	}
+	public void setProcessVariablePanel(ProcessVariablePanel processVariablePanel) {
+		this.processVariablePanel = processVariablePanel;
+	}
+
 	public ProcessModeler() {
 		setType(SUFFIX);
 		this.setCanvas(new ProcessCanvas(getType()));
-		Palette palette = new SimplePalette(getType());
-		this.setPalette(palette);
-
-//		setRolePanel(new RolePanel());
+		this.setPalette(new SimplePalette(getType()));
+		this.setRolePanel(new RolePanel());
+		this.setProcessVariablePanel(new ProcessVariablePanel());
 
 		setMetaworksContext(new MetaworksContext());
 		getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
 	}
 
-//	RolePanel rolePanel;
-////	@Hidden
-//	@AutowiredToClient
-//		public RolePanel getRolePanel() {
-//			return rolePanel;
-//		}
-//		public void setRolePanel(RolePanel rolePanel) {
-//			this.rolePanel = rolePanel;
-//		}
 
 //	@ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
 //	public ModalWindow openRolePanel(){
@@ -165,7 +164,7 @@ public class ProcessModeler extends DefaultModeler {
 		this.setModel(model, null);
 	}
 
-	public void setModel(IModel model, final ProcessInstance instance) throws Exception {
+	public void setModel(IModel model, final ProcessInstance insatnce) throws Exception {
 		if (model == null)
 			return;
 
@@ -191,9 +190,9 @@ public class ProcessModeler extends DefaultModeler {
 					return;
 				}
 
-				if(instance != null) {
+				if(insatnce != null) {
 					try {
-						elementView.setInstStatus(instance.getStatus(activity.getTracingTag()));
+						elementView.setInstStatus(insatnce.getStatus(activity.getTracingTag()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -204,12 +203,12 @@ public class ProcessModeler extends DefaultModeler {
 			}
 		};
 
-		if(getPalette()!=null && def.getRoles()!=null) {
-			((SimplePalette) getPalette()).getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
+		if(def.getRoles()!=null) {
+			this.getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
 		}
 
-		if(getPalette()!=null && def.getProcessVariables()!=null) {
-			((SimplePalette) getPalette()).getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
+		if(def.getProcessVariables()!=null) {
+			this.getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
 		}
 
 		for(Activity activity: def.getChildActivities()) {
@@ -220,12 +219,6 @@ public class ProcessModeler extends DefaultModeler {
 					SequenceFlow sequenceFlow = (SequenceFlow) relation;
 					SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
 					sequenceFlow.setRelationView(null);
-
-					if(sequenceFlowView==null){
-						//TODO: view should be generated if null
-						continue;
-					}
-
 					sequenceFlowView.setRelation(sequenceFlow);
 					relationViewList.add(sequenceFlowView);
 				}
@@ -310,10 +303,6 @@ public class ProcessModeler extends DefaultModeler {
 			throw new RuntimeException(e);
 		}
 	}
-
-
-	@AutowiredFromClient public RolePanel rolePanel;
-	@AutowiredFromClient public ProcessVariablePanel processVariablePanel;
 
 	public ProcessDefinition makeProcessDefinitionFromCanvas(Canvas canvas) throws Exception{
 		ProcessDefinition def = createEmptyProcessDefinition();

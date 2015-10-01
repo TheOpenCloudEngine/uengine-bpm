@@ -7,24 +7,6 @@ import org.uengine.kernel.view.*;
 import org.uengine.modeling.Palette;
 
 public class SimplePalette extends Palette {
-	RolePanel rolePanel = new RolePanel();
-		public RolePanel getRolePanel() {
-			return rolePanel;
-		}
-
-		public void setRolePanel(RolePanel rolePanel) {
-			this.rolePanel = rolePanel;
-		}
-
-	ProcessVariablePanel processVariablePanel = new ProcessVariablePanel();
-		public ProcessVariablePanel getProcessVariablePanel() {
-			return processVariablePanel;
-		}
-
-		public void setProcessVariablePanel(ProcessVariablePanel processVariablePanel) {
-			this.processVariablePanel = processVariablePanel;
-		}
-
 	public SimplePalette(){
 		
 	}

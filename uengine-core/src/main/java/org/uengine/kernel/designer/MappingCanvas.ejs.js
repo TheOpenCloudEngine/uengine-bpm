@@ -394,6 +394,11 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
 				$(me._RENDERER.getContainer()).focus();
 				return {
 					items: {
+						'Delete': {
+							name: 'Delete', callback: function () {
+								me._HANDLER.deleteSelectedShape();
+							}
+						},
 						'Math': {
 							name: 'Math',
 							items: {

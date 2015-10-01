@@ -3,6 +3,7 @@ package org.uengine.processadmin;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.uengine.codi.CodiProcessDefinitionFactory;
 import org.uengine.modeling.resource.ContainerResource;
 import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.modeling.resource.ResourceControlDelegate;
@@ -16,7 +17,7 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
     public ProcessAdminResourceNavigator(){
         super();
         setRoot(new ProcessAdminContainerResource());
-        getRoot().setPath("codi");
+        getRoot().setPath(CodiProcessDefinitionFactory.codiProcessDefinitionFolder);
 
         ResourceManager resourceManager;
 

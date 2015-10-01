@@ -64,6 +64,8 @@
 							<artifactId>processcodi</artifactId>
 						</overlay>
 					</overlays>
+
+					<attachClasses>true</attachClasses>
 				</configuration>
 			</plugin>
 

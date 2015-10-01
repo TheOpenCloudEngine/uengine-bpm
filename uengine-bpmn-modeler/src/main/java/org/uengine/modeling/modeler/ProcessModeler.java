@@ -165,7 +165,7 @@ public class ProcessModeler extends DefaultModeler {
 		this.setModel(model, null);
 	}
 
-	public void setModel(IModel model, final ProcessInstance insatnce) throws Exception {
+	public void setModel(IModel model, final ProcessInstance instance) throws Exception {
 		if (model == null)
 			return;
 
@@ -191,9 +191,9 @@ public class ProcessModeler extends DefaultModeler {
 					return;
 				}
 
-				if(insatnce != null) {
+				if(instance != null) {
 					try {
-						elementView.setInstStatus(insatnce.getStatus(activity.getTracingTag()));
+						elementView.setInstStatus(instance.getStatus(activity.getTracingTag()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -204,11 +204,11 @@ public class ProcessModeler extends DefaultModeler {
 			}
 		};
 
-		if(def.getRoles()!=null) {
+		if(getPalette()!=null && def.getRoles()!=null) {
 			((SimplePalette) getPalette()).getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
 		}
 
-		if(def.getProcessVariables()!=null) {
+		if(getPalette()!=null && def.getProcessVariables()!=null) {
 			((SimplePalette) getPalette()).getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
 		}
 
@@ -220,6 +220,12 @@ public class ProcessModeler extends DefaultModeler {
 					SequenceFlow sequenceFlow = (SequenceFlow) relation;
 					SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
 					sequenceFlow.setRelationView(null);
+
+					if(sequenceFlowView==null){
+						//TODO: view should be generated if null
+						continue;
+					}
+
 					sequenceFlowView.setRelation(sequenceFlow);
 					relationViewList.add(sequenceFlowView);
 				}

@@ -2,7 +2,6 @@ package org.uengine.application;
 
 import org.metaworks.annotation.Face;
 import org.metaworks.widget.IFrame;
-import org.uengine.uml.model.AttributeInstance;
 
 import java.net.URLEncoder;
 

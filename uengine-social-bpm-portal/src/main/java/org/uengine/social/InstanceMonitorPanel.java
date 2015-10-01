@@ -10,7 +10,6 @@ import org.uengine.modeling.modeler.ProcessCanvas;
 import org.uengine.modeling.modeler.ProcessModeler;
 import org.uengine.processmanager.ProcessManagerRemote;
 import org.uengine.uml.model.Attribute;
-import org.uengine.uml.model.AttributeInstance;
 import org.uengine.uml.model.ClassDefinition;
 import org.uengine.uml.model.ObjectInstance;
 

@@ -7,10 +7,12 @@ import org.metaworks.ToOpener;
 import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
+import org.uengine.codi.mw3.model.User;
 import org.uengine.contexts.ComplexType;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.ResourceNavigator;
 import org.uengine.modeling.resource.SelectedResource;
+import org.uengine.modeling.resource.resources.JavaClassResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
 import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelector;
 
@@ -38,13 +40,13 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
     }
 
 
-    @ServiceMethod(callByContent = true, eventBinding = "change", bindingFor = "primitypeTypeName", target= ServiceMethodContext.TARGET_APPEND)
+    @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_OPENER)
     public SocialBPMProcessVariableTypeSelector select(@AutowiredFromClient SelectedResource selectedComplexClassResource){
         SocialBPMProcessVariableTypeSelector socialBPMProcessVariableTypeSelector = new SocialBPMProcessVariableTypeSelector();
         socialBPMProcessVariableTypeSelector.setSelectedClassName(selectedComplexClassResource.getPath());
 
 
-        MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
+        //MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
 
         return socialBPMProcessVariableTypeSelector;
     }
@@ -57,9 +59,19 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
         MetaworksRemoteService.autowire(classResourceNavigator);
 
 
-        DefaultResource primitive = new DefaultResource();
-        primitive.setPath("java.lang.String");
-        classResourceNavigator.getRoot().getChildren().add(0, primitive);
+        {
+            DefaultResource primitive = new JavaClassResource();
+            primitive.setPath("java.lang.String");
+            classResourceNavigator.getRoot().getChildren().add(0, primitive);
+        }
+        {
+            DefaultResource primitive = new JavaClassResource();
+            primitive.setPath(RoleUser.class.getName());
+            classResourceNavigator.getRoot().getChildren().add(0, primitive);
+        }
+
+
+
         classResourceNavigator.getRoot().setMetaworksContext(new MetaworksContext());
         classResourceNavigator.getRoot().getMetaworksContext().setWhen(MetaworksContext.WHEN_VIEW);
 

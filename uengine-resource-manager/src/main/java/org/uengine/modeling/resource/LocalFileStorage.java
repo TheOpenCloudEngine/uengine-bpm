@@ -1,5 +1,6 @@
 package org.uengine.modeling.resource;
 
+import org.metaworks.MetaworksContext;
 import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ public class LocalFileStorage implements Storage{
 
     @Override
     public void rename(IResource fileResource, String newName) {
-        getFile(fileResource).renameTo(new File(newName));
+        getFile(fileResource).renameTo(new File(getTenantBasePath() + newName));
     }
 
     @Override
@@ -55,10 +56,6 @@ public class LocalFileStorage implements Storage{
         List<IResource> resourceList = new ArrayList<IResource>();
 
         File directory = getFile(containerResource);
-//
-//        if(!directory.exists())
-//            directory.mkdirs();
-//
 
         String tenantBasePath = getTenantBasePath();
 
@@ -79,14 +76,16 @@ public class LocalFileStorage implements Storage{
             relativePath = relativePath.substring(abstractTenantBasePath.length() + 1);
 
             if(file.isDirectory()){
-                ContainerResource containerResource1 = (ContainerResource) containerResource.getClass().newInstance();
+                ContainerResource subContainerResource = (ContainerResource) containerResource.getClass().newInstance();
 
+                subContainerResource.setPath(relativePath);
+                subContainerResource.setMetaworksContext(new MetaworksContext());
+                subContainerResource.setChildren(listFiles(subContainerResource));
 
-                containerResource1.setPath(relativePath);
-
-                resourceList.add(containerResource1);
-            }else
+                resourceList.add(subContainerResource);
+            }else{
                 resourceList.add(DefaultResource.createResource(relativePath));
+            }
         }
 
         return resourceList;
@@ -129,7 +128,13 @@ public class LocalFileStorage implements Storage{
 
     @Override
     public OutputStream getOutputStream(IResource resource) throws Exception {
-        return new FileOutputStream(getFile(resource));
+        File file = getFile(resource);
+        File directory = file.getParentFile();
+
+        if(!directory.exists())
+            directory.mkdirs();
+
+        return new FileOutputStream(file);
     }
 
     private File getFile(IResource fileResource) {

@@ -1,8 +1,11 @@
 package org.uengine.processadmin;
 
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.uengine.modeling.resource.ContainerResource;
 import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.modeling.resource.ResourceControlDelegate;
@@ -11,12 +14,15 @@ import org.uengine.modeling.resource.ResourceNavigator;
 /**
  * Created by jangjinyoung on 15. 7. 18..
  */
+@Scope("prototype")
+@Component
 public class ProcessAdminResourceNavigator extends ResourceNavigator {
 
     public ProcessAdminResourceNavigator(){
         super();
         setRoot(new ProcessAdminContainerResource());
         getRoot().setPath("codi");
+        getRoot().setMetaworksContext(new MetaworksContext());
 
         ResourceManager resourceManager;
 

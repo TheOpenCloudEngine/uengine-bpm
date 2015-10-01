@@ -1,27 +1,22 @@
-
-
-<% if(value.editor){%>
-
+<% if(value.editor){ %>
 <h1>
-<%if(value.isNew){%>
-    <%=fields.resourceName.here({when:'edit'})%>
-<%}else{%>
-    <%=value.resourceName%>
-<%}%>
+    <% if(value.new || mw3.when == 'Rename'){ %>
+    <%= fields.resourceName.here({when: 'edit'}) %>
+    <% }else{ %>
+    <%= value.resourceName %>
+    <% } %>
 </h1>
 
-<%=methods.save.here()%>
-<%=methods.saveAs.here()%>
-<%=methods.rename.here()%>
-<%=methods.moveTo.here()%>
-<%=methods.download.here()%>
-<%=methods.upload.here()%>
-<%=methods.delete.here()%>
+<%= methods.save.here() %>
+<%= methods.saveAs.here() %>
+<%= methods.rename.here() %>
+<%= methods.moveTo.here() %>
+<%= methods.download.here() %>
+<%= methods.upload.here() %>
+<%= methods.delete.here() %>
 
 <p><br>
 
-
-<%=fields.editor.here()%>
-
-<%}%>
+<%= fields.editor.here() %>
+<% } %>
 

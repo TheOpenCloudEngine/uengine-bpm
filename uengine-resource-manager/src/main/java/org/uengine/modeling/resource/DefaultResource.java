@@ -1,14 +1,19 @@
 package org.uengine.modeling.resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.directwebremoting.io.FileTransfer;
 import org.metaworks.*;
 import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.Download;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Id;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import static org.metaworks.dwr.MetaworksRemoteService.getComponent;
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
@@ -166,6 +171,10 @@ public class DefaultResource implements IResource {
 		_newAndOpen(true);
 	}
 
+	public void reopen() throws Exception {
+		_newAndOpen(false);
+	}
+
 	protected void _newAndOpen(boolean isNew) throws Exception {
 		EditorPanel editorPanel = getComponent(EditorPanel.class);
 		editorPanel.setResourcePath(getPath());
@@ -180,10 +189,13 @@ public class DefaultResource implements IResource {
 
 		IEditor editor = (IEditor) editorClass.newInstance();
 
-		if(isNew)
+		if(isNew){
 			editor.setEditingObject(editor.newObject(this));
-		else
+			editorPanel.setNew(true);
+		}
+		else{
 			editor.setEditingObject(resourceManager.getStorage().getObject(this));
+		}
 
 		editorPanel.setEditor(editor);
 
@@ -211,11 +223,9 @@ public class DefaultResource implements IResource {
 		this.metaworksContext = metaworksContext;
 	}
 
-	public Object delete() {
-
+	@Override
+	public void delete() {
 		resourceManager.getStorage().delete(this);
-
-		return null;
 	}
 
 
@@ -262,6 +272,25 @@ public class DefaultResource implements IResource {
 	@Override
 	public void save(Object editingObject) throws Exception {
 		resourceManager.getStorage().save(this, editingObject);
+	}
+
+	@Override
+	public Download download(String fileName, String mimeType) throws Exception {
+		return new Download(new FileTransfer(fileName, mimeType, resourceManager.getStorage().getInputStream(this)));
+	}
+
+	@Override
+	public void copy(String desPath) throws Exception {
+		resourceManager.getStorage().copy(this, desPath);
+	}
+
+	@Override
+	public void upload(InputStream is) {
+		try (OutputStream os = resourceManager.getStorage().getOutputStream(this)) {
+			MetaworksFile.copyStream(is, os);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
 

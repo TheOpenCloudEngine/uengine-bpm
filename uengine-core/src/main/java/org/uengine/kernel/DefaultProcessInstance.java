@@ -595,6 +595,10 @@ public class DefaultProcessInstance extends ProcessInstance{
 		IndexedProcessVariableMap ipvm = getAsIndexedProcessVariableMap(tracingTag, key);
 		
 		int maxIndex = ipvm.getMaxIndex();
+
+		if(ipvm.size()==0)
+			return null;
+
 		ProcessVariableValue pvv = new ProcessVariableValue();
 
 		for(int i=0; i<maxIndex+1; i++){

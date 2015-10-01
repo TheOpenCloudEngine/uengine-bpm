@@ -23,6 +23,6 @@
         <property name="awsSecretAccessKey" value="${Amazon.SecretAccessKey}"/>
     </bean>
 
-    <bean id="ProcessResource" class="org.uengine.modeling.resource.resources.ProcessResource"/>
+    <bean id="ProcessResource" class="org.uengine.modeling.resource.resources.EssenceProcessResource"/>
 
 </beans>

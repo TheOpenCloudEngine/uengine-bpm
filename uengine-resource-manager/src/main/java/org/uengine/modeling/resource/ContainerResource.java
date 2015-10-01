@@ -23,7 +23,7 @@ public class ContainerResource extends DefaultResource implements IContainer {
 	}
 
 	@Children
-	@Available(when = MetaworksContext.WHEN_VIEW)
+//	@Available(when = MetaworksContext.WHEN_VIEW)
 	public List<IResource> getChildren() {
 		if (children == null) {
 			children = new ArrayList<IResource>();

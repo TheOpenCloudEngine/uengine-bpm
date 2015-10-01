@@ -17,11 +17,13 @@ public class AttributeTypeSelector extends SelectBox implements Face<String>{
         options.add("Text");
         options.add("Number");
         options.add("Date");
+        options.add("Boolean");
 
         ArrayList<String> values = new ArrayList<String>();
         values.add("java.lang.String");
         values.add("java.lang.Long");
         values.add("java.util.Calendar");
+        values.add("java.lang.Boolean");
 
         setOptionNames(options);
         setOptionValues(values);

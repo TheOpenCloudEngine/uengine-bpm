@@ -95,7 +95,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 
 	private String typeClassName;
-	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector")
+	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector", displayName = "$Type")
 		public String getTypeClassName() {
 			return typeClassName;
 		}
@@ -195,6 +195,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 	Object defaultValue = null;
 	@Order(4)
+	@Hidden
 	@Face(faceClass= GenericValueFace.class)
 		public Object getDefaultValue() {
 			if(getType()==ComplexType.class || getType()==null)
@@ -447,21 +448,28 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 
 		Class variableType = getType();
 
-		if (variableType == ComplexType.class || (variableType == null && typeClassName!=null)) {
+		if ((variableType == ComplexType.class || variableType == null) && typeClassName!=null){
+			if(typeClassName.indexOf("/") > 0) {
 
-			ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+				ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
-			ClassDefinition classDefinition = null;
-			try {
+				ClassDefinition classDefinition = null;
+				try {
 
-													///// Need to be cached.
-				classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(getTypeClassName()));
+					///// Need to be cached.
+					classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(getTypeClassName()));
 
-				processVariableValue = classDefinition.createObjectInstance();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+					processVariableValue = classDefinition.createObjectInstance();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}else {
+				try {
+					processVariableValue = (Serializable) MetaworksRemoteService.getComponent(Thread.currentThread().getContextClassLoader().loadClass(typeClassName));
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException(e);
+				}
 			}
-
 		} else {
 
 			if (variableType == Boolean.class) {

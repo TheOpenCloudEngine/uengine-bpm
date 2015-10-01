@@ -504,7 +504,7 @@ public class SubProcess extends ScopeActivity{
 
     public boolean onSubProcessReturn(ProcessInstance instance, ProcessInstance subProcessInstance) throws Exception{
 
-        String executionScope = subProcessInstance.getExecutionScopeContext().getExecutionScope();
+        String executionScope = subProcessInstance.getExecutionScopeContext() != null ? subProcessInstance.getExecutionScopeContext().getExecutionScope() : null;
         instance.setExecutionScope(instance.getMainExecutionScope());
 
         if(isRunAndForget()){

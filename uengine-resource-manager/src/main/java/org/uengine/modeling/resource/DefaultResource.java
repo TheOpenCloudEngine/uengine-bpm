@@ -145,7 +145,7 @@ public class DefaultResource implements IResource {
 	 */
 	@Order(6)
 	@Face(displayName="open")
-	@ServiceMethod(callByContent=true, except="children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu=true, target=ServiceMethodContext.TARGET_APPEND)
+	@ServiceMethod(callByContent=true, except="children", eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu=true, target=ServiceMethodContext.TARGET_POPUP)
 	public void open(@AutowiredFromClient
 							  ResourceControlDelegate resourceControlDelegate
 
@@ -180,6 +180,8 @@ public class DefaultResource implements IResource {
 		editorPanel.setResourcePath(getPath());
 		editorPanel.setMetaworksContext(new MetaworksContext());
 		editorPanel.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+
+		editorPanel.setIsNew(isNew);
 
 		String type = getType();
 

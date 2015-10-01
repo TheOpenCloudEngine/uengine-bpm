@@ -72,7 +72,7 @@ public class Event extends DefaultActivity implements MessageListener{
 		if(payload instanceof String){
 			String message = (String)payload;
 
-			if(getName().equals(message)){
+			if(getTracingTag().equals(message)){
 
 				fireComplete(instance);  //let event starts
 

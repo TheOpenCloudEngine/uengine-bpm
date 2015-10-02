@@ -99,6 +99,8 @@ public interface IResource extends ContextAware{
 
 	void upload(InputStream is);
 
+	void move(IContainer container) throws IOException;
+
 	void newOpen() throws Exception;
 
 	void reopen() throws Exception;

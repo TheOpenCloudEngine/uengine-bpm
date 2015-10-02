@@ -23,7 +23,7 @@ public class ProcessResource extends DefaultResource {
     public void save(Object editingObject) throws Exception {
         super.save(editingObject);
 
-        definitionFactory.removeFromCache(getPath().substring("codi/".length()));
+        definitionFactory.removeFromCache(getPath().substring(CodiProcessDefinitionFactory.codiProcessDefinitionFolder.length() + 1));
     }
 
     @Autowired

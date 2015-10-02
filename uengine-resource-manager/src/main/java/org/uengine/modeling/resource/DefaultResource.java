@@ -294,5 +294,10 @@ public class DefaultResource implements IResource {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void move(IContainer container) throws IOException {
+		resourceManager.getStorage().move(this, container);
+	}
 }
 

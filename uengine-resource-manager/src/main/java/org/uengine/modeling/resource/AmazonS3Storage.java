@@ -190,4 +190,9 @@ public class AmazonS3Storage implements Storage{
 
         return tenantId + File.separator;
     }
+
+    @Override
+    public void move(IResource src, IContainer container) {
+
+    }
 }

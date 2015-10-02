@@ -5,9 +5,11 @@ import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.uengine.modeling.IModel;
+import static java.nio.file.StandardCopyOption.*;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,5 +154,12 @@ public class LocalFileStorage implements Storage{
         }
 
         return getLocalBasePath() + File.separator + tenantId + File.separator;
+    }
+
+    @Override
+    public void move(IResource src, IContainer container) throws IOException {
+        Path source = getFile(src).toPath();
+        Path target = new File(getTenantBasePath() + container.getPath() + File.separator + src.getName()).toPath();
+        Files.move(source, target, REPLACE_EXISTING);
     }
 }

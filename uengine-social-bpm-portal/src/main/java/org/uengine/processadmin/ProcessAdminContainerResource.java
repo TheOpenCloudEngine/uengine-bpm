@@ -8,9 +8,7 @@ import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.mw3.model.Perspective;
 import org.uengine.codi.mw3.model.Session;
-import org.uengine.modeling.resource.ContainerResource;
-import org.uengine.modeling.resource.DefaultResource;
-import org.uengine.modeling.resource.EditorPanel;
+import org.uengine.modeling.resource.*;
 
 import java.io.File;
 
@@ -35,6 +33,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
     public static final String WHEN_NEW_TREE = "tree";
 
     @AutowiredFromClient public Session session;
+    @AutowiredFromClient public EditorPanel editorPanel;
 
     String newFolderName;
         public String getNewFolderName() {
@@ -113,5 +112,19 @@ public class ProcessAdminContainerResource extends ContainerResource {
     public Object moveTo(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
         System.out.print("Hello World");
         return new Remover(new ModalWindow());
+    }
+
+    @Override
+    @ServiceMethod(callByContent = true, except = "children", inContextMenu = true)
+    public SelectedResource select() throws Exception {
+        if(getMetaworksContext() != null && getMetaworksContext().getWhen() == null){
+            return super.select();
+        }else{
+            IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
+            autowire(defaultResource);
+            defaultResource.move(this);
+            wrapReturn(null, new Remover(new ModalWindow()));
+            return null;
+        }
     }
 }

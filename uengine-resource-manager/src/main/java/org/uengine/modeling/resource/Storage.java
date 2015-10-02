@@ -2,6 +2,7 @@ package org.uengine.modeling.resource;
 
 import org.uengine.modeling.IModel;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -13,6 +14,7 @@ public interface Storage {
     public void delete(IResource resource);
     public void rename(IResource resource, String newName);
     public void copy(IResource src, String desPath) throws Exception;
+    public void move(IResource src, IContainer container) throws IOException;
     public List<IResource> listFiles(IContainer containerResource) throws Exception;
 
     public void createFolder(IContainer containerResource) throws Exception;

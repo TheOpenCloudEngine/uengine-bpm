@@ -182,6 +182,8 @@ public class EditorPanel implements ContextAware {
 			IResource resource = resourceIterator.next();
 			if(resource instanceof ContainerResource){
 				filterResource((ContainerResource)resource);
+				resource.setMetaworksContext(new MetaworksContext());
+				resource.getMetaworksContext().setWhen(WHEN_MOVETO);
 			}else{
 				resourceIterator.remove();;
 			}

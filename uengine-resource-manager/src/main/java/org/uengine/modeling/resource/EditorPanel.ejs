@@ -1,9 +1,9 @@
 <% if(value.editor){ %>
 <h1>
     <% if(value.new || mw3.when == 'Rename'){ %>
-    <%= fields.resourceName.here({when: 'edit'}) %>
+        <%= fields.resourceName.here({when: 'edit'}) %>
     <% }else{ %>
-    <%= value.resourceName %>
+        <%= value.resourceName %>
     <% } %>
 </h1>
 

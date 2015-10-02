@@ -20,6 +20,12 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
 
     public ProcessAdminResourceNavigator(){
         super();
+
+        this.load();
+    }
+
+    @Override
+    public void load(){
         setRoot(new ProcessAdminContainerResource());
         getRoot().setPath("codi");
         getRoot().setMetaworksContext(new MetaworksContext());
@@ -46,7 +52,6 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
             e.printStackTrace();
         }
     }
-
 
 //    ResourceControlDelegate processAdminResourceControlDelegate;
 //    @AutowiredToClient

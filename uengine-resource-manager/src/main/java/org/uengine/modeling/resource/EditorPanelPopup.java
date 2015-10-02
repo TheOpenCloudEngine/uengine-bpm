@@ -13,6 +13,7 @@ import org.metaworks.widget.ModalWindow;
 import java.io.File;
 
 import static org.metaworks.dwr.MetaworksRemoteService.autowire;
+import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
 /**
  * Created by hoo.lim on 9/14/2015.
@@ -48,7 +49,7 @@ public class EditorPanelPopup implements ContextAware{
 
     @Face(displayName = "OK")
     @ServiceMethod(callByContent = true)
-    public Object saveAs(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
+    public void saveAs(@AutowiredFromClient EditorPanel editorPanel, @AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
         IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
         autowire(defaultResource);
 
@@ -56,7 +57,9 @@ public class EditorPanelPopup implements ContextAware{
                 File.separator + saveAsFileName + "." + defaultResource.getType();
         defaultResource.copy(desPath);
 
-        return new Remover(new ModalWindow());
+        resourceNavigator.load();
+
+        wrapReturn(resourceNavigator, new Remover(new ModalWindow()));
     }
 
     @Face(displayName = "Cancel")

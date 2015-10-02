@@ -4,6 +4,7 @@ import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
 import org.metaworks.MetaworksFile;
 import org.metaworks.Refresh;
+import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Order;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Download;
@@ -76,7 +77,7 @@ public class EditorPanel implements ContextAware {
 
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)
 	@Order(1)
-	public void save() throws Exception {
+	public void save(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
 		if(isNew() && getResourceName()==null){
 			throw new Exception("Please enter a file name");
 		}
@@ -96,6 +97,10 @@ public class EditorPanel implements ContextAware {
 		defaultResource.save(getEditor().createEditedObject());
 
 		setNew(false);
+
+		resourceNavigator.load();
+
+		wrapReturn(resourceNavigator);
 	}
 
 	@ServiceMethod(callByContent = true)
@@ -111,7 +116,7 @@ public class EditorPanel implements ContextAware {
 
 	@ServiceMethod(callByContent = true)
 	@Order(3)
-	public void rename() throws Exception {
+	public void rename(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
 		if(WHEN_RENAME.equals(getMetaworksContext().getWhen())){
 			IResource defaultResource = DefaultResource.createResource(getResourcePath());
 			autowire(defaultResource);
@@ -121,6 +126,10 @@ public class EditorPanel implements ContextAware {
 			defaultResource.rename(desResourcePath);
 
 			getMetaworksContext().setWhen(metaworksContext.WHEN_EDIT);
+
+			resourceNavigator.load();
+
+			wrapReturn(resourceNavigator);
 		}else{
 			getMetaworksContext().setWhen(WHEN_RENAME);
 		}
@@ -139,8 +148,8 @@ public class EditorPanel implements ContextAware {
 
 	@ServiceMethod(callByContent=true, except="fileTransfer", target="append")
 	@Order(5)
-	public Download download() throws FileNotFoundException, IOException, Exception{
-		this.save();
+	public Download download(@AutowiredFromClient ResourceNavigator resourceNavigator) throws FileNotFoundException, IOException, Exception{
+		this.save(resourceNavigator);
 
 		String fileName = getResourceName() + getResourcePath().substring(getResourcePath().lastIndexOf("."));
 		MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
@@ -165,13 +174,16 @@ public class EditorPanel implements ContextAware {
 
 	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	@Order(7)
-	public void delete() throws Exception {
+	public void delete(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
 		IResource defaultResource = DefaultResource.createResource(getResourcePath());
 		autowire(defaultResource);
 		defaultResource.delete();
 
 		this.setEditor(null);
-		wrapReturn(new Refresh(this));
+
+		resourceNavigator.load();
+
+		wrapReturn(resourceNavigator,this);
 	}
 
 	protected void filterResource(IContainer container){

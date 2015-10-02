@@ -41,4 +41,7 @@ public class ResourceNavigator {
         public void setResourceControlDelegate(ResourceControlDelegate resourceControlDelegate) {
             this.resourceControlDelegate = resourceControlDelegate;
         }
+
+    public void load(){
+    }
 }

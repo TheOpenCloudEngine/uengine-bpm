@@ -33,7 +33,6 @@ public class ProcessAdminContainerResource extends ContainerResource {
     public static final String WHEN_NEW_TREE = "tree";
 
     @AutowiredFromClient public Session session;
-    @AutowiredFromClient public EditorPanel editorPanel;
 
     String newFolderName;
         public String getNewFolderName() {
@@ -108,23 +107,17 @@ public class ProcessAdminContainerResource extends ContainerResource {
         resource.newOpen();
     }
 
-    @ServiceMethod(inContextMenu = true, callByContent = true, eventBinding = EventContext.EVENT_CLICK)
-    public Object moveTo(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
-        System.out.print("Hello World");
-        return new Remover(new ModalWindow());
-    }
+    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu=true)
+    public void open(@AutowiredFromClient EditorPanel editorPanel,
+            @AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
+        autowire(defaultResource);
+        defaultResource.move(this);
 
-    @Override
-    @ServiceMethod(callByContent = true, except = "children", inContextMenu = true)
-    public SelectedResource select() throws Exception {
-        if(getMetaworksContext() != null && getMetaworksContext().getWhen() == null){
-            return super.select();
-        }else{
-            IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
-            autowire(defaultResource);
-            defaultResource.move(this);
-            wrapReturn(null, new Remover(new ModalWindow()));
-            return null;
-        }
+        editorPanel.setEditor(null);
+
+        resourceNavigator.load();
+
+        wrapReturn(editorPanel, resourceNavigator,new Remover(new ModalWindow()));
     }
 }

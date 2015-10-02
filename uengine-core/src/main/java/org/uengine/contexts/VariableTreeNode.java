@@ -1,5 +1,6 @@
 package org.uengine.contexts;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.uml.model.Attribute;
 import org.uengine.uml.model.ClassDefinition;
+import org.uengine.uml.model.ObjectInstance;
 
 public class VariableTreeNode extends TreeNode {
 	
@@ -81,7 +83,16 @@ public class VariableTreeNode extends TreeNode {
 						if(classDefinition!=null){
 							node.setChild(loadClassProperties(node, classDefinition));
 						}
+					}else
+					if (processVariable.getDefaultValue()!=null && processVariable.getDefaultValue() instanceof ObjectInstance){
+						ObjectInstance objectInstance = (ObjectInstance) processVariable.getDefaultValue();
+						ClassDefinition classDefinition = objectInstance.getClassDefinition();
+
+						if(classDefinition!=null){
+							node.setChild(loadClassProperties(node, classDefinition));
+						}
 					}
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

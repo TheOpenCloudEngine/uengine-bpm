@@ -196,10 +196,10 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 	Object defaultValue = null;
 	@Order(4)
 	@Hidden
-	@Face(faceClass= GenericValueFace.class)
+//	@Face(faceClass= GenericValueFace.class)
 		public Object getDefaultValue() {
-			if(getType()==ComplexType.class || getType()==null)
-				return null;
+//			if(getType()==ComplexType.class || getType()==null)
+//				return null;
 
 			return defaultValue;
 		}

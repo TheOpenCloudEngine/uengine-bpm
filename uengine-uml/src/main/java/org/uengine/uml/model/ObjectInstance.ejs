@@ -1,6 +1,14 @@
 
 <%
 
+	/*store original values*/
+	var org_value = value;
+	var org_objectMetadata = objectMetadata;
+	var org_fields = fields;
+	var org_methods = methods;
+
+
+
 	if(value!=null){
 
 
@@ -252,4 +260,17 @@
   }
 %>
 <%}else if(showNewBtn){%>
-<%}%>
+<%}
+
+
+	/*restore original values*/
+	value = org_value;
+	objectMetadata = org_objectMetadata;
+	fields = org_fields;
+	methods = org_methods;
+
+
+
+
+
+%>

@@ -50,7 +50,7 @@ public class EditorPanelPopup implements ContextAware{
     @Face(displayName = "OK")
     @ServiceMethod(callByContent = true)
     public void saveAs(@AutowiredFromClient EditorPanel editorPanel, @AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
-        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
+        DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(editorPanel.getResourcePath());
         autowire(defaultResource);
 
         String desPath = defaultResource.getPath().substring(0, defaultResource.getPath().lastIndexOf(File.separator)) +
@@ -71,7 +71,7 @@ public class EditorPanelPopup implements ContextAware{
     @Face(displayName = "Upload")
     @ServiceMethod(callByContent = true)
     public Object upload(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
-        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
+        DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(editorPanel.getResourcePath());
         autowire(defaultResource);
 
         defaultResource.upload(getMetaworksFile().getFileTransfer().getInputStream());

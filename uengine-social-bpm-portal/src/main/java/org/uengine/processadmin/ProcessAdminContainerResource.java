@@ -13,6 +13,7 @@ import org.uengine.modeling.resource.*;
 import java.io.File;
 
 import static org.metaworks.dwr.MetaworksRemoteService.autowire;
+import static org.metaworks.dwr.MetaworksRemoteService.getComponent;
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
 /**
@@ -108,16 +109,16 @@ public class ProcessAdminContainerResource extends ContainerResource {
     }
 
     @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu=true)
-    public void open(@AutowiredFromClient EditorPanel editorPanel,
-            @AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+    public void open(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
         IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
         autowire(defaultResource);
         defaultResource.move(this);
 
         editorPanel.setEditor(null);
 
+        ResourceNavigator resourceNavigator = getComponent(ResourceNavigator.class);
         resourceNavigator.load();
 
-        wrapReturn(editorPanel, resourceNavigator,new Remover(new ModalWindow()));
+        wrapReturn(editorPanel,new Remover(new ModalWindow()),new Refresh(resourceNavigator));
     }
 }

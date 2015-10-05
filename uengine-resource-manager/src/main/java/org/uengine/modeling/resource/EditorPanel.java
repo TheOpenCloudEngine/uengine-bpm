@@ -139,6 +139,7 @@ public class EditorPanel implements ContextAware {
 	@Order(4)
 	public ModalWindow moveTo() throws Exception {
 		ResourceNavigator resourceNavigator = getComponent(ResourceNavigator.class);
+		resourceNavigator.setResourceControlDelegate(new ResourceControlDelegateForMoveTo());
 		filterResource(resourceNavigator.getRoot());
 
 		ModalWindow modalWindow = new ModalWindow(resourceNavigator, 300, 400, "Move To");
@@ -154,7 +155,7 @@ public class EditorPanel implements ContextAware {
 		String fileName = getResourceName() + getResourcePath().substring(getResourcePath().lastIndexOf("."));
 		MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
 
-		IResource defaultResource = DefaultResource.createResource(getResourcePath());
+		DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(getResourcePath());
 		return defaultResource.download(fileName, mimetypesFileTypeMap.getContentType(fileName));
 	}
 
@@ -175,7 +176,7 @@ public class EditorPanel implements ContextAware {
 	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	@Order(7)
 	public void delete(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
-		IResource defaultResource = DefaultResource.createResource(getResourcePath());
+		DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(getResourcePath());
 		autowire(defaultResource);
 		defaultResource.delete();
 

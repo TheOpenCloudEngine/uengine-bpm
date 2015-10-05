@@ -107,17 +107,17 @@ public class ProcessAdminContainerResource extends ContainerResource {
         resource.newOpen();
     }
 
-    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu=true)
-    public void open(@AutowiredFromClient EditorPanel editorPanel,
-            @AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
-        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
-        autowire(defaultResource);
-        defaultResource.move(this);
-
-        editorPanel.setEditor(null);
-
-        resourceNavigator.load();
-
-        wrapReturn(editorPanel, resourceNavigator,new Remover(new ModalWindow()));
-    }
+//    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu=true)
+//    public void open(@AutowiredFromClient EditorPanel editorPanel,
+//            @AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+//        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
+//        autowire(defaultResource);
+//        defaultResource.move(this);
+//
+//        editorPanel.setEditor(null);
+//
+//        resourceNavigator.load();
+//
+//        wrapReturn(editorPanel, resourceNavigator,new Remover(new ModalWindow()));
+//    }
 }

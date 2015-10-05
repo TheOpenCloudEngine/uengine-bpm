@@ -1,6 +1,8 @@
 
 <%
 
+debugger;
+
 	/*store original values*/
 	var org_value = value;
 	var org_objectMetadata = objectMetadata;
@@ -21,7 +23,7 @@
 			}
 
 			if(!value.classDefinition || !value.classDefinition.fieldDescriptors){
-				value = value.fillClassDefinition(); //try to fill in
+				value.classDefinition = realValue.fillClassDefinition().classDefinition; //try to fill in
 				mw3.uengineUML.classDefinitions[value.className] = value.classDefinition;
 			}
 		}

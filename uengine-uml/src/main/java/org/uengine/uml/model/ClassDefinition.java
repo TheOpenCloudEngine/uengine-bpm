@@ -34,7 +34,7 @@ public class ClassDefinition extends WebObjectType implements Serializable{
 
 
     @Override
-    @Face(faceClass = AttributeListFace.class, displayName = "$fields")
+    @Face(faceClass = AttributeListFace.class, displayName = "Attributes")
     public Attribute[] getFieldDescriptors() {
         return (Attribute[]) super.getFieldDescriptors();
     }

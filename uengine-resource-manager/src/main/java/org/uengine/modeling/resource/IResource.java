@@ -4,6 +4,10 @@ import org.metaworks.ContextAware;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Name;
+import org.metaworks.widget.Download;
+
+import java.io.IOException;
+import java.io.InputStream;
 //import org.metaworks.widget.Download;
 //
 //import java.io.IOException;
@@ -91,17 +95,17 @@ public interface IResource extends ContextAware{
 
 	void save(Object editingObject) throws Exception;
 
-//	void delete();
-//
-//	Download download(String fileName, String mimeType) throws Exception;
-//
-//	void copy(String desPath) throws Exception;
-//
-//	void upload(InputStream is);
-//
-//	void move(IContainer container) throws IOException;
-//
-//	void newOpen() throws Exception;
-//
-//	void reopen() throws Exception;
+	void delete();
+
+	Download download(String fileName, String mimeType) throws Exception;
+
+	void copy(String desPath) throws Exception;
+
+	void upload(InputStream is);
+
+	void move(IContainer container) throws IOException;
+
+	void newOpen() throws Exception;
+
+	void reopen() throws Exception;
 }

@@ -337,7 +337,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 				setExecutionScope(getMainExecutionScope());
 			}
 
-		}while(scope != null);
+		}while(scope != null); //if value is not found in the scope, finding values to the parent scopes as well.
 
 		setExecutionScopeContext(originalScope);
 
@@ -670,7 +670,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 		if(pvv==null) throw new UEngineException("Not a valid ProcessVariableValue (null).");
 		if(pvv.getName()==null) throw new UEngineException("Not a valid ProcessVariableValue (should have name).");
 		
-		setSourceValue(scopeByTracingTag, pvv.getName(), null);
+		setSourceValue(scopeByTracingTag, pvv.getName(), new IndexedProcessVariableMap());
 		pvv.beforeFirst();
 		int i=0;
 		do{

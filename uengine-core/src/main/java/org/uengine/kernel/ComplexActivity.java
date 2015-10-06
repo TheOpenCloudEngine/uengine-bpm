@@ -229,7 +229,14 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 			//System.out.println("--------------------------"+currStep);
 
 			if(!instance.isSuspended(getTracingTag())){
-				executeActivity(instance);	//execute next
+				ExecutionScopeContext executionScopeContext = instance.getExecutionScopeContext();
+				instance.setExecutionScope(instance.getMainExecutionScope());
+
+				executeActivity(instance);	//execute next in the parent scope context.
+
+				instance.setExecutionScope(executionScopeContext.getExecutionScope());
+
+
 			}else{
 				System.out.println("this step is suspended:"+currStep);
 			}

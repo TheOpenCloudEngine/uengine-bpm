@@ -1,5 +1,6 @@
 package org.uengine.uml.model;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.metaworks.ContextAware;
 import org.metaworks.AllChildFacesAreIgnored;
 import org.metaworks.MetaworksContext;
@@ -27,6 +28,7 @@ public class ObjectInstance implements Serializable, ContextAware, BeanPropertyR
 //            this.attributeInstanceList = attributeInstanceList;
 //        }
 
+//    @XStreamOmitField
     ClassDefinition classDefinition;
     @Face(faceClass = AllChildFacesAreIgnored.class)
         public ClassDefinition getClassDefinition() {

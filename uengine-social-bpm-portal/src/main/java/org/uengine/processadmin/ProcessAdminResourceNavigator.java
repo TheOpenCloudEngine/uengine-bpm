@@ -11,6 +11,8 @@ import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.modeling.resource.ResourceControlDelegate;
 import org.uengine.modeling.resource.ResourceNavigator;
 
+import java.util.Collections;
+
 /**
  * Created by jangjinyoung on 15. 7. 18..
  */
@@ -20,6 +22,12 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
 
     public ProcessAdminResourceNavigator(){
         super();
+
+        this.load();
+    }
+
+    @Override
+    public void load(){
         setRoot(new ProcessAdminContainerResource());
         getRoot().setPath("codi");
         getRoot().setMetaworksContext(new MetaworksContext());
@@ -46,7 +54,6 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
             e.printStackTrace();
         }
     }
-
 
 //    ResourceControlDelegate processAdminResourceControlDelegate;
 //    @AutowiredToClient

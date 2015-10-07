@@ -93,6 +93,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	final public static String PVKEY_RETRY_CNT = "_retryCnt";
 
 	public static final String STATUS_RESERVED = "Reserved";
+
+
 	transient MetaworksContext metaworksContext;
 		public MetaworksContext getMetaworksContext() {
 			return metaworksContext;
@@ -100,6 +102,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setMetaworksContext(MetaworksContext metaworksContext) {
 			this.metaworksContext = metaworksContext;
 		}
+
+
 	/**
 	 * points parent activity (should be kind of ComplexActivity of this activity)
 	 */

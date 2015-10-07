@@ -8,24 +8,35 @@ var org_uengine_uml_model_ObjectInstance = function(objectId, className) {
 
 org_uengine_uml_model_ObjectInstance.prototype.getValue = function(){
 
-    var valueFromUI = mw3.getObjectFromUI(this.objectId);
+    var value = mw3.getObjectFromUI(this.objectId);
 
-    if(valueFromUI == null)
+    if(value == null)
         return null;
 
-    var objectMetadata = valueFromUI.classDefinition;
+    var objectMetadata = value.classDefinition;
 
-    valueFromUI.valueMap = {};
+    value.valueMap = {};
 
-    if(!(objectMetadata && objectMetadata.fieldDescriptors) && mw3.uengineUML) {
-        objectMetadata = mw3.uengineUML.classDefinitions[valueFromUI.className];
+    if(!objectMetadata || !objectMetadata.fieldDescriptors){
+        if(mw3.uengineUML){
+            value.classDefinition = mw3.uengineUML.classDefinitions[value.className];
+        }else{
+            mw3.uengineUML = {classDefinitions:{}};
+        }
+
+        if(!value.classDefinition || !value.classDefinition.fieldDescriptors){
+            value = value.fillClassDefinition(); //try to fill in
+            mw3.uengineUML.classDefinitions[value.className] = value.classDefinition;
+        }
+
+        objectMetadata = value.classDefinition;
     }
 
     for(var i=0; i<objectMetadata.fieldDescriptors.length; i++){
         var fd = objectMetadata.fieldDescriptors[i];
 
-        valueFromUI.valueMap[fd.name] = valueFromUI[fd.name];
+        value.valueMap[fd.name] = value[fd.name];
     }
 
-    return valueFromUI;
+    return value;
 }

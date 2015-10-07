@@ -157,7 +157,7 @@ public class DefaultResource implements IResource {
 			_newAndOpen(false);
 	}
 
-
+	@Hidden
 	@ServiceMethod(callByContent = true, except = "children", inContextMenu = true)
 	public SelectedResource select() throws Exception {
 		SelectedResource selectedResource = new SelectedResource();
@@ -225,7 +225,6 @@ public class DefaultResource implements IResource {
 		this.metaworksContext = metaworksContext;
 	}
 
-	@Override
 	public void delete() {
 		resourceManager.getStorage().delete(this);
 	}
@@ -276,17 +275,14 @@ public class DefaultResource implements IResource {
 		resourceManager.getStorage().save(this, editingObject);
 	}
 
-	@Override
 	public Download download(String fileName, String mimeType) throws Exception {
 		return new Download(new FileTransfer(fileName, mimeType, resourceManager.getStorage().getInputStream(this)));
 	}
 
-	@Override
 	public void copy(String desPath) throws Exception {
 		resourceManager.getStorage().copy(this, desPath);
 	}
 
-	@Override
 	public void upload(InputStream is) {
 		try (OutputStream os = resourceManager.getStorage().getOutputStream(this)) {
 			MetaworksFile.copyStream(is, os);
@@ -295,9 +291,18 @@ public class DefaultResource implements IResource {
 		}
 	}
 
-	@Override
 	public void move(IContainer container) throws IOException {
 		resourceManager.getStorage().move(this, container);
+	}
+
+	@Override
+	public int compareTo(IResource resource) {
+		if(!(this instanceof IContainer) && resource instanceof IContainer){
+			return 1;
+		}else if(this instanceof IContainer && !(resource instanceof IContainer)){
+			return -1;
+		}
+		return this.getName().compareTo(resource.getName());
 	}
 }
 

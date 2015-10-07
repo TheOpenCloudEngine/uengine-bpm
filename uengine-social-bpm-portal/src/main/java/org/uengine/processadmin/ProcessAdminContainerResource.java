@@ -1,10 +1,8 @@
 package org.uengine.processadmin;
 
 import org.metaworks.*;
-import org.metaworks.annotation.AutowiredFromClient;
-import org.metaworks.annotation.Available;
+import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
-import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.mw3.model.Perspective;
 import org.uengine.codi.mw3.model.Session;
@@ -13,6 +11,7 @@ import org.uengine.modeling.resource.*;
 import java.io.File;
 
 import static org.metaworks.dwr.MetaworksRemoteService.autowire;
+import static org.metaworks.dwr.MetaworksRemoteService.getComponent;
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
 /**
@@ -33,7 +32,6 @@ public class ProcessAdminContainerResource extends ContainerResource {
     public static final String WHEN_NEW_TREE = "tree";
 
     @AutowiredFromClient public Session session;
-    @AutowiredFromClient public EditorPanel editorPanel;
 
     String newFolderName;
         public String getNewFolderName() {
@@ -94,6 +92,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
         resource.newOpen();
     }
 
+    @Hidden
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     public void newURLApplication() throws Exception {
 
@@ -108,23 +107,18 @@ public class ProcessAdminContainerResource extends ContainerResource {
         resource.newOpen();
     }
 
-    @ServiceMethod(inContextMenu = true, callByContent = true, eventBinding = EventContext.EVENT_CLICK)
-    public Object moveTo(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
-        System.out.print("Hello World");
-        return new Remover(new ModalWindow());
-    }
 
-    @Override
-    @ServiceMethod(callByContent = true, except = "children", inContextMenu = true)
-    public SelectedResource select() throws Exception {
-        if(getMetaworksContext() != null && getMetaworksContext().getWhen() == null){
-            return super.select();
-        }else{
-            IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
-            autowire(defaultResource);
-            defaultResource.move(this);
-            wrapReturn(null, new Remover(new ModalWindow()));
-            return null;
-        }
+    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK)
+    public void open(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
+        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
+        autowire(defaultResource);
+        defaultResource.move(this);
+
+        editorPanel.setEditor(null);
+
+        ResourceNavigator resourceNavigator = getComponent(ResourceNavigator.class);
+        resourceNavigator.load();
+
+        wrapReturn(editorPanel,new Remover(new ModalWindow()),new Refresh(resourceNavigator));
     }
 }

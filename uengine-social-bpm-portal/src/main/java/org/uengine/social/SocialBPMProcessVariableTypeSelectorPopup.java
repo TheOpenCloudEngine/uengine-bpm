@@ -9,12 +9,14 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.mw3.model.User;
 import org.uengine.contexts.ComplexType;
-import org.uengine.modeling.resource.DefaultResource;
-import org.uengine.modeling.resource.ResourceNavigator;
-import org.uengine.modeling.resource.SelectedResource;
+import org.uengine.modeling.resource.*;
 import org.uengine.modeling.resource.resources.JavaClassResource;
+import org.uengine.modeling.resource.resources.ProcessResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
 import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelector;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by jangjinyoung on 15. 9. 17..
@@ -54,7 +56,7 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
 
     public SocialBPMProcessVariableTypeSelectorPopup(){
         ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
-
+        classResourceNavigator.getRoot().filterResource(ProcessResource.class);
 
         MetaworksRemoteService.autowire(classResourceNavigator);
 
@@ -81,6 +83,4 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
 
 
     }
-
-
 }

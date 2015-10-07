@@ -11,5 +11,6 @@ public interface IContainer extends IResource {
 	@Children
 	public List<IResource> getChildren();
 	public void setChildren(List<IResource> children);
-	public void createFolder() throws Exception;
+
+	public <T extends IResource> void filterResource(Class<T> clazz);
 }

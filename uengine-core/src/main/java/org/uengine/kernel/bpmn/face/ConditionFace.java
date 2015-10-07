@@ -12,13 +12,13 @@ import org.uengine.modeling.modeler.condition.OrConditionFace;
 @org.metaworks.annotation.Face(ejsPath="genericfaces/CleanObjectFace.ejs")
 public class ConditionFace implements Face<Condition> {
 
-    Or topOr;
-        public Or getTopOr() {
-            return topOr;
-        }
-        public void setTopOr(Or topOr) {
-            this.topOr = topOr;
-        }
+//    Or topOr;
+//        public Or getTopOr() {
+//            return topOr;
+//        }
+//        public void setTopOr(Or topOr) {
+//            this.topOr = topOr;
+//        }
 
     public ConditionFace() throws Exception {
         super();
@@ -26,18 +26,20 @@ public class ConditionFace implements Face<Condition> {
 
     @Override
     public void setValueToFace(Condition condition) {
-        if(condition instanceof Or){
-            setTopOr((Or)condition);
-        }else{
-            setTopOr(new Or());
-
-            if(condition!=null)
-                getTopOr().addCondition(condition);
-        }
+//        if(condition instanceof Or){
+//            setTopOr((Or)condition);
+//        }else{
+//            setTopOr(new Or());
+//
+//            if(condition!=null)
+//                getTopOr().addCondition(condition);
+//        }
     }
 
     @Override
     public Condition createValueFromFace() {
-        return getTopOr();
+   //     return getTopOr();
+
+        return null;
     }
 }

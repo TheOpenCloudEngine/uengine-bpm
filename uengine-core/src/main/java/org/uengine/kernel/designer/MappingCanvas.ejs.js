@@ -97,7 +97,8 @@ var org_uengine_kernel_designer_MappingCanvas= function(objectId, className){
         groupDropable   : false,
         collapsible     : false,
         enableHotKey    : true,
-        enableContextMenu : false
+        enableContextMenu : false,
+		dragGridable	: false
     });
   
     this.setContextMenu(canvas);
@@ -195,7 +196,7 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
 					if( isView ){
 						
 						var shapeElement = canvas.drawShape(
-		                    [(isLeft ? 5 : 275), ( $(this).offset().top - $('#'+canvasId).offset().top ) + item.offsetHeight / 2],
+		                    [(isLeft ? 6 : 274), ( $(this).offset().top - $('#'+canvasId).offset().top ) + item.offsetHeight / 2],
 		                    (isLeft ? new OG.From() : new OG.To()),
 		                    [5, 5],
 		                    {"r":5},

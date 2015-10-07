@@ -3,7 +3,7 @@
 	cursor: default;
 	position: relative;
 	padding: 0;
-	overflow: hidden;
+	/*overflow: hidden;*/
 	/* border-right: 1px solid whiteSmoke; */
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -537,7 +537,7 @@
     position:relative;
     background-position:3px 0px;
     background-repeat:no-repeat;
-    padding-left:25px;
+    /*padding-left:25px;*/
 	margin-bottom:0px !important;
 	height:18px;
 	line-height:18px;

@@ -1,0 +1,137 @@
+<%
+if(mw3.when == 'new'){
+    var session = mw3.getAutowiredObject("org.uengine.codi.mw3.model.Session");
+    var hideButton = mw3.how == 'sns' && mw3.where == 'oce';
+    var newActivityFlag = session && session.ux != 'phone' && !(value.instId == null && value.dueDate != null);
+
+    var workItems = [
+        {
+            type: "comment",
+            icon_class: "icon-bubble",
+            comment_class: "comment_select",
+            click_handler: methods.newComment.caller.bind(methods.newComment),
+            getTabClass : function(){
+                return value.type == this.type ?'comment_btn_on':'comment_btn_off'
+            },
+            getTabContent: function () {
+                return "<span>" + mw3.localize('$Write') + "</span>";
+            },
+            isVisiable : function(){
+                return true;
+            }
+        },
+        {
+            type : "document",
+            icon_class : "icon-attachment",
+            comment_class : "comment_select",
+            click_handler: methods.newDocument.caller.bind(methods.newDocument),
+            getTabClass : function(){
+                return value.type == this.type ?'comment_btn_on':'comment_btn_off'
+            },
+            getTabContent : function(){
+                return "<span id='method_" + objectId + "_newFile'>" + mw3.localize("$File") + "</span>";
+            },
+            isVisiable : function(){
+                return false;
+            }
+        },
+        {
+            type : "googleDoc",
+            icon_class : "icon-google-drive",
+            comment_class : "comment_select",
+            click_handler: methods.newGoogleDocument.caller.bind(methods.newGoogleDocument),
+            getTabClass : function(){
+                return value.type == this.type ?'comment_btn_on':'comment_btn_off'
+            },
+            getTabContent : function(){
+                return "<span id='method_" + objectId + "_newGoogleFile'>" + mw3.localize("$GoogleDrive") + "</span>";
+            },
+            isVisiable : function(){
+                return false;
+            }
+        },
+        {
+            type : "memo",
+            icon_class : "icon-newspaper",
+            comment_class : "comment_select",
+            click_handler: methods.newMemo.caller.bind(methods.newMemo),
+            getTabClass : function(){
+                return value.type == this.type ?'comment_btn_on':'comment_btn_off'
+            },
+            getTabContent : function(){
+                return "<span id='method_" + objectId + "_newMemo'>" + mw3.localize("$Memo") + "</span>";
+            },
+            isVisiable : function(){
+//                return session && session.ux != 'phone' && session.ux != 'pad'
+//                        && ((session && session.employee.preferUX != 'sns') || session.ux == 'oce');
+                return false;
+            }
+        },
+        {
+            type : "remoteConf",
+            icon_class : "icon-screen",
+            comment_class : "comment_select",
+            click_handler: methods.newRemoteConference.caller.bind(methods.newRemoteConference),
+            getTabClass : function(){
+                return value.type == this.type ?'comment_btn_on':'comment_btn_off'
+            },
+            getTabContent : function(){
+                return "<span id='method_" + objectId + "_newRemoteConference'>" + mw3.localize("$RemoteConference") + "</span>";
+            },
+            isVisiable : function(){
+//                return session && session.ux != 'phone' && session.ux != 'pad'
+//                        && ((session && session.employee.preferUX != 'sns') || session.ux == 'oce');
+                return false;
+            }
+        },
+        {
+            type : "src",
+            icon_class : "icon-code",
+            comment_class : "comment_select",
+            click_handler: methods.newSourceCode.caller.bind(methods.newSourceCode),
+            getTabClass : function(){
+                return value.type == this.type ?'comment_btn_on':'comment_btn_off'
+            },
+            getTabContent : function(){
+                return "<span id='method_" + objectId + "_newSourceCode'>" + mw3.localize("$SourceCode") + "</span>";
+            },
+            isVisiable : function(){
+//                return session && session.ux != 'phone'
+//                        && ((session && session.employee.preferUX != 'sns') || session.ux == 'oce');
+                return false;
+            }
+        },
+        {
+            type : "etc",
+            icon_class : "glyphicon glyphicon-th",
+            comment_class : "comment_select",
+            click_handler: methods.newActivity.caller.bind(methods.newActivity),
+            getTabClass : function(){
+                return value.type == this.type ?'comment_btn_on':'comment_btn_off'
+            },
+            getTabContent : function(){
+                return "<span id='method_" + objectId + "_newActivity'>" + mw3.localize("$workitem.newActivity") + "</span>";
+            },
+            isVisiable : function(){
+                return !this.newActivityFlag && session.employee && session.employee.approved && !session.employee.guest
+                        && ((session && session.employee.preferUX != 'sns') || session.ux == 'oce');
+            }
+        }
+    ];
+%>
+<div id="wih_button" style="<%=hideButton ? "display:none;" : ""%>">
+    <% for(var index in workItems){
+        var workItem = workItems[index];
+        if(!workItem.isVisiable()){
+            continue;
+        }
+    %>
+    <a class="<%=workItem.getTabClass()%>" onclick="<%=workItem.click_handler()%>">
+        <span class="<%=workItem.icon_class%>"></span>
+        <%=workItem.getTabContent()%>
+        <div class="<%=workItem.comment_class%>"></div></a>
+    <% } %>
+</div>
+<%
+}
+%>

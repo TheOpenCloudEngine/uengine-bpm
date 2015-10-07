@@ -1,10 +1,8 @@
 package org.uengine.processadmin;
 
 import org.metaworks.*;
-import org.metaworks.annotation.AutowiredFromClient;
-import org.metaworks.annotation.Available;
+import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
-import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.mw3.model.Perspective;
 import org.uengine.codi.mw3.model.Session;
@@ -94,6 +92,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
         resource.newOpen();
     }
 
+    @Hidden
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     public void newURLApplication() throws Exception {
 
@@ -108,7 +107,8 @@ public class ProcessAdminContainerResource extends ContainerResource {
         resource.newOpen();
     }
 
-    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK, inContextMenu=true)
+
+    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK)
     public void open(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
         IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
         autowire(defaultResource);

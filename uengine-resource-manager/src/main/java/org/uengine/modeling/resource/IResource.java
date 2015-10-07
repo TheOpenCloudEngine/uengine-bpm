@@ -15,7 +15,7 @@ import java.io.InputStream;
 //import java.io.OutputStream;
 
 @Face(ejsPath="dwr/metaworks/genericfaces/TreeFace.ejs")
-public interface IResource extends ContextAware{
+public interface IResource extends ContextAware, Comparable<IResource>{
 	
 	public static String TYPE_FOLDER = "folder";
 

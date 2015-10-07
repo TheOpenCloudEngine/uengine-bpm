@@ -157,7 +157,7 @@ public class DefaultResource implements IResource {
 			_newAndOpen(false);
 	}
 
-
+	@Hidden
 	@ServiceMethod(callByContent = true, except = "children", inContextMenu = true)
 	public SelectedResource select() throws Exception {
 		SelectedResource selectedResource = new SelectedResource();
@@ -293,6 +293,16 @@ public class DefaultResource implements IResource {
 
 	public void move(IContainer container) throws IOException {
 		resourceManager.getStorage().move(this, container);
+	}
+
+	@Override
+	public int compareTo(IResource resource) {
+		if(!(this instanceof IContainer) && resource instanceof IContainer){
+			return 1;
+		}else if(this instanceof IContainer && !(resource instanceof IContainer)){
+			return -1;
+		}
+		return this.getName().compareTo(resource.getName());
 	}
 }
 

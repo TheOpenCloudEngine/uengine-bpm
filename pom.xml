@@ -17,7 +17,9 @@
 	  <module>uengine-social-bpm-portal</module>
   </modules>
 
-
+	<properties>
+		<org.springframework-version>4.1.4.RELEASE</org.springframework-version>
+	</properties>
   <pluginRepositories>
 		<pluginRepository>
 			<id>central</id>

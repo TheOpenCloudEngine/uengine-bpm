@@ -5,6 +5,7 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.MetaworksFile;
 import org.metaworks.Refresh;
 import org.metaworks.annotation.AutowiredFromClient;
+import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Order;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Download;
@@ -135,6 +136,7 @@ public class EditorPanel implements ContextAware {
 		}
 	}
 
+	@Hidden
 	@ServiceMethod(callByContent = true)
 	@Order(4)
 	public ModalWindow moveTo() throws Exception {
@@ -147,6 +149,7 @@ public class EditorPanel implements ContextAware {
 		return modalWindow;
 	}
 
+	@Hidden
 	@ServiceMethod(callByContent=true, except="fileTransfer", target="append")
 	@Order(5)
 	public Download download(@AutowiredFromClient ResourceNavigator resourceNavigator) throws FileNotFoundException, IOException, Exception{
@@ -159,6 +162,7 @@ public class EditorPanel implements ContextAware {
 		return defaultResource.download(fileName, mimetypesFileTypeMap.getContentType(fileName));
 	}
 
+	@Hidden
 	@ServiceMethod(callByContent = true)
 	@Order(6)
 	public ModalWindow upload() throws Exception {

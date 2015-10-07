@@ -56,13 +56,41 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 		if(this.object.shapeId == null)
 			throw new Error("No shape Id is set for " + this.object);
 
-        var existElement = document.getElementById(this.object.id);
+
+		//concern 별 색상 적용을 위해 by soo
+		//이 부분과
+		var concern, concernColor, lineColor;
+		if(this.object && this.object.element && this.object.element.concern != null){
+			concern = this.object.element.concern;
+
+			if(concern == "Customer"){
+				concernColor = "#F5F6CE ";
+				lineColor = "#D7DF01 ";
+			}
+			else if(concern == "Solution"){
+				concernColor = "#E0F8E0 ";
+				lineColor = "#3ADF00 ";
+			}
+			else if(concern == "Endeavor"){
+				concernColor = "#E0ECF8 ";
+				lineColor = "#2E64FE ";
+			}
+		}
+
+
+		var existElement = document.getElementById(this.object.id);
         if(existElement){
             this.canvas.drawLabel(existElement, this.getLabel());
             this.element = existElement;
             this.isNew = false;
 
-        }else{
+			//concern 별 color 적용 by soo
+			//이 부분
+			if(concern != null)
+				this.canvas._RENDERER.setShapeStyle(this.element, {"fill": concernColor, "fill-opacity": 1, "stroke" : lineColor});
+
+		}else{
+
 
 
 			var shape = eval('new ' + this.object.shapeId);
@@ -76,6 +104,16 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 
             var style = this.object.style;
             var boundary;
+
+			//concern 별 color 적용 by soo
+			//이 부분을 추가하시면 될 것 같습니다.
+			if(style == "null" && concern != null){
+				style = new OG.geometry.Style({
+					fill: concernColor,
+					"fill-opacity": 1,
+					'stroke': lineColor
+				});
+			}
 
             this.element = this.canvas.drawShape([this.object.x, this.object.y],
                     shape,

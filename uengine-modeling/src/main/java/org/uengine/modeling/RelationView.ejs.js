@@ -222,18 +222,17 @@ org_uengine_modeling_RelationView.prototype = {
 
 	draw: function(){
 		var style = this.object.style;
-
 		var fromPos = this.object.from.indexOf('_TERMINAL_');
 		var toPos = this.object.to.indexOf('_TERMINAL_');
-
 		var fromElementId = this.object.from.substring(0, fromPos);
 		var toElementId = this.object.to.substring(0, toPos);
+		var existElement = document.getElementById(this.object.id);
 
-		if($('#' + fromElementId).length && $('#' + toElementId).length){
-
-			this.element = this.canvas.connectWithTerminalId(this.object.from, this.object.to , OG.JSON.decode(unescape(style)), this.getLabel(), this.object.id, this.object.shapeId);
-
-			this.bindMapping();
+		if(!existElement){
+			if($('#' + fromElementId).length && $('#' + toElementId).length){
+				this.element = this.canvas.connectWithTerminalId(this.object.from, this.object.to , OG.JSON.decode(unescape(style)), this.getLabel(), this.object.id, this.object.shapeId);
+				this.bindMapping();
+			}
 		}
 	}
 };

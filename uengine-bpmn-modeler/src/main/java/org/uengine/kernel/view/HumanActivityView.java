@@ -16,10 +16,14 @@ public class HumanActivityView extends ActivityView{
 	public final static String SHAPE_ID_VACD = "OG.shape.bpmn.Value_Chain_Module";
 	public final static String SHAPE_TYPE 		 = "GEOM";
 	public final static String ELEMENT_CLASSNAME = HumanActivity.class.getName();
+	public final static int DIALOG_HEIGHT = 700;
+	public final static int DIALOG_WIDTH = 800;
 	
-	public HumanActivityView(){
+	public HumanActivityView() {
 		setShapeId(SHAPE_ID_BPMN);
 		setLabel(ELEMENT_CLASSNAME);
+		setPropertyDialogHeight(DIALOG_HEIGHT);
+		setPropertyDialogWidth(DIALOG_WIDTH);
 	}
 	
 	public HumanActivityView(IElement element){

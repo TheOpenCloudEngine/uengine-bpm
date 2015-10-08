@@ -504,26 +504,30 @@ public class SubProcess extends ScopeActivity{
 
     public boolean onSubProcessReturn(ProcessInstance instance, ProcessInstance subProcessInstance) throws Exception{
 
-        String executionScope = subProcessInstance.getExecutionScopeContext() != null ? subProcessInstance.getExecutionScopeContext().getExecutionScope() : null;
-        instance.setExecutionScope(instance.getMainExecutionScope());
+
+        Hashtable optionsForVariableMapping = new Hashtable();
+        optionsForVariableMapping.put("ptc", instance.getProcessTransactionContext());
+
+        Vector spIds = new Vector();
+        spIds.add(subProcessInstance.getInstanceId());
+
+        //TODO: following values are not meaningful anymore. due to executionscope designate the sub processes for now.
+        Map subProcesses = new Hashtable();
+        subProcesses.put(subProcessInstance.getInstanceId(), subProcessInstance);
+
+        applyVariableBindings(instance, spIds, subProcesses, optionsForVariableMapping);
+        applyRoleBindings(instance, spIds, subProcesses, optionsForVariableMapping);
+
+
 
         if(isRunAndForget()){
 
-            Hashtable optionsForVariableMapping = new Hashtable();
-            optionsForVariableMapping.put("ptc", instance.getProcessTransactionContext());
-
-            Vector spIds = new Vector();
-            spIds.add(subProcessInstance.getInstanceId());
-
-            Map subProcesses = new Hashtable();
-            subProcesses.put(subProcessInstance.getInstanceId(), subProcessInstance);
-
-            applyVariableBindings(instance, spIds, subProcesses, optionsForVariableMapping);
-            applyRoleBindings(instance, spIds, subProcesses, optionsForVariableMapping);
 
             return false;
 
         }else{
+
+            String executionScope = subProcessInstance.getExecutionScopeContext() != null ? subProcessInstance.getExecutionScopeContext().getExecutionScope() : null;
 
             Vector completedSPIds = getSubprocessIds(instance, SUBPROCESS_INST_ID_COMPLETED);
             completedSPIds.add(subProcessInstance.getInstanceId() + "@" + executionScope);
@@ -547,6 +551,8 @@ public class SubProcess extends ScopeActivity{
             }catch(Exception e){
                 //e.printStackTrace();
             }
+
+
 //            //todo
 //            isConnectedMultipleSubProcesses = false;
 //
@@ -580,19 +586,19 @@ public class SubProcess extends ScopeActivity{
 
     protected void applyVariableBindings(ProcessInstance instance, Vector spIds, Map subProcesses, Map options) throws Exception{
 
-        if(variableBindings!=null)
-        for(int i=0; i<variableBindings.size(); i++){
-          ParameterContext vb = variableBindings.get(i);
-          if(vb.getVariable()==null ||
-              (vb.getDirection()!=null && vb.getDirection().equals(ParameterContext.DIRECTION_IN))
-          ) continue;
-
-          instance.set("", vb.getVariable().getName(), null);
-        }
+//        if(variableBindings!=null) //firstly empty the binding variables.
+//        for(int i=0; i<variableBindings.size(); i++){
+//          ParameterContext vb = variableBindings.get(i);
+//          if(vb.getVariable()==null ||
+//              (vb.getDirection()!=null && vb.getDirection().equals(ParameterContext.DIRECTION_IN))
+//          ) continue;
+//
+//          instance.set("", vb.getVariable().getName(), null);
+//        }
 
         String originalExecutionScope = null;
 
-        if(instance.getMainExecutionScope()!=null){
+        if(instance.getExecutionScopeContext()!=null){
             originalExecutionScope = instance.getExecutionScopeContext().getExecutionScope();
         }
 
@@ -630,14 +636,28 @@ public class SubProcess extends ScopeActivity{
               if(join){
                    Serializable valueOfSP = subProcessInstance.get("", vb.getArgument().getText());
 
-                  instance.setExecutionScope(originalExecutionScope);
-                   instance.add("", vb.getVariable().getName(), valueOfSP, indexOfSP);//process multiple pv
+                  /*in parent context*/instance.setExecutionScope(instance.getMainExecutionScope());
+                  {
+                      int whereStands = indexOfSP;
+                        if("loop".equals(getMultipleInstanceOption())){
+                            whereStands = getCurrForEachVariableIdx(instance);
+                        }
+
+                      instance.add("", vb.getVariable().getName(), valueOfSP, whereStands);//process multiple pv
+
+                  }instance.setExecutionScope(originalExecutionScope);
+
               }else{
                 ProcessVariableValue valueOfSP = subProcessInstance.getMultiple("", vb.getArgument().getText());
                 valueOfSP.setName(vb.getVariable().getName());
 
-                  instance.setExecutionScope(originalExecutionScope);
-                instance.set("", valueOfSP);
+                  /*in parent context*/instance.setExecutionScope(instance.getMainExecutionScope());
+                  {
+
+                      instance.set("", valueOfSP);
+
+                  }instance.setExecutionScope(originalExecutionScope);
+
               }
             }catch(Exception e){
               UEngineException richException = new UEngineException("Error when to set the value ["+vb.getVariable()+"] from returned subprocess", e);
@@ -947,7 +967,13 @@ public class SubProcess extends ScopeActivity{
 
         if(completable && instance.getProcessTransactionContext().getSharedContext(SUB_PROCESS_IS_BEING_INSERTED) == null){
             if("loop".equals(getMultipleInstanceOption())){
-                executeActivity_CaseInLoop(instance);
+                ExecutionScopeContext executionScopeContext = instance.getExecutionScopeContext();
+                instance.setExecutionScope(instance.getMainExecutionScope());
+
+                executeActivity_CaseInLoop(instance); //run in parent context.
+
+                instance.setExecutionScope(executionScopeContext!=null ? executionScopeContext.getExecutionScope() : null);
+
             }else{
                 super.fireComplete(instance);
             }

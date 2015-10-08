@@ -152,12 +152,12 @@ public class FlowActivity extends ComplexActivity {
 	@Override
 	protected void onEvent(String command, ProcessInstance instance, Object payload) throws Exception {
 		
-		if (getSequenceFlows().size() == 0) {
-//			System.out.println("This is conventional uengine process - 1");
-			super.onEvent(command, instance, payload);
-			
-			return;
-		}
+//		if (getSequenceFlows().size() == 0) {
+////			System.out.println("This is conventional uengine process - 1");
+//			super.onEvent(command, instance, payload);
+//
+//			return;
+//		}
 		
 		
 		if (command.equals(CHILD_DONE)) {
@@ -171,7 +171,9 @@ public class FlowActivity extends ComplexActivity {
 				// fireComplete(instance);
 				 if( !currentActivity.checkStartsWithBoundaryEventActivity() ){
 					 setStatus(instance, STATUS_COMPLETED);
+
 					 fireComplete(instance);
+
 				 }
 				 // change the status to be completed 
 				 //after the completion of all the activities

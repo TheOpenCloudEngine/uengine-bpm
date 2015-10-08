@@ -257,6 +257,25 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         this.viewType = viewType;
     }
 
+    int propertyDialogHeight;
+
+    public int getPropertyDialogHeight() {
+        return propertyDialogHeight;
+    }
+
+    public void setPropertyDialogHeight(int propertyDialogHeight) {
+        this.propertyDialogHeight = propertyDialogHeight;
+    }
+
+    int propertyDialogWidth;
+
+    public int getPropertyDialogWidth() {
+        return propertyDialogWidth;
+    }
+
+    public void setPropertyDialogWidth(int propertyDialogWidth) {
+        this.propertyDialogWidth = propertyDialogWidth;
+    }
 
     @ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
     public Object showProperty() throws Exception {

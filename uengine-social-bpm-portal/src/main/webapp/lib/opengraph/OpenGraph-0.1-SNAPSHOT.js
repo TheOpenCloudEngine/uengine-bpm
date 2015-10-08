@@ -3789,7 +3789,7 @@ window.Raphael.svg && function (R) {
         markers = {
             block: "M5,0 0,2.5 5,5z",
             open_block: "M5,0 0,2.5 5,5z",
-            classic: "M5,0 0,2.5 5,5",
+            classic: "M5,0 0,2.5 5,5 3.5,3 3.5,2z",
             diamond: "M2.5,0 5,2.5 2.5,5 0,2.5z",
             open_diamond: "M2.5,0 5,2.5 2.5,5 0,2.5z",
             open: "M6,1 1,3.5 6,6",
@@ -3979,15 +3979,7 @@ window.Raphael.svg && function (R) {
                     stroke: attrs.stroke,
 					'stroke-dasharray': 0
                 };
-            } else if(type == 'classic'){
-		    	refX = dx = w / 2;
-		        attr = {
-                    fill: "none",
-                    'fill-opacity' : 1,
-                    stroke: attrs.stroke,
-					'stroke-dasharray': 0
-                };
-			} else if(type == 'open_block' || type == 'open_diamond' || type == 'open_oval') {
+            } else if(type == 'open_block' || type == 'open_diamond' || type == 'open_oval') {
 				refX = dx = w / 2;
 				attr = {
 					fill: 'white',
@@ -18543,7 +18535,7 @@ OG.renderer.RaphaelRenderer.prototype.connect = function (from, to, edge, style,
 		}else if(fromShape.attributes._shape_id.value == "OG.shape.bpmn.A_HumanTask" || toShape.attributes._shape_id.value == "OG.shape.bpmn.A_HumanTask"){
 			_style["edge-type"] = "plain";
 			_style["arrow-start"] = "none";
-			_style["arrow-end"] = "block-wide-long";
+			_style["arrow-end"] = "classic-wide-long";
 		}
 		
 		beforeEvent = jQuery.Event("beforeConnectShape", {edge: edge, fromShape: fromShape, toShape: toShape});
@@ -25694,7 +25686,7 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
 			TEXT          : { stroke: "none", "text-anchor": "middle" },
 			HTML          : { "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },
 			IMAGE         : { "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },
-			EDGE          : { stroke: "black", fill: "none", "fill-opacity": 0, "stroke-width": 1.5, "stroke-opacity": 1, "edge-type": "plain", "edge-direction": "c c", "arrow-start": "diamond", "arrow-end": "none", "stroke-dasharray": "", "label-position": "center", "stroke-linejoin" : "round" ,cursor: "pointer"},
+			EDGE          : { stroke: "black", fill: "none", "fill-opacity": 0, "stroke-width": 1.5, "stroke-opacity": 1, "edge-type": "plain", "edge-direction": "c c", "arrow-start": "none", "arrow-end": "classic-wide-long", "stroke-dasharray": "", "label-position": "center", "stroke-linejoin" : "round" ,cursor: "pointer"},
 			EDGE_SHADOW   : { stroke: "#00FF00", fill: "none", "fill-opacity": 0, "stroke-width": 1, "stroke-opacity": 1, "arrow-start": "none", "arrow-end": "none", "stroke-dasharray": "- ", "edge-type": "plain" ,cursor: "pointer"},
 			EDGE_HIDDEN   : { stroke: "white", fill: "none", "fill-opacity": 0, "stroke-width": 10, "stroke-opacity": 0, cursor: "pointer"},
 			GROUP         : { stroke: "black", fill: "none", "fill-opacity": 0, "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },
@@ -25779,6 +25771,8 @@ OG.graph.Canvas.prototype = {
 			this._CONFIG.GROUP_COLLAPSIBLE = config.collapsible === undefined ? this._CONFIG.GROUP_COLLAPSIBLE : config.collapsible;
 			this._CONFIG.ENABLE_HOTKEY = config.enableHotKey === undefined ? this._CONFIG.ENABLE_HOTKEY : config.enableHotKey;
 			this._CONFIG.ENABLE_CONTEXTMENU = config.enableContextMenu === undefined ? this._CONFIG.ENABLE_CONTEXTMENU : config.enableContextMenu;
+            this._CONFIG.DRAG_GRIDABLE = config.dragGridable === undefined ? this._CONFIG.DRAG_GRIDABLE : config.dragGridable;
+
 
 //            this._CONFIG.SELECTABLE = false;
 //			this._CONFIG.DRAG_SELECTABLE = false;

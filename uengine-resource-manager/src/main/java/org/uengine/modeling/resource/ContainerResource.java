@@ -108,17 +108,45 @@ public class ContainerResource extends DefaultResource implements IContainer {
 	}
 
 	@Override
-	public <T extends IResource> void filterResource(Class<T> clazz){
+	public <T extends IResource> void filterResources(Class<T> clazz){
 		List<IResource> resourceList = this.getChildren();
 		Iterator<IResource> resourceIterator = resourceList.iterator();
 
 		while(resourceIterator.hasNext()){
 			IResource resource = resourceIterator.next();
 			if(resource instanceof ContainerResource){
-				((ContainerResource)resource).filterResource(clazz);
+				((ContainerResource)resource).filterResources(clazz);
 			}else if(clazz.isInstance(resource)){
 				resourceIterator.remove();;
 			}
+		}
+	}
+
+	@Override
+	public void filterResources(List<IResource> resources) {
+
+		for(IResource resource : resources){
+			filterResource(resource);
+		}
+
+	}
+
+	protected void filterResource(IResource resource){
+		List<IResource> resourceList = this.getChildren();
+		Iterator<IResource> resourceIterator = resourceList.iterator();
+
+		while(resourceIterator.hasNext()){
+
+			IResource resourceItem = resourceIterator.next();
+
+			if(resourceItem instanceof ContainerResource){
+				((ContainerResource)resourceItem).filterResource(resource);
+
+			}else if(resource.getPath().equals(resourceItem.getPath())){
+				resourceIterator.remove();;
+				return;
+			}
+
 		}
 	}
 

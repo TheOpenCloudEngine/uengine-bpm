@@ -1,5 +1,6 @@
 package org.uengine.processadmin;
 
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
@@ -85,6 +86,10 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 			e.printStackTrace();
 		}
 
+		MetaworksContext metaworksContext = new MetaworksContext();
+		metaworksContext.setWhen("addProcess");
+
+		getProcessAdminResourceNavigator().getRoot().initMetaworksContext(metaworksContext);
 	}
 	
 }

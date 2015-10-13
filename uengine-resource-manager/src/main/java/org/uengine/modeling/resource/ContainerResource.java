@@ -131,6 +131,29 @@ public class ContainerResource extends DefaultResource implements IContainer {
 
 	}
 
+	@Override
+	public void initMetaworksContext(MetaworksContext metaworksContext) {
+		List<IResource> resourceList = this.getChildren();
+		Iterator<IResource> resourceIterator = resourceList.iterator();
+
+		this.setMetaworksContext(metaworksContext);
+
+		while(resourceIterator.hasNext()){
+
+			IResource resourceItem = resourceIterator.next();
+
+			if(resourceItem instanceof ContainerResource){
+
+				((ContainerResource)resourceItem).initMetaworksContext(metaworksContext);
+
+			}else{
+
+				resourceItem.setMetaworksContext(metaworksContext);
+
+			}
+		}
+	}
+
 	protected void filterResource(IResource resource){
 		List<IResource> resourceList = this.getChildren();
 		Iterator<IResource> resourceIterator = resourceList.iterator();

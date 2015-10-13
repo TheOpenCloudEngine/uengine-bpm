@@ -41,6 +41,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
             this.newFolderName = newFolderName;
         }
 
+    @Available(condition="metaworksContext.when != 'addProcess'")
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     public void newProcess() throws Exception {
 
@@ -51,6 +52,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
         processResource.newOpen();
     }
 
+    @Available(condition="metaworksContext.when != 'addProcess'")
     @Face(displayName = "New Folder")
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     public ModalWindow openNewFolderPopup() throws Exception {
@@ -78,6 +80,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
         return new Remover(new ModalWindow());
     }
 
+    @Available(condition="metaworksContext.when != 'addProcess'")
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     public void newClass() throws Exception {
 

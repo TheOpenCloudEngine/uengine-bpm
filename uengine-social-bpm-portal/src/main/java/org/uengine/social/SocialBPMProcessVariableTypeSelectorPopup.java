@@ -56,7 +56,7 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
 
     public SocialBPMProcessVariableTypeSelectorPopup(){
         ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
-        classResourceNavigator.getRoot().filterResource(ProcessResource.class);
+        classResourceNavigator.getRoot().filterResources(ProcessResource.class);
 
         MetaworksRemoteService.autowire(classResourceNavigator);
 

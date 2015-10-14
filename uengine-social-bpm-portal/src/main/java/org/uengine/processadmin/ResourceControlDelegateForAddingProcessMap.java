@@ -13,6 +13,8 @@ import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceControlDelegate;
 import org.uengine.processmanager.ProcessManagerBean;
 
+import java.io.File;
+
 import static org.metaworks.dwr.MetaworksRemoteService.*;
 
 /**
@@ -23,10 +25,11 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
     public void onDoubleClicked(IResource resource) {
         if(resource instanceof DefaultResource){
             try {
-                String alias = resource.getName();
+//                String alias = resource.getName();
+                String alias = resource.getPath().substring(resource.getPath().indexOf(File.separator) + 1);
 
                 if(alias.endsWith(".process")) {
-                    String name = alias.substring(0, alias.length() - 8);
+                    String name = alias.substring(0, alias.length() - 8).replace(File.separator,".");
 
 
                     ProcessMap processMap = new ProcessMap();
@@ -48,7 +51,7 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
                     processMapList.load(processMap.session);
 
 
-                    wrapReturn(processMapList, new Remover(new ModalWindow()));
+                    wrapReturn(new Remover(new ModalWindow()));
                 }
 
             } catch (Exception e) {

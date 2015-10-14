@@ -51,6 +51,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 		}
 		
 	PoolResolutionContext poolResolutionContext;
+	@Hidden
 	@Face(displayName="웹서비스 선택")
 	@Order(3)
 		public PoolResolutionContext getPoolResolutionContext() {

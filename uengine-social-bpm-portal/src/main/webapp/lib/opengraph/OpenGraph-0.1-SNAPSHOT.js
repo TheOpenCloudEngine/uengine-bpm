@@ -25686,7 +25686,7 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
 			TEXT          : { stroke: "none", "text-anchor": "middle" },
 			HTML          : { "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },
 			IMAGE         : { "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },
-			EDGE          : { stroke: "black", fill: "none", "fill-opacity": 0, "stroke-width": 1.5, "stroke-opacity": 1, "edge-type": "plain", "edge-direction": "c c", "arrow-start": "none", "arrow-end": "classic-wide-long", "stroke-dasharray": "", "label-position": "center", "stroke-linejoin" : "round" ,cursor: "pointer"},
+			EDGE          : { stroke: "black", fill: "none", "fill-opacity": 0, "stroke-width": 1.5, "stroke-opacity": 1, "edge-type": "plain", "edge-direction": "c c", "arrow-start": "none", "arrow-end": "block-wide-long", "stroke-dasharray": "", "label-position": "center", "stroke-linejoin" : "round" ,cursor: "pointer"},
 			EDGE_SHADOW   : { stroke: "#00FF00", fill: "none", "fill-opacity": 0, "stroke-width": 1, "stroke-opacity": 1, "arrow-start": "none", "arrow-end": "none", "stroke-dasharray": "- ", "edge-type": "plain" ,cursor: "pointer"},
 			EDGE_HIDDEN   : { stroke: "white", fill: "none", "fill-opacity": 0, "stroke-width": 10, "stroke-opacity": 0, cursor: "pointer"},
 			GROUP         : { stroke: "black", fill: "none", "fill-opacity": 0, "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },

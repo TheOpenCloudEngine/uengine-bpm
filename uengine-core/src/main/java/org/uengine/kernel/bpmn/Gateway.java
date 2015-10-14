@@ -9,7 +9,7 @@ import java.util.List;
 public class Gateway extends Activity {
 
 	public Gateway() {
-		//setName("Gateway");
+		setName("Exclusive");
 	}
 	
 	public Gateway(String name) {

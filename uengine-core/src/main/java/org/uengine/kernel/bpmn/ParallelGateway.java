@@ -11,7 +11,7 @@ import java.util.Map;
 public class ParallelGateway extends Gateway {
 
 	public ParallelGateway() {
-		//super("Parallel");
+		super("Parallel");
 	}
 
 

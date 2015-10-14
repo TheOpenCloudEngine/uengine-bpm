@@ -3,6 +3,7 @@ package org.uengine.kernel.bpmn.view;
 import org.uengine.kernel.bpmn.InclusiveGateway;
 import org.uengine.kernel.view.ActivityView;
 import org.uengine.modeling.IElement;
+import org.uengine.modeling.Symbol;
 
 public class InclusiveGatewayView extends ActivityView {
 
@@ -12,5 +13,14 @@ public class InclusiveGatewayView extends ActivityView {
 	
 	public InclusiveGatewayView(){
 		setShapeId(SHAPE_ID);
+	}
+
+	@Override
+	public Symbol createSymbol() {
+		Symbol symbol = super.createSymbol();
+		symbol.setHeight(30);
+		symbol.setWidth(30);
+
+		return symbol;
 	}
 }

@@ -48,7 +48,7 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
         socialBPMProcessVariableTypeSelector.setSelectedClassName(selectedComplexClassResource.getPath());
 
 
-        //MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
+       // MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
 
         return socialBPMProcessVariableTypeSelector;
     }

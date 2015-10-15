@@ -42,15 +42,15 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 			this.metaworksContext = metaworksContext;
 		}
 
-	String uuid;
-	@Face(displayName = "",
-			ejsPath="dwr/metaworks/org/uengine/kernel/UUID.ejs")
-		public String getUuid() {
-			return uuid;
-		}
-		public void setUuid(String uuid) {
-			this.uuid = uuid;
-		}
+//	String uuid;
+//	@Face(displayName = "",
+//			ejsPath="dwr/metaworks/org/uengine/kernel/UUID.ejs")
+//		public String getUuid() {
+//			return uuid;
+//		}
+//		public void setUuid(String uuid) {
+//			this.uuid = uuid;
+//		}
 
 	String name;
 	@Id
@@ -214,8 +214,8 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 	@Hidden
 //	@Face(faceClass= GenericValueFace.class)
 		public Object getDefaultValue() {
-//			if(getType()==ComplexType.class || getType()==null)
-//				return null;
+			if((getType()==ComplexType.class || getType()==null) && (defaultValue instanceof String))
+				return null;
 
 			return defaultValue;
 		}
@@ -248,7 +248,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 		this.getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
 		this.setDefaultValue(new String());
 
-		this.setUuid(UUID.randomUUID().toString());
+//		this.setUuid(UUID.randomUUID().toString());
 	}
 
 	//review: The return object of this method is only for scripting users to indicate certain process variable
@@ -513,14 +513,14 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 
 	}
 
-	@ServiceMethod(payload = {"uuid"})
-	public void delete(@AutowiredFromClient ProcessVariablePanel processVariablePanel){
-		for(ProcessVariable processVariable : processVariablePanel.getProcessVariableList()){
-			if(Objects.equals(this.getUuid(), processVariable.getUuid())){
-				processVariablePanel.getProcessVariableList().remove(processVariable);
-				break;
-			}
-		}
-		wrapReturn(processVariablePanel);
-	}
+//	@ServiceMethod(payload = {"uuid"})
+//	public void delete(@AutowiredFromClient ProcessVariablePanel processVariablePanel){
+//		for(ProcessVariable processVariable : processVariablePanel.getProcessVariableList()){
+//			if(Objects.equals(this.getUuid(), processVariable.getUuid())){
+//				processVariablePanel.getProcessVariableList().remove(processVariable);
+//				break;
+//			}
+//		}
+//		wrapReturn(processVariablePanel);
+//	}
 }

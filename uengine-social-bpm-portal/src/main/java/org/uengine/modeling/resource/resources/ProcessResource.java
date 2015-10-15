@@ -32,11 +32,11 @@ public class ProcessResource extends DefaultResource {
     @Autowired
     public ProcessDefinitionFactory definitionFactory;
 
-    @Available(condition="metaworksContext == null || metaworksContext.when != 'addProcess' ")
-    @Order(6)
-    @Face(displayName="open")
-    @ServiceMethod(callByContent=true, except="children", eventBinding= EventContext.EVENT_DBLCLICK, inContextMenu=true, target= ServiceMethodContext.TARGET_POPUP)
-    public void open(@AutowiredFromClient ResourceControlDelegate resourceControlDelegate) throws Exception {
-        super.open(resourceControlDelegate);
-    }
+//    @Available(condition="metaworksContext == null || metaworksContext.when != 'addProcess' ")
+//    @Order(6)
+//    @Face(displayName="open")
+//    @ServiceMethod(callByContent=true, except="children", eventBinding= EventContext.EVENT_DBLCLICK, inContextMenu=true, target= ServiceMethodContext.TARGET_POPUP)
+//    public void open(@AutowiredFromClient ResourceControlDelegate resourceControlDelegate) throws Exception {
+//        super.open(resourceControlDelegate);
+//    }
 }

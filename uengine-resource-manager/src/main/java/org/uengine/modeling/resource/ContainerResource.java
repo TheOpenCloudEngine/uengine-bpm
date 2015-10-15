@@ -29,10 +29,10 @@ public class ContainerResource extends DefaultResource implements IContainer {
 		setPath(path);
 	}
 
-	@Override
-	public void open(@AutowiredFromClient ResourceControlDelegate resourceControlDelegate) throws Exception {
-		super.open(resourceControlDelegate);
-	}
+//	@Override
+//	public void open(@AutowiredFromClient ResourceControlDelegate resourceControlDelegate) throws Exception {
+//		super.open(resourceControlDelegate);
+//	}
 
 	@Children
 //	@Available(when = MetaworksContext.WHEN_VIEW)
@@ -82,7 +82,7 @@ public class ContainerResource extends DefaultResource implements IContainer {
 
 	@Order(6)
 	@Face(displayName="refresh")
-	@Available(condition="metaworksContext.how == 'tree' && metaworksContext.where == 'navigator'")
+//	@Available(condition="metaworksContext.how == 'tree' && metaworksContext.where == 'navigator'")
 	@ServiceMethod(callByContent=true, eventBinding="refresh", bindingHidden=true, target=ServiceMethodContext.TARGET_SELF)
 	public void refresh() throws Exception {
 		this.setChildren(this.list());

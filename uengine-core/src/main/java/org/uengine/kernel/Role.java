@@ -47,14 +47,14 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	public static final int ASSIGNTYPE_GROUP 		= 3;	
 	public static final int ASSIGNTYPE_ROLE 		= 4;	
 
-	String uuid;
-		@Face(displayName = "", ejsPath="dwr/metaworks/org/uengine/kernel/UUID.ejs", options = {"style"}, values = {"display:none"})
-		public String getUuid() {
-			return uuid;
-		}
-		public void setUuid(String uuid) {
-			this.uuid = uuid;
-		}
+//	String uuid;
+//		@Face(displayName = "", ejsPath="dwr/metaworks/org/uengine/kernel/UUID.ejs", options = {"style"}, values = {"display:none"})
+//		public String getUuid() {
+//			return uuid;
+//		}
+//		public void setUuid(String uuid) {
+//			this.uuid = uuid;
+//		}
 
 	public static void metaworksCallback_changeMetadata(Type type){
 		
@@ -286,7 +286,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	public Role(){
 		setMetaworksContext(new MetaworksContext());
 		this.setDisplayName("");
-		this.setUuid(UUID.randomUUID().toString());
+//		this.setUuid(UUID.randomUUID().toString());
 	}
 
 	public Role(String name){
@@ -500,14 +500,14 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 		return this.displayName.getText();
 	}
 
-	@ServiceMethod(payload = {"uuid"})
-	public void delete(@AutowiredFromClient RolePanel rolePanel){
-		for(Role role : rolePanel.getRoleList()){
-			if(Objects.equals(this.getUuid(), role.getUuid())){
-				rolePanel.getRoleList().remove(role);
-				break;
-			}
-		}
-		wrapReturn(rolePanel);
-	}
+//	@ServiceMethod(payload = {"uuid"})
+//	public void delete(@AutowiredFromClient RolePanel rolePanel){
+//		for(Role role : rolePanel.getRoleList()){
+//			if(Objects.equals(this.getUuid(), role.getUuid())){
+//				rolePanel.getRoleList().remove(role);
+//				break;
+//			}
+//		}
+//		wrapReturn(rolePanel);
+//	}
 }

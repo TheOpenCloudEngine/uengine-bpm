@@ -20,7 +20,7 @@ public class TBoundaryEventAdapter extends TFlowNodeAdapter<TBoundaryEvent, Even
 
         Event event = null;
         try {
-            event = (Event) BPMNUtil.getAdapter(eventDefinition.getClass(), false).convert(eventDefinition, keyedContext);
+            event = (Event) BPMNUtil.getAdapter(eventDefinition.getClass(), true).convert(eventDefinition, keyedContext);
 
             if(src.getAttachedToRef() != null)
                 event.setAttachedToRef(src.getAttachedToRef().getLocalPart());

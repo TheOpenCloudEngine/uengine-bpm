@@ -3,6 +3,7 @@ package org.uengine.processadmin;
 import org.metaworks.*;
 import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.mw3.model.Perspective;
 import org.uengine.codi.mw3.model.Session;
@@ -103,7 +104,6 @@ public class ProcessAdminContainerResource extends ContainerResource {
         resource.newOpen();
     }
 
-    @Hidden
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     public void newURLApplication() throws Exception {
 
@@ -118,18 +118,26 @@ public class ProcessAdminContainerResource extends ContainerResource {
         resource.newOpen();
     }
 
+    @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
+    @Face(displayName = "Import")
+    public void importResource() throws Exception {
 
-    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK)
-    public void open(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
-        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
-        autowire(defaultResource);
-        defaultResource.move(this);
+        MetaworksRemoteService.wrapReturn(new ModalWindow(new ImportPopup(this), 500, 200));
 
-        editorPanel.setEditor(null);
-
-        ResourceNavigator resourceNavigator = getComponent(ResourceNavigator.class);
-        resourceNavigator.load();
-
-        wrapReturn(editorPanel,new Remover(new ModalWindow()),new Refresh(resourceNavigator));
     }
+
+
+//    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK)
+//    public void open(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
+//        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
+//        autowire(defaultResource);
+//        defaultResource.move(this);
+//
+//        editorPanel.setEditor(null);
+//
+//        ResourceNavigator resourceNavigator = getComponent(ResourceNavigator.class);
+//        resourceNavigator.load();
+//
+//        wrapReturn(editorPanel,new Remover(new ModalWindow()),new Refresh(resourceNavigator));
+//    }
 }

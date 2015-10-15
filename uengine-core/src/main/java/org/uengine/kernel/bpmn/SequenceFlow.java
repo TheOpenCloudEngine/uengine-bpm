@@ -45,7 +45,7 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		}
 		
 	Condition condition;
-    @Face(faceClass=ConditionFace.class)
+    //@Face(faceClass=ConditionFace.class)
 		public Condition getCondition() {
 			return condition;
 		}

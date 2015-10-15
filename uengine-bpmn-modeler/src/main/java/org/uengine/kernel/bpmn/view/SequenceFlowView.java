@@ -1,8 +1,11 @@
 package org.uengine.kernel.bpmn.view;
 
 import org.metaworks.EventContext;
+import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.ServiceMethod;
+import org.uengine.kernel.ExpressionEvaluteCondition;
+import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.IRelation;
 import org.uengine.modeling.RelationPropertiesView;
 import org.uengine.modeling.RelationView;
@@ -23,6 +26,14 @@ public class SequenceFlowView extends RelationView {
         RelationPropertiesView relationPropertiesView = super.showProperty();
         relationPropertiesView.setWidth(800);
         relationPropertiesView.setHeight(1000);
+
+		SequenceFlow sequenceFlow = (SequenceFlow) getRelation();
+
+		if(sequenceFlow.getCondition()==null)
+			sequenceFlow.setCondition(new ExpressionEvaluteCondition());
+
+		sequenceFlow.getCondition().setMetaworksContext(new MetaworksContext());
+		sequenceFlow.getCondition().getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 
         return relationPropertiesView;
 

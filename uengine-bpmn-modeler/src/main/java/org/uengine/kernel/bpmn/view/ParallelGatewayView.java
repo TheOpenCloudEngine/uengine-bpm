@@ -1,6 +1,7 @@
 package org.uengine.kernel.bpmn.view;
 
 import org.uengine.kernel.bpmn.ParallelGateway;
+import org.uengine.modeling.Symbol;
 
 public class ParallelGatewayView extends GatewayView {
 
@@ -10,5 +11,12 @@ public class ParallelGatewayView extends GatewayView {
 	
 	public ParallelGatewayView(){
 		setShapeId(SHAPE_ID);
+	}
+
+	@Override
+	public Symbol createSymbol() {
+		Symbol symbol =super.createSymbol();
+		symbol.setName("Parallel");
+		return symbol;
 	}
 }

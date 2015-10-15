@@ -18,6 +18,7 @@ public class InclusiveGatewayView extends ActivityView {
 	@Override
 	public Symbol createSymbol() {
 		Symbol symbol = super.createSymbol();
+		symbol.setName("Inclusive");
 		symbol.setHeight(30);
 		symbol.setWidth(30);
 

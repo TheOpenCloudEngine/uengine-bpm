@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import static org.metaworks.dwr.MetaworksRemoteService.getComponent;
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
@@ -301,7 +302,12 @@ public class DefaultResource implements IResource {
 			return 1;
 		}else if(this instanceof IContainer && !(resource instanceof IContainer)){
 			return -1;
+		}else if(this.getName() == null && resource.getName() == null){
+			return 0;
+		}else if(this.getName() == null && resource.getName() != null){
+			return -1;
 		}
+
 		return this.getName().compareTo(resource.getName());
 	}
 }

@@ -18,6 +18,7 @@ public class GatewayView extends ActivityView {
 	@Override
 	public Symbol createSymbol() {
 		Symbol symbol = super.createSymbol();
+		symbol.setName("Exclusive");
 		symbol.setHeight(30);
 		symbol.setWidth(30);
 

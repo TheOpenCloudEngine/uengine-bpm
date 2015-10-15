@@ -9,6 +9,7 @@ import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.*;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.metaworks.dwr.MetaworksRemoteService.autowire;
 import static org.metaworks.dwr.MetaworksRemoteService.getComponent;
@@ -61,9 +62,14 @@ public class ProcessAdminContainerResource extends ContainerResource {
         return modalWindow;
     }
 
+    @Override
+    public void move(IContainer container) throws IOException {
+        super.move(container);
+    }
+
     @Face(displayName = "Create")
     @ServiceMethod(callByContent = true, target = ServiceMethodContext.TARGET_AUTO)
-    public void confirmNewFolder() throws Exception {
+    public void confirmNewFolder(@AutowiredFromClient ProcessAdminResourceNavigator processAdminResourceNavigator) throws Exception {
         ContainerResource containerResource = this.getClass().newInstance();
         containerResource.setPath(this.getPath() + File.separator + newFolderName);
         autowire(containerResource);
@@ -71,7 +77,9 @@ public class ProcessAdminContainerResource extends ContainerResource {
         this.getChildren().add(containerResource);
 
         this.getMetaworksContext().setWhen(WHEN_NEW_TREE);
-        wrapReturn(new Refresh(this), new Remover(new ModalWindow()));
+
+        processAdminResourceNavigator.load();
+        wrapReturn(new Remover(new ModalWindow()),processAdminResourceNavigator);
     }
 
     @Face(displayName = "Cancel")

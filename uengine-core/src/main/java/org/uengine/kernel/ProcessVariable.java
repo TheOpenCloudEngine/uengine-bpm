@@ -44,7 +44,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 	String uuid;
 	@Face(displayName = "",
-			ejsPath="dwr/metaworks/org/uengine/kernel/UUID.ejs", options = {"style"}, values = {"display:none"})
+			ejsPath="dwr/metaworks/org/uengine/kernel/UUID.ejs")
 		public String getUuid() {
 			return uuid;
 		}

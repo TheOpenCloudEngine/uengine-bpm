@@ -82,7 +82,7 @@ public class ExpressionEvaluteCondition extends Condition {
         if(UEngineUtil.isNotEmpty(getConditionExpression())) {
             return getConditionExpression();
         }else{
-            return "New Expression (Right click - 'edit' to edit)";
+            return "";
         }
     }
 

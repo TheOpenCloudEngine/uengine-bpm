@@ -1,0 +1,34 @@
+<%
+if(value == null || !value.indexOf){
+    value = "";
+}
+
+
+
+if(mw3.when == mw3.WHEN_EDIT || mw3.when == mw3.WHEN_NEW){
+
+    var type = descriptor ? descriptor.getOptionValue("type") : 'text';
+    var placeholder = descriptor ? descriptor.getOptionValue("placeholder") : null;
+    var size = descriptor ? descriptor.getOptionValue("size") : null;
+
+    if(descriptor && descriptor.attributes && descriptor.attributes.size){
+        size = descriptor.attributes.size;
+    }
+
+
+%>
+<input style="display:none" id="<%=mw3.createInputId(objectId)%>" class="form-control input-sm" <%=type ? "type='" + type + "'" : "" %> value="<%=value%>" <%=size ? " size=" + size : ""%> <%=placeholder ? " placeholder='" + mw3.localize(placeholder) + "'" : ""%>>
+<%
+}else{
+    var type = descriptor ? descriptor.getOptionValue("type") : 'text';
+if(type == 'link'){
+%>
+<a href="<%=mw3.localize(value)%>" target="_blank"><%=mw3.localize(value)%></a>
+<%
+}else{
+%>
+<%=mw3.localize(value)%>
+<%
+}
+}
+%>

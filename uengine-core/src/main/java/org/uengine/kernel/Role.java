@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
+import java.util.UUID;
 
 import org.metaworks.ContextAware;
 import org.metaworks.FieldDescriptor;
@@ -11,19 +13,19 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.Remover;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.Type;
-import org.metaworks.annotation.Face;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Name;
-import org.metaworks.annotation.Order;
-import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.*;
 import org.metaworks.inputter.RadioInput;
 import org.metaworks.validator.NotNullValid;
 import org.metaworks.validator.Validator;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.TextContext;
+import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
+import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.util.UEngineUtil;
+
+import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
 /**
  * @author Jinyoung Jang
@@ -45,7 +47,15 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	public static final int ASSIGNTYPE_GROUP 		= 3;	
 	public static final int ASSIGNTYPE_ROLE 		= 4;	
 
-	
+	String uuid;
+		@Face(displayName = "", ejsPath="dwr/metaworks/org/uengine/kernel/UUID.ejs", options = {"style"}, values = {"display:none"})
+		public String getUuid() {
+			return uuid;
+		}
+		public void setUuid(String uuid) {
+			this.uuid = uuid;
+		}
+
 	public static void metaworksCallback_changeMetadata(Type type){
 		
 		FieldDescriptor fd;
@@ -276,6 +286,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	public Role(){
 		setMetaworksContext(new MetaworksContext());
 		this.setDisplayName("");
+		this.setUuid(UUID.randomUUID().toString());
 	}
 
 	public Role(String name){
@@ -487,5 +498,16 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	@Override
 	public String getDescription() {
 		return this.displayName.getText();
+	}
+
+	@ServiceMethod(payload = {"uuid"})
+	public void delete(@AutowiredFromClient RolePanel rolePanel){
+		for(Role role : rolePanel.getRoleList()){
+			if(Objects.equals(this.getUuid(), role.getUuid())){
+				rolePanel.getRoleList().remove(role);
+				break;
+			}
+		}
+		wrapReturn(rolePanel);
 	}
 }

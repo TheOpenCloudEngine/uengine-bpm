@@ -130,7 +130,7 @@ public class EditorPanel implements ContextAware {
 
 			resourceNavigator.load();
 
-			wrapReturn(resourceNavigator);
+			wrapReturn(resourceNavigator,this);
 		}else{
 			getMetaworksContext().setWhen(WHEN_RENAME);
 		}

@@ -76,7 +76,7 @@ public class EditorPanel implements ContextAware {
 			this.metaworksContext = metaworksContext;
 		}
 
-	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)
+	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	@Order(1)
 	public void save(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
 		if(isNew() && getResourceName()==null){
@@ -104,7 +104,7 @@ public class EditorPanel implements ContextAware {
 		wrapReturn(resourceNavigator);
 	}
 
-	@ServiceMethod(callByContent = true)
+	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	@Order(2)
 	public ModalWindow saveAs() throws Exception {
 		EditorPanelPopup editorPanelPopup = getComponent(EditorPanelPopup.class);

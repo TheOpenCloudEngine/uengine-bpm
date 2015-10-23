@@ -9,6 +9,11 @@ import org.uengine.kernel.view.ScopeActivityView;
 
 public class SubProcessView extends ScopeActivityView{
 
+    public final static String SHAPE_ID = "OG.shape.bpmn.A_Subprocess";
+
+    public SubProcessView(){
+        setShapeId(this.SHAPE_ID);
+    }
     @ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
     public Object showProperty(@AutowiredFromClient ProcessVariablePanel processVariablePanel) throws Exception {
         return super.showProperty();

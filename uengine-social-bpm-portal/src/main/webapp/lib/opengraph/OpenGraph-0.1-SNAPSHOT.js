@@ -12381,6 +12381,11 @@ OG.shape.bpmn.G_Gateway.prototype.createShape = function () {
 		[50, 0]
 	]);
 
+    this.geom.style = new OG.geometry.Style({
+        'label-position': 'bottom'
+    });
+
+
 	return this.geom;
 };
 /**
@@ -12561,6 +12566,10 @@ OG.shape.bpmn.G_Inclusive.prototype.createShape = function () {
 
 	this.geom = new OG.geometry.GeometryCollection(geomCollection);
 
+    this.geom.style = new OG.geometry.Style({
+        "label-position": 'bottom'
+    });
+
 	return this.geom;
 };
 /**
@@ -12618,6 +12627,10 @@ OG.shape.bpmn.G_Parallel.prototype.createShape = function () {
 	geomCollection.push(geom3);
 
 	this.geom = new OG.geometry.GeometryCollection(geomCollection);
+
+    this.geom.style = new OG.geometry.Style({
+        "label-position": 'bottom'
+    });
 
 	return this.geom;
 };
@@ -13704,6 +13717,11 @@ OG.shape.bpmn.E_Intermediate_Escalation.prototype.createShape = function () {
 		[50, 50]
 	]);
 
+    geom1.style = new OG.geometry.Style({
+        fill : "black",
+        "fill-opacity" : 1
+    });
+
 	geomCollection.push(new OG.geometry.Circle([50, 50], 50));
 	geomCollection.push(new OG.geometry.Circle([50, 50], 40));
 	geomCollection.push(geom1);
@@ -13711,7 +13729,7 @@ OG.shape.bpmn.E_Intermediate_Escalation.prototype.createShape = function () {
 	this.geom = new OG.geometry.GeometryCollection(geomCollection);
 	this.geom.style = new OG.geometry.Style({
 		'label-position': 'bottom',
-        "stroke" : "#969149",
+        "stroke" : "black",
 		"stroke-width" : 1.5,
 		fill : "white",
 		"fill-opacity" : 1
@@ -14049,19 +14067,17 @@ OG.shape.bpmn.E_Start_Message.prototype.createShape = function () {
 	});
 
 	geom2 = new OG.geometry.PolyLine([
-		[20, 25],
-		[50, 45],
-		[80, 25],
-		[20, 25]
+		[20, 40],
+		[50, 60],
+		[80, 40]
 	]);
 	
 	geom3 = new OG.geometry.PolyLine([
-		[20, 35],
+		[20, 30],
 		[20, 70],
 		[80, 70],
-		[80, 35],
-		[50, 55],
-		[20, 35]
+		[80, 30],
+		[20, 30]
 	]);
 
 	geomCollection.push(geom1);

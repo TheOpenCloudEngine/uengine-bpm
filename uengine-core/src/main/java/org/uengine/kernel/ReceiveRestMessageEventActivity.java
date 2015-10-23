@@ -14,7 +14,7 @@ public class ReceiveRestMessageEventActivity extends ReceiveMessageEventActivity
     }
 
     public ReceiveRestMessageEventActivity(){
-        this.setName("Rest");
+        this.setName("Message");
     }
 }
 

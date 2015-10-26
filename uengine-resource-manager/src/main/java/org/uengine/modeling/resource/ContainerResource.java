@@ -82,8 +82,8 @@ public class ContainerResource extends DefaultResource implements IContainer {
 
 	@Order(6)
 	@Face(displayName="refresh")
-//	@Available(condition="metaworksContext.how == 'tree' && metaworksContext.where == 'navigator'")
-	@ServiceMethod(callByContent=true, eventBinding="refresh", bindingHidden=true, target=ServiceMethodContext.TARGET_SELF)
+	@Available(condition="metaworksContext.how == 'tree' && metaworksContext.where == 'navigator'")
+	@ServiceMethod(callByContent=true, eventBinding="refresh",  inContextMenu=true, bindingHidden=true, target=ServiceMethodContext.TARGET_SELF)
 	public void refresh() throws Exception {
 		this.setChildren(this.list());
 	}

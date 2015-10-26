@@ -97,6 +97,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 			this.viewId = viewId;
 		}
 
+	@Hidden
 	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
 	public Object[] apply() throws Exception {
 
@@ -110,7 +111,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 		return new Object[]{ddg};
 	}
 
-	
+	@Hidden
 	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
 	public Object[] cancel(){
 		ModalWindow modalWindow = new ModalWindow();

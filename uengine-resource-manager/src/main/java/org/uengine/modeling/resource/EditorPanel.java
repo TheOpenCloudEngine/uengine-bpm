@@ -1,15 +1,13 @@
 package org.uengine.modeling.resource;
 
-import org.metaworks.ContextAware;
-import org.metaworks.MetaworksContext;
-import org.metaworks.MetaworksFile;
-import org.metaworks.Refresh;
+import org.metaworks.*;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Order;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Download;
 import org.metaworks.widget.ModalWindow;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
@@ -26,6 +24,9 @@ public class EditorPanel implements ContextAware {
 	public static final String WHEN_RENAME = "Rename";
 	public static final String WHEN_UPLOAD = "Upload";
 	public static final String WHEN_MOVETO = "MoveTo";
+
+	@Autowired
+	public ResourceManager resourceManager;
 
 	IEditor editor;
 		public IEditor getEditor() {
@@ -76,7 +77,7 @@ public class EditorPanel implements ContextAware {
 			this.metaworksContext = metaworksContext;
 		}
 
-	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)
+	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	@Order(1)
 	public void save(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
 		if(isNew() && getResourceName()==null){
@@ -97,14 +98,22 @@ public class EditorPanel implements ContextAware {
 
 		defaultResource.save(getEditor().createEditedObject());
 
-		setNew(false);
-
 		resourceNavigator.load();
 
-		wrapReturn(resourceNavigator);
+		autowire(this);
+
+		this.setNew(false);
+
+		IEditor editor = getEditor().getClass().newInstance();
+
+		editor.setEditingObject(resourceManager.getStorage().getObject(defaultResource));
+
+		this.setEditor(editor);
+
+		wrapReturn(resourceNavigator,this);
 	}
 
-	@ServiceMethod(callByContent = true)
+	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	@Order(2)
 	public ModalWindow saveAs() throws Exception {
 		EditorPanelPopup editorPanelPopup = getComponent(EditorPanelPopup.class);
@@ -130,7 +139,7 @@ public class EditorPanel implements ContextAware {
 
 			resourceNavigator.load();
 
-			wrapReturn(resourceNavigator);
+			wrapReturn(resourceNavigator,this);
 		}else{
 			getMetaworksContext().setWhen(WHEN_RENAME);
 		}

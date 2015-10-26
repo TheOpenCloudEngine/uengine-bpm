@@ -1,5 +1,6 @@
 package org.uengine.processadmin;
 
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.ServiceMethod;
 import org.springframework.context.annotation.Scope;
@@ -14,7 +15,7 @@ import org.uengine.modeling.resource.ResourceNavigator;
 @Scope("prototype")
 public class ProcessAdminEditorPanel extends EditorPanel{
 
-	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true)
+	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	public void save(
 			@AutowiredFromClient Session session,
 			@AutowiredFromClient ProcessVariablePanel processVariablePanel,

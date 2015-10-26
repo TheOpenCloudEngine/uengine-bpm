@@ -45,7 +45,9 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	public static final int ASSIGNTYPE_USER		 	= 0;	
 	public static final int ASSIGNTYPE_DEPT 		= 2;	
 	public static final int ASSIGNTYPE_GROUP 		= 3;	
-	public static final int ASSIGNTYPE_ROLE 		= 4;	
+	public static final int ASSIGNTYPE_ROLE 		= 4;
+
+	public static final String WHEN_ADD = "add";
 
 //	String uuid;
 //		@Face(displayName = "", ejsPath="dwr/metaworks/org/uengine/kernel/UUID.ejs", options = {"style"}, values = {"display:none"})
@@ -162,7 +164,9 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 		}
 
 	private java.lang.String name;
+	@Name
 	@Face(displayName="역할 이름")
+	@Available(when={MetaworksContext.WHEN_EDIT})
 	@Order(1)
 		public String getName() {
 			return name;
@@ -253,7 +257,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 		}
 		
 	private TextContext displayName = TextContext.createInstance();
-	@Name
+	@Available(when={MetaworksContext.WHEN_EDIT})
 	@Face(displayName="역할 설명")
 	@Order(2)
 		public TextContext getDisplayName() {
@@ -510,4 +514,12 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 //		}
 //		wrapReturn(rolePanel);
 //	}
+
+	@Face(displayName = "Add")
+	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
+	public void addRoleToList(@AutowiredFromClient RolePanel rolePanel){
+		this.getMetaworksContext().setWhen(MetaworksContext.WHEN_VIEW);
+		rolePanel.getRoleList().add(this);
+		wrapReturn(new Remover(new ModalWindow()), rolePanel);
+	}
 }

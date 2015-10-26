@@ -12,13 +12,17 @@ import javax.xml.namespace.QName;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
+import org.metaworks.Remover;
+import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.dwr.SerializationSensitive;
+import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.ComplexType;
 import org.uengine.contexts.DatabaseSynchronizationOption;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
+import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.kernel.face.GenericValueFace;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.ResourceManager;
@@ -55,6 +59,8 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 	String name;
 	@Id
 	@Order(1)
+	@Available(when={MetaworksContext.WHEN_EDIT})
+	@Name
 	@ValidatorSet({
 		@Validator(name=ValidatorContext.VALIDATE_NOTNULL, message="변수이름을 입력하세요."),
 	})
@@ -67,6 +73,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 	TextContext displayName = TextContext.createInstance();
 	@Order(2)
+	@Available(when={MetaworksContext.WHEN_EDIT})
 		public TextContext getDisplayName(){
 			if(displayName.getText()==null){
 				TextContext result = TextContext.createInstance();

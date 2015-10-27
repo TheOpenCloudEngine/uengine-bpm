@@ -10,9 +10,9 @@ public class GatewayPalette extends Palette {
 	public GatewayPalette(){
 		this.setName("Gateway");
 
-		addSymbol(GatewayView.class);
-		addSymbol(ParallelGatewayView.class);
-		addSymbol(InclusiveGatewayView.class);
+		this.getSymbolList().add((new GatewayView()).createSymbol());
+		this.getSymbolList().add((new InclusiveGatewayView()).createSymbol());
+		this.getSymbolList().add((new ParallelGatewayView()).createSymbol());
 	}
 	
 

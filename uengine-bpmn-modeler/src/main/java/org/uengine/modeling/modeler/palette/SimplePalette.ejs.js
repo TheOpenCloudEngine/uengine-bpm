@@ -6,7 +6,7 @@ var org_uengine_modeling_modeler_palette_SimplePalette = function(objectId, clas
     this.objectDiv = $('#' + this.objectDivId);
 
     this.objectDiv.css({
-        height: '40%',
+        height: '100%',
         overflow: 'auto'
     });
 }

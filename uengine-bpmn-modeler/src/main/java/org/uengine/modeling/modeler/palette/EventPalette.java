@@ -9,10 +9,11 @@ public class EventPalette extends Palette {
 	public EventPalette(){
 		this.setName("Event");
 
-		addSymbol(StartEventView.class);
-		addSymbol(EndEventView.class);
-		addSymbol(TerminateActivityView.class);
-
+		this.getSymbolList().add((new StartEventView()).createSymbol());
+		this.getSymbolList().add((new EndEventView()).createSymbol());
+		this.getSymbolList().add((new EscalationEventView()).createSymbol());
+		this.getSymbolList().add((new TimerEventView()).createSymbol());
+		this.getSymbolList().add((new ReceiveRestMessageEventActivityView()).createSymbol());
 	}
 
 }

@@ -12,7 +12,7 @@ public class SimplePalette extends Palette {
 	}
 
 	public SimplePalette(String type){
-		this.setName("BPMN Diagram");
+		this.setName("BPMN Elements");
 		setType(type);
 
 		this.getSymbolList().add(new PoolView().createSymbol());

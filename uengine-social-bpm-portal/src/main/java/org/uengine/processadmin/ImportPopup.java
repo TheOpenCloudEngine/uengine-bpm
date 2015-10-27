@@ -48,7 +48,7 @@ public class ImportPopup {
             ProcessResource processResource = new ProcessResource();
             MetaworksRemoteService.autowire(processResource);
 
-            processResource.setPath("codi/" + getSelectFile().getFilename());
+            processResource.setPath("codi/" + getSelectFile().getFilename() + ".process");
 
             processResource.save(definition);
 

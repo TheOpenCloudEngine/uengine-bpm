@@ -3,7 +3,7 @@ var org_uengine_modeling_modeler_palette_SimplePalette = function(objectId, clas
     this.className = className;
     this.object = mw3.objects[this.objectId];
     this.objectDivId = mw3._getObjectDivId(this.objectId);
-    this.objectDiv = $('#' + this.objectDivId);
+    this.objectDiv = $('#' + this.objectDivId + "_contents");
 
     this.objectDiv.css({
         height: '100%',

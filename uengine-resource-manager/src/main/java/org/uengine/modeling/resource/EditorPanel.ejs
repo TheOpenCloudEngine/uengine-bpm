@@ -1,49 +1,18 @@
 <% if(value.editor){ %>
-
-    <div style="text-align: center;"><div class="btn-group" style="display:inline-block;">
-    <%
-    if(value){
-    if(objectMetadata.serviceMethodContexts){
-            for(var key in objectMetadata.serviceMethodContexts){
-        var serviceMethod = objectMetadata.serviceMethodContexts[key];
-        var methodName = serviceMethod.methodName;
-        var menuName = methodName;
-
-        if(mw3.isHiddenMethod(methods[methodName]))
-            continue;
-
-        if(serviceMethod.displayName)
-            menuName = serviceMethod.displayName;
-
-        menuName = menuName.replace("\&", "");
-
-        var iconName;
-
-        if(methodName == "save" || methodName=="saveAs"){
-            iconName="fa fa-save";
-        }else if(methodName == "delete"){
-            iconName="fa fa-trash-o";
-        }else if(methodName == "rename"){
-            iconName="fa fa-puzzle-piece";
-        }
-    %>
-    <button type="button" class="btn btn-default main-menu menu-<%=methodName%> " onclick="<%=methods[methodName].caller()%>"  style="padding:6px 10px;font-size:12px;"><i class="<%=iconName%>"></i> <%=menuName%></button>
-    <%
-    }
-    }
-    }
-    %>
-    <div style="clear:both" /></div>
-</div>
-<h1>
     <% if(value.new || mw3.when == 'Rename'){ %>
         <%= fields.resourceName.here({when: 'edit'}) %>
     <% }else{ %>
         <%= value.resourceName %>
     <% } %>
-</h1>
 
-<p><br>
+<%= methods.save.here() %>
+<%= methods.saveAs.here() %>
+<%= methods.rename.here() %>
+<%= methods.moveTo.here() %>
+<%= methods.download.here() %>
+<%= methods.upload.here() %>
+<%= methods.delete.here() %>
 
 <%= fields.editor.here() %>
 <% } %>
+

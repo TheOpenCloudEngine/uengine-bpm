@@ -1,5 +1,6 @@
 package org.uengine.social;
 
+import com.sun.star.util.ModeChangeEvent;
 import org.metaworks.MetaworksContext;
 import org.metaworks.Remover;
 import org.metaworks.ServiceMethodContext;
@@ -42,15 +43,16 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
     }
 
 
-    @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_OPENER)
-    public SocialBPMProcessVariableTypeSelector select(@AutowiredFromClient SelectedResource selectedComplexClassResource){
+    @ServiceMethod(callByContent = true)
+    public void select(@AutowiredFromClient SelectedResource selectedComplexClassResource){
         SocialBPMProcessVariableTypeSelector socialBPMProcessVariableTypeSelector = new SocialBPMProcessVariableTypeSelector();
         socialBPMProcessVariableTypeSelector.setSelectedClassName(selectedComplexClassResource.getPath());
 
 
        // MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
 
-        return socialBPMProcessVariableTypeSelector;
+//        return socialBPMProcessVariableTypeSelector;
+        MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()),socialBPMProcessVariableTypeSelector);
     }
 
 

@@ -147,6 +147,34 @@ org_uengine_modeling_Canvas.prototype = {
 		});
 
 		this.objectDiv.bind('drawShape', {objectId: this.objectId}, function(event, element){
+			if($(element).attr('auto_draw') && $(element).attr('auto_draw') == 'yes') {
+				if (element.shape instanceof OG.shape.bpmn.A_Task) {
+					$(element).attr('_width', '120');
+					$(element).attr('_height', '50');
+					$(element).attr('_shapeId', 'OG.shape.bpmn.A_HumanTask');
+					$(element).attr('_classname', 'org.uengine.kernel.HumanActivity');
+					$(element).attr('_viewclass', 'org.uengine.kernel.view.HumanActivityView');
+				} else if (element.shape instanceof OG.shape.bpmn.E_End) {
+					$(element).attr('_width', '30');
+					$(element).attr('_height', '30');
+					$(element).attr('_shapeId', 'OG.shape.bpmn.E_End');
+					$(element).attr('_classname', 'org.uengine.kernel.bpmn.EndEvent');
+					$(element).attr('_viewclass', 'org.uengine.kernel.bpmn.view.EndEventView');
+				}
+				$(element).attr('_classType', 'Activity');
+				$(element).attr('_shape_type', 'GEOM');
+				$(element).attr('_tracingTag', ++faceHelper.tracingTag);
+
+				var activityView = {
+					__className: $(element).attr('_viewclass'),
+					element: element,
+					shapeId: $(element).attr('_shapeId')
+				};
+
+				mw3.getFaceHelper(event.data.objectId).toAppend(activityView);
+				mw3.onLoadFaceHelperScript();
+
+			}
 			mw3.getFaceHelper(event.data.objectId).initHistory();
 
 			mw3.getFaceHelper(event.data.objectId).addRedoList();

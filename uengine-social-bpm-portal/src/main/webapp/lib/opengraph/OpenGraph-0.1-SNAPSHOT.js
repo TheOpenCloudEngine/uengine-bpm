@@ -10857,7 +10857,7 @@ OG.shape.bpmn.A_Task.prototype.drawCustomControl = function(handler, element){
 				dy = handler._grid(eventOffset.y - element.shape.geom.getBoundary().getCentroid().y, 'move');
 
 				// Canvas 영역을 벗어나서 드래그되는 경우 Canvas 확장
-				handler._autoExtend(eventOffset.x, eventOffset.y);
+				handler._autoExtend(eventOffset.x, eventOffset.y, element);
 				$(task).css({"position": "", "left": "", "top": ""});
 				$.each(bBoxArray, function (k, item) {
 					handler._RENDERER.setAttr(item.box, {transform: "t" + dx + "," + dy});
@@ -21462,7 +21462,7 @@ OG.handler.EventHandler.prototype = {
 					//TODO : 이것 또한 없애야 할 것... 의존성을 가지면 안됨.
 					// remove custom control
 					if(me._getSelectedElement().length == 1){
-						//element.shape.drawCustomControl(me, element);
+						element.shape.drawCustomControl(me, element);
 						
 						//자동 붙이기...
 						if(isAttatched){
@@ -24182,7 +24182,7 @@ OG.handler.EventHandler.prototype = {
 			//하나만 선택된 경우 : 후행 처리 ( drawCustomControl );
 			if(me._getSelectedElement().length == 1){
 				if(me._CONFIG.MOVABLE){
-					//element.shape.drawCustomControl(this, element);
+					element.shape.drawCustomControl(this, element);
 				}
 			}else if(me._getSelectedElement().length > 1){
 				var i, n, selectedElements = me._getSelectedElement();

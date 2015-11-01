@@ -9,7 +9,7 @@ import org.uengine.modeling.Palette;
 public class TaskPalette extends Palette {
 
 	public TaskPalette() {
-		this.setName("TaskPalette");
+		this.setName("Tasks");
 
 		this.getSymbolList().add(new PoolView().createSymbol());
 		this.getSymbolList().add((new HumanActivityView()).createSymbol());

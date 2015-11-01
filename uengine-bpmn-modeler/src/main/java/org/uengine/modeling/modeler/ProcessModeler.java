@@ -25,26 +25,34 @@ public class ProcessModeler extends DefaultModeler {
 
 	public RolePanel rolePanel;
 	public RolePanel getRolePanel() {
-		return rolePanel;
+		try {
+			return ((SimplePalette) getPalette()).getRolePalette().getRolePanel();
+		}catch (Exception e){
+			return null;
+		}
 	}
-	public void setRolePanel(RolePanel rolePanel) {
-		this.rolePanel = rolePanel;
-	}
+//	public void setRolePanel(RolePanel rolePanel) {
+//		this.rolePanel = rolePanel;
+//	}
 
 	public ProcessVariablePanel processVariablePanel;
 	public ProcessVariablePanel getProcessVariablePanel() {
-		return processVariablePanel;
+		try {
+			return ((SimplePalette) getPalette()).getProcessVariablePalette().getProcessVariablePanel();
+		}catch (Exception e){
+			return null;
+		}
 	}
-	public void setProcessVariablePanel(ProcessVariablePanel processVariablePanel) {
-		this.processVariablePanel = processVariablePanel;
-	}
+//	public void setProcessVariablePanel(ProcessVariablePanel processVariablePanel) {
+//		this.processVariablePanel = processVariablePanel;
+//	}
 
 	public ProcessModeler() {
 		setType(SUFFIX);
 		this.setCanvas(new ProcessCanvas(getType()));
 		this.setPalette(new SimplePalette(getType()));
-		this.setRolePanel(new RolePanel());
-		this.setProcessVariablePanel(new ProcessVariablePanel());
+//		this.setRolePanel(new RolePanel());
+//		this.setProcessVariablePanel(new ProcessVariablePanel());
 
 		setMetaworksContext(new MetaworksContext());
 		getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);

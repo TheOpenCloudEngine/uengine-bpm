@@ -7,7 +7,7 @@ import org.uengine.modeling.Palette;
 public class EventPalette extends Palette {
 
 	public EventPalette(){
-		this.setName("Event");
+		this.setName("Events");
 
 		this.getSymbolList().add((new StartEventView()).createSymbol());
 		this.getSymbolList().add((new EndEventView()).createSymbol());

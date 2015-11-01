@@ -15,13 +15,13 @@ import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
  * Created by Ryuha on 2015-06-11.
  */
 public class RoleListFace extends ListFace<Role> {
-    @Override
-    @Face(displayName = "+")
-    @ServiceMethod(callByContent=true, target = ServiceMethodContext.TARGET_POPUP)
-    public void add() {
-        packElements();
-        MetaworksElement metaworksElement = createNewElement();
-
-        wrapReturn(new ModalWindow(metaworksElement));
-    }
+//    @Override
+//    @Face(displayName = "+")
+//    @ServiceMethod(callByContent=true, target = ServiceMethodContext.TARGET_POPUP)
+//    public void add() {
+//        packElements();
+//        MetaworksElement metaworksElement = createNewElement();
+//
+//        wrapReturn(new ModalWindow(metaworksElement));
+//    }
 }

@@ -44,14 +44,21 @@ public class SimplePalette extends CompositePalette {
 	}
 
 	RolePalette rolePalette;
-	public RolePalette getRolePalette(){
-		return rolePalette;
-	}
+		public RolePalette getRolePalette(){
+			return rolePalette;
+		}
+		public void setRolePalette(RolePalette rolePalette) {
+			this.rolePalette = rolePalette;
+		}
 
 	ProcessVariablePalette processVariablePalette;
-	public ProcessVariablePalette getProcessVariablePalette() {
-		return processVariablePalette;
-	}
+		public ProcessVariablePalette getProcessVariablePalette() {
+			return processVariablePalette;
+		}
+		public void setProcessVariablePalette(ProcessVariablePalette processVariablePalette) {
+			this.processVariablePalette = processVariablePalette;
+		}
+
 
 
 }

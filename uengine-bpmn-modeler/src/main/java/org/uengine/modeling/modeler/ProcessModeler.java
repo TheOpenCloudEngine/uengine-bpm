@@ -23,28 +23,34 @@ public class ProcessModeler extends DefaultModeler {
 
 	public final static String SUFFIX = ".process";
 
-	public RolePanel rolePanel;
 	public RolePanel getRolePanel() {
-		return rolePanel;
+		try {
+			return ((SimplePalette) getPalette()).getRolePalette().getRolePanel();
+		}catch (Exception e){
+			return null;
+		}
 	}
-	public void setRolePanel(RolePanel rolePanel) {
-		this.rolePanel = rolePanel;
-	}
+//	public void setRolePanel(RolePanel rolePanel) {
+//		this.rolePanel = rolePanel;
+//	}
 
-	public ProcessVariablePanel processVariablePanel;
 	public ProcessVariablePanel getProcessVariablePanel() {
-		return processVariablePanel;
+		try {
+			return ((SimplePalette) getPalette()).getProcessVariablePalette().getProcessVariablePanel();
+		}catch (Exception e){
+			return null;
+		}
 	}
-	public void setProcessVariablePanel(ProcessVariablePanel processVariablePanel) {
-		this.processVariablePanel = processVariablePanel;
-	}
+//	public void setProcessVariablePanel(ProcessVariablePanel processVariablePanel) {
+//		this.processVariablePanel = processVariablePanel;
+//	}
 
 	public ProcessModeler() {
 		setType(SUFFIX);
 		this.setCanvas(new ProcessCanvas(getType()));
 		this.setPalette(new SimplePalette(getType()));
-		this.setRolePanel(new RolePanel());
-		this.setProcessVariablePanel(new ProcessVariablePanel());
+//		this.setRolePanel(new RolePanel());
+//		this.setProcessVariablePanel(new ProcessVariablePanel());
 
 		setMetaworksContext(new MetaworksContext());
 		getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
@@ -203,11 +209,11 @@ public class ProcessModeler extends DefaultModeler {
 			}
 		};
 
-		if(def.getRoles()!=null) {
+		if(def.getRoles()!=null && getRolePanel()!=null) {
 			this.getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
 		}
 
-		if(def.getProcessVariables()!=null) {
+		if(def.getProcessVariables()!=null && getProcessVariablePanel()!=null) {
 			this.getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
 		}
 
@@ -309,15 +315,15 @@ public class ProcessModeler extends DefaultModeler {
 
 		HashMap<String, String> tracingTags = new HashMap<String, String>();
 
-		if(rolePanel!=null && rolePanel.getRoleList()!=null){
-			Role[] roles = new Role[rolePanel.getRoleList().size()];
-			rolePanel.getRoleList().toArray(roles);
+		if(getRolePanel()!=null && getRolePanel().getRoleList()!=null){
+			Role[] roles = new Role[getRolePanel().getRoleList().size()];
+			getRolePanel().getRoleList().toArray(roles);
 			def.setRoles(roles);
 		}
 
-		if(processVariablePanel!=null && processVariablePanel.getProcessVariableList()!=null){
-			ProcessVariable processVariables[] = new ProcessVariable[processVariablePanel.getProcessVariableList().size()];
-			processVariablePanel.getProcessVariableList().toArray(processVariables);
+		if(getProcessVariablePanel()!=null && getProcessVariablePanel().getProcessVariableList()!=null){
+			ProcessVariable processVariables[] = new ProcessVariable[getProcessVariablePanel().getProcessVariableList().size()];
+			getProcessVariablePanel().getProcessVariableList().toArray(processVariables);
 			def.setProcessVariables(processVariables);
 		}
 

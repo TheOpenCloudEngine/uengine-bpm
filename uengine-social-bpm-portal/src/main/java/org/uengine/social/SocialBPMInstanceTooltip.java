@@ -25,6 +25,8 @@ public class SocialBPMInstanceTooltip extends InstanceTooltip{
         modalWindow.setWidth(0);
         modalWindow.setHeight(0);
 
+        modalWindow.setTitle("Process Monitor");
+
         return modalWindow;
     }
 }

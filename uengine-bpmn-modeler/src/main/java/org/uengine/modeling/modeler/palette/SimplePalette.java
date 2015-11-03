@@ -32,10 +32,33 @@ public class SimplePalette extends CompositePalette {
 		Palette taskPallet = new TaskPalette();
 		Palette eventPallet = new EventPalette();
 		Palette gatewayPalette = new GatewayPalette();
+		rolePalette = new RolePalette();
+		 processVariablePalette = new ProcessVariablePalette();
 
 		getChildPallet().add(eventPallet);
 		getChildPallet().add(taskPallet);
 		getChildPallet().add(gatewayPalette);
+		getChildPallet().add(rolePalette);
+		getChildPallet().add(processVariablePalette);
 
 	}
+
+	RolePalette rolePalette;
+		public RolePalette getRolePalette(){
+			return rolePalette;
+		}
+		public void setRolePalette(RolePalette rolePalette) {
+			this.rolePalette = rolePalette;
+		}
+
+	ProcessVariablePalette processVariablePalette;
+		public ProcessVariablePalette getProcessVariablePalette() {
+			return processVariablePalette;
+		}
+		public void setProcessVariablePalette(ProcessVariablePalette processVariablePalette) {
+			this.processVariablePalette = processVariablePalette;
+		}
+
+
+
 }

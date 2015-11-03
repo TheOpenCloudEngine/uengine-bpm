@@ -8,7 +8,7 @@ import org.uengine.modeling.Palette;
 public class GatewayPalette extends Palette {
 
 	public GatewayPalette(){
-		this.setName("Gateway");
+		this.setName("Gateways");
 
 		this.getSymbolList().add((new GatewayView()).createSymbol());
 		this.getSymbolList().add((new InclusiveGatewayView()).createSymbol());

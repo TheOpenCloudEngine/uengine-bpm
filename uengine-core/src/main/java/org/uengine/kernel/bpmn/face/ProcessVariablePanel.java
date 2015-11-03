@@ -28,41 +28,41 @@ public class ProcessVariablePanel implements ContextAware {
             this.processVariableList = processVariableList;
         }
 
-    @Face(displayName = "Edit")
-    @ServiceMethod(callByContent = true)
-    public void edit(){
-        ProcessVariablePanel processVariablePanel = new ProcessVariablePanel();
-
-        MetaworksContext metaworksContext = new MetaworksContext();
-        metaworksContext.setWhen(MetaworksContext.WHEN_EDIT);
-
-        processVariablePanel.setMetaworksContext(metaworksContext);
-
-        for(ProcessVariable processVariable : this.getProcessVariableList()){
-            processVariable.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
-        }
-        processVariablePanel.setProcessVariableList(this.getProcessVariableList());
-
-        MetaworksRemoteService.wrapReturn(new ModalWindow(processVariablePanel));
-    }
-
-    @Face(displayName = "Save")
-    @ServiceMethod(callByContent = true)
-    public void save(@AutowiredFromClient List<ProcessVariable> processVariableList){
-        ProcessVariablePanel processVariablePanel = new ProcessVariablePanel();
-
-        MetaworksContext metaworksContext = new MetaworksContext();
-        metaworksContext.setWhen(MetaworksContext.WHEN_VIEW);
-
-        processVariablePanel.setMetaworksContext(metaworksContext);
-
-        for(ProcessVariable processVariable : this.getProcessVariableList()){
-            processVariable.getMetaworksContext().setWhen(MetaworksContext.WHEN_VIEW);
-        }
-        processVariablePanel.setProcessVariableList(this.getProcessVariableList());
-
-        MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()),new Refresh(processVariablePanel));
-    }
+//    @Face(displayName = "Edit")
+//    @ServiceMethod(callByContent = true)
+//    public void edit(){
+//        ProcessVariablePanel processVariablePanel = new ProcessVariablePanel();
+//
+//        MetaworksContext metaworksContext = new MetaworksContext();
+//        metaworksContext.setWhen(MetaworksContext.WHEN_EDIT);
+//
+//        processVariablePanel.setMetaworksContext(metaworksContext);
+//
+//        for(ProcessVariable processVariable : this.getProcessVariableList()){
+//            processVariable.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+//        }
+//        processVariablePanel.setProcessVariableList(this.getProcessVariableList());
+//
+//        MetaworksRemoteService.wrapReturn(new ModalWindow(processVariablePanel));
+//    }
+//
+//    @Face(displayName = "Save")
+//    @ServiceMethod(callByContent = true)
+//    public void save(@AutowiredFromClient List<ProcessVariable> processVariableList){
+//        ProcessVariablePanel processVariablePanel = new ProcessVariablePanel();
+//
+//        MetaworksContext metaworksContext = new MetaworksContext();
+//        metaworksContext.setWhen(MetaworksContext.WHEN_VIEW);
+//
+//        processVariablePanel.setMetaworksContext(metaworksContext);
+//
+//        for(ProcessVariable processVariable : this.getProcessVariableList()){
+//            processVariable.getMetaworksContext().setWhen(MetaworksContext.WHEN_VIEW);
+//        }
+//        processVariablePanel.setProcessVariableList(this.getProcessVariableList());
+//
+//        MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()),new Refresh(processVariablePanel));
+//    }
 
     MetaworksContext metaworksContext;
 

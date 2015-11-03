@@ -515,11 +515,4 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 //		wrapReturn(rolePanel);
 //	}
 
-	@Face(displayName = "Add")
-	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
-	public void addRoleToList(@AutowiredFromClient RolePanel rolePanel){
-		this.getMetaworksContext().setWhen(MetaworksContext.WHEN_VIEW);
-		rolePanel.getRoleList().add(this);
-		wrapReturn(new Remover(new ModalWindow()), rolePanel);
-	}
 }

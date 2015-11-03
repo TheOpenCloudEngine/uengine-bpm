@@ -3,8 +3,4 @@ var org_uengine_kernel_bpmn_face_RolePanel = function(objectId, className){
     this.objectDivId = mw3._getObjectDivId(this.objectId);
     this.objectDiv = $('#' + this.objectDivId);
 
-    this.objectDiv.css({
-        height: '30%',
-        overflow: 'auto'
-    });
 }

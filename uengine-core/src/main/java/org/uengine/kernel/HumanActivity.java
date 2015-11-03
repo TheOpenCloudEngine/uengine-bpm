@@ -39,7 +39,7 @@ import static org.metaworks.dwr.MetaworksRemoteService.autowire;
  * @author Jinyoung Jang
  */
 
-//@Face(ejsPath="dwr/metaworks/genericfaces/FormFace.ejs")
+@Face(ejsPath="dwr/metaworks/genericfaces/FormFace.ejs")
 public class HumanActivity extends ReceiveActivity{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	public static final String GENERICCONTEXT_CURR_LOGGED_ROLEMAPPING = "currentLoggedRoleMapping";

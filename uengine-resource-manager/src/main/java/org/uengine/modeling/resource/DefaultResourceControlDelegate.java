@@ -13,7 +13,7 @@ public class DefaultResourceControlDelegate implements ResourceControlDelegate{
             try {
                 ((DefaultResource) resource)._newAndOpen(false);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }

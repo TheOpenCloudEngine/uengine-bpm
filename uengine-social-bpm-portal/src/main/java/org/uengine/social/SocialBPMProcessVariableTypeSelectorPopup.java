@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * Created by jangjinyoung on 15. 9. 17..
  */
+@Face(ejsPath = "genericfaces/ClearFace.ejs")
 public class SocialBPMProcessVariableTypeSelectorPopup {
 
     String type;
@@ -43,18 +44,18 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
     }
 
 
-    @ServiceMethod(callByContent = true)
-    public void select(@AutowiredFromClient SelectedResource selectedComplexClassResource){
-        SocialBPMProcessVariableTypeSelector socialBPMProcessVariableTypeSelector = new SocialBPMProcessVariableTypeSelector();
-        socialBPMProcessVariableTypeSelector.setSelectedClassName(selectedComplexClassResource.getPath());
-
-
-       // MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
-
-//        return socialBPMProcessVariableTypeSelector;
-        MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()),socialBPMProcessVariableTypeSelector);
-    }
-
+//    @ServiceMethod(callByContent = true)
+//    public void select(@AutowiredFromClient SelectedResource selectedComplexClassResource){
+//        SocialBPMProcessVariableTypeSelector socialBPMProcessVariableTypeSelector = new SocialBPMProcessVariableTypeSelector();
+//        socialBPMProcessVariableTypeSelector.setSelectedClassName(selectedComplexClassResource.getPath());
+//
+//
+//       // MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
+//
+////        return socialBPMProcessVariableTypeSelector;
+//        MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()),socialBPMProcessVariableTypeSelector);
+//    }
+//
 
     public SocialBPMProcessVariableTypeSelectorPopup(){
         ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();

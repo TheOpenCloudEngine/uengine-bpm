@@ -9,8 +9,7 @@ var org_uengine_modeling_DefaultModeler = function(objectId, className){
 	
 	var layoutOption = {west__size: '220', togglerLength_open: 0, spacing_open: 0, spacing_closed: 0};
 	if(this.objectDiv.height()) {
-		var parentHeight = this.objectDiv.parent().css('height');
-		this.objectDiv.height(parentHeight.substring(0, parentHeight.length - 2) * 0.87);
+		this.objectDiv.height('90%');
 		this.layout = this.objectDiv.layout(layoutOption);
 	}
 

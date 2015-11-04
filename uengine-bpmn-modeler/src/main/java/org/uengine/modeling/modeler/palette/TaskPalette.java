@@ -4,6 +4,7 @@ import org.uengine.kernel.bpmn.view.PoolView;
 import org.uengine.kernel.bpmn.view.SubProcessView;
 import org.uengine.kernel.view.HumanActivityView;
 import org.uengine.kernel.view.RestWebServiceActivityView;
+import org.uengine.kernel.view.RoleView;
 import org.uengine.modeling.Palette;
 
 public class TaskPalette extends Palette {
@@ -11,6 +12,7 @@ public class TaskPalette extends Palette {
 	public TaskPalette() {
 		this.setName("Tasks");
 
+		this.getSymbolList().add(new RoleView().createSymbol());
 		this.getSymbolList().add(new PoolView().createSymbol());
 		this.getSymbolList().add((new HumanActivityView()).createSymbol());
 		this.getSymbolList().add((new RestWebServiceActivityView()).createSymbol());

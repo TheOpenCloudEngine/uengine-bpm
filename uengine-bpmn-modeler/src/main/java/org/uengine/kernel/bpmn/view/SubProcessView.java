@@ -9,7 +9,7 @@ import org.uengine.kernel.view.ScopeActivityView;
 
 public class SubProcessView extends ScopeActivityView{
 
-    public final static String SHAPE_ID = "OG.shape.bpmn.A_Subprocess";
+    public final static String SHAPE_ID = "OG.shape.bpmn.ScopeActivity";
 
     public SubProcessView(){
         setShapeId(this.SHAPE_ID);

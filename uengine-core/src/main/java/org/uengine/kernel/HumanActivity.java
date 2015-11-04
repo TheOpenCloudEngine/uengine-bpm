@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.Validator;
+import org.metaworks.annotation.ValidatorContext;
 import org.metaworks.component.Tree;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.contexts.MappingContext;
@@ -39,7 +41,7 @@ import static org.metaworks.dwr.MetaworksRemoteService.autowire;
  * @author Jinyoung Jang
  */
 
-@Face(ejsPath="dwr/metaworks/genericfaces/FormFace.ejs")
+//@Face(ejsPath="dwr/metaworks/genericfaces/FormFace.ejs")
 public class HumanActivity extends ReceiveActivity{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	public static final String GENERICCONTEXT_CURR_LOGGED_ROLEMAPPING = "currentLoggedRoleMapping";
@@ -57,7 +59,9 @@ public class HumanActivity extends ReceiveActivity{
 	
 	
 	protected Role role;
-	@Face(faceClassName="org.uengine.kernel.face.RoleSelectorFace")
+//	@Face(faceClassName="org.uengine.kernel.face.RoleSelectorFace")
+	@Validator(name = Validator.VALIDATE_NOTNULL)
+	@Hidden
 		public Role getRole() {
 			
 			if(role!=null && role.getName()!=null && getProcessDefinition()!=null){
@@ -84,6 +88,7 @@ public class HumanActivity extends ReceiveActivity{
 		}
 	
 	String tool;
+	@Hidden
 		public String getTool() {
 			return tool;
 		}

@@ -44,7 +44,7 @@ public class RestWebServiceActivity extends DefaultActivity {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	public RestWebServiceActivity() throws Exception {
-		super("RestWebService");
+		super("Invocation");
 		method = new MethodProperty();
 	}
 

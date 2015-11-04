@@ -119,6 +119,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		}
 
 	String viewId;
+	@Hidden
 		public String getViewId() {
 			return viewId;
 		}

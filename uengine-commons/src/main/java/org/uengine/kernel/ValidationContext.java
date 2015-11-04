@@ -7,7 +7,7 @@ import java.util.*;
  */
 
 public class ValidationContext extends java.util.Vector{
-	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = 1234L;
 	public static String OPTIONKEY_DISABLE_REPLICATION = "disable replication";
 	HashMap<String,Object> codedMap = new HashMap<String,Object>();
 	
@@ -24,7 +24,7 @@ public class ValidationContext extends java.util.Vector{
 	}
 	
 	public void add(String cause, String resolution, int errorLevel, String code){
-		UEngineException e = new UEngineException(cause, resolution);
+		LeveledException e = new LeveledException(cause, resolution);
 		e.setErrorLevel(errorLevel);
 
 		if(code!=null)
@@ -34,11 +34,11 @@ public class ValidationContext extends java.util.Vector{
 	}
 	
 	public void add(String cause, String resolution){
-		add(cause, resolution, UEngineException.ERROR, null);
+		add(cause, resolution, LeveledException.ERROR, null);
 	}
 
 	public void add(String cause, String resolution, String code){
-		add(cause, resolution, UEngineException.ERROR, code);
+		add(cause, resolution, LeveledException.ERROR, code);
 	}
 	
 	public void add(String cause){
@@ -46,29 +46,29 @@ public class ValidationContext extends java.util.Vector{
 	}
 	
 	public void addWithCode(String cause, String code){
-		add(cause, null, UEngineException.ERROR, code);
+		add(cause, null, LeveledException.ERROR, code);
 	}
 
 	public void addWarning(String cause, String resolution){
-		add(cause, resolution, UEngineException.WARNING, null);
+		add(cause, resolution, LeveledException.WARNING, null);
 	}
 
 	public void addWarning(String cause, String resolution, String code){
-		add(cause, resolution, UEngineException.WARNING, code);
+		add(cause, resolution, LeveledException.WARNING, code);
 	}
 	
 	public void addWarning(String cause){
-		add(cause, null, UEngineException.WARNING, null);
+		add(cause, null, LeveledException.WARNING, null);
 	}
 
 	public void addWarningWithCode(String cause, String code){
-		add(cause, null, UEngineException.WARNING, code);
+		add(cause, null, LeveledException.WARNING, code);
 	}
 	
 	public boolean isWarning(){
 		for(Enumeration enumeration = this.elements(); enumeration.hasMoreElements();){
-			UEngineException item = (UEngineException)enumeration.nextElement();
-			if(item.getErrorLevel() != UEngineException.WARNING)
+			LeveledException item = (LeveledException)enumeration.nextElement();
+			if(item.getErrorLevel() != LeveledException.WARNING)
 				return false;
 		}
 		
@@ -89,7 +89,7 @@ public class ValidationContext extends java.util.Vector{
 	
 	public void setMessageToArray(){
 		for(Enumeration enumeration = this.elements(); enumeration.hasMoreElements();){
-			UEngineException item = (UEngineException)enumeration.nextElement();
+			LeveledException item = (LeveledException)enumeration.nextElement();
 			errorMessage.add(item.toString());
 		}
 	}

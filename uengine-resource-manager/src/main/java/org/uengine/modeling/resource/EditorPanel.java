@@ -5,14 +5,21 @@ import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Order;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Download;
+import org.metaworks.widget.Label;
 import org.metaworks.widget.ModalWindow;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.uengine.kernel.LeveledException;
+import org.uengine.kernel.Validatable;
+import org.uengine.kernel.ValidationContext;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.xml.ws.Service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -95,6 +102,10 @@ public class EditorPanel implements ContextAware {
 		autowire(defaultResource);
 
 		autowire(getEditor());
+
+		if(isNew() && resourceManager.getStorage().exists(defaultResource)){
+			throw new Exception("$ExistingResourceName");
+		}
 
 		defaultResource.save(getEditor().createEditedObject());
 
@@ -186,7 +197,26 @@ public class EditorPanel implements ContextAware {
 		return modalWindow;
 	}
 
-	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
+	@ServiceMethod(callByContent = true, target= ServiceMethod.TARGET_POPUP)
+	public ValidationContext validate() throws Exception{
+		Object editedObject = getEditor().createEditedObject();
+		if(editedObject instanceof Validatable){
+			ValidationContext validationContext = ((Validatable) editedObject).validate(null);
+
+			List<LeveledException> exceptions = new ArrayList<LeveledException>();
+
+			exceptions.addAll(validationContext);
+
+			wrapReturn(new ModalWindow(exceptions, "Validation Result"));
+
+			return validationContext;
+		}
+
+		wrapReturn(new ModalWindow(new Label("No error found in the model!")), "");
+		return null;
+	}
+
+	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT, needToConfirm = true)
 	@Order(7)
 	public void delete(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
 		DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(getResourcePath());

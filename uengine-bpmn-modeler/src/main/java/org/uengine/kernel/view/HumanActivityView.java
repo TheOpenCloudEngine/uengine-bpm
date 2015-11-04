@@ -7,6 +7,7 @@ import org.metaworks.annotation.ServiceMethod;
 import org.uengine.kernel.HumanActivity;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
+import org.uengine.modeling.Canvas;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.Symbol;
 
@@ -33,6 +34,7 @@ public class HumanActivityView extends ActivityView{
 	@ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
 	public Object showProperty(
 			@AutowiredFromClient RolePanel rolePanel,
+			@AutowiredFromClient Canvas canvas,
 			@AutowiredFromClient ProcessVariablePanel processVariablePanel
 	) throws Exception {
 		return super.showProperty();

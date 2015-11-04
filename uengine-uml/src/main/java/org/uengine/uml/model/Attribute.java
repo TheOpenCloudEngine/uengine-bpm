@@ -3,10 +3,7 @@ package org.uengine.uml.model;
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
 import org.metaworks.WebFieldDescriptor;
-import org.metaworks.annotation.Face;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Order;
-import org.metaworks.annotation.Range;
+import org.metaworks.annotation.*;
 import org.uengine.uml.model.face.AttributeTypeSelector;
 
 import java.io.Serializable;
@@ -75,6 +72,7 @@ public class Attribute extends WebFieldDescriptor implements Serializable{
 
     @Override
     @Order(1)
+    @Validator(name = ValidatorContext.VALIDATE_REGULAREXPRESSION, options = {"/^\\S*$/"}, message = "$SpaceAndSpecialIsNotAllowed")
     public String getName() {
         return super.getName();
     }

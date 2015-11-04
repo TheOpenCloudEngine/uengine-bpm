@@ -8,8 +8,11 @@ import org.metaworks.component.Tree;
 import org.metaworks.component.TreeNode;
 import org.uengine.kernel.ProcessVariable;
 import org.uengine.kernel.Role;
+import org.uengine.kernel.bpmn.Pool;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
+import org.uengine.modeling.Canvas;
+import org.uengine.modeling.ElementView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,7 @@ public class MappingTree extends Tree{
 
 	@ServiceMethod(payload={"id", "align","parentEditorId"} , target=ServiceMethodContext.TARGET_SELF)
 	public void init() throws Exception{
-		List<Role> roleList = rolePanel.getRoleList();
+		List<Role> roleList = parseRoles(canvas);//new ArrayList<Role>();//rolePanel.getRoleList();
         List<ProcessVariable> variableList = processVariablePanel.getProcessVariableList();
         
 		String treeId = this.getId();
@@ -88,6 +91,36 @@ public class MappingTree extends Tree{
 
 	@AutowiredFromClient(select="typeof parentEditorId!='undefined' && parentEditorId==autowiredObject.editorId")
 	transient public ProcessVariablePanel processVariablePanel;
-	
-	
+
+	@AutowiredFromClient
+	transient public Canvas canvas;
+
+
+	//TODO: should be moved to ProcessModeler.
+	public static List<Role> parseRoles(Canvas canvas){
+
+		List<Role> roles = new ArrayList<Role>();
+
+
+		for(ElementView elementView : canvas.getElementViewList()) {
+
+
+
+			if (elementView.getElement() instanceof Pool) {
+
+				Pool pool = (Pool) elementView.getElement();
+				elementView.setElement(null);
+				pool.setElementView(elementView);
+				pool.setName(elementView.getLabel());
+				pool.setDescription(elementView.getLabel());
+
+				Role role = Role.forName(pool.getName());
+
+				roles.add(role);
+
+			}
+		}
+
+		return roles;
+	}
 }

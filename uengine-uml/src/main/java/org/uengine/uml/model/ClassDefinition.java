@@ -4,10 +4,7 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.WebFieldDescriptor;
 import org.metaworks.WebObjectType;
-import org.metaworks.annotation.Face;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Order;
-import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.*;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.uml.model.face.AttributeListFace;
 
@@ -73,6 +70,8 @@ public class ClassDefinition extends WebObjectType implements Serializable{
     @Override
     @Order(1)
     @Hidden
+    @Validator(name = ValidatorContext.VALIDATE_REGULAREXPRESSION, options = {"/^[_a-z0-9-]+(.[_a-z0-9-]+)"}, message = "$SpaceAndSpecialIsNotAllowed")
+
     public String getName() {
         return super.getName();
     }

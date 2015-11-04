@@ -23,15 +23,12 @@ public class ProcessModeler extends DefaultModeler {
 
 	public final static String SUFFIX = ".process";
 
-	public RolePanel getRolePanel() {
-		try {
-			return ((SimplePalette) getPalette()).getRolePalette().getRolePanel();
-		}catch (Exception e){
-			return null;
-		}
-	}
-//	public void setRolePanel(RolePanel rolePanel) {
-//		this.rolePanel = rolePanel;
+//	public RolePanel getRolePanel() {
+//		try {
+//			return ((SimplePalette) getPalette()).getRolePalette().getRolePanel();
+//		}catch (Exception e){
+//			return null;
+//		}
 //	}
 
 	public ProcessVariablePanel getProcessVariablePanel() {
@@ -209,9 +206,9 @@ public class ProcessModeler extends DefaultModeler {
 			}
 		};
 
-		if(def.getRoles()!=null && getRolePanel()!=null) {
-			this.getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
-		}
+//		if(def.getRoles()!=null && getRolePanel()!=null) {
+//			this.getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
+//		}
 
 		if(def.getProcessVariables()!=null && getProcessVariablePanel()!=null) {
 			this.getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
@@ -315,11 +312,11 @@ public class ProcessModeler extends DefaultModeler {
 
 		HashMap<String, String> tracingTags = new HashMap<String, String>();
 
-		if(getRolePanel()!=null && getRolePanel().getRoleList()!=null){
-			Role[] roles = new Role[getRolePanel().getRoleList().size()];
-			getRolePanel().getRoleList().toArray(roles);
-			def.setRoles(roles);
-		}
+//		if(getRolePanel()!=null && getRolePanel().getRoleList()!=null){
+//			Role[] roles = new Role[getRolePanel().getRoleList().size()];
+//			getRolePanel().getRoleList().toArray(roles);
+//			def.setRoles(roles);
+//		}
 
 		if(getProcessVariablePanel()!=null && getProcessVariablePanel().getProcessVariableList()!=null){
 			ProcessVariable processVariables[] = new ProcessVariable[getProcessVariablePanel().getProcessVariableList().size()];
@@ -389,13 +386,16 @@ public class ProcessModeler extends DefaultModeler {
 				pool.setElementView(elementView);
 				pool.setName(elementView.getLabel());
 				pool.setDescription(elementView.getLabel());
+
+				Role role = Role.forName(pool.getName());
+
 				if(def.getPools() == null){
 					List<Pool> pools = new ArrayList<Pool>();
-					pools.add(pool);
 					def.setPools(pools);
-				}else{
-					def.addPool(pool);
 				}
+
+				def.addPool(pool);
+				def.addRole(role);
 
 			}else if (elementView.getElement() instanceof Activity){
 				Activity activity = (Activity)elementView.getElement();
@@ -420,6 +420,15 @@ public class ProcessModeler extends DefaultModeler {
 
 					if(toAttachActivity!=null)
 						((Event)activity).setAttachedToRef(toAttachActivity.getTracingTag());
+				}
+
+				if(activity instanceof HumanActivity){
+					HumanActivity humanActivity = (HumanActivity) activity;
+
+					Pool pool = findParentPool(elementView, canvas.getElementViewList());
+
+					if(pool != null)
+						humanActivity.setRole(Role.forName(pool.getName()));
 				}
 			}
 
@@ -473,6 +482,8 @@ public class ProcessModeler extends DefaultModeler {
 		return def;
 	}
 
+
+
 	protected ProcessDefinition createEmptyProcessDefinition() {
 		return new ProcessDefinition();
 	}
@@ -499,7 +510,7 @@ public class ProcessModeler extends DefaultModeler {
 					boolean checkMinY = (element_y_min <= event_y_min) && (event_y_min <= element_y_max);
 					boolean checkMaxY = (element_y_min <= event_y_max) && (event_y_max <= element_y_max);
 
-					if ((checkMinX || checkMaxX) && (checkMinY || checkMaxY)) {
+					if ((checkMinX || checkMaxX) && (checkMinY || checkMaxY) && elementView.getElement() instanceof Activity) {
 						return (Activity) elementView.getElement();
 					}
 				}

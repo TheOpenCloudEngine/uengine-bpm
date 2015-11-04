@@ -2,7 +2,7 @@
     <% if(value.new || mw3.when == 'Rename'){ %>
         <%= fields.resourceName.here({when: 'edit'}) %>
     <% }else{ %>
-        <div><%= value.resourceName %></div>
+        <h3><%= value.resourceName %></h3>
     <% } %>
 
 <div class="btn-group" role="group">
@@ -16,6 +16,12 @@
 <%= methods.delete.here() %>
 
 </div>
+
+<div class="btn-group" role="group">
+    <%= methods.validate.here() %>
+</div>
+
+<br><br>
 
 <%= fields.editor.here() %>
 <% } %>

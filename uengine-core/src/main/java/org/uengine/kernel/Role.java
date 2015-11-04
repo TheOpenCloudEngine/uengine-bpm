@@ -166,7 +166,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	private java.lang.String name;
 	@Name
 	@Face(displayName="역할 이름")
-	@Available(when={MetaworksContext.WHEN_EDIT})
+	//@Available(when={MetaworksContext.WHEN_EDIT})
 	@Order(1)
 		public String getName() {
 			return name;
@@ -295,6 +295,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 
 	public Role(String name){
 		this. name = name;
+		setDisplayName(name);
 	}
 	
 	public RoleMapping getMapping(ProcessInstance inst) throws Exception{

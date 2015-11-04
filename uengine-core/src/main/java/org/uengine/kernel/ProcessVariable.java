@@ -6,7 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
+//import java.util.UUID;
 
 import javax.xml.namespace.QName;
 
@@ -59,7 +59,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 	String name;
 	@Id
 	@Order(1)
-	@Available(when={MetaworksContext.WHEN_EDIT})
+//	@Available(when={MetaworksContext.WHEN_EDIT})
 	@Name
 	@ValidatorSet({
 		@Validator(name=ValidatorContext.VALIDATE_NOTNULL, message="변수이름을 입력하세요."),

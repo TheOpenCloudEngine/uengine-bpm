@@ -7,67 +7,7 @@ import java.io.*;
  * @author Jinyoung Jang
  */
 
-public class UEngineException extends Exception{
-	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
-
-	public final static int WARNING = 0;
-	public final static int ERROR = 1;
-	public final static int FATAL = 2;
-	public final static int MESSAGE_TO_USER = 3;
-	
-	int errorLevel = ERROR;
-		public int getErrorLevel() {
-			return errorLevel;
-		}
-		public void setErrorLevel(int value) {
-			errorLevel = value;
-		}
-
-
-	//Some exception types are difficult to be serialized to XML. So uEngine Exception doesn't serialize the cause exception.
-	transient Throwable cause;
-	
-		public Throwable getCauseException(){
-			return cause;
-		}
-			
-		public void setCauseException(Throwable value){
-			cause = value;
-		}
-		
-	String details;
-		public String getDetails() {
-			if (details == null) {
-				try {
-					ByteArrayOutputStream bao = new ByteArrayOutputStream();
-					printStackTrace(new PrintStream(bao));
-
-					setDetails(bao.toString());
-				} catch (Exception e) {
-					/*System.out.println(
-						"[UEngineException::getDetails] An non-fatal error : "
-							+ e.getMessage());*/
-				}
-			}
-
-			return details;
-		}
-		public void setDetails(String value) {
-			//TODO disabled by Oracle database's field size
-			/*if(value.startsWith("null")){
-				System.out.println("=======================> "+value);
-			}*/
-//System.out.println("UEngineException.setDetails('" + value + "')");
-			//details = value;
-		}
-		
-	String resolution;
-		public String getResolution() {
-			return resolution;
-		}
-		public void setResolution(String value) {
-			resolution = value;
-		}
+public class UEngineException extends LeveledException{
 
 	public UEngineException(String errorMsg, String resolution, Throwable cause){
 		this(errorMsg, resolution, cause, null, null);
@@ -75,7 +15,7 @@ public class UEngineException extends Exception{
 	}
 		
 	public UEngineException(String errorMsg, String resolution, Throwable cause, ProcessInstance instance, Activity activity){
-		super(NPEifNull(errorMsg), makeExceptionRicher(cause, instance));
+		super(LeveledException.NPEifNull(errorMsg), makeExceptionRicher(cause, instance));
 		setCauseException(cause);
 		setResolution(resolution);
 		setInstance(instance);
@@ -86,10 +26,7 @@ public class UEngineException extends Exception{
 		}
 	}	
 
-	private static String NPEifNull(String errorMsg){
-		return (errorMsg != null ? errorMsg : "Null Pointer Exception");
-	}
-	
+
 	private static Throwable makeExceptionRicher(Throwable e, ProcessInstance instance){
 		if(instance==null) return e;
 		
@@ -114,24 +51,21 @@ public class UEngineException extends Exception{
 
 	public UEngineException(String errorMsg, Throwable cause){
 		this(errorMsg, null, cause);
-	}	
-	
+	}
+
 	public UEngineException(String errorMsg, String resolution){
 		this(errorMsg, resolution, null);
-	}	
+	}
 
 	public UEngineException(String errorMsg){
 		this(errorMsg, null, null);
 	}
-	
+
 	public UEngineException(){
 		this(null, null, null);
 	}
-	
-	public String toString(){
-		return getMessage();
-	}
-	
+
+
 	public UEngineExceptionContext createContext(){
 		UEngineExceptionContext ctx = new UEngineExceptionContext();
 		ctx.setMessage(getMessage());

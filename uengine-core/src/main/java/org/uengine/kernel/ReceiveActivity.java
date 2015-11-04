@@ -8,6 +8,7 @@ import java.util.*;
 
 import com.sun.org.apache.regexp.internal.RE;
 import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Group;
 import org.metaworks.annotation.Hidden;
 import org.uengine.contexts.MappingContext;
 import org.uengine.kernel.bpmn.face.ParameterContextArrayFace;
@@ -47,6 +48,7 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener,
 
 	ParameterContext[] parameters; //TODO 이게 널일때 어떻게 할것인가>?????
 	@Face(faceClass= ParameterContextArrayFace.class)
+	@Group(name="Data")
 		public ParameterContext[] getParameters() {
 			return parameters;
 		}
@@ -236,6 +238,7 @@ System.out.println("ReceiveActivity::payload is " + payload);
 	///// implementation of ModelingTimeSensitive features. /////
 
 	MappingContext mapper;
+	@Group(name="Data")
 		public MappingContext getMapper() {
 			return mapper;
 		}

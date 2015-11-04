@@ -176,7 +176,7 @@ public class DefaultResource implements IResource {
 		_newAndOpen(false);
 	}
 
-	protected void _newAndOpen(boolean isNew) throws Exception {
+	public EditorPanel _newAndOpen(boolean isNew) throws Exception {
 		EditorPanel editorPanel = getComponent(EditorPanel.class);
 		editorPanel.setResourcePath(getPath());
 		editorPanel.setMetaworksContext(new MetaworksContext());
@@ -203,6 +203,8 @@ public class DefaultResource implements IResource {
 		editorPanel.setEditor(editor);
 
 		wrapReturn(new Refresh(editorPanel));
+
+		return editorPanel;
 	}
 
 

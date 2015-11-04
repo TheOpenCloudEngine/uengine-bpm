@@ -108,4 +108,6 @@ public interface IResource extends ContextAware, Comparable<IResource>{
 	void newOpen() throws Exception;
 
 	void reopen() throws Exception;
+
+
 }

@@ -19,7 +19,7 @@ public class RoleView extends ElementView{
 	
 	public Symbol createSymbol() {
 		Symbol symbol = new Symbol();
-		symbol.setName("레인");
+		symbol.setName("SwimLane");
 		symbol.setShapeId(SHAPE_ID);
 		symbol.setHeight(200);
 		symbol.setWidth(300);

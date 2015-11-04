@@ -10,6 +10,7 @@ import org.uengine.kernel.bpmn.view.EventView;
 import org.uengine.kernel.bpmn.view.PoolView;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.kernel.view.ActivityView;
+import org.uengine.kernel.view.RoleView;
 import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
@@ -486,21 +487,23 @@ public class ProcessModeler extends DefaultModeler {
 
 		for(ElementView elementView : elementViews) {
 			if (!(elementView instanceof EventView)) {
-				if(elementView.getX() != null) {
-					// elementView size
-					Long element_x_min = Long.parseLong(elementView.getX()) - (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
-					Long element_x_max = Long.parseLong(elementView.getX()) + (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
-					Long element_y_min = Long.parseLong(elementView.getY()) - (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
-					Long element_y_max = Long.parseLong(elementView.getY()) + (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
+				if(!(elementView instanceof RoleView) && !(elementView instanceof PoolView)) {
+					if (elementView.getX() != null) {
+						// elementView size
+						Long element_x_min = Long.parseLong(elementView.getX()) - (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
+						Long element_x_max = Long.parseLong(elementView.getX()) + (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
+						Long element_y_min = Long.parseLong(elementView.getY()) - (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
+						Long element_y_max = Long.parseLong(elementView.getY()) + (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
 
-					boolean checkMinX = (element_x_min <= event_x_min) && (event_x_min <= element_x_max);
-					boolean checkMaxX = (element_x_min <= event_x_max) && (event_x_max <= element_x_max);
+						boolean checkMinX = (element_x_min <= event_x_min) && (event_x_min <= element_x_max);
+						boolean checkMaxX = (element_x_min <= event_x_max) && (event_x_max <= element_x_max);
 
-					boolean checkMinY = (element_y_min <= event_y_min) && (event_y_min <= element_y_max);
-					boolean checkMaxY = (element_y_min <= event_y_max) && (event_y_max <= element_y_max);
+						boolean checkMinY = (element_y_min <= event_y_min) && (event_y_min <= element_y_max);
+						boolean checkMaxY = (element_y_min <= event_y_max) && (event_y_max <= element_y_max);
 
-					if ((checkMinX || checkMaxX) && (checkMinY || checkMaxY)) {
-						return (Activity) elementView.getElement();
+						if ((checkMinX || checkMaxX) && (checkMinY || checkMaxY)) {
+							return (Activity) elementView.getElement();
+						}
 					}
 				}
 			}

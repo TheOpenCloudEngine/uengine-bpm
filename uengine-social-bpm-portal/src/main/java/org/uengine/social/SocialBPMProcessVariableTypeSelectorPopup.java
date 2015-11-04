@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by jangjinyoung on 15. 9. 17..
  */
-@Face(ejsPath = "genericfaces/ClearFace.ejs")
+@Face(ejsPath = "genericfaces/CleanObjectFace.ejs")
 public class SocialBPMProcessVariableTypeSelectorPopup {
 
     String type;

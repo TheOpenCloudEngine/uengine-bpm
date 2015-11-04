@@ -73,7 +73,7 @@ public class ParameterContext implements Serializable , ContextAware{
 		}
 	
 	String direction;
-	@Range(options={"IN", "OUT", "IN-OUT"}, values={"in", "out", "in-out"})
+	@Range(options={"IN-OUT", "IN", "OUT", }, values={ "in-out", "in", "out",})
 		public String getDirection() {
 			return direction;
 		}

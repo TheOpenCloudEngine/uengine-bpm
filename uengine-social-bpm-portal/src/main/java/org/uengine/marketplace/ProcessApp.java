@@ -3,13 +3,17 @@ package org.uengine.marketplace;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Resource;
+import org.metaworks.component.SelectBox;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.website.MetaworksFile;
 import org.oce.garuda.multitenancy.Operation;
 import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.marketplace.App;
 import org.uengine.codi.mw3.marketplace.AppTypePanel;
+import org.uengine.codi.mw3.marketplace.category.Category;
+import org.uengine.codi.mw3.marketplace.category.ICategory;
 import org.uengine.modeling.resource.*;
 import org.uengine.social.SocialBPMProcessDefinitionSelector;
 import org.uengine.util.UEngineUtil;
@@ -37,7 +41,26 @@ public class ProcessApp extends App{
 
     @Override
     public void load() throws Exception {
-        super.load();
+        SelectBox categories = new SelectBox();
+
+        ICategory category = Category.loadRootCategory();
+        if (category.size() > 0) {
+            while (category.next()) {
+
+                String categoryId = Integer.toString(category.getCategoryId());
+                String categoryName = category.getCategoryName();
+
+                categories.add(categoryName, categoryId);
+            }
+        }
+
+        this.setCategories(categories);
+
+
+
+        if( this.getLogoFile() == null ){
+            this.setLogoFile(new MetaworksFile());
+        }
     }
 
 

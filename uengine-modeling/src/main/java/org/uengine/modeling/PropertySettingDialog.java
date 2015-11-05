@@ -7,8 +7,8 @@ import org.metaworks.widget.ModalWindow;
 
 public class PropertySettingDialog extends ModalWindow{
 
-    private final static int DEFAULT_WIDTH = 300;
-    private final static int DEFAULT_HEIGHT = 200;
+    private final static int DEFAULT_WIDTH = 600;
+    private final static int DEFAULT_HEIGHT = 500;
 //
 //    IElement element;
 //        public IElement getElement() {

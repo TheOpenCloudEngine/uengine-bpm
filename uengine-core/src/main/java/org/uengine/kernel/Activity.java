@@ -933,7 +933,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	}
 	
 	protected String getActivityLabel(){
-		return "[At " + getName() + " Activity ("+getTracingTag()+")]";
+		return "[At " + getName() + " Activity ("+getTracingTag()+")] ";
 	}
 	
 	//TODO: it's too difficult

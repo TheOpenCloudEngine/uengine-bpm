@@ -25,7 +25,7 @@ public class SocialBPMClassAttributeFace extends AttributeTypeSelector {
         super();
 
         getOptionNames().add("User");
-        getOptionValues().add(User.class.getName());
+        getOptionValues().add(RoleUser.class.getName());
 
         setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator());
     }

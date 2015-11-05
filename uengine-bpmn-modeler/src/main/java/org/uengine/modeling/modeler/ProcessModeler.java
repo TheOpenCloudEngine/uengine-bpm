@@ -10,6 +10,7 @@ import org.uengine.kernel.bpmn.view.EventView;
 import org.uengine.kernel.bpmn.view.PoolView;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.kernel.view.ActivityView;
+import org.uengine.kernel.view.RoleView;
 import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.SimplePalette;
 import org.uengine.util.ActivityFor;
@@ -222,8 +223,11 @@ public class ProcessModeler extends DefaultModeler {
 					SequenceFlow sequenceFlow = (SequenceFlow) relation;
 					SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
 					sequenceFlow.setRelationView(null);
-					sequenceFlowView.setRelation(sequenceFlow);
-					relationViewList.add(sequenceFlowView);
+
+					if(sequenceFlowView!=null) {
+						sequenceFlowView.setRelation(sequenceFlow);
+						relationViewList.add(sequenceFlowView);
+					}
 				}
 			}
 		}
@@ -387,7 +391,7 @@ public class ProcessModeler extends DefaultModeler {
 				pool.setName(elementView.getLabel());
 				pool.setDescription(elementView.getLabel());
 
-				Role role = Role.forName(pool.getName());
+				//Role role = Role.forName(pool.getName());
 
 				if(def.getPools() == null){
 					List<Pool> pools = new ArrayList<Pool>();
@@ -395,7 +399,7 @@ public class ProcessModeler extends DefaultModeler {
 				}
 
 				def.addPool(pool);
-				def.addRole(role);
+				//def.addRole(role);
 
 			}else if (elementView.getElement() instanceof Activity){
 				Activity activity = (Activity)elementView.getElement();
@@ -425,10 +429,11 @@ public class ProcessModeler extends DefaultModeler {
 				if(activity instanceof HumanActivity){
 					HumanActivity humanActivity = (HumanActivity) activity;
 
-					Pool pool = findParentPool(elementView, canvas.getElementViewList());
+					//Pool pool = findParentPool(elementView, canvas.getElementViewList());
+					Role role = findParentRole(elementView, canvas.getElementViewList());
 
-					if(pool != null)
-						humanActivity.setRole(Role.forName(pool.getName()));
+					if(role != null)
+						humanActivity.setRole(Role.forName(role.getName()));
 				}
 			}
 
@@ -592,34 +597,52 @@ public class ProcessModeler extends DefaultModeler {
 				continue;
 			}
 
-			long x = Long.parseLong(elementView.getX());
-			long y = Long.parseLong(elementView.getY());
-			long width = Long.parseLong(elementView.getWidth());
-			long height = Long.parseLong(elementView.getHeight());
-			long left = x - (width/2);
-			long right = x + (width/2);
-			long top = y - (height/2);
-			long bottom = y + (height/2);
-
-			long p_x = Long.parseLong(ev.getX());
-			long p_y = Long.parseLong(ev.getY());
-			long p_width = Long.parseLong(ev.getWidth());
-			long p_height = Long.parseLong(ev.getHeight());
-			long p_left = p_x - (p_width/2);
-			long p_right = p_x + (p_width/2);
-			long p_top = p_y - (p_height/2);
-			long p_bottom = p_y + (p_height/2);
-
-			if(p_left < left &&
-					p_right > right &&
-					p_top < top &&
-					p_bottom > bottom
-					){ //TODO
+			if(isIn(elementView, ev)){ //TODO
 				return (Pool) ev.getElement();
 			}
 		}
 
 		return null;
+	}
+
+	public Role findParentRole(ElementView elementView, List<ElementView> elementViewList){
+		for(ElementView ev : elementViewList){
+			if(!(ev instanceof RoleView)){
+				continue;
+			}
+
+			if(isIn(elementView, ev)){ //TODO
+				return (Role) ev.getElement();
+			}
+		}
+
+		return null;
+	}
+
+	private boolean isIn(ElementView elem1, ElementView elem2){
+		long x = Long.parseLong(elem1.getX());
+		long y = Long.parseLong(elem1.getY());
+		long width = Long.parseLong(elem1.getWidth());
+		long height = Long.parseLong(elem1.getHeight());
+		long left = x - (width/2);
+		long right = x + (width/2);
+		long top = y - (height/2);
+		long bottom = y + (height/2);
+
+		long p_x = Long.parseLong(elem2.getX());
+		long p_y = Long.parseLong(elem2.getY());
+		long p_width = Long.parseLong(elem2.getWidth());
+		long p_height = Long.parseLong(elem2.getHeight());
+		long p_left = p_x - (p_width/2);
+		long p_right = p_x + (p_width/2);
+		long p_top = p_y - (p_height/2);
+		long p_bottom = p_y + (p_height/2);
+
+		return (p_left < left &&
+				p_right > right &&
+				p_top < top &&
+				p_bottom > bottom
+				);
 	}
 
 	public ElementView findConnectedEvent(ElementView elementView, List<RelationView> relationViewList, List<ElementView> elementViewList){

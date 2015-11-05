@@ -169,7 +169,7 @@ public class EditorPanel implements ContextAware {
 		return modalWindow;
 	}
 
-	@Hidden
+//	@Hidden
 	@ServiceMethod(callByContent=true, except="fileTransfer", target="append")
 	@Order(5)
 	public Download download(@AutowiredFromClient ResourceNavigator resourceNavigator) throws FileNotFoundException, IOException, Exception{
@@ -179,7 +179,11 @@ public class EditorPanel implements ContextAware {
 		MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
 
 		DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(getResourcePath());
-		return defaultResource.download(fileName, mimetypesFileTypeMap.getContentType(fileName));
+		Download download = defaultResource.download(fileName, mimetypesFileTypeMap.getContentType(fileName));
+
+		MetaworksRemoteService.wrapReturn(download);
+
+		return download;
 	}
 
 	@Hidden
@@ -205,14 +209,16 @@ public class EditorPanel implements ContextAware {
 
 			List<LeveledException> exceptions = new ArrayList<LeveledException>();
 
-			exceptions.addAll(validationContext);
+			if(exceptions.size() > 0){
+				exceptions.addAll(validationContext);
 
-			wrapReturn(new ModalWindow(exceptions, "Validation Result"));
+				wrapReturn(new ModalWindow(exceptions, "Validation Result"));
 
-			return validationContext;
+				return validationContext;
+			}
 		}
 
-		wrapReturn(new ModalWindow(new Label("No error found in the model!")), "");
+		wrapReturn(new ModalWindow(new Label("<center><h2>Congratulations!<br> No error found in your model!</h2></center>"), 600, 200, "Validation Result"));
 		return null;
 	}
 

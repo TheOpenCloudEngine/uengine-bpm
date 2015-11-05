@@ -14,6 +14,7 @@ import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceNavigator;
 import org.uengine.modeling.resource.resources.ClassResource;
+import org.uengine.modeling.resource.resources.URLappResource;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -61,6 +62,7 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
 
 		getProcessAdminResourceNavigator().getRoot().filterResources(ClassResource.class);
+		getProcessAdminResourceNavigator().getRoot().filterResources(URLappResource.class);
 
 		try {
 			ProcessMapList processMapList = new ProcessMapList();

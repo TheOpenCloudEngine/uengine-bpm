@@ -238,12 +238,22 @@ System.out.println("ReceiveActivity::payload is " + payload);
 	///// implementation of ModelingTimeSensitive features. /////
 
 	MappingContext mapper;
-	@Group(name="Data")
+	//@Group(name="Mapping Out")
+	@Hidden
 		public MappingContext getMapper() {
 			return mapper;
 		}
 		public void setMapper(MappingContext mapper) {
 			this.mapper = mapper;
+		}
+
+	MappingContext mapperIn;
+	@Group(name="Mapping")
+		public MappingContext getMapperIn() {
+			return mapperIn;
+		}
+		public void setMapperIn(MappingContext mapperIn) {
+			this.mapperIn = mapperIn;
 		}
 
 
@@ -256,13 +266,22 @@ System.out.println("ReceiveActivity::payload is " + payload);
 			this.mappingContexts = mappingContexts;
 		}
 
+	ParameterContext[] mappingContextsIn;
+		@Hidden
+		public ParameterContext[] getMappingContextsIn() {
+			return mappingContextsIn;
+		}
+		public void setMappingContextsIn(ParameterContext[] mappingContextsIn) {
+			this.mappingContextsIn = mappingContextsIn;
+		}
 
 
-	protected void dataMapping(ProcessInstance instance) throws Exception {
+
+	protected void dataMapping(ProcessInstance instance, ParameterContext[] mappingContexts) throws Exception {
 
 		if(getMappingContexts()==null) return;
 
-		for(ParameterContext param : getMappingContexts()){
+		for(ParameterContext param : mappingContexts){
 
 			String srcVariableName = null;
 			String targetFieldName = param.getArgument().getText();
@@ -303,10 +322,13 @@ System.out.println("ReceiveActivity::payload is " + payload);
 	@Override
 	public void onModelingTime() {
 		mapper = new MappingContext(this, null);
+		mapperIn = new MappingContext(this, null);
 
 		autowire(mapper);
+		autowire(mapperIn);
 
 		mapper.getMappingCanvas().setMappingElements(getMappingContexts());
+		mapperIn.getMappingCanvas().setMappingElements(getMappingContextsIn());
 
 		try {
 //			autowire(mapper.getMappingTreeLeft());
@@ -325,7 +347,6 @@ System.out.println("ReceiveActivity::payload is " + payload);
 
 	@Override
 	public void afterModelingTime() {
-
 		ParameterContext[] mappingElements =
 				mapper.getMappingCanvas().getMappingElements();
 
@@ -333,6 +354,14 @@ System.out.println("ReceiveActivity::payload is " + payload);
 
 		setMapper(null);
 
+		////
+
+		ParameterContext[] mappingElementsIn =
+				mapperIn.getMappingCanvas().getMappingElements();
+
+		setMappingContexts(mappingElementsIn);
+
+		setMapperIn(null);
 	}
 
 }

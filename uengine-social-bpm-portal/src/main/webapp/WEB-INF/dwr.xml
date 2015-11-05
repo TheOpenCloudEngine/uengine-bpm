@@ -5,7 +5,8 @@
 <dwr>
 
 	<init>
-	    <converter id="metaworks" class="org.metaworks.dwr.MetaworksConverter"/>
+		<converter id="metaworks" class="org.metaworks.dwr.MetaworksConverter"/>
+		<converter id="metaworksMap" class="org.metaworks.dwr.MetaworksMapConverter"/>
  </init>
 
   <allow>
@@ -13,6 +14,8 @@
 
 	  <convert converter="metaworks" match="org.uengine.modeling.resource.*"/>
 	  <convert converter="metaworks" match="org.uengine.modeling.*"/>
+	  <!--<convert converter="metaworksMap" match="java.util.Map"/>-->
+
 
 
 	  <!--

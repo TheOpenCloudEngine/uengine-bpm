@@ -8,10 +8,14 @@ import org.metaworks.website.MetaworksFile;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.kernel.ProcessDefinition;
+import org.uengine.modeling.resource.ResourceManager;
+import org.uengine.modeling.resource.Serializer;
 import org.uengine.modeling.resource.resources.ProcessResource;
 import org.uengine.processpublisher.BPMNUtil;
+import org.uengine.util.UEngineUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 /**
@@ -39,16 +43,33 @@ public class ImportPopup {
     @ServiceMethod(callByContent = true)
     public void importTheFile() throws Exception {
         if(getSelectFile().getFileTransfer()!=null){
+            ProcessResource processResource = new ProcessResource();
+
+            String fileNameToUpload = getSelectFile().getFilename().replaceFirst("[.][^.]+$", "") + ".process";
+
+            processResource.setPath("codi/" + fileNameToUpload);
+
+            ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+
+            if(resourceManager.getStorage().exists(processResource)){
+                throw new Exception("$ExistingResourceName");
+            }
+
+
             getSelectFile().upload();
 
             File file = new File(getSelectFile().getUploadedPath());
 
-            ProcessDefinition definition = BPMNUtil.adapt(file);
+            ProcessDefinition definition = null;
 
-            ProcessResource processResource = new ProcessResource();
+            if(getSelectFile().getFilename().endsWith(".bpmn")) {
+                definition = BPMNUtil.adapt(file);
+            }else{
+                definition = (ProcessDefinition) Serializer.deserialize(new FileInputStream(file));
+            }
+
             MetaworksRemoteService.autowire(processResource);
 
-            processResource.setPath("codi/" + getSelectFile().getFilename() + ".process");
 
             processResource.save(definition);
 

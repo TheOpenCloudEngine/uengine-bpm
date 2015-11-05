@@ -158,6 +158,7 @@ public class DefaultResource implements IResource {
 			_newAndOpen(false);
 	}
 
+
 	@Hidden
 	@ServiceMethod(callByContent = true, except = "children", inContextMenu = true)
 	public SelectedResource select() throws Exception {
@@ -228,8 +229,14 @@ public class DefaultResource implements IResource {
 		this.metaworksContext = metaworksContext;
 	}
 
+	@ServiceMethod(inContextMenu = true, needToConfirm = true)
+	@Order(7)
 	public void delete() {
 		resourceManager.getStorage().delete(this);
+
+		if(MetaworksRemoteService.metaworksCall()){
+			//refresh
+		}
 	}
 
 

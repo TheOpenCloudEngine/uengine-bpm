@@ -106,15 +106,9 @@ public class MappingTree extends Tree{
 
 
 
-			if (elementView.getElement() instanceof Pool) {
+			if (elementView.getElement() instanceof Role) {
 
-				Pool pool = (Pool) elementView.getElement();
-				elementView.setElement(null);
-				pool.setElementView(elementView);
-				pool.setName(elementView.getLabel());
-				pool.setDescription(elementView.getLabel());
-
-				Role role = Role.forName(pool.getName());
+				Role role = (Role) elementView.getElement();
 
 				roles.add(role);
 

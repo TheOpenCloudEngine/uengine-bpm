@@ -365,32 +365,32 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 	
 	public ValidationContext validate(Map options) {
 		
-		EventHandler[] eventHandlers = getEventHandlers();
+//		EventHandler[] eventHandlers = getEventHandlers();
 
 		ValidationContext vc = super.validate(options);
 		
-		HashMap eventNames = new HashMap();
-		if(eventHandlers!=null){
-			for(int i=0; i<eventHandlers.length; i++){
-				EventHandler eventHandler = eventHandlers[i];
-				Activity eventHandlingActivity = eventHandlers[i].getHandlerActivity();
-				
-				if (!(eventHandlingActivity instanceof SubProcessActivity) &&
-						!(eventHandlingActivity instanceof HumanActivity) &&
-						!(eventHandlingActivity instanceof ComplexActivity)) {
-					vc.add("[" + eventHandlingActivity.getName() + "] is not available as an event handler.");
-				}
-
-				if(eventNames.containsKey(eventHandler.getName())){
-					vc.add(getActivityLabel() + "The event handler name ["+eventHandler.getName()+"] is duplicated.");
-				}
-				
-				eventNames.put(eventHandler.getName(),"");
-			}
-		}
-		if( this.getIncomingSequenceFlows() == null || (this.getIncomingSequenceFlows() != null && this.getIncomingSequenceFlows().size() < 1) ){
-			vc.add(getActivityLabel() + " is not execute. no incomming transition. ");
-		}
+//		HashMap eventNames = new HashMap();
+//		if(eventHandlers!=null){
+//			for(int i=0; i<eventHandlers.length; i++){
+//				EventHandler eventHandler = eventHandlers[i];
+//				Activity eventHandlingActivity = eventHandlers[i].getHandlerActivity();
+//
+//				if (!(eventHandlingActivity instanceof SubProcessActivity) &&
+//						!(eventHandlingActivity instanceof HumanActivity) &&
+//						!(eventHandlingActivity instanceof ComplexActivity)) {
+//					vc.add("[" + eventHandlingActivity.getName() + "] is not available as an event handler.");
+//				}
+//
+//				if(eventNames.containsKey(eventHandler.getName())){
+//					vc.add(getActivityLabel() + "The event handler name ["+eventHandler.getName()+"] is duplicated.");
+//				}
+//
+//				eventNames.put(eventHandler.getName(),"");
+//			}
+//		}
+//		if( this.getIncomingSequenceFlows() == null || (this.getIncomingSequenceFlows() != null && this.getIncomingSequenceFlows().size() < 1) ){
+//			vc.add(getActivityLabel() + " is not execute. no incomming transition. ");
+//		}
 		
 		return vc;
 	}

@@ -48,11 +48,11 @@ public class ObjectInstance implements Serializable, ContextAware, BeanPropertyR
         }
 
 
-    Map valueMap = new HashMap();
-        public Map getValueMap() {
+    Map<String, Object> valueMap = new HashMap<String, Object>();
+        public Map<String, Object> getValueMap() {
             return valueMap;
         }
-        public void setValueMap(Map valueMap) {
+        public void setValueMap(Map<String, Object> valueMap) {
             this.valueMap = valueMap;
         }
 

@@ -56,7 +56,7 @@ public class SocialBPMProcessVariableTypeSelector extends ProcessVariableTypeSel
     @ServiceMethod(callByContent = true, target=ServiceMethod.TARGET_POPUP)
     public ModalWindow select(){
 
-        return new ModalWindow(new SocialBPMProcessVariableTypeSelectorPopup());
+        return new ModalWindow(new SocialBPMProcessVariableTypeSelectorPopup(), "Select Process Data Type");
 
     }
 

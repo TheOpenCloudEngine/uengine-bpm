@@ -64,7 +64,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 							poolResolutionContext = (PoolResolutionContext) clazz.newInstance();
 //						}
 					}catch(Exception e){
-						e.printStackTrace();
+						//e.printStackTrace();
 					}
 				}
 			}

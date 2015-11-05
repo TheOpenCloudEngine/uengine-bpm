@@ -876,8 +876,8 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 		
 		//UserManagerBean.addWorkload(getRole().getMapping(instance).getEndpoint(), (-1)*getWorkload());
 		super.afterComplete(instance);
-		dataMapping(instance);
-		fireEventToActivityFilters(instance, "saveAnyway", null);		
+		dataMapping(instance, getMappingContexts());
+		fireEventToActivityFilters(instance, "saveAnyway", null);
 	}
 
 	protected void beforeExecute(ProcessInstance instance) throws Exception {
@@ -894,7 +894,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 		ValidationContext vc = super.validate(options);
 		
 		if(getRole()==null)
-			vc.add(getActivityLabel() + "Role is not specified");
+			vc.add(getActivityLabel() + " Role for this activity is not specified");
 		
 		if(getTool()==null)
 			vc.addWarning(getActivityLabel() + "Tool is not specified");
@@ -1192,7 +1192,9 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 			onComplete(instance, new org.uengine.kernel.ResultPayload());
 			fireComplete(instance);
 		}
-		
+
+		dataMapping(instance, getMappingContextsIn());
+
 		super.afterExecute(instance);
 	}
 	

@@ -565,9 +565,11 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 						fileVariables.putAll(variables);
 						variables = fileVariables;
 					} else {
-						DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
-						shotProcessInstance.variables.putAll(variables);
-						variables = shotProcessInstance.variables;
+
+						throw new Exception("Instance File doesn't exists: " + filePath);
+//						DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
+//						shotProcessInstance.variables.putAll(variables);
+//						variables = shotProcessInstance.variables;
 					}
 
 					if(GlobalContext.logLevelIsDebug){

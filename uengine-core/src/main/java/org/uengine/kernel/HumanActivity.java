@@ -355,7 +355,7 @@ public class HumanActivity extends ReceiveActivity{
 	TextContext instruction = TextContext.createInstance();
 	@Hidden
 	@Face(displayName="$instruction")
-		public TextContext getInstruction() {
+	public TextContext getInstruction() {
 			return instruction;
 		}
 		public void setInstruction(TextContext string) {

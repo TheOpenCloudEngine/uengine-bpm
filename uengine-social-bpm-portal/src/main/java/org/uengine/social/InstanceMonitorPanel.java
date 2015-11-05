@@ -2,10 +2,13 @@ package org.uengine.social;
 
 import org.metaworks.MetaworksContext;
 import org.metaworks.WebFieldDescriptor;
+import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Hidden;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.ProcessVariable;
+import org.uengine.modeling.ElementViewActionDelegate;
 import org.uengine.modeling.modeler.ProcessCanvas;
 import org.uengine.modeling.modeler.ProcessModeler;
 import org.uengine.processmanager.ProcessManagerRemote;
@@ -22,6 +25,17 @@ import java.util.List;
  */
 @Face(ejsPath = "dwr/metaworks/genericfaces/CleanObjectFace.ejs")
 public class InstanceMonitorPanel {
+
+    ElementViewActionDelegate elementViewActionDelegate;
+    @Hidden
+    @AutowiredToClient
+        public ElementViewActionDelegate getElementViewActionDelegate() {
+            return elementViewActionDelegate;
+        }
+        public void setElementViewActionDelegate(ElementViewActionDelegate elementViewActionDelegate) {
+            this.elementViewActionDelegate = elementViewActionDelegate;
+        }
+
 
     ProcessModeler processModeler;
         public ProcessModeler getProcessModeler() {
@@ -50,6 +64,8 @@ public class InstanceMonitorPanel {
     }
 
     public ProcessModeler load(Long instanceId, ProcessManagerRemote processManager) throws Exception {
+
+        setElementViewActionDelegate(new ElementViewActionDelegateForInstanceMonitoring());
 
         ProcessInstance processInstance = processManager.getProcessInstance(String.valueOf(instanceId));
         ProcessDefinition processDefinition = processInstance.getProcessDefinition();

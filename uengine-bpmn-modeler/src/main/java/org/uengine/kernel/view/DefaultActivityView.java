@@ -52,9 +52,9 @@ public class DefaultActivityView extends ActivityView{
 			activity = (DefaultActivity)getElement();
 //		}
 		
-		IDocument document = activity.getDocument();
-		defaultActivity.setDocument(document);
-		defaultActivity.setName(getLabel());
+//		IDocument document = activity.getDocument();
+//		defaultActivity.setDocument(document);
+//		defaultActivity.setName(getLabel());
 //		if(getElement() instanceof ReferenceActivity){
 //			((ReferenceActivity)getElement()).setReferencedActivity(defaultActivity);
 //			((ReferenceActivity)getElement()).setChanged(true);

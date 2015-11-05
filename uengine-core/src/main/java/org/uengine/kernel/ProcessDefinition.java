@@ -96,7 +96,7 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 			}
 			
 			if(!wholeChildActivities.containsKey(tracingTag))
-				throw new RuntimeException( new UEngineException("No such child activity where tracing tag='" + tracingTag+"' in the process definition '" + getName() + "(" + getBelongingDefinitionId() + "@" + getId() + ")'"));
+				return null;//throw new RuntimeException( new UEngineException("No such child activity where tracing tag='" + tracingTag+"' in the process definition '" + getName() + "(" + getBelongingDefinitionId() + "@" + getId() + ")'"));
 			
 			return (Activity)wholeChildActivities.get(tracingTag);
 		}

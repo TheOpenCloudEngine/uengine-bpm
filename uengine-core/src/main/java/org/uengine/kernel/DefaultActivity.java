@@ -35,31 +35,44 @@ public class DefaultActivity extends Activity{
 		return new InitialContext();
 	}
 
-	IDocument document;
+//	IDocument document;
+//
+//	@Order(value=2)
+//	@Face(options="hideLabel", values="true")
+//	//@Valid
+//	public IDocument getDocument() {
+//		return document;
+//	}
+//	public void setDocument(IDocument document) {
+//		this.document = document;
+//	}
+//
+//	public void createDocument(){
+//		try {
+//			setDocument((IDocument)Thread.currentThread().getContextClassLoader().loadClass("org.uengine.essencia.model.DefaultActivityDocument").newInstance());
+//		} catch (InstantiationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IllegalAccessException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
-	@Order(value=2)
-	@Face(options="hideLabel", values="true")
-	//@Valid
-	public IDocument getDocument() {
-		return document;
-	}
-	public void setDocument(IDocument document) {
-		this.document = document;
-	}
-	
-	public void createDocument(){
-		try {
-			setDocument((IDocument)Thread.currentThread().getContextClassLoader().loadClass("org.uengine.essencia.model.DefaultActivityDocument").newInstance());
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+	String document;
+	@Face(ejsPath = "dwr/metaworks/genericfaces/richText.ejs", options={"rows", "cols"}, values = {"7", "130"})
+		public String getDocument() {
+			return document;
 		}
-	}
+		public void setDocument(String document) {
+			this.document = document;
+		}
+
+
+
 }
 

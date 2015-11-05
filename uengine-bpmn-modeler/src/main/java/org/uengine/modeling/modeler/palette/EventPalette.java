@@ -14,6 +14,7 @@ public class EventPalette extends Palette {
 		this.getSymbolList().add((new EscalationEventView()).createSymbol());
 		this.getSymbolList().add((new TimerEventView()).createSymbol());
 		this.getSymbolList().add((new ReceiveRestMessageEventActivityView()).createSymbol());
+		this.getSymbolList().add((new MessageEventView()).createSymbol());
 	}
 
 }

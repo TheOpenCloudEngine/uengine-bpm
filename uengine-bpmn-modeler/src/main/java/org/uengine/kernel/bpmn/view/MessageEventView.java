@@ -1,6 +1,11 @@
 package org.uengine.kernel.bpmn.view;
 
+import org.metaworks.EventContext;
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.AutowiredFromClient;
+import org.metaworks.annotation.ServiceMethod;
 import org.uengine.kernel.bpmn.StartEvent;
+import org.uengine.modeling.Canvas;
 import org.uengine.modeling.IElement;
 
 /**
@@ -16,4 +21,9 @@ public class MessageEventView extends EventView{
         setShapeId(SHAPE_ID);
     }
 
+
+    @ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
+    public Object showProperty(@AutowiredFromClient Canvas canvas) throws Exception {
+        return super.showProperty();
+    }
 }

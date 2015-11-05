@@ -13,9 +13,6 @@ var org_uengine_social_RoleUser = function(objectId, className){
                     when: 'edit'
                 }
 
-            },
-            metaworksContext: {
-                when: 'edit'
             }
         };
 

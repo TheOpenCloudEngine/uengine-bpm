@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Id;
 
 import org.metaworks.*;
+import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
@@ -277,8 +278,18 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         this.propertyDialogWidth = propertyDialogWidth;
     }
 
+    @AutowiredFromClient
+    public ElementViewActionDelegate elementViewActionDelegate;
+
     @ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
     public Object showProperty() throws Exception {
+
+        if(elementViewActionDelegate!=null){
+            elementViewActionDelegate.onDoubleClick(this);
+
+            return null;
+        }
+
         return new PropertySettingDialog(this);
     }
 

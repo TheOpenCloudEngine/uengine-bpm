@@ -6,6 +6,7 @@ import org.metaworks.annotation.Resource;
 import org.metaworks.component.SelectBox;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.website.MetaworksFile;
+import org.metaworks.widget.Label;
 import org.oce.garuda.multitenancy.Operation;
 import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.context.annotation.Scope;
@@ -199,6 +200,8 @@ public class ProcessApp extends App{
             dest.close();
         }
 
-        return super.addApp();
+        return new Object[]{new Label("<center><h2>앱 취득을 성공하였습니다.</h2></center>")};//super.addApp();
+
+       // return super.addApp();
     }
 }

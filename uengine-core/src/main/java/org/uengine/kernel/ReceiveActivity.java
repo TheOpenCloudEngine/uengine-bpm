@@ -279,7 +279,7 @@ System.out.println("ReceiveActivity::payload is " + payload);
 
 	protected void dataMapping(ProcessInstance instance, ParameterContext[] mappingContexts) throws Exception {
 
-		if(getMappingContexts()==null) return;
+		if(mappingContexts==null) return;
 
 		for(ParameterContext param : mappingContexts){
 

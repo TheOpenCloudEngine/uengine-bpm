@@ -1,10 +1,7 @@
 package org.uengine.modeling.resource;
 
 import org.metaworks.*;
-import org.metaworks.annotation.AutowiredFromClient;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Order;
-import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Download;
 import org.metaworks.widget.Label;
@@ -44,6 +41,7 @@ public class EditorPanel implements ContextAware {
 		}
 
 	String resourcePath;
+	@Id
 		public String getResourcePath() {
 			return resourcePath;
 		}

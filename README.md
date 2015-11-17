@@ -22,12 +22,12 @@ Just type 'mvn install' after cloning this repo. that's it.
 ## Installing database
  install the database and change the database link in the configuration - uengine.properties in the <home>/uengine-social-bpm-portal/main/resources/org/uengine/uengine.properties like below:
 
-'
+`
 codi.jdbc.url=jdbc:mysql://localhost:3306/uengine?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true
 codi.jdbc.username=root
 codi.jdbc.password=
 codi.jdbc.validationQuery=SELECT 1
-'
+`
 
 change the codi.jdbc.url and the credentials with the database information you've installed.
 
@@ -35,9 +35,9 @@ And you will need to install default database schema, you can get the database D
 
 ## Running tomcat
 
-'
+`
 mvn tomcat7:run-war
-'
+`
 and go to - localhost:8080/uengine-social-bpm-portal
 
 

@@ -28,7 +28,10 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
 
     @Override
     public void load(){
-        setRoot(new ProcessAdminContainerResource());
+
+        ProcessAdminContainerResource processAdminContainerResource = MetaworksRemoteService.getComponent(ProcessAdminContainerResource.class);
+
+        setRoot(processAdminContainerResource);
         getRoot().setPath("codi");
         getRoot().setMetaworksContext(new MetaworksContext());
 

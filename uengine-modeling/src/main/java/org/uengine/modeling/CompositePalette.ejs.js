@@ -5,11 +5,10 @@ var org_uengine_modeling_CompositePalette = function(objectId, className){
 	this.objectDivId = mw3._getObjectDivId(this.objectId);
 	this.objectDiv = $('#' + this.objectDivId);
 
-    //
-	//this.objectDiv.css({
-	//	height: '2000px',
-	//	overflow: 'scroll'
-	//});
 
+	this.objectDiv.css({
+		height: '100%',
+		overflow: 'auto'
+	});
 
 }

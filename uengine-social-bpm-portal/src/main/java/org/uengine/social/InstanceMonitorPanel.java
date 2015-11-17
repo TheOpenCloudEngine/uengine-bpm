@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by soo on 2015. 6. 12..
  */
-@Face(ejsPath = "dwr/metaworks/genericfaces/CleanObjectFace.ejs")
+//@Face(ejsPath = "dwr/metaworks/genericfaces/CleanObjectFace.ejs")
 public class InstanceMonitorPanel {
 
     ElementViewActionDelegate elementViewActionDelegate;

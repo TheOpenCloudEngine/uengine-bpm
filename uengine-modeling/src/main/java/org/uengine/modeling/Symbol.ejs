@@ -5,8 +5,10 @@
 	 _width="<%=value.width%>" 
 	 _height="<%=value.height%>" 
 	 _viewclassname="<%=value.elementClassName%>"
-	 height="30"/>
+	 <%if(value.iconResizing){%>height="30"<%}%>/>
 </td>
 <td style="vertical-align:middle;">
-	<%=value.name%>
+
+	<a href="#" data-toggle="tooltip" data-original-title="Process" title=""><%=value.name%></a>
+
 </td>

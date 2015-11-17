@@ -28,7 +28,7 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
 //                String alias = resource.getName();
                 String alias = resource.getPath().substring(resource.getPath().indexOf(File.separator) + 1);
 
-                if(alias.endsWith(".process")) {
+               // if(alias.endsWith(".process")) {
                     String name = alias.substring(0, alias.length() - 8).replace(File.separator,".");
 
 
@@ -52,7 +52,7 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
 
 
                     wrapReturn(new Remover(new ModalWindow()));
-                }
+                //}
 
             } catch (Exception e) {
                 e.printStackTrace();

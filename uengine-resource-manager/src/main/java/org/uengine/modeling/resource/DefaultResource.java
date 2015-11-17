@@ -230,6 +230,7 @@ public class DefaultResource implements IResource {
 	}
 
 	@ServiceMethod(inContextMenu = true, needToConfirm = true)
+	//@Available(when=MetaworksContext.WHEN_EDIT)
 	@Order(7)
 	public void delete() {
 		resourceManager.getStorage().delete(this);

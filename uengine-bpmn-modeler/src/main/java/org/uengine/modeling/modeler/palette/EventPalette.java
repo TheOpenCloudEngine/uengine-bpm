@@ -3,18 +3,26 @@ package org.uengine.modeling.modeler.palette;
 import org.uengine.kernel.bpmn.view.*;
 import org.uengine.kernel.view.*;
 import org.uengine.modeling.Palette;
+import org.uengine.modeling.Symbol;
 
 public class EventPalette extends Palette {
 
 	public EventPalette(){
 		this.setName("Events");
 
-		this.getSymbolList().add((new StartEventView()).createSymbol());
-		this.getSymbolList().add((new EndEventView()).createSymbol());
-		this.getSymbolList().add((new EscalationEventView()).createSymbol());
-		this.getSymbolList().add((new TimerEventView()).createSymbol());
-		this.getSymbolList().add((new ReceiveRestMessageEventActivityView()).createSymbol());
-		this.getSymbolList().add((new MessageEventView()).createSymbol());
+		addSymbol(new StartEventView().createSymbol());
+		addSymbol((new EndEventView()).createSymbol());
+		addSymbol((new EscalationEventView()).createSymbol());
+		addSymbol((new TimerEventView()).createSymbol());
+		addSymbol((new ReceiveRestMessageEventActivityView()).createSymbol());
+		addSymbol((new MessageEventView()).createSymbol());
 	}
 
+
+	@Override
+	public void addSymbol(Symbol symbol) {
+		symbol.setIconResizing(true);
+
+		super.addSymbol(symbol);
+	}
 }

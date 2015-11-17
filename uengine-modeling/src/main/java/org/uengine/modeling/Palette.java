@@ -9,7 +9,7 @@ import org.metaworks.MetaworksContext;
 /**
  * @author jyj
  */
-public abstract class Palette implements ContextAware {
+public class Palette implements ContextAware {
 	
 	transient MetaworksContext metaworksContext;
 	public MetaworksContext getMetaworksContext() {
@@ -50,10 +50,16 @@ public abstract class Palette implements ContextAware {
 
 	public void addSymbol(Class <? extends ElementView> elementForSymbol){
 		try {
-			this.getSymbolList().add(elementForSymbol.newInstance().createSymbol());
+			addSymbol(elementForSymbol.newInstance().createSymbol());
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);
 		}
 
 	}
+
+	public void addSymbol(Symbol symbol){
+		this.getSymbolList().add(symbol);
+
+	}
+
 }

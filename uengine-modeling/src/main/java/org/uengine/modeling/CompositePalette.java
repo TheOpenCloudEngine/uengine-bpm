@@ -3,23 +3,23 @@ package org.uengine.modeling;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CompositePalette extends Palette {
+public class CompositePalette extends Palette {
 
-    private List<Palette> childPallet;
+    private List<Palette> childPalettes;
 
-    public List<Palette> getChildPallet() {
-        return childPallet;
+    public List<Palette> getChildPalettes() {
+        return childPalettes;
     }
 
-    public void setChildPallet(List<Palette> childPallet) {
-        this.childPallet = childPallet;
+    public void setChildPalettes(List<Palette> childPalettes) {
+        this.childPalettes = childPalettes;
     }
 
     public CompositePalette() {
-        this.setChildPallet(new ArrayList<Palette>());
+        this.setChildPalettes(new ArrayList<Palette>());
     }
 
     public void addPalette(Palette palette) {
-        this.getChildPallet().add(palette);
+        this.getChildPalettes().add(palette);
     }
 }

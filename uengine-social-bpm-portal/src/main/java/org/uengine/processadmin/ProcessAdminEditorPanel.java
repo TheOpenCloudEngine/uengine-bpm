@@ -6,6 +6,7 @@ import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.StartCodi;
 import org.uengine.codi.mw3.model.Employee;
@@ -20,6 +21,7 @@ import org.uengine.modeling.resource.ResourceNavigator;
 
 @Component
 @Scope("prototype")
+@Order(10)
 public class ProcessAdminEditorPanel extends EditorPanel{
 
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true, when = MetaworksContext.WHEN_EDIT)

@@ -18,6 +18,10 @@ public class DefaultModeler extends Modeler {
 
     public DefaultModeler(){
         super();
+
+        setMetaworksContext(new MetaworksContext());
+        getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
+
     }
 
     @Override

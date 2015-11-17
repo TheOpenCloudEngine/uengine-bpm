@@ -25,13 +25,14 @@ org_uengine_uml_model_ObjectInstance.prototype.getValue = function(){
         }
 
         if(!value.classDefinition || !value.classDefinition.fieldDescriptors){
-            value = value.fillClassDefinition(); //try to fill in
+            value = value.fillClassDefinition(false); //try to fill in
             mw3.uengineUML.classDefinitions[value.className] = value.classDefinition;
         }
 
         objectMetadata = value.classDefinition;
     }
 
+    if(objectMetadata && objectMetadata.fieldDescriptors)
     for(var i=0; i<objectMetadata.fieldDescriptors.length; i++){
         var fd = objectMetadata.fieldDescriptors[i];
 

@@ -1,18 +1,18 @@
 package org.uengine.modeling.modeler;
 
-import org.metaworks.MetaworksContext;
+import org.metaworks.annotation.AutowiredToClient;
+import org.metaworks.annotation.Hidden;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.*;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
-import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.kernel.bpmn.view.EventView;
 import org.uengine.kernel.bpmn.view.PoolView;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.kernel.view.ActivityView;
 import org.uengine.kernel.view.RoleView;
 import org.uengine.modeling.*;
-import org.uengine.modeling.modeler.palette.SimplePalette;
+import org.uengine.modeling.modeler.palette.BPMNPalette;
 import org.uengine.util.ActivityFor;
 
 import java.util.ArrayList;
@@ -24,6 +24,17 @@ public class ProcessModeler extends DefaultModeler {
 
 	public final static String SUFFIX = ".process";
 
+	ElementViewActionDelegate elementViewActionDelegate;
+		@Hidden
+		@AutowiredToClient
+		public ElementViewActionDelegate getElementViewActionDelegate() {
+			return elementViewActionDelegate;
+		}
+		public void setElementViewActionDelegate(ElementViewActionDelegate elementViewActionDelegate) {
+			this.elementViewActionDelegate = elementViewActionDelegate;
+		}
+
+
 //	public RolePanel getRolePanel() {
 //		try {
 //			return ((SimplePalette) getPalette()).getRolePalette().getRolePanel();
@@ -34,7 +45,7 @@ public class ProcessModeler extends DefaultModeler {
 
 	public ProcessVariablePanel getProcessVariablePanel() {
 		try {
-			return ((SimplePalette) getPalette()).getProcessVariablePalette().getProcessVariablePanel();
+			return ((BPMNPalette) getPalette()).getProcessVariablePalette().getProcessVariablePanel();
 		}catch (Exception e){
 			return null;
 		}
@@ -46,12 +57,10 @@ public class ProcessModeler extends DefaultModeler {
 	public ProcessModeler() {
 		setType(SUFFIX);
 		this.setCanvas(new ProcessCanvas(getType()));
-		this.setPalette(new SimplePalette(getType()));
+		this.setPalette(new BPMNPalette(getType()));
 //		this.setRolePanel(new RolePanel());
 //		this.setProcessVariablePanel(new ProcessVariablePanel());
 
-		setMetaworksContext(new MetaworksContext());
-		getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
 	}
 
 
@@ -168,9 +177,13 @@ public class ProcessModeler extends DefaultModeler {
 		this.setModel(model, null);
 	}
 
-	public void setModel(IModel model, final ProcessInstance insatnce) throws Exception {
+	public void setModel(IModel model, final ProcessInstance instance) throws Exception {
 		if (model == null)
 			return;
+
+
+		setElementViewActionDelegate(new DefaultElementViewActionDelegate());
+
 
 		ProcessDefinition def = (ProcessDefinition) GlobalContext.deserialize(GlobalContext.serialize(model, String.class), String.class);;
 		final List<ElementView> elementViewList = new ArrayList<ElementView>();
@@ -194,9 +207,9 @@ public class ProcessModeler extends DefaultModeler {
 					return;
 				}
 
-				if(insatnce != null) {
+				if(instance != null) {
 					try {
-						elementView.setInstStatus(insatnce.getStatus(activity.getTracingTag()));
+						elementView.setInstStatus(instance.getStatus(activity.getTracingTag()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

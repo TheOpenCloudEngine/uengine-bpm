@@ -14,6 +14,8 @@ debugger;
 	if(value!=null){
 
 
+		//// try to cache class definition
+
 		if((!value.classDefinition || !value.classDefinition.fieldDescriptors) && value.className){
 
 			if(mw3.uengineUML){
@@ -24,9 +26,16 @@ debugger;
 
 			if(!value.classDefinition || !value.classDefinition.fieldDescriptors){
 				value.classDefinition = realValue.fillClassDefinition().classDefinition; //try to fill in
-				mw3.uengineUML.classDefinitions[value.className] = value.classDefinition;
 			}
 		}
+
+		if(!mw3.uengineUML){
+			mw3.uengineUML = {classDefinitions:{}};
+		}
+
+		mw3.uengineUML.classDefinitions[value.className] = value.classDefinition;
+
+		//// end caching
 
 		objectMetadata = value.classDefinition;
 
@@ -37,7 +46,16 @@ debugger;
 
 
 		if(objectMetadata && !objectMetadata.fieldDescriptors){
-			throw new Error("Class " + objectMetadata.name + " doesn't have fieldDescriptors: Illegal Status.");
+			//throw new Error("Class " + objectMetadata.name + " doesn't have fieldDescriptors: Illegal Status.");
+
+
+			/*restore original values*/
+			value = org_value;
+			objectMetadata = org_objectMetadata;
+			fields = org_fields;
+			methods = org_methods;
+
+			return;
 		}
 
 

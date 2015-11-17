@@ -17,6 +17,7 @@ public class Symbol {
 	String elementClassName;
 	int width;
 	int height;
+	boolean iconResizing;
 	
 	@NonEditable
 	public String getName() {
@@ -60,7 +61,16 @@ public class Symbol {
 	public void setHeight(int height) {
 		this.height = height;
 	}
-		
+
+
+	public boolean isIconResizing() {
+		return iconResizing;
+	}
+	public void setIconResizing(boolean iconResizing) {
+		this.iconResizing = iconResizing;
+	}
+
+
 	@ServiceMethod(callByContent=true, mouseBinding="drag", target=ServiceMethodContext.TARGET_APPEND)
 	public Object drag(){
 		return new Refresh(new Clipboard("drop", this), true);

@@ -15,7 +15,11 @@ https://vimeo.com/145982602
 # Building uEngine BPMS
 
 Just type 'mvn install' after cloning this repo. that's it.
+if there are some failures in testing, please turn on skipping test option
 
+`
+mvn install -Dmaven.test.skip=true
+`
 
 # Running uEngine BPMS
 
@@ -36,6 +40,7 @@ And you will need to install default database schema, you can get the database D
 ## Running tomcat
 
 `
+cd uengine-social-bpm-portal
 mvn tomcat7:run-war
 `
 and go to - localhost:8080/uengine-social-bpm-portal

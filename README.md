@@ -43,6 +43,8 @@ And you will need to install default database schema, you can get the database D
 
 and go to - localhost:8080/uengine-social-bpm-portal
 
+The default user id and password is "test@uengine.org / test"
+
 
 # uEngine Process Meta-model
 

@@ -26,12 +26,11 @@ mvn install -Dmaven.test.skip=true
 ## Installing database
  install the database and change the database link in the configuration - uengine.properties in the <home>/uengine-social-bpm-portal/main/resources/org/uengine/uengine.properties like below:
 
-`
-codi.jdbc.url=jdbc:mysql://localhost:3306/uengine?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true
-codi.jdbc.username=root
-codi.jdbc.password=
-codi.jdbc.validationQuery=SELECT 1
-`
+
+     codi.jdbc.url=jdbc:mysql://localhost:3306/uengine?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true
+     codi.jdbc.username=root
+     codi.jdbc.password=
+     codi.jdbc.validationQuery=SELECT 1
 
 change the codi.jdbc.url and the credentials with the database information you've installed.
 

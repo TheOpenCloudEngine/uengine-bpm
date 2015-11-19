@@ -34,8 +34,8 @@ public class ProcessAdminEditorPanel extends EditorPanel{
 	) throws Exception {
 		super.save(resourceNavigator);
 
-		Instance instance = new Instance();
-		instance.setTopicId(getResourcePath());
+		IInstance instance = (IInstance) Database.sql(IInstance.class, "select * from bpm_procinst where topicId= ?topicId");
+		instance.set("topicId", getResourcePath());
 		instance.select();
 
 		if(!instance.next()){

@@ -1,3 +1,7 @@
+# Demo
+
+https://vimeo.com/145982602
+
 
 # Sub modules
 
@@ -11,6 +15,35 @@
 # Building uEngine BPMS
 
 Just type 'mvn install' after cloning this repo. that's it.
+if there are some failures in testing, please turn on skipping test option
+
+`
+mvn install -Dmaven.test.skip=true
+`
+
+# Running uEngine BPMS
+
+## Installing database
+ install the database and change the database link in the configuration - uengine.properties in the <home>/uengine-social-bpm-portal/main/resources/org/uengine/uengine.properties like below:
+
+
+     codi.jdbc.url=jdbc:mysql://localhost:3306/uengine?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true
+     codi.jdbc.username=root
+     codi.jdbc.password=
+     codi.jdbc.validationQuery=SELECT 1
+
+change the codi.jdbc.url and the credentials with the database information you've installed.
+
+And you will need to install default database schema, you can get the database DDL script here - https://github.com/TheOpenCloudEngine/process-codi/blob/master/src/main/webapp/resources/mysql/processcodi.sql
+
+## Running tomcat
+
+     cd uengine-social-bpm-portal
+     mvn tomcat7:run-war
+
+and go to - localhost:8080/uengine-social-bpm-portal
+
+The default user id and password is "test@uengine.org / test"
 
 
 # uEngine Process Meta-model

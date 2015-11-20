@@ -123,6 +123,15 @@ var org_uengine_modeling_ElementView = function(objectId, className){
                     null,
                     null);
 
+
+			var me = this;
+
+			$(this.canvas._RENDERER.getRootElement()).find("[_selected=true]").each(function (idx, item) {
+				if(item.shape)
+					me.canvas.connect(item, me.element);
+			})
+
+
             boundary = this.element.shape.geom.boundary;
 
             this.autoResizeCanvas(boundary);

@@ -1,11 +1,17 @@
 package org.uengine.kernel.view;
 
+import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.Label;
+import org.metaworks.widget.Popup;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.HumanActivity;
 //import org.uengine.kernel.ReferenceActivity;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.Symbol;
+import org.uengine.modeling.modeler.palette.BPMNPalette;
+import org.uengine.modeling.modeler.palette.TaskPalette;
 import org.uengine.util.UEngineUtil;
 
 public class ActivityView extends ElementView {
@@ -64,4 +70,10 @@ public class ActivityView extends ElementView {
 
 		super.setElement(element);
 	}
+
+	@ServiceMethod(target=ServiceMethod.TARGET_POPUP, mouseBinding = "click", inContextMenu = true)
+	public void popup() {
+		MetaworksRemoteService.wrapReturn(new Popup(new TaskPalette()));
+	}
+
 }

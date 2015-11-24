@@ -126,10 +126,13 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 
 			var me = this;
 
-			$(this.canvas._RENDERER.getRootElement()).find("[_selected=true]").each(function (idx, item) {
-				if(item.shape)
-					me.canvas.connect(item, me.element);
-			})
+//			$(this.canvas._RENDERER.getRootElement()).find("[_selected=true]").each(function (idx, item) {
+
+
+			//if(this.canvas._RENDERER.selectedElement)
+			//	if(this.canvas._RENDERER.selectedElement.shape)
+			//		me.canvas.connect(this.canvas._RENDERER.selectedElement, me.element);
+//			})
 
 
             boundary = this.element.shape.geom.boundary;

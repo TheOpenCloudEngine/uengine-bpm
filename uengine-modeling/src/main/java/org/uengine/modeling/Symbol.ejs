@@ -1,8 +1,14 @@
-	<img src="resources/images/symbol/<%=value.shapeId%>.png" title="<%=value.name%>"
-	 _shape_type="<%=value.shapeType%>"
-	 _shape_id="<%=value.shapeId%>" 
-	 _width="<%=value.width%>" 
-	 _height="<%=value.height%>" 
-	 _viewclassname="<%=value.elementClassName%>"
-	 <%if(value.iconResizing){%>height="30"<%}%> align="left" valign="center"/>
-	<a href="#" data-toggle="tooltip" data-original-title="Process" title=""><%=value.name%></a>
+<table>
+	<td><img src="resources/images/symbol/<%=value.shapeId%>.png" title="<%=value.name%>"
+			 _shape_type="<%=value.shapeType%>"
+			 _shape_id="<%=value.shapeId%>"
+			 _width="<%=value.width%>"
+			 _height="<%=value.height%>"
+			 _viewclassname="<%=value.elementClassName%>"
+			 <%if(value.iconResizing){%>height="30"<%}%> align="left" valign="middle"/></td>
+	<td width="10px"></td>
+	<td>
+		<a href="#" data-toggle="tooltip" data-original-title="Process" title=""><%=value.name%></a>
+	</td>
+</table>
+

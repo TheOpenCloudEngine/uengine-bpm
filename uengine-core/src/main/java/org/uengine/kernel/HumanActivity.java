@@ -811,17 +811,6 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	public String getStatus(ProcessInstance instance) throws Exception{
 		String status = super.getStatus(instance);
 		
-		if(status.equals(Activity.STATUS_RUNNING)){
-			Calendar dueDateInCalendar = getDueDate(instance); 
-			if(dueDateInCalendar!=null){
-				Date dueDate = dueDateInCalendar.getTime();
-				Date rightNow = GlobalContext.getNow(instance.getProcessTransactionContext()).getTime();
-				if(rightNow.after(dueDate)){
-					instance.setStatus(getTracingTag(), Activity.STATUS_TIMEOUT);
-				}
-			}
-		}
-		
 		return status; 
 	}
 	

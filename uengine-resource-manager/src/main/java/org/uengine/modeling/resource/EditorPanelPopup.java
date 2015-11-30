@@ -53,8 +53,8 @@ public class EditorPanelPopup implements ContextAware{
         DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(editorPanel.getResourcePath());
         autowire(defaultResource);
 
-        String desPath = defaultResource.getPath().substring(0, defaultResource.getPath().lastIndexOf(File.separator)) +
-                File.separator + saveAsFileName + "." + defaultResource.getType();
+        String desPath = defaultResource.getPath().substring(0, defaultResource.getPath().lastIndexOf("/")) +
+                "/" + saveAsFileName + "." + defaultResource.getType();
         defaultResource.copy(desPath);
 
         resourceNavigator.load();

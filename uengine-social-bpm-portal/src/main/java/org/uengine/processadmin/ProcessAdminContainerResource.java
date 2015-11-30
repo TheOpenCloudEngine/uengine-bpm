@@ -47,7 +47,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
     public void newProcess() throws Exception {
 
         DefaultResource processResource = new DefaultResource();
-        processResource.setPath(getPath() + File.separator + "New Process.process");
+        processResource.setPath(getPath() + "/" + "New Process.process");
         processResource.setParent(this);
 
         processResource.newOpen();
@@ -70,7 +70,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
     @ServiceMethod(callByContent = true, target = ServiceMethodContext.TARGET_AUTO)
     public void confirmNewFolder(@AutowiredFromClient ProcessAdminResourceNavigator processAdminResourceNavigator) throws Exception {
         ContainerResource containerResource = this.getClass().newInstance();
-        containerResource.setPath(this.getPath() + File.separator + newFolderName);
+        containerResource.setPath(this.getPath() + "/" + newFolderName);
         autowire(containerResource);
         containerResource.createFolder();
         this.getChildren().add(containerResource);
@@ -95,7 +95,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
         autowire(resource);
 
 
-        resource.setPath(getPath() + File.separator + "New Form.class");
+        resource.setPath(getPath() + "/" + "New Form.class");
         resource.setParent(this);
 
         resource.newOpen();

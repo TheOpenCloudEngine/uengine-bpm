@@ -53,7 +53,7 @@ public class EditorPanel implements ContextAware {
 		public String getResourceName() {
 			if(resourceName==null && resourcePath!=null){
 				try {
-					resourceName = resourcePath.substring(resourcePath.lastIndexOf(File.separator) + 1, resourcePath.lastIndexOf("."));
+					resourceName = resourcePath.substring(resourcePath.lastIndexOf("/") + 1, resourcePath.lastIndexOf("."));
 				}catch (Exception e){
 				}
 			}
@@ -91,7 +91,7 @@ public class EditorPanel implements ContextAware {
 
 		if(getResourceName()!=null){
 			String currResourcePath = getResourcePath();
-			currResourcePath = currResourcePath.substring(0, currResourcePath.lastIndexOf(File.separator) + 1) + getResourceName() + currResourcePath.substring(currResourcePath.lastIndexOf("."));
+			currResourcePath = currResourcePath.substring(0, currResourcePath.lastIndexOf("/") + 1) + getResourceName() + currResourcePath.substring(currResourcePath.lastIndexOf("."));
 
 			setResourcePath(currResourcePath);
 		}
@@ -141,7 +141,7 @@ public class EditorPanel implements ContextAware {
 			autowire(defaultResource);
 
 			String srcResourcePath = getResourcePath();
-			String desResourcePath = srcResourcePath.substring(0, srcResourcePath.lastIndexOf(File.separator) + 1) + getResourceName() + srcResourcePath.substring(srcResourcePath.lastIndexOf("."));;
+			String desResourcePath = srcResourcePath.substring(0, srcResourcePath.lastIndexOf("/") + 1) + getResourceName() + srcResourcePath.substring(srcResourcePath.lastIndexOf("."));;
 			defaultResource.rename(desResourcePath);
 
 			getMetaworksContext().setWhen(metaworksContext.WHEN_EDIT);

@@ -172,13 +172,13 @@ public class AmazonS3Storage implements Storage{
     private String getS3Path(String path){
         String tenantBasePath = getTenantBasePath();
 
-        String fullPath = (tenantBasePath + path).replace(File.separator, S3_SPERATOR);
+        String fullPath = (tenantBasePath + path).replace("/", S3_SPERATOR);
 
         return fullPath;
     }
 
     private String getResourcePath(String path){
-        return path.substring(getTenantBasePath().length()).replace(S3_SPERATOR,File.separator);
+        return path.substring(getTenantBasePath().length()).replace(S3_SPERATOR,"/");
     }
 
     private String getTenantBasePath() {
@@ -188,7 +188,7 @@ public class AmazonS3Storage implements Storage{
             tenantId = "default";
         }
 
-        return tenantId + File.separator;
+        return tenantId + "/";
     }
 
     @Override

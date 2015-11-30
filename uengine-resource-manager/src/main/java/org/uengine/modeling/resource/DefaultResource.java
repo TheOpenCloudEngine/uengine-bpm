@@ -68,10 +68,10 @@ public class DefaultResource implements IResource {
 		if(path==null)
 			return null;
 
-		if (path.indexOf(File.separator) == StringUtils.INDEX_NOT_FOUND) {
+		if (path.indexOf("/") == StringUtils.INDEX_NOT_FOUND) {
 			return path;
 		}
-		return StringUtils.substringAfterLast(path, File.separator);
+		return StringUtils.substringAfterLast(path, "/");
 	}
 
 	@Name
@@ -86,7 +86,7 @@ public class DefaultResource implements IResource {
 		if(path==null)
 			return null;
 
-		int index = this.path.lastIndexOf(File.separatorChar) + 1;
+		int index = this.path.lastIndexOf("/") + 1;
 		// 경로에서 마지막 파일이나 폴더의 포인트 위치를 가져온다.
 		int pos = this.path.substring(index).indexOf(".");
 		if (pos == -1) {
@@ -126,7 +126,7 @@ public class DefaultResource implements IResource {
 
 	@Hidden
 	public IContainer getParent() {
-		if (this.parent == null && File.separator.equals(this.getPath())) {
+		if (this.parent == null && "/".equals(this.getPath())) {
 			return null;
 		}
 		return parent;

@@ -75,7 +75,7 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 
 			if(processMap.size() > 0){
 				while(processMap.next()){
-					IResource resource = DefaultResource.createResource(navigatorRootPath + File.separator
+					IResource resource = DefaultResource.createResource(navigatorRootPath + "/"
 							+ processMap.getDefId());
 
 					resourceList.add(resource);

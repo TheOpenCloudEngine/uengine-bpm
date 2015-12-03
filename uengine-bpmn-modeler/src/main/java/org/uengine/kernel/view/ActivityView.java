@@ -71,9 +71,9 @@ public class ActivityView extends ElementView {
 		super.setElement(element);
 	}
 
-	@ServiceMethod(target=ServiceMethod.TARGET_POPUP, mouseBinding = "click", inContextMenu = true)
-	public void popup() {
-		MetaworksRemoteService.wrapReturn(new Popup(new TaskPalette()));
-	}
+//	@ServiceMethod(target=ServiceMethod.TARGET_POPUP, mouseBinding = "click", inContextMenu = true)
+//	public void popup() {
+//		MetaworksRemoteService.wrapReturn(new Popup(new TaskPalette()));
+//	}
 
 }

@@ -33,4 +33,5 @@ public class ClassEditor implements IEditor<ClassDefinition>{
         ClassDefinition classDefinition = new ClassDefinition();
         return classDefinition;
     }
+
 }

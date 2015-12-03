@@ -42,7 +42,7 @@ public abstract class For {
 		run(map.values().iterator());
 	}
 	
-//// catridges ////
+//// cartridges ////
 
 	abstract public void logic(Object target);
 

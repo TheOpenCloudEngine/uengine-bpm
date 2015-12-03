@@ -18,8 +18,7 @@ public class SocialBPMInstanceTooltip extends InstanceTooltip{
 
         ModalWindow modalWindow = new ModalWindow();
 
-        InstanceMonitorPanel instanceMonitorPanel = new InstanceMonitorPanel();
-        instanceMonitorPanel.load(this.getInstanceId(), processManager);
+        InstanceMonitorPanel instanceMonitorPanel = createInstanceMonitorPanel();
 
         modalWindow.setPanel(instanceMonitorPanel);
         modalWindow.setWidth(0);
@@ -28,5 +27,11 @@ public class SocialBPMInstanceTooltip extends InstanceTooltip{
         modalWindow.setTitle("Process Monitor");
 
         return modalWindow;
+    }
+
+    protected InstanceMonitorPanel createInstanceMonitorPanel() throws Exception {
+        InstanceMonitorPanel instanceMonitorPanel = new InstanceMonitorPanel();
+        instanceMonitorPanel.load(this.getInstanceId(), processManager);
+        return instanceMonitorPanel;
     }
 }

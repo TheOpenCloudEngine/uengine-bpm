@@ -17,6 +17,19 @@ import org.uengine.modeling.resource.SelectedResource;
 public class ProcessVariableTypeSelector implements Face<String>{
 
     String type;
+	/**
+	 * ProcessAdminContainerResource classRoot;
+	 * //@Available(condition = "primitypeTypeName == 'org.uengine.contexts.ComplexType'")
+	 * public ProcessAdminContainerResource getClassRoot() {
+	 * return classRoot;
+	 * }
+	 * public void setClassRoot(ProcessAdminContainerResource classRoot) {
+	 * this.classRoot = classRoot;
+	 * }
+	 */
+	ResourceNavigator classResourceNavigator;
+	String selectedClassName;
+	MetaworksContext metaworksContext;
     @Range(options={"Text","Number", "Date","Complex"}, values={"java.lang.String","java.lang.Long", "java.util.Date","org.uengine.contexts.ComplexType"})
         public String getType() {
             return type;
@@ -46,4 +59,44 @@ public class ProcessVariableTypeSelector implements Face<String>{
         return getType();
 
     }
+
+	public ResourceNavigator getClassResourceNavigator() {
+		return this.classResourceNavigator;
+	}
+
+	public void setClassResourceNavigator(ResourceNavigator classResourceNavigator) {
+		this.classResourceNavigator = classResourceNavigator;
+	}
+
+	public String getSelectedClassName() {
+		return this.selectedClassName;
+	}
+
+	public void setSelectedClassName(String selectedClassName) {
+		this.selectedClassName = selectedClassName;
+	}
+
+	public MetaworksContext getMetaworksContext() {
+		return this.metaworksContext;
+	}
+
+	public void setMetaworksContext(MetaworksContext metaworksContext) {
+		this.metaworksContext = metaworksContext;
+	}
+
+	/**
+	 * 
+	 * @param selectedComplexClassResource
+	 */
+	@ServiceMethod(callByContent=true, eventBinding="change", bindingFor="primitypeTypeName")
+	public void select(@AutowiredFromClient()
+	SelectedResource selectedComplexClassResource) {
+		// TODO - implement ProcessVariableTypeSelector.select
+		throw new UnsupportedOperationException();
+	}
+
+	public ProcessVariableTypeSelector() {
+		// TODO - implement ProcessVariableTypeSelector.ProcessVariableTypeSelector
+		throw new UnsupportedOperationException();
+	}
 }

@@ -185,8 +185,8 @@ public class JaxRSWebServiceConnector implements WebServiceConnector, Serializab
             activity.setDescription(name);
 
             ActivityView activityView = new ActivityView();
-            activityView.setWidth("30");
-            activityView.setHeight("30");
+            activityView.setWidth(30);
+            activityView.setHeight(30);
             activityView.setShapeId("OG.shape.bpmn.E_Start_Message");
 			activityView.setElement(activity);
             activity.setElementView(activityView);

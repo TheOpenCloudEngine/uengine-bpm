@@ -250,4 +250,10 @@ public class EditorPanel implements ContextAware {
 		}
 	}
 
+	@ServiceMethod(keyBinding="Ctrl+S", callByContent=true)
+	public void save() throws Exception {
+		// TODO - implement EditorPanel.save
+		throw new UnsupportedOperationException();
+	}
+
 }

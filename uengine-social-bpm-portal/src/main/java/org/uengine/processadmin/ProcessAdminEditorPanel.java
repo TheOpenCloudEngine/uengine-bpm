@@ -34,28 +34,28 @@ public class ProcessAdminEditorPanel extends EditorPanel{
 	) throws Exception {
 		super.save(resourceNavigator);
 
-		IInstance instance = (IInstance) Database.sql(IInstance.class, "select * from bpm_procinst where topicId= ?topicId");
-		instance.set("topicId", getResourcePath());
-		instance.select();
+//		IInstance instance = (IInstance) Database.sql(IInstance.class, "select * from bpm_procinst where topicId= ?topicId");
+//		instance.set("topicId", getResourcePath());
+//		instance.select();
 
-		if(!instance.next()){
-			CommentWorkItem commentWorkItem = new CommentWorkItem();
-			commentWorkItem.setTitle("History on " + getResourceName());
-			commentWorkItem.setWriter(session.getUser());
-			//commentWorkItem.setInstId(new Long(instanceId));
-
-
-			MetaworksRemoteService.autowire(commentWorkItem);
-
-			commentWorkItem.add();
-
-
-//			instance = new Instance();
-//			instance.setInstId(commentWorkItem.getInstId());
+//		if(!instance.next()){
+//			CommentWorkItem commentWorkItem = new CommentWorkItem();
+//			commentWorkItem.setTitle("History on " + getResourceName());
+//			commentWorkItem.setWriter(session.getUser());
+//			//commentWorkItem.setInstId(new Long(instanceId));
 //
-//			instance.databaseMe().setTopicId(getResourcePath());
-
-		}
+//
+//			MetaworksRemoteService.autowire(commentWorkItem);
+//
+//			commentWorkItem.add();
+//
+//
+////			instance = new Instance();
+////			instance.setInstId(commentWorkItem.getInstId());
+////
+////			instance.databaseMe().setTopicId(getResourcePath());
+//
+//		}
 
 	}
 

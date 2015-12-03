@@ -64,16 +64,16 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 			concern = this.object.element.concern;
 
 			if(concern == "Customer"){
-				concernColor = "#F5F6CE ";
-				lineColor = "#D7DF01 ";
+				concernColor = "#f1c40f ";
+				lineColor = "#f39c12 ";
 			}
 			else if(concern == "Solution"){
-				concernColor = "#E0F8E0 ";
-				lineColor = "#3ADF00 ";
+				concernColor = "#2ecc71 ";
+				lineColor = "#27ae60 ";
 			}
 			else if(concern == "Endeavor"){
-				concernColor = "#E0ECF8 ";
-				lineColor = "#2E64FE ";
+				concernColor = "#3498db ";
+				lineColor = "#2980b9 ";
 			}
 		}
 

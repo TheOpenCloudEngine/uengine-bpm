@@ -182,7 +182,8 @@ public class ProcessModeler extends DefaultModeler {
 			return;
 
 
-		setElementViewActionDelegate(new DefaultElementViewActionDelegate());
+		if(instance==null)
+			setElementViewActionDelegate(new DefaultElementViewActionDelegate());
 
 
 		ProcessDefinition def = (ProcessDefinition) GlobalContext.deserialize(GlobalContext.serialize(model, String.class), String.class);;
@@ -508,19 +509,19 @@ public class ProcessModeler extends DefaultModeler {
 
 	private Activity findAttachedActivity(ElementView eventView, List<ElementView> elementViews) {
 		// eventView size
-		Long event_x_min = Long.parseLong(eventView.getX()) - (Math.abs(Long.parseLong(eventView.getWidth()) / 2));
-		Long event_x_max = Long.parseLong(eventView.getX()) + (Math.abs(Long.parseLong(eventView.getWidth()) / 2));
-		Long event_y_min = Long.parseLong(eventView.getY()) - (Math.abs(Long.parseLong(eventView.getHeight()) / 2));
-		Long event_y_max = Long.parseLong(eventView.getY()) + (Math.abs(Long.parseLong(eventView.getHeight()) / 2));
+		double event_x_min = (eventView.getX()) - (Math.abs((eventView.getWidth()) / 2));
+		double event_x_max = (eventView.getX()) + (Math.abs((eventView.getWidth()) / 2));
+		double event_y_min = (eventView.getY()) - (Math.abs((eventView.getHeight()) / 2));
+		double event_y_max = (eventView.getY()) + (Math.abs((eventView.getHeight()) / 2));
 
 		for(ElementView elementView : elementViews) {
 			if (!(elementView instanceof EventView)) {
-				if(elementView.getX() != null) {
+				//if(elementView.getX() != null) {
 					// elementView size
-					Long element_x_min = Long.parseLong(elementView.getX()) - (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
-					Long element_x_max = Long.parseLong(elementView.getX()) + (Math.abs(Long.parseLong(elementView.getWidth()) / 2));
-					Long element_y_min = Long.parseLong(elementView.getY()) - (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
-					Long element_y_max = Long.parseLong(elementView.getY()) + (Math.abs(Long.parseLong(elementView.getHeight()) / 2));
+					double element_x_min = (elementView.getX()) - (Math.abs((elementView.getWidth()) / 2));
+					double element_x_max = (elementView.getX()) + (Math.abs((elementView.getWidth()) / 2));
+					double element_y_min = (elementView.getY()) - (Math.abs((elementView.getHeight()) / 2));
+					double element_y_max = (elementView.getY()) + (Math.abs((elementView.getHeight()) / 2));
 
 					boolean checkMinX = (element_x_min <= event_x_min) && (event_x_min <= element_x_max);
 					boolean checkMaxX = (element_x_min <= event_x_max) && (event_x_max <= element_x_max);
@@ -531,7 +532,7 @@ public class ProcessModeler extends DefaultModeler {
 					if ((checkMinX || checkMaxX) && (checkMinY || checkMaxY) && elementView.getElement() instanceof Activity) {
 						return (Activity) elementView.getElement();
 					}
-				}
+				//}
 			}
 		}
 		return null;
@@ -543,22 +544,22 @@ public class ProcessModeler extends DefaultModeler {
 			if(!(elementView instanceof ActivityView))
 				continue;
 
-			long x = 0;
-			long y = 0;
-			long width = 0;
-			long height = 0;
-			long leftLine = 0;
-			long rightLine = 0;
-			long topLine = 0;
-			long bottomLine = 0;
+			double x = 0;
+			double y = 0;
+			double width = 0;
+			double height = 0;
+			double leftLine = 0;
+			double rightLine = 0;
+			double topLine = 0;
+			double bottomLine = 0;
 
 			if(what instanceof ElementView) {
 				ElementView activityView = (ElementView)what;
 
-				x = Long.parseLong(activityView.getX());
-				y = Long.parseLong(activityView.getY());
-				width = Long.parseLong(activityView.getWidth());
-				height = Long.parseLong(activityView.getHeight());
+				x = (activityView.getX());
+				y = (activityView.getY());
+				width = (activityView.getWidth());
+				height = (activityView.getHeight());
 
 				leftLine = x - width/2;
 				rightLine = x + width/2;
@@ -581,15 +582,15 @@ public class ProcessModeler extends DefaultModeler {
 				continue;
 			}
 
-			if(elementView.getX() != null) {
-				long p_x = Long.parseLong(elementView.getX());
-				long p_y = Long.parseLong(elementView.getY());
-				long p_width = Long.parseLong(elementView.getWidth());
-				long p_height = Long.parseLong(elementView.getHeight());
-				long p_leftLine = p_x - p_width / 2;
-				long p_rightLine = p_x + p_width / 2;
-				long p_topLine = p_y + p_height / 2;
-				long p_bottomLine = p_y - p_height / 2;
+			//if(elementView.getX() != null) {
+				double p_x = (elementView.getX());
+			double p_y = (elementView.getY());
+			double p_width = (elementView.getWidth());
+			double p_height = (elementView.getHeight());
+			double p_leftLine = p_x - p_width / 2;
+			double p_rightLine = p_x + p_width / 2;
+			double p_topLine = p_y + p_height / 2;
+			double p_bottomLine = p_y - p_height / 2;
 
 				if (p_leftLine < leftLine &&
 						p_rightLine > rightLine &&
@@ -598,7 +599,7 @@ public class ProcessModeler extends DefaultModeler {
 						) { //TODO
 					return (FlowActivity) elementView.getElement(); //I'm your father..
 				}
-			}
+			//}
 		}
 
 		return null;
@@ -633,23 +634,23 @@ public class ProcessModeler extends DefaultModeler {
 	}
 
 	private boolean isIn(ElementView elem1, ElementView elem2){
-		long x = Long.parseLong(elem1.getX());
-		long y = Long.parseLong(elem1.getY());
-		long width = Long.parseLong(elem1.getWidth());
-		long height = Long.parseLong(elem1.getHeight());
-		long left = x - (width/2);
-		long right = x + (width/2);
-		long top = y - (height/2);
-		long bottom = y + (height/2);
+		double x = (elem1.getX());
+		double y = (elem1.getY());
+		double width = (elem1.getWidth());
+		double height = (elem1.getHeight());
+		double left = x - (width/2);
+		double right = x + (width/2);
+		double top = y - (height/2);
+		double bottom = y + (height/2);
 
-		long p_x = Long.parseLong(elem2.getX());
-		long p_y = Long.parseLong(elem2.getY());
-		long p_width = Long.parseLong(elem2.getWidth());
-		long p_height = Long.parseLong(elem2.getHeight());
-		long p_left = p_x - (p_width/2);
-		long p_right = p_x + (p_width/2);
-		long p_top = p_y - (p_height/2);
-		long p_bottom = p_y + (p_height/2);
+		double p_x = (elem2.getX());
+		double p_y = (elem2.getY());
+		double p_width = (elem2.getWidth());
+		double p_height = (elem2.getHeight());
+		double p_left = p_x - (p_width/2);
+		double p_right = p_x + (p_width/2);
+		double p_top = p_y - (p_height/2);
+		double p_bottom = p_y + (p_height/2);
 
 		return (p_left < left &&
 				p_right > right &&

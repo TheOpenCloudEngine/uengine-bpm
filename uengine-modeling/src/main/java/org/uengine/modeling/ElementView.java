@@ -58,61 +58,79 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         this.shapeId = shapeId;
     }
 
-    String x;
+//    String x;
+//
+//    public String getX() {
+//        return x;
+//    }
+//
+//    public void setX(String x) {
+//        this.x = x;
+//    }
 
-    public String getX() {
-        return x;
-    }
+    double x;
+        public double getX() {
+            return x;
+        }
 
-    public void setX(String x) {
-        this.x = x;
-    }
+        public void setX(double x) {
+            this.x = x;
+        }
 
-    public void setX(int x) {
-        this.x = String.valueOf(x);
-    }
 
-    String y;
+    double y;
+        public double getY() {
+            return y;
+        }
 
-    public String getY() {
-        return y;
-    }
+        public void setY(double y) {
+            this.y = y;
+        }
 
-    public void setY(String y) {
-        this.y = y;
-    }
 
-    public void setY(int y) {
-        this.y = String.valueOf(y);
-    }
+    double width;
+        public double getWidth() {
+            return width;
+        }
 
-    String width;
+        public void setWidth(double width) {
+            this.width = width;
+        }
 
-    public String getWidth() {
-        return width;
-    }
 
-    public void setWidth(String width) {
-        this.width = width;
-    }
+//    public String getWidth() {
+//        return width;
+//    }
+//
+//    public void setWidth(String width) {
+//        this.width = width;
+//    }
 
-    public void setWidth(int width) {
-        this.width = String.valueOf(width);
-    }
+//    public void setWidth(int width) {
+//        this.width = String.valueOf(width);
+//    }
 
-    String height;
+    double height;
+        public double getHeight() {
+            return height;
+        }
 
-    public String getHeight() {
-        return height;
-    }
+        public void setHeight(double height) {
+            this.height = height;
+        }
 
-    public void setHeight(String height) {
-        this.height = height;
-    }
 
-    public void setHeight(int height) {
-        this.height = String.valueOf(height);
-    }
+//    public String getHeight() {
+//        return height;
+//    }
+//
+//    public void setHeight(String height) {
+//        this.height = height;
+//    }
+//
+//    public void setHeight(int height) {
+//        this.height = String.valueOf(height);
+//    }
 
     String fromEdge;
 
@@ -204,8 +222,8 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
 
     public void fill(Symbol symbol) {
         this.setShapeId(symbol.getShapeId());
-        this.setWidth(String.valueOf(symbol.getWidth()));
-        this.setHeight(String.valueOf(symbol.getHeight()));
+        this.setWidth((symbol.getWidth()));
+        this.setHeight((symbol.getHeight()));
     }
 
     public abstract Symbol createSymbol();

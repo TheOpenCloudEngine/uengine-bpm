@@ -58,6 +58,16 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
         }
     }
 
+	public ResourceControlDelegate getProcessAdminResourceControlDelegate() {
+		return this.processAdminResourceControlDelegate;
+	}
+
+	public void setProcessAdminResourceControlDelegate(ResourceControlDelegate processAdminResourceControlDelegate) {
+		this.processAdminResourceControlDelegate = processAdminResourceControlDelegate;
+	}
+
+	ResourceControlDelegate processAdminResourceControlDelegate;
+
 //    ResourceControlDelegate processAdminResourceControlDelegate;
 //    @AutowiredToClient
 //        public ResourceControlDelegate getProcessAdminResourceControlDelegate() {

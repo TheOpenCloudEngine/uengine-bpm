@@ -153,13 +153,13 @@ public class LocalFileStorage implements Storage{
             tenantId = "default";
         }
 
-        return getLocalBasePath() + File.separator + tenantId + File.separator;
+        return getLocalBasePath() + "/" + tenantId + "/";
     }
 
     @Override
     public void move(IResource src, IContainer container) throws IOException {
         Path source = getFile(src).toPath();
-        Path target = new File(getTenantBasePath() + container.getPath() + File.separator + src.getName()).toPath();
+        Path target = new File(getTenantBasePath() + container.getPath() + "/" + src.getName()).toPath();
         Files.move(source, target, REPLACE_EXISTING);
     }
 }

@@ -26,10 +26,10 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
         if(resource instanceof DefaultResource){
             try {
 //                String alias = resource.getName();
-                String alias = resource.getPath().substring(resource.getPath().indexOf(File.separator) + 1);
+                String alias = resource.getPath().substring(resource.getPath().indexOf("/") + 1);
 
                // if(alias.endsWith(".process")) {
-                    String name = alias.substring(0, alias.length() - 8).replace(File.separator,".");
+                    String name = alias.substring(0, alias.length() - 8).replace("/",".");
 
 
                     ProcessMap processMap = new ProcessMap();

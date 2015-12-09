@@ -11,7 +11,7 @@ import org.uengine.modeling.resource.DefaultResource;
  */
 @Component
 @Scope("prototype")
-public class URLappResource extends DefaultResource {
+public class UrlappResource extends DefaultResource {
 
     @AutowiredFromClient
     public Session session;

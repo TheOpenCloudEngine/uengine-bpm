@@ -11,7 +11,7 @@ import java.util.List;
  * Created by jangjinyoung on 15. 7. 12..
  */
 public interface Storage {
-    public void delete(IResource resource);
+    public void delete(IResource resource) throws IOException;
     public void rename(IResource resource, String newName);
     public void copy(IResource src, String desPath) throws Exception;
     public void move(IResource src, IContainer container) throws IOException;

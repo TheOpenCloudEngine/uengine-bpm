@@ -31,6 +31,8 @@ public class URLApplication extends ProcessApplication {
 
     public URLApplication(String url){
         setUrl(url);
+        setiFrame(new IFrame());
+        getiFrame().setSrc(url);
     }
 
     public URLApplication(){

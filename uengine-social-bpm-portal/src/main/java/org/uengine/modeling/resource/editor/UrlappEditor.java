@@ -1,5 +1,6 @@
 package org.uengine.modeling.resource.editor;
 
+import org.metaworks.annotation.Face;
 import org.uengine.application.URLApplicationDefinition;
 import org.uengine.modeling.resource.IEditor;
 import org.uengine.modeling.resource.IResource;
@@ -8,6 +9,7 @@ import org.uengine.uml.model.ClassDefinition;
 /**
  * Created by uengine on 2015. 7. 14..
  */
+@Face(ejsPath="genericfaces/CleanObjectFace.ejs")
 public class UrlappEditor implements IEditor<URLApplicationDefinition>{
 
 

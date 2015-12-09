@@ -40,43 +40,43 @@ public class RelationView implements Serializable, ContextAware, Cloneable {
         this.shapeId = shapeId;
     }
 
-    String x;
+    double x;
 
-    public String getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(String x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    String y;
+    double y;
 
-    public String getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(String y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    String width;
+    double width;
 
-    public String getWidth() {
+    public double getWidth() {
         return width;
     }
 
-    public void setWidth(String width) {
+    public void setWidth(double width) {
         this.width = width;
     }
 
-    String height;
+    double height;
 
-    public String getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(String height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
@@ -179,8 +179,8 @@ public class RelationView implements Serializable, ContextAware, Cloneable {
 
     public void fill(Symbol symbol) {
         this.setShapeId(symbol.getShapeId());
-        this.setWidth(String.valueOf(symbol.getWidth()));
-        this.setHeight(String.valueOf(symbol.getHeight()));
+        this.setWidth(symbol.getWidth());
+        this.setHeight(symbol.getHeight());
     }
 
     public static Symbol createSymbol() {

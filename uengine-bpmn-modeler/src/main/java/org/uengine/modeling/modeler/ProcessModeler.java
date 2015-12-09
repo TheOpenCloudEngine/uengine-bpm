@@ -569,10 +569,10 @@ public class ProcessModeler extends DefaultModeler {
 			}else if(what instanceof RelationView){
 				RelationView relationView = (RelationView)what;
 
-				x = Long.parseLong(relationView.getX());
-				y = Long.parseLong(relationView.getY());
-				width = Long.parseLong(relationView.getWidth());
-				height = Long.parseLong(relationView.getHeight());
+				x = (relationView.getX());
+				y = (relationView.getY());
+				width = (relationView.getWidth());
+				height = (relationView.getHeight());
 
 				leftLine = x - width/2;
 				rightLine = x + width/2;

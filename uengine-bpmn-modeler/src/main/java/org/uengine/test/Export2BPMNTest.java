@@ -84,10 +84,10 @@ public class Export2BPMNTest {
         SequenceFlowView sequenceFlowView = new SequenceFlowView();
         sequenceFlowView.setId("OG_9423_8");
         sequenceFlowView.setShapeId("OG.shape.EdgeShape");
-        sequenceFlowView.setX("375");
-        sequenceFlowView.setY("187");
-        sequenceFlowView.setWidth("818");
-        sequenceFlowView.setHeight("300");
+        sequenceFlowView.setX(375);
+        sequenceFlowView.setY(187);
+        sequenceFlowView.setWidth(818);
+        sequenceFlowView.setHeight(300);
         sequenceFlow.setRelationView(sequenceFlowView);
 
         // processDefinition

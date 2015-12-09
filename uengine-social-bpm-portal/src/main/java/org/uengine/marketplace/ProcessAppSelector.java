@@ -13,7 +13,7 @@ import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.resources.ClassResource;
-import org.uengine.modeling.resource.resources.URLappResource;
+import org.uengine.modeling.resource.resources.UrlappResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
 import org.uengine.processadmin.ResourceControlDelegateForAddingProcessMap;
 
@@ -45,7 +45,7 @@ public class ProcessAppSelector implements Face<String> {
 		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
 
 		getProcessAdminResourceNavigator().getRoot().filterResources(ClassResource.class);
-		getProcessAdminResourceNavigator().getRoot().filterResources(URLappResource.class);
+		getProcessAdminResourceNavigator().getRoot().filterResources(UrlappResource.class);
 
 		try {
 			ProcessMapList processMapList = new ProcessMapList();

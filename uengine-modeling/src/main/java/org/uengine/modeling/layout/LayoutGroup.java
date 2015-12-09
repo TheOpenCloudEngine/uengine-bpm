@@ -62,6 +62,10 @@ public class LayoutGroup extends ElementView{
 
 
     private Dimension getDimension(){
+
+        if(getElementViews()==null  || getElementViews().size()==0)
+            return new Dimension(0,0);
+
         double minX = 500000, minY = 500000, maxX = 0, maxY = 0;
 
         Dimension dimension = new Dimension();

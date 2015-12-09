@@ -91,11 +91,15 @@ public class FlowActivity extends ComplexActivity {
 
 	}
 
-	private Activity getStartActivity() throws UEngineException {
+	private List<Activity> getStartActivities() throws UEngineException {
+
+		List<Activity> startActivities = new ArrayList<Activity>();
 
 		//if the model is old version, returns the first child in the order.
 		if(getSequenceFlows()==null || getSequenceFlows().size()==0 && getChildActivities().size() > 0){
-			return getChildActivities().get(0);
+			startActivities.add(getChildActivities().get(0));
+
+			return startActivities;
 		}
 
 		Activity child = null;
@@ -112,8 +116,12 @@ public class FlowActivity extends ComplexActivity {
 //				if( child instanceof Event && child instanceof MessageListener ){
 //					continue;
 //				}
-				return child;
+				startActivities.add(child);
 			}
+		}
+
+		if(startActivities.size()>0){
+			return startActivities;
 		}
 
 		// inconsistent xml or miss starting point
@@ -141,17 +149,19 @@ public class FlowActivity extends ComplexActivity {
 		}
 
 
-		if (getSequenceFlows().size() == 0) {
-//			System.out.println("This is conventional uengine process - 2");
-			super.executeActivity(instance);
-		}else{
-			Activity startActivity = getStartActivity();
-			if (startActivity != null) {
-				queueActivity(startActivity, instance);
+//		if (getSequenceFlows().size() == 0) {
+////			System.out.println("This is conventional uengine process - 2");
+//			super.executeActivity(instance);
+//		}else{
+			List<Activity> startActivities = getStartActivities();
+			if (startActivities!=null && startActivities.size() > 0) {
+				for(Activity startActivity : startActivities) {
+					queueActivity(startActivity, instance);
+				}
 			} else {
 				throw new UEngineException("Can't find start activity");
 			}
-		}
+//		}
 		
 
 	}
@@ -227,20 +237,23 @@ public class FlowActivity extends ComplexActivity {
 		// transition 이 없으면 super 로직을 태움
 		ActivityReference startActivityRef = new ActivityReference();
 		try {
-			Activity act = getStartActivity();
+			List<Activity> act = getStartActivities();
 			if( act == null){
 				startActivityRef = super.getInitiatorHumanActivityReference(ptc);
 			}else{
-				if( act instanceof HumanActivity){
-					startActivityRef.setActivity(act);
-					startActivityRef.setAbsoluteTracingTag(act.getTracingTag());
-				}else{
-					Activity nextActivity = this.findNextHumanActivity(act);
-					if( nextActivity != null ){
-						startActivityRef.setActivity(nextActivity);
-						startActivityRef.setAbsoluteTracingTag(nextActivity.getTracingTag());
-					}
-				}
+
+				//TODO implement this
+//
+//				if( act instanceof HumanActivity){
+//					startActivityRef.setActivity(act);
+//					startActivityRef.setAbsoluteTracingTag(act.getTracingTag());
+//				}else{
+//					Activity nextActivity = this.findNextHumanActivity(act);
+//					if( nextActivity != null ){
+//						startActivityRef.setActivity(nextActivity);
+//						startActivityRef.setAbsoluteTracingTag(nextActivity.getTracingTag());
+//					}
+//				}
 			}
 		} catch (UEngineException e) {
 			// TODO Auto-generated catch block

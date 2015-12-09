@@ -1582,6 +1582,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 //				}else{
 					return true;
 //				}
+			}else if(beforeActivity==null) {
+				return false;
 			}else{
 				check = beforeActivity.checkStartsWithBoundaryEventActivity();
 			}

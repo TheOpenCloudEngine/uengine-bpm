@@ -1,5 +1,6 @@
 package org.uengine.modeling.modeler;
 
+import com.sun.tools.javac.comp.Flow;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Hidden;
 import org.uengine.contexts.TextContext;
@@ -539,6 +540,10 @@ public class ProcessModeler extends DefaultModeler {
 	}
 
 	private FlowActivity findParentActivity(Object what, List<ElementView> parentElementView) {
+
+		double maxParentSize = 999999999; //big enough value
+		FlowActivity candidateParent = null;
+
 		for(ElementView elementView : parentElementView){
 
 			if(!(elementView instanceof ActivityView))
@@ -596,13 +601,19 @@ public class ProcessModeler extends DefaultModeler {
 						p_rightLine > rightLine &&
 						p_topLine > topLine &&
 						p_bottomLine < bottomLine
-						) { //TODO
-					return (FlowActivity) elementView.getElement(); //I'm your father..
+						) { //if the activity is in the parent
+
+					double parentSize = (p_rightLine - p_leftLine) * (p_topLine - p_bottomLine);
+
+					if(parentSize < maxParentSize) { //the smallest one is just the parent not grand parent.
+						candidateParent = (FlowActivity) elementView.getElement();
+						maxParentSize = parentSize;
+					}
 				}
 			//}
 		}
 
-		return null;
+		return candidateParent;
 	}
 
 	public Pool findParentPool(ElementView elementView, List<ElementView> elementViewList){

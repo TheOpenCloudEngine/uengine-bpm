@@ -119,11 +119,11 @@ public class FlowActivity extends ComplexActivity {
 		// inconsistent xml or miss starting point
 		// it should be never triggered
 
-		if(getSequenceFlows()!=null && getSequenceFlows().size()>0) {
-			UEngineException exception = new UEngineException("inconsistent process model - missing starting activity");
-			exception.setErrorLevel(UEngineException.FATAL);
-			throw exception;
-		}
+//		if(getSequenceFlows()!=null && getSequenceFlows().size()>0) {
+//			UEngineException exception = new UEngineException("inconsistent process model - missing starting activity");
+//			exception.setErrorLevel(UEngineException.FATAL);
+//			throw exception;
+//		}
 
 		return null;
 	}
@@ -149,7 +149,7 @@ public class FlowActivity extends ComplexActivity {
 			if (startActivity != null) {
 				queueActivity(startActivity, instance);
 			} else {
-				throw new UEngineException("Can't find start activity");
+				fireComplete(instance);  //throw new UEngineException("Can't find start activity");
 			}
 		}
 		

@@ -3,6 +3,7 @@ package org.uengine.modeling.resource;
 import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.*;
+import org.metaworks.dwr.MetaworksRemoteService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -175,5 +176,20 @@ public class ContainerResource extends DefaultResource implements IContainer {
 
 	protected void sort(){
 		Collections.sort(this.getChildren());
+	}
+
+//	@Override
+//	public EditorPanel _newAndOpen(boolean isNew) throws Exception {
+//		MetaworksRemoteService.wrapReturn(null);
+//
+//		return null;
+//	}
+
+
+	@Override
+	@Hidden
+	@ServiceMethod(target=ServiceMethod.TARGET_NONE)
+	public void open(@AutowiredFromClient ResourceControlDelegate resourceControlDelegate) throws Exception {
+	//	super.open(resourceControlDelegate);
 	}
 }

@@ -231,7 +231,7 @@ public class DefaultResource implements IResource {
 
 	@ServiceMethod(inContextMenu=true, needToConfirm=true)
 	@Order(7)
-	public void delete() {
+	public void delete() throws IOException {
 		resourceManager.getStorage().delete(this);
 
 		if(MetaworksRemoteService.metaworksCall()){

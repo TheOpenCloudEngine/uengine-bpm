@@ -19,10 +19,10 @@ public class RelationViewAdapter implements Adapter<RelationView, BPMNEdge> {
         bpmnEdge.getWaypoint().add(ObjectFactoryUtil.createBPMNObject(Point.class));
 
         //bpmnEdge.setId(src.getName());
-        bpmnEdge.getWaypoint().get(0).setX(Double.parseDouble(src.getX()));
-        bpmnEdge.getWaypoint().get(0).setY(Double.parseDouble(src.getY()));
-        bpmnEdge.getWaypoint().get(1).setX(Double.parseDouble(src.getWidth()));
-        bpmnEdge.getWaypoint().get(1).setY(Double.parseDouble(src.getHeight()));
+        bpmnEdge.getWaypoint().get(0).setX((src.getX()));
+        bpmnEdge.getWaypoint().get(0).setY((src.getY()));
+        bpmnEdge.getWaypoint().get(1).setX((src.getWidth()));
+        bpmnEdge.getWaypoint().get(1).setY((src.getHeight()));
 
         return bpmnEdge;
     }

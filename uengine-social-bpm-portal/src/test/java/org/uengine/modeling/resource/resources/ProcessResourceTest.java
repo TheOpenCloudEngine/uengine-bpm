@@ -8,6 +8,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.uengine.modeling.resource.AmazonS3Storage;
 import org.uengine.modeling.resource.EditorPanel;
 
+import java.io.IOException;
+
 /**
  * Created by hoo.lim on 7/23/2015.
  */
@@ -41,7 +43,11 @@ public class ProcessResourceTest {
         ProcessResource processResource = (ProcessResource) ctx.getBean("ProcessResource");
         processResource.setPath("practice/testProcess.process");
 
-        processResource.delete();
+        try {
+            processResource.delete();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Ignore

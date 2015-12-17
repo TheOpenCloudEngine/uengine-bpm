@@ -1,5 +1,6 @@
 package org.uengine.modeling.resource;
 
+import org.apache.commons.io.FileUtils;
 import org.metaworks.MetaworksContext;
 import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,15 @@ public class LocalFileStorage implements Storage{
 
 
     @Override
-    public void delete(IResource fileResource) {
-        getFile(fileResource).delete();
+    public void delete(IResource fileResource) throws IOException {
+        File file = getFile(fileResource);
+
+        if(file.isDirectory()){
+            FileUtils.deleteDirectory(file);
+        }else{
+            file.delete();
+
+        }
     }
 
     @Override

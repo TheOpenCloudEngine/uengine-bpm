@@ -37,37 +37,38 @@ public class TimerEvent extends Event{
 	@Override
 	protected void executeActivity(ProcessInstance instance) throws Exception {
 
-		StdSchedulerFactory schedulerFactoryBean = MetaworksRemoteService.getComponent(StdSchedulerFactory.class);
-
-        Scheduler sched = schedulerFactoryBean.getScheduler();
-
-		String jobId = createJobId(instance);
-
-		JobDetail job = newJob(TimerEventJob.class)
-                .withIdentity(jobId, SCHEDULER_GROUP_ID)
-                .build();
-
-		job.getJobDataMap().put("instanceId", instance.getInstanceId());
-
-		if(instance.getExecutionScopeContext()!=null)
-			job.getJobDataMap().put("executionScope", instance.getExecutionScopeContext().getExecutionScope());
-
-		job.getJobDataMap().put("tracingTag", getTracingTag());
-
-//        Date runTime = evenMinuteDate(new Date());
-
-		StringBuffer cronExpression = evaluateContent(instance, getExpression());
-
-		CronTrigger trigger = newTrigger()
-                .withIdentity(jobId, SCHEDULER_GROUP_ID)
-                .withSchedule(cronSchedule(cronExpression.toString()))
-                .build();
-
-		sched.scheduleJob(job, trigger);
-
-        if(!sched.isStarted()){
-            sched.start();
-        }
+		//TODO enable please.
+//		StdSchedulerFactory schedulerFactoryBean = MetaworksRemoteService.getComponent(StdSchedulerFactory.class);
+//
+//        Scheduler sched = schedulerFactoryBean.getScheduler();
+//
+//		String jobId = createJobId(instance);
+//
+//		JobDetail job = newJob(TimerEventJob.class)
+//                .withIdentity(jobId, SCHEDULER_GROUP_ID)
+//                .build();
+//
+//		job.getJobDataMap().put("instanceId", instance.getInstanceId());
+//
+//		if(instance.getExecutionScopeContext()!=null)
+//			job.getJobDataMap().put("executionScope", instance.getExecutionScopeContext().getExecutionScope());
+//
+//		job.getJobDataMap().put("tracingTag", getTracingTag());
+//
+////        Date runTime = evenMinuteDate(new Date());
+//
+//		StringBuffer cronExpression = evaluateContent(instance, getExpression());
+//
+//		CronTrigger trigger = newTrigger()
+//				.withIdentity(jobId, SCHEDULER_GROUP_ID)
+//				.withSchedule(cronSchedule(cronExpression.toString()))
+//				.build();
+//
+//		sched.scheduleJob(job, trigger);
+//
+//		if (!sched.isStarted()) {
+//			sched.start();
+//		}
 
 	}
 

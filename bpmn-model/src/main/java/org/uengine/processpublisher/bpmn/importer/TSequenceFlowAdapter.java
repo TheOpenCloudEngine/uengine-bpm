@@ -45,10 +45,10 @@ public class TSequenceFlowAdapter implements Adapter<TSequenceFlow, SequenceFlow
         RelationView relationView = transition.createView();
 
 
-        relationView.setX("" + Math.round(bpmnEdge.getWaypoint().get(0).getX()));
-        relationView.setY("" + Math.round(bpmnEdge.getWaypoint().get(0).getY()));
-        relationView.setWidth("" + Math.round(bpmnEdge.getWaypoint().get(1).getX()));
-        relationView.setHeight("" + Math.round(bpmnEdge.getWaypoint().get(1).getY()));
+        relationView.setX((bpmnEdge.getWaypoint().get(0).getX()));
+        relationView.setY((bpmnEdge.getWaypoint().get(0).getY()));
+        relationView.setWidth((bpmnEdge.getWaypoint().get(1).getX()));
+        relationView.setHeight((bpmnEdge.getWaypoint().get(1).getY()));
         relationView.setId(transition.getTracingTag());
         relationView.setFrom(transition.getSourceRef() + "_TERMINAL_C_INOUT_0");
         relationView.setTo(transition.getTargetRef() + "_TERMINAL_C_INOUT_0");

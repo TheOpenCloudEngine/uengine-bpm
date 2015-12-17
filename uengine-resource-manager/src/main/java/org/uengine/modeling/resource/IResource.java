@@ -95,7 +95,7 @@ public interface IResource extends ContextAware, Comparable<IResource>{
 
 	void save(Object editingObject) throws Exception;
 
-	void delete();
+	void delete() throws IOException;
 
 	Download download(String fileName, String mimeType) throws Exception;
 

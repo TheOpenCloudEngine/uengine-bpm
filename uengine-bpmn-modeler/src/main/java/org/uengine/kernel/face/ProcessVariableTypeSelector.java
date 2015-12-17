@@ -96,7 +96,5 @@ public class ProcessVariableTypeSelector implements Face<String>{
 	}
 
 	public ProcessVariableTypeSelector() {
-		// TODO - implement ProcessVariableTypeSelector.ProcessVariableTypeSelector
-		throw new UnsupportedOperationException();
 	}
 }

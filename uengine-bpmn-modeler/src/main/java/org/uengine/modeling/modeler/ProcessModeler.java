@@ -1,5 +1,6 @@
 package org.uengine.modeling.modeler;
 
+import com.sun.tools.javac.comp.Flow;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Hidden;
 import org.uengine.contexts.TextContext;

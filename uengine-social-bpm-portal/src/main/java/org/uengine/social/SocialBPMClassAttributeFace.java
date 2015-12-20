@@ -1,5 +1,6 @@
 package org.uengine.social;
 
+import org.metaworks.website.MetaworksFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.model.User;
@@ -26,6 +27,9 @@ public class SocialBPMClassAttributeFace extends AttributeTypeSelector {
 
         getOptionNames().add("User");
         getOptionValues().add(RoleUser.class.getName());
+
+        getOptionNames().add("File");
+        getOptionValues().add(MetaworksFile.class.getName());
 
         setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator());
     }

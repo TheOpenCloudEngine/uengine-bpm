@@ -89,6 +89,9 @@ debugger;
 		var groups = [];
 
 		$.each(objectMetadata.fieldDescriptors, function(index, field){
+
+			if(typeof field.name != "string") alert('ObjectInstance has not proper classDefinition and the fieldDescriptor is not a real value but face value. Check ObjectInstance's attribute classDefinition has @Face(class=AllChildFacesAreIgnored.class).');
+
 			if(mw3.isHidden(fields[field.name]) || field.name == 'metaworksContext'){
 				return true;
 			}

@@ -502,55 +502,59 @@ public class SubProcess extends ScopeActivity{
         }
     }
 
-    public boolean onSubProcessReturn(ProcessInstance instance, ProcessInstance subProcessInstance) throws Exception{
+    public boolean onSubProcessReturn(ProcessInstance instance, final String subProcessExecutionScope) throws Exception{
+
+        Object boolObject =  new InParentExecutionScope(){
+
+            @Override
+            public Object logic(ProcessInstance instance) throws Exception {
+
+                Hashtable optionsForVariableMapping = new Hashtable();
+                optionsForVariableMapping.put("ptc", instance.getProcessTransactionContext());
+
+                Vector spIds = new Vector();
+                spIds.add(instance.getInstanceId());
+
+                //TODO: following values are not meaningful anymore. due to executionscope designate the sub processes for now.
+                Map subProcesses = new Hashtable();
+                subProcesses.put(instance.getInstanceId(), instance);
+
+                applyVariableBindings(instance, spIds, subProcesses, optionsForVariableMapping);
+                applyRoleBindings(instance, spIds, subProcesses, optionsForVariableMapping);
 
 
-        Hashtable optionsForVariableMapping = new Hashtable();
-        optionsForVariableMapping.put("ptc", instance.getProcessTransactionContext());
 
-        Vector spIds = new Vector();
-        spIds.add(subProcessInstance.getInstanceId());
-
-        //TODO: following values are not meaningful anymore. due to executionscope designate the sub processes for now.
-        Map subProcesses = new Hashtable();
-        subProcesses.put(subProcessInstance.getInstanceId(), subProcessInstance);
-
-        applyVariableBindings(instance, spIds, subProcesses, optionsForVariableMapping);
-        applyRoleBindings(instance, spIds, subProcesses, optionsForVariableMapping);
+                if(isRunAndForget()){
 
 
+                    return false;
 
-        if(isRunAndForget()){
+                }else{
 
+                    String executionScope = subProcessExecutionScope;
 
-            return false;
-
-        }else{
-
-            String executionScope = subProcessInstance.getExecutionScopeContext() != null ? subProcessInstance.getExecutionScopeContext().getExecutionScope() : null;
-
-            Vector completedSPIds = getSubprocessIds(instance, SUBPROCESS_INST_ID_COMPLETED);
-            completedSPIds.add(subProcessInstance.getInstanceId() + "@" + executionScope);
-            setSubprocessIds(instance, completedSPIds, SUBPROCESS_INST_ID_COMPLETED);
+                    Vector completedSPIds = getSubprocessIds(instance, SUBPROCESS_INST_ID_COMPLETED);
+                    completedSPIds.add(instance.getInstanceId() + "@" + executionScope);
+                    setSubprocessIds(instance, completedSPIds, SUBPROCESS_INST_ID_COMPLETED);
 
 
-            Set spIdSet = getUncompletedSubProcessIds(instance);
+                    Set spIdSet = getUncompletedSubProcessIds(instance);
 
-            boolean isConnectedMultipleSubProcesses = false;
-            SubProcessActivity connectedNextSubProcessActivity = null;
-            try{
-                int whereIAm = ((ComplexActivity)getParentActivity()).getChildActivities().indexOf(this);
-                Activity nextActivity = (Activity)((ComplexActivity)getParentActivity()).getChildActivities().get(whereIAm + 1);
-                if(nextActivity instanceof SubProcessActivity){
-                    connectedNextSubProcessActivity = (SubProcessActivity)nextActivity;
-                    if(connectedNextSubProcessActivity.getForEachRole() == getForEachRole() && connectedNextSubProcessActivity.getForEachVariable() == getForEachVariable()){
-                        isConnectedMultipleSubProcesses = true;
+                    boolean isConnectedMultipleSubProcesses = false;
+                    SubProcessActivity connectedNextSubProcessActivity = null;
+                    try{
+                        int whereIAm = ((ComplexActivity)getParentActivity()).getChildActivities().indexOf(this);
+                        Activity nextActivity = (Activity)((ComplexActivity)getParentActivity()).getChildActivities().get(whereIAm + 1);
+                        if(nextActivity instanceof SubProcessActivity){
+                            connectedNextSubProcessActivity = (SubProcessActivity)nextActivity;
+                            if(connectedNextSubProcessActivity.getForEachRole() == getForEachRole() && connectedNextSubProcessActivity.getForEachVariable() == getForEachVariable()){
+                                isConnectedMultipleSubProcesses = true;
 
+                            }
+                        }
+                    }catch(Exception e){
+                        //e.printStackTrace();
                     }
-                }
-            }catch(Exception e){
-                //e.printStackTrace();
-            }
 
 
 //            //todo
@@ -560,9 +564,14 @@ public class SubProcess extends ScopeActivity{
 //                connectedNextSubProcessActivity.onEvent(EVENT_ONE_OF_PREV_SP_COMPLETED, instance, new Integer(orderOfCurrentlyCompletedSubProcessInstance));
 //            }
 
-            return (spIdSet.isEmpty());
+                    return (spIdSet.isEmpty());
 
-        }
+                }
+            }
+        }.run(instance);
+
+        return ((Boolean)boolObject).booleanValue();
+
     }
 
     private Set getUncompletedSubProcessIds(ProcessInstance instance) throws Exception {
@@ -963,16 +972,23 @@ public class SubProcess extends ScopeActivity{
     @Override
     public void fireComplete(ProcessInstance instance) throws Exception {
 
-        boolean completable = onSubProcessReturn(instance, instance);
+        if(instance.getExecutionScopeContext()==null) throw new IllegalStateException("Completing SubProcess should be done in any SubProcess executionScope.");
+
+        boolean completable = onSubProcessReturn(instance, instance.getExecutionScopeContext().getExecutionScope());
 
         if(completable && instance.getProcessTransactionContext().getSharedContext(SUB_PROCESS_IS_BEING_INSERTED) == null){
             if("loop".equals(getMultipleInstanceOption())){
-                ExecutionScopeContext executionScopeContext = instance.getExecutionScopeContext();
-                instance.setExecutionScope(instance.getMainExecutionScope());
 
-                executeActivity_CaseInLoop(instance); //run in parent context.
+                new InParentExecutionScope(){
 
-                instance.setExecutionScope(executionScopeContext!=null ? executionScopeContext.getExecutionScope() : null);
+                    @Override
+                    public Object logic(ProcessInstance instance) throws Exception {
+                        executeActivity_CaseInLoop(instance); //run in parent context.
+
+                        return null;
+                    }
+                }.run(instance);
+
 
             }else{
                 super.fireComplete(instance);

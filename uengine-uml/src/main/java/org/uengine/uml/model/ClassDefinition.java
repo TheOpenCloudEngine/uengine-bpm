@@ -1,10 +1,8 @@
 package org.uengine.uml.model;
 
-import org.metaworks.MetaworksContext;
-import org.metaworks.ServiceMethodContext;
-import org.metaworks.WebFieldDescriptor;
-import org.metaworks.WebObjectType;
+import org.metaworks.*;
 import org.metaworks.annotation.*;
+import org.metaworks.annotation.Face;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.uml.model.face.AttributeListFace;
 
@@ -41,7 +39,7 @@ public class ClassDefinition extends WebObjectType implements Serializable{
     }
 
     @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_POPUP)
-    public ObjectInstance createObjectInstance() throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public ObjectInstance createObjectInstance() {
         ObjectInstance objectInstance = newObjectInstance();
         objectInstance.setMetaworksContext(new MetaworksContext());
         objectInstance.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
@@ -60,7 +58,9 @@ public class ClassDefinition extends WebObjectType implements Serializable{
     }
 
     protected ObjectInstance newObjectInstance() {
-        return new ObjectInstance();
+        ObjectInstance objectInstance = new ObjectInstance();
+
+        return objectInstance;
     }
 
 

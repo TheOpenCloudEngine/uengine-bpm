@@ -1,5 +1,6 @@
 package org.uengine.modeling.modeler;
 
+import com.sun.tools.javac.comp.Flow;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Hidden;
 import org.uengine.contexts.TextContext;
@@ -439,7 +440,7 @@ public class ProcessModeler extends DefaultModeler {
 					if(toAttachActivity!=null)
 						((Event)activity).setAttachedToRef(toAttachActivity.getTracingTag());
 				}
-
+				else
 				if(activity instanceof HumanActivity){
 					HumanActivity humanActivity = (HumanActivity) activity;
 
@@ -448,6 +449,10 @@ public class ProcessModeler extends DefaultModeler {
 
 					if(role != null)
 						humanActivity.setRole(Role.forName(role.getName()));
+				}
+				else
+				if(activity instanceof FlowActivity){
+					((FlowActivity)activity).setSequenceFlows(null);
 				}
 			}
 

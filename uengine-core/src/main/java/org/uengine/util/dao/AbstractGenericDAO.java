@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.kernel.ReleaseResourceListener;
 import org.uengine.kernel.UEngineException;
 import org.uengine.persistence.dao.DAOFactory;
@@ -126,14 +127,6 @@ public abstract class AbstractGenericDAO implements InvocationHandler, IDAO {
 		initialize(daoClass, isConnective);
 	}	
 
-
-    /**
-     * JNDI �̸��� Retrive�� '�� ����� �Բ� Ŀ�ؼ� �غ�
-     *
-     * @param jndiName
-     * @param statement
-     * @throws DAOException
-     */
     
 	protected AbstractGenericDAO(final String jndiName, boolean isConnective, String sqlStmt, Class daoClass) throws Exception {
 		this(
@@ -875,7 +868,12 @@ public abstract class AbstractGenericDAO implements InvocationHandler, IDAO {
 				}
 			}
 		}
-		
+
+		if(MetaworksRemoteService.getInstance().isSQLLowerCase()){
+			return realSql.toString().toLowerCase();
+		}
+
+
 		return realSql.toString();
     }
     

@@ -689,7 +689,7 @@ public class SubProcess extends ScopeActivity{
         Map subProcesses = new Hashtable();
 
         if(!isRunAndForget()){
-            applyVariableBindings(instance, spIds, subProcesses, options);
+            //applyVariableBindings(instance, spIds, subProcesses, options); // don't need anymore by introducing the VariablePointer.
             applyRoleBindings(instance, spIds, subProcesses, options);
         }
 
@@ -775,45 +775,47 @@ public class SubProcess extends ScopeActivity{
                         )
                     continue;
 
+                boolean split = ((SubProcessParameterContext)pvpc).isSplit();
+
                 Object val;
                 if(getForEachVariable()!=null && getForEachVariable() == pvpc.getVariable()){
-                    val = currentVariableValue;
-                    instance.addDebugInfo("[SubProcessActivity] transferring main process' variable: ", getForEachVariable());
-                    instance.addDebugInfo(" to sub process' variable: ", pvpc.getArgument().getText());
-                }else{
-
-                    String currExecutionScope = instance.getExecutionScopeContext().getExecutionScope();
-                    instance.setExecutionScope(instance.getMainExecutionScope());
-
-                    ProcessVariableValue pvv = pvpc.getVariable().getMultiple(instance, "");
-
-                    instance.setExecutionScope(currExecutionScope);
-
-                    if(pvv==null)
-                        val=null;
-                    else{
-                        if((pvpc instanceof SubProcessParameterContext) && ((SubProcessParameterContext)pvpc).isSplit()){
-                            if(pvv.size() > mappingIndex){
-                                pvv.setCursor(mappingIndex);
-                            }else{
-                                pvv.setCursor(pvv.size() - 1); //move to the last element
-                            }
-
-                            val = pvv.getValue();
-                        }else{
-                            if(pvv.size()>1){
-                                val = pvv;
-                            }else
-                                val = pvv.getValue();
-                        }
-
-                    }
-
-                    instance.addDebugInfo("[SubProcessActivity] transferring main process' variable: ", pvpc.getVariable());
-                    instance.addDebugInfo(" to sub process' variable: ", pvpc.getArgument().getText());
+                    split = true;
                 }
 
-                subProcessInstance.set("", pvpc.getArgument().getText(), (Serializable)val);
+
+                String currExecutionScope = instance.getExecutionScopeContext().getExecutionScope();
+                instance.setExecutionScope(instance.getMainExecutionScope());
+
+                ProcessVariableValue pvv = pvpc.getVariable().getMultiple(instance, "");
+
+                instance.setExecutionScope(currExecutionScope);
+
+                if(pvv==null)
+                    val=null;
+                else{
+                    if((pvpc instanceof SubProcessParameterContext) && split){
+                        if(pvv.size() <= mappingIndex){
+                            mappingIndex = pvv.size() - 1; //move to the last element
+                        }
+
+                        VariablePointer vp = new VariablePointer();
+                        vp.setKey(pvv.getName());
+                        vp.setIndex(mappingIndex);
+                        val = vp;
+
+                    }else{
+                        VariablePointer vp = new VariablePointer();
+                        vp.setKey(pvv.getName());
+                        val = vp;
+                    }
+
+                }
+
+                instance.addDebugInfo("[SubProcessActivity] transferring main process' variable: ", pvpc.getVariable());
+                instance.addDebugInfo(" to sub process' variable: ", pvpc.getArgument().getText());
+
+
+                subProcessInstance.set("", pvpc.getVariable().getName(), (Serializable)val);
             }
         //transfer the mapping of roles
         if(roleBindings !=null)

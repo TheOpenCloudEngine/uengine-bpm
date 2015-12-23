@@ -11,6 +11,9 @@ import java.io.*;
 public class Serializer {
 
     public static XStream xstream = new XStream(/*new DomDriver()*/);
+    static{
+        xstream.ignoreUnknownElements();
+    }
     public final static String DATABASE_ENCODING = "UTF-8";
 
 

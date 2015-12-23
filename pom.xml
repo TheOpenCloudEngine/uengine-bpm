@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.uengine</groupId>
   <artifactId>uengine</artifactId>
-  <version>4.0-SNAPSHOT</version>
+  <version>4.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
 	  <module>uengine-commons</module>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>org.uengine.metaworks</groupId>
 			<artifactId>metaworks3</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2.1-SNAPSHOT</version>
 		</dependency>
 
 

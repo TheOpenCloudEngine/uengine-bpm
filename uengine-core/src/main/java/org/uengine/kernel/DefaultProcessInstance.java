@@ -219,13 +219,19 @@ public class DefaultProcessInstance extends ProcessInstance{
 	}
 	
 	public void set(String scopeByTracingTag, String key, Serializable val) throws Exception{
+
+		Serializable existingValue = getSourceValue(scopeByTracingTag, key);
+		if(existingValue instanceof VariablePointer){
+			((VariablePointer) existingValue).setValue(this, val);
+		}
+
 		if(val instanceof ProcessVariableValue){
 			ProcessVariableValue pvv = (ProcessVariableValue)val;
 			pvv.setName(key);
 			set(scopeByTracingTag, pvv);
 			return;
 		}
-		
+
 		setSourceValue(scopeByTracingTag, key, val);
 	}
 	
@@ -277,6 +283,11 @@ public class DefaultProcessInstance extends ProcessInstance{
 
 		if(resolvePartNeeded)
 			sourceValue = resolveParts(sourceValue, key);
+
+
+		if(sourceValue instanceof VariablePointer){
+			return ((VariablePointer) sourceValue).getValue(this);
+		}
 
 
 		return sourceValue;
@@ -600,6 +611,8 @@ public class DefaultProcessInstance extends ProcessInstance{
 			return null;
 
 		ProcessVariableValue pvv = new ProcessVariableValue();
+
+		pvv.setName(key);
 
 		for(int i=0; i<maxIndex+1; i++){
 			Serializable value = ipvm.getProcessVariableAt(i);

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.uengine</groupId>
 		<artifactId>uengine</artifactId>
-		<version>4.0-SNAPSHOT</version>
+		<version>4.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>uengine-social-bpm-portal</artifactId>
 	<packaging>war</packaging>
@@ -14,7 +14,7 @@
 			<groupId>org.uengine</groupId>
 			<artifactId>processcodi</artifactId>
 			<classifier>classes</classifier>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -26,7 +26,7 @@
 			<groupId>org.uengine</groupId>
 			<artifactId>processcodi</artifactId>
 			<type>war</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 

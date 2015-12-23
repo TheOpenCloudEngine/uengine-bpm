@@ -38,9 +38,9 @@ public class XStreamSerializer implements Serializer{
 	public XStreamSerializer(){
 		xstream = new XStream(/*new DomDriver()*/);
 		
-		if("true".equals(GlobalContext.getPropertyString("xstream.compatibility.for.jdk1.4.1", "true"))){
-			xstream.registerConverter(new ActivityRepositoryConverter(xstream.getClassMapper()));
-		}
+//		if("true".equals(GlobalContext.getPropertyString("xstream.compatibility.for.jdk1.4.1", "true"))){
+//			xstream.registerConverter(new ActivityRepositoryConverter(xstream.getClassMapper()));
+//		}
 	}
 	
 	public boolean isSerializable(Class cls){

@@ -469,6 +469,7 @@ public class ProcessModeler extends DefaultModeler {
 			String sourceRef = relationView.getFrom().substring(0, relationView.getFrom().indexOf("_TERMINAL_"));
 			String targetRef = relationView.getTo().substring(0, relationView.getTo().indexOf("_TERMINAL_"));
 
+			// in graphic side, the sourceRef and targetRef indicates the id of view, in the model, the two values must be in tracingt
 			for(ElementView elementView : this.getCanvas().getElementViewList()){
 				if(sourceRef.equals(elementView.getId())) {
 

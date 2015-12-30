@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Name;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessInstance;
+import org.uengine.modeling.LanguageSelector;
 
 /**
  * This class holds descriptive string in multi-lingual support. 
@@ -23,11 +26,11 @@ import org.uengine.kernel.ProcessInstance;
 public class TextContext implements Serializable{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
-	public static TextContext createInstance(ProcessDefinition definition){
-		TextContext newTC = new TextContext();
-		newTC.setProcessDefinition(definition);
-		return newTC;
-	}
+//	public static TextContext createInstance(ProcessDefinition definition){
+//		TextContext newTC = new TextContext();
+////		newTC.setProcessDefinition(definition);
+//		return newTC;
+//	}
 	
 	public static TextContext createInstance(){
 		// TODO: locale 
@@ -37,19 +40,15 @@ public class TextContext implements Serializable{
 	String text;
 		@Name
 		public String getText() {
-			if(!GlobalContext.isDesignTime()){
-				String defaultLocale = GlobalContext.getDefaultLocale();
-				String textInTheLocale = null;
 
-				if(defaultLocale!=null)
-					textInTheLocale = getText(defaultLocale);
-
-				if(textInTheLocale==null)
-					return text;
+			if(MetaworksRemoteService.metaworksCall()) {
+				MetaworksRemoteService.autowire(this);
+				if (languageSelector != null && languageSelector.getLanguage() != null) {
+					return getText(languageSelector.getLanguage());
+				}
 			}
-			
-			if(getProcessDefinition()==null) return text;
-			return getText(getProcessDefinition().getCurrentLocale());
+
+			return text;
 		}
 
 		public String getText(String locale) {
@@ -68,22 +67,36 @@ public class TextContext implements Serializable{
 		}
 		
 		public void setText(String value) {
-			if(text==null || (getProcessDefinition()!=null && getProcessDefinition().getCurrentLocale()==null)){
-				text = value;
-				return;
+//			if(text==null || (getProcessDefinition()!=null && getProcessDefinition().getCurrentLocale()==null)){
+//				text = value;
+//				return;
+//			}
+//
+//			if(getProcessDefinition()!=null)
+//				setText(getProcessDefinition().getCurrentLocale(), value);
+//			else
+
+			if(MetaworksRemoteService.metaworksCall()) {
+				MetaworksRemoteService.autowire(this);
+				if (languageSelector != null && languageSelector.getLanguage() != null) {
+					setText(languageSelector.getLanguage(), value);
+
+					return;
+				}
 			}
-			
-			if(getProcessDefinition()!=null)
-				setText(getProcessDefinition().getCurrentLocale(), value);
-			else
-				text = value;
+
+			text = value;
 		}
+
 		public void setText(String locale, String value){
 			if(localedTexts==null)
 				localedTexts = new HashMap();
 			
 			localedTexts.put(locale, value);
 		}
+
+	@AutowiredFromClient
+	transient public LanguageSelector languageSelector;
 		
 	Map localedTexts;
 		@Hidden
@@ -94,15 +107,15 @@ public class TextContext implements Serializable{
 			this.localedTexts = localedTexts;
 		}
 	
-	transient ProcessDefinition definition;
-		@Hidden
-		public ProcessDefinition getProcessDefinition() {
-			// TODO: locale
-			return this.definition;
-		}
-		public void setProcessDefinition(ProcessDefinition definition) {
-			this.definition = definition;
-		}
+//	transient ProcessDefinition definition;
+//		@Hidden
+//		public ProcessDefinition getProcessDefinition() {
+//			// TODO: locale
+//			return this.definition;
+//		}
+//		public void setProcessDefinition(ProcessDefinition definition) {
+//			this.definition = definition;
+//		}
 		
 	public String parse(Activity activity, ProcessInstance instance){
 		return activity.evaluateContent(instance, getText()).toString();

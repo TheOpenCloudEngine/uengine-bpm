@@ -155,12 +155,12 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setName(String name) {
 			if(getName() == null){
 				TextContext textCtx = null;
-				if(getProcessDefinition() == null) {
-					textCtx = TextContext.createInstance();
+//				if(getProcessDefinition() == null) {
+				textCtx = TextContext.createInstance();
 
-				} else {
-					textCtx = TextContext.createInstance(getProcessDefinition());
-				}
+//				} else {
+//					textCtx = TextContext.createInstance(getProcessDefinition());
+//				}
 				setName(textCtx);
 			}
 			
@@ -181,12 +181,12 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setDescription(String name) {
 			if(getDescription()==null){
 				TextContext textCtx = null;
-				if(getProcessDefinition() == null) {
+				//if(getProcessDefinition() == null) {
 					textCtx = TextContext.createInstance();
 
-				} else {
-					textCtx = TextContext.createInstance(getProcessDefinition());
-				}
+//				} else {
+//					textCtx = TextContext.createInstance(getProcessDefinition());
+//				}
 
 				setDescription(textCtx);
 			}

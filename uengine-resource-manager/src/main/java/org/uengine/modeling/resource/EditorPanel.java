@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.uengine.kernel.LeveledException;
 import org.uengine.kernel.Validatable;
 import org.uengine.kernel.ValidationContext;
+import org.uengine.modeling.LanguageSelector;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.xml.ws.Service;
@@ -48,6 +49,17 @@ public class EditorPanel implements ContextAware {
 		public void setResourcePath(String resourcePath) {
 			this.resourcePath = resourcePath;
 		}
+
+
+	LanguageSelector languageSelector = new LanguageSelector();
+		public LanguageSelector getLanguageSelector() {
+			return languageSelector;
+		}
+
+		public void setLanguageSelector(LanguageSelector languageSelector) {
+			this.languageSelector = languageSelector;
+		}
+
 
 	String resourceName;
 		public String getResourceName() {

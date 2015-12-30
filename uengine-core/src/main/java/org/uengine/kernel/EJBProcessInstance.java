@@ -725,7 +725,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			return super.getMultiple(scopeByTracingTag, key);
 		}
 
-		return getMultipeFile(scopeByTracingTag, key);
+		return getMultipeFromFile(scopeByTracingTag, key);
 	}
 
 	public Map getAll(String scope) throws Exception {
@@ -1316,7 +1316,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			return getProcessVariableDAOFacade().getAll(getInstanceId());
 	}
 
-	private ProcessVariableValue getMultipeFile(String scopeByTracingTag, String key) throws FileNotFoundException, Exception {
+	private ProcessVariableValue getMultipeFromFile(String scopeByTracingTag, String key) throws FileNotFoundException, Exception {
 		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
@@ -1329,24 +1329,34 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		if (varFile.exists()) {
 			Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
 			IndexedProcessVariableMap ipvm = (IndexedProcessVariableMap)fileVariables.get(createFullKey(scopeByTracingTag, key, false));
-			int maxIndex = ipvm.getMaxIndex();
-			ProcessVariableValue pvv = new ProcessVariableValue();
-			for(int i=0; i<maxIndex+1; i++){
-				Serializable value = ipvm.getProcessVariableAt(i);
-				pvv.setValue(value);
-				pvv.moveToAdd();
-			}
-			pvv.beforeFirst();
-			if(pvv.size()==0 || (pvv.size()==1 && pvv.getValue()==null)){
-				try{
-					Serializable value = (Serializable)getProcessDefinition().getProcessVariable(key).getDefaultValue();
+
+			if(ipvm!=null) {
+
+				int maxIndex = ipvm.getMaxIndex();
+				ProcessVariableValue pvv = new ProcessVariableValue();
+				for (int i = 0; i < maxIndex + 1; i++) {
+					Serializable value = ipvm.getProcessVariableAt(i);
 					pvv.setValue(value);
+					pvv.moveToAdd();
+				}
+				pvv.beforeFirst();
+				if (pvv.size() == 0 || (pvv.size() == 1 && pvv.getValue() == null)) {
+					try {
+						Serializable value = (Serializable) getProcessDefinition().getProcessVariable(key).getDefaultValue();
+						pvv.setValue(value);
 
-					return pvv;
-				}catch(Exception e){}
+						return pvv;
+					} catch (Exception e) {
+					}
+				}
+
+				return pvv;
+			}else{
+//				ProcessVariableValue pvv = new ProcessVariableValue();
+//				pvv.setName(key);
+
+				return null;
 			}
-
-			return pvv;
 		}
 
 		return getProcessVariableDAOFacade().getAsProcessVariableValue(getInstanceId(), scopeByTracingTag, key);

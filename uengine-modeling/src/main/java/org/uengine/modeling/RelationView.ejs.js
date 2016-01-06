@@ -34,9 +34,16 @@ org_uengine_modeling_RelationView.prototype = {
 			this.object.to = $(this.element).attr('_to');
 
 			var vertices = this.element.shape.geom.getVertices();
-			var from = vertices[0];
-			var to = vertices[vertices.length - 1];
-			this.object.value = from + ',' + to;
+			this.object.vertices = vertices;
+
+			this.object.value = '';
+			for (var i = 0; i < vertices.length; i++) {
+				this.object.value = this.object.value + vertices[i];
+				if (i < vertices.length - 1) {
+					this.object.value = this.object.value + ','
+				}
+			}
+
 
 			this.object.geom = escape(this.element.shape.geom.toString());
 			this.object.style = escape(OG.JSON.encode(this.element.shape.geom.style));
@@ -58,7 +65,6 @@ org_uengine_modeling_RelationView.prototype = {
 					this.object.relation.target = targetElementView.element.tracingTag;
 				}
 			}
-
 		}
 	},
 
@@ -96,8 +102,9 @@ org_uengine_modeling_RelationView.prototype = {
 			this.readyTargetElement(fromElementId, 'from');
 			this.readyTargetElement(toElementId, 'to');
 		}else if(this.object.from && !this.object.to){
-			//this.readyTargetElement(fromElementId, 'from');
-			var shape = eval('new ' + this.object.shapeId + '(\'' + this.object.value + '\')');
+			var list = JSON.parse('[' + this.object.value+ ']');
+			var fromto = JSON.stringify(list[0]) + ',' + JSON.stringify(list[list.length - 1]);
+			var shape = eval('new ' + this.object.shapeId + '(\'' + fromto + '\')');
 			var geom = unescape(this.object.geom);
 
 			if(geom){
@@ -130,8 +137,9 @@ org_uengine_modeling_RelationView.prototype = {
 				this.canvas._RENDERER.redrawShape($('#' + this.object.from.substring(0,pos))[0], null, true);
 			}
 		}else if(!this.object.from && this.object.to){
-			//this.readyTargetElement(toElementId, 'to');
-			var shape = eval('new ' + this.object.shapeId + '(\'' + this.object.value + '\')');
+			var list = JSON.parse('[' + this.object.value+ ']');
+			var fromto = JSON.stringify(list[0]) + ',' + JSON.stringify(list[list.length - 1]);
+			var shape = eval('new ' + this.object.shapeId + '(\'' + fromto + '\')');
 			var geom = unescape(this.object.geom);
 
 			if(geom){
@@ -230,7 +238,12 @@ org_uengine_modeling_RelationView.prototype = {
 
 		if(!existElement){
 			if($('#' + fromElementId).length && $('#' + toElementId).length){
-				this.element = this.canvas.connectWithTerminalId(this.object.from, this.object.to , OG.JSON.decode(unescape(style)), this.getLabel(), this.object.id, this.object.shapeId);
+				var geom;
+				if(this.object.geom){
+					geom = OG.JSON.decode(unescape(this.object.geom));
+				}
+
+				this.element = this.canvas.connectWithTerminalId(this.object.from, this.object.to , OG.JSON.decode(unescape(style)), this.getLabel(), this.object.id, this.object.shapeId, geom);
 				this.bindMapping();
 			}
 		}

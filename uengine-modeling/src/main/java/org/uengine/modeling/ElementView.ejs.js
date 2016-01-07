@@ -27,6 +27,11 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 			this.object.toEdge = $(this.element).attr('_toedge');
 			this.object.fromEdge = $(this.element).attr('_fromedge');
 			this.object.index = $(this.element).prevAll().length;
+			if($(this.element).parent().attr('id') === $(this.rootgroup).attr('id')){
+				this.object.parent = $(this.rootgroup).attr('id');
+			}else{
+				this.object.parent = $(this.element).parent().attr('id');
+			}
 
 			return this.object;
 		}
@@ -44,13 +49,57 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 	this.getCanvas = function(){
 
 		var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
-
 		return mw3.getFaceHelper(canvasId).getCanvas();
 	}
 
+	this.getRenderer = function(){
+		return this.getCanvas()._RENDERER;
+	}
+
+	this.setParent = function(elementId , parentId){
+		if(!elementId || !parentId){
+			return;
+		}
+		if(!this.canvas.groupReservations){
+			this.canvas.groupReservations = {};
+		}
+		var element = this.renderer.getElementById(elementId);
+		var parentElement = this.renderer.getElementById(parentId);
+
+		if(!element){
+			return;
+		}
+
+		//부모가 캔버스에 아직 그려지지 않았을 경우 예약을 걸어놓는다.
+		if(!parentElement){
+			if(!this.canvas.groupReservations[parentId]){
+				this.canvas.groupReservations[parentId] = [];
+			}
+			if(this.canvas.groupReservations[parentId].indexOf(elementId) === -1){
+				this.canvas.groupReservations[parentId].push(elementId);
+			}
+		}
+
+		//자신에게 예약이 걸려있는것이 있다면 그룹을 맺는다.
+		var reservations = this.canvas.groupReservations[elementId];
+		if(!reservations){
+			return;
+		}
+
+		for(var i = 0 ; i < reservations.length; i++){
+			var reservedElementId = reservations[i];
+			reservedElement = this.renderer.getElementById(reservedElementId);
+			if(reservedElement){
+				element.appendChild(reservedElement);
+			}
+		}
+	}
+
 	this.init = function(){
-        this.canvas = this.getCanvas();
-        this.element = null;
+		this.canvas = this.getCanvas();
+		this.renderer = this.getRenderer();
+		this.element = null;
+		this.rootgroup = this.renderer.getRootGroup();
 
 		//verification data first.
 		if(this.object.shapeId == null)
@@ -79,10 +128,10 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 
 
 		var existElement = document.getElementById(this.object.id);
-        if(existElement){
-            this.canvas.drawLabel(existElement, this.getLabel());
-            this.element = existElement;
-            this.isNew = false;
+		if(existElement){
+			this.canvas.drawLabel(existElement, this.getLabel());
+			this.element = existElement;
+			this.isNew = false;
 
 			//concern 별 color 적용 by soo
 			//이 부분
@@ -90,8 +139,6 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 				this.canvas._RENDERER.setShapeStyle(this.element, {"fill": concernColor, "fill-opacity": 1, "stroke" : lineColor});
 
 		}else{
-
-
 
 			var shape = eval('new ' + this.object.shapeId);
 			shape.label = this.getLabel();
@@ -102,8 +149,8 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 				}
 			}
 
-            var style = this.object.style;
-            var boundary;
+			var style = this.object.style;
+			var boundary;
 
 			//concern 별 color 적용 by soo
 			//이 부분을 추가하시면 될 것 같습니다.
@@ -115,62 +162,52 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 				});
 			}
 
-            this.element = this.canvas.drawShape([this.object.x, this.object.y],
-                    shape,
-                    [parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
-                    OG.JSON.decode(unescape(style)),
-                    this.object.id,
-                    null,
-                    null);
+			this.element = this.canvas.drawShape([this.object.x, this.object.y],
+				shape,
+				[parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
+				OG.JSON.decode(unescape(style)),
+				this.object.id,
+				this.object.parent,
+				null);
+
+			this.setParent(this.element.id , this.object.parent);
+
+			boundary = this.element.shape.geom.boundary;
+
+			this.autoResizeCanvas(boundary);
+
+			this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
+
+			mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
+		}
 
 
-			var me = this;
+		if (this.object.toEdge) {
+			$(this.element).attr('_toedge', this.object.toEdge);
+		}
 
-//			$(this.canvas._RENDERER.getRootElement()).find("[_selected=true]").each(function (idx, item) {
+		if (this.object.fromEdge) {
+			$(this.element).attr('_fromedge', this.object.fromEdge);
+		}
 
+		boundary = this.element.shape.geom.boundary;
 
-			//if(this.canvas._RENDERER.selectedElement)
-			//	if(this.canvas._RENDERER.selectedElement.shape)
-			//		me.canvas.connect(this.canvas._RENDERER.selectedElement, me.element);
-//			})
+		this.autoResizeCanvas(boundary);
 
+		this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
 
-            boundary = this.element.shape.geom.boundary;
+		mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
 
-            this.autoResizeCanvas(boundary);
+		$(this.element).trigger('loaded.' + this.element.id);
 
-            this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
-
-            mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
-        }
-
-
-        if (this.object.toEdge) {
-            $(this.element).attr('_toedge', this.object.toEdge);
-        }
-
-        if (this.object.fromEdge) {
-            $(this.element).attr('_fromedge', this.object.fromEdge);
-        }
-
-        boundary = this.element.shape.geom.boundary;
-
-        this.autoResizeCanvas(boundary);
-
-        this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
-
-        mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
-
-        $(this.element).trigger('loaded.' + this.element.id);
-
-        this.bindMapping();
-    }
+		this.bindMapping();
+	}
 
 	this.bindMapping = function(){
 		var metadata = mw3.getMetadata(this.className);
 		for(var methodName in metadata.serviceMethodContextMap){
 			if(mw3.isHiddenMethodContext(this.metadata.serviceMethodContextMap[methodName], this.object))
-		 		continue;
+				continue;
 
 			var methodContext = metadata.serviceMethodContextMap[methodName];
 
@@ -183,17 +220,17 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 			}
 
 			if(methodContext.mouseBinding){
-   				var which = 3;
-   				if(methodContext.mouseBinding == "right")
-   					which = 3;
-   				else if(methodContext.mouseBinding == "left")
-   					which = 1;
+				var which = 3;
+				if(methodContext.mouseBinding == "right")
+					which = 3;
+				else if(methodContext.mouseBinding == "left")
+					which = 1;
 
 				if(methodContext.mouseBinding == "drop"){
 
 					$(this.element).droppable({
-							greedy: true,
-							tolerance: 'geom'
+						greedy: true,
+						tolerance: 'geom'
 					}).attr('droppable', true);
 
 					var command = "if(mw3.objects['"+ this.objectId +"']!=null) mw3.call("+this.objectId+", '"+methodName+"')";
@@ -206,16 +243,16 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 					});
 				}else{
 					// click(mouse right) is contextmenu block
-	   			 	if(which == 3){
+					if(which == 3){
 
-		   			 	$(this.element).bind('contextmenu', function(event){
-		   			 		return false;
-		   			 	});
-	   			 	}
+						$(this.element).bind('contextmenu', function(event){
+							return false;
+						});
+					}
 
-   			 		$(this.element).on((which==3?'mouseup':'click') + '.'+this.objectId, {which: which, objectId: this.objectId}, function(event){
-   			 			$(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event);
-   			 		});
+					$(this.element).on((which==3?'mouseup':'click') + '.'+this.objectId, {which: which, objectId: this.objectId}, function(event){
+						$(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event);
+					});
 
 				}
 			}

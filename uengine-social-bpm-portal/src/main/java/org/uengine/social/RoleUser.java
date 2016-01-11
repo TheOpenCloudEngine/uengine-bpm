@@ -1,31 +1,39 @@
 package org.uengine.social;
 
 import org.metaworks.MetaworksContext;
+import org.metaworks.annotation.Face;
+import org.metaworks.component.MultiSelectBox;
 import org.uengine.codi.mw3.model.User;
 import org.uengine.kernel.NeedArrangementToSerialize;
 import org.uengine.kernel.RoleMapping;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jangjinyoung on 15. 9. 27..
  */
+@Face(faceClass = RoleUserFace.class)
 public class RoleUser extends RoleMapping implements NeedArrangementToSerialize{
 
-    User user;
-        public User getUser() {
-            return user;
+    List<User> users;
+        public List<User> getUsers() {
+            return users;
         }
-        public void setUser(User user) {
-            this.user = user;
+        public void setUsers(List<User> users) {
+            this.users = users;
         }
+
 
 
     public RoleUser(){
         super();
 
-        setUser(new User());
-        user.setMetaworksContext(new MetaworksContext());
-        user.getMetaworksContext().setWhere(MetaworksContext.WHEN_NEW);
-        user.getMetaworksContext().setHow(User.HOW_PICKER);
+
+        setUsers(new ArrayList<User>());
+//        user.setMetaworksContext(new MetaworksContext());
+//        user.getMetaworksContext().setWhere(MetaworksContext.WHEN_NEW);
+//        user.getMetaworksContext().setHow(User.HOW_PICKER);
     }
 
 
@@ -36,15 +44,18 @@ public class RoleUser extends RoleMapping implements NeedArrangementToSerialize{
 
     @Override
     public void afterDeserialization() {
-        if (getUser() != null) {
-            setEndpoint(getUser().getUserId());
+        if (getUsers() != null) {
+            for(User user : getUsers()){
+                setEndpoint(user.getUserId());
+                moveToAdd();
+            }
         }
     }
 
     @Override
     public String getEndpoint() {
-        if(endpoint==null && user!=null && user.getUserId()!=null){
-            endpoint = user.getUserId();
+        if(endpoint==null && users!=null){
+            afterDeserialization();
         }
 
         return super.getEndpoint();

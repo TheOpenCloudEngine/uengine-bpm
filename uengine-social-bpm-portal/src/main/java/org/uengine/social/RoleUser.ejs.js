@@ -10,7 +10,8 @@ var org_uengine_social_RoleUser = function(objectId, className){
             user:{
                 __className: 'org.uengine.codi.mw3.model.User',
                 metaworksContext: {
-                    when: 'edit'
+                    when: 'edit',
+                    how: 'picker'
                 }
 
             }

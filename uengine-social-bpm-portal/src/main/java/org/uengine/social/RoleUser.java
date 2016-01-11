@@ -24,7 +24,8 @@ public class RoleUser extends RoleMapping implements NeedArrangementToSerialize{
 
         setUser(new User());
         user.setMetaworksContext(new MetaworksContext());
-        user.getMetaworksContext().setWhere(User.MW3_WHERE_ROLEUSER_PICKER);
+        user.getMetaworksContext().setWhere(MetaworksContext.WHEN_NEW);
+        user.getMetaworksContext().setHow(User.HOW_PICKER);
     }
 
 

@@ -84,6 +84,7 @@ org_uengine_modeling_Canvas.prototype = {
 	},
 
 	eventBinding: function(){
+		var canvas = this.canvas;
 		var canvasDivObj = document.getElementById(this.canvasDivId);
 		$(canvasDivObj).droppable({
 			greedy: true,
@@ -178,6 +179,10 @@ org_uengine_modeling_Canvas.prototype = {
 			mw3.getFaceHelper(event.data.objectId).initHistory();
 
 			mw3.getFaceHelper(event.data.objectId).addRedoList();
+		});
+
+		this.objectDiv.bind('divideLane', {objectId: this.objectId}, function(event, element){
+			//TODO Lane 분기 버튼을 통해 생성된 Lane element 처리
 		});
 
 		//정렬 기능을 위하여

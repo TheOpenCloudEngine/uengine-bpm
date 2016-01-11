@@ -1,5 +1,7 @@
 package org.uengine.social;
 
+import org.metaworks.ContextAware;
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.ServiceMethod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,29 @@ import java.rmi.RemoteException;
 /**
  * Created by jjy on 2016. 1. 8..
  */
-public class DelegatePanel {
+public class DelegatePanel implements ContextAware{
+
+    public DelegatePanel(){}
+
+    public DelegatePanel(String instanceId, String tracingTag) {
+        this.instanceId = instanceId;
+        this.tracingTag = tracingTag;
+
+        setDelegator(new RoleUser());
+
+        setMetaworksContext(new MetaworksContext());
+        getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+
+    }
+
+    MetaworksContext metaworksContext;
+        public MetaworksContext getMetaworksContext() {
+            return metaworksContext;
+        }
+        public void setMetaworksContext(MetaworksContext metaworksContext) {
+            this.metaworksContext = metaworksContext;
+        }
+
 
     String instanceId;
     @Hidden

@@ -14,14 +14,7 @@ public class SocialBPMWorkItemHandler extends WorkItemHandler{
     @ServiceMethod(payload = {"instanceId", "tracingTag", "workItem"}, target = ServiceMethod.TARGET_STICK)
     public void delegate() {
 
-        DelegatePanel delegatePanel = new DelegatePanel();
-        delegatePanel.setInstanceId(getInstanceId());
-        delegatePanel.setTracingTag(getTracingTag());
-
-//        RoleUser roleUser = new RoleUser();
-//        roleUser.setUser(new User());
-//        roleUser.getUser().setUserId(getWorkItem().getEndpoint());
-//        delegatePanel.setDelegator(roleUser);
+        DelegatePanel delegatePanel = new DelegatePanel(getInstanceId(), getTracingTag());
 
         MetaworksRemoteService.autowire(delegatePanel);
 

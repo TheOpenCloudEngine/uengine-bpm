@@ -640,7 +640,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 			
 			
 			if(
-					roleMapping.getResourceName().equals(roleMapping.getEndpoint())
+					roleMapping.getResourceName()==null || roleMapping.getResourceName().equals(roleMapping.getEndpoint())
 					|| !UEngineUtil.isNotEmpty(roleMapping.getResourceName())
 			)
 				roleMapping.fill(instance);

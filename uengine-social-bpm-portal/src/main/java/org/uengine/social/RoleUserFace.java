@@ -45,7 +45,7 @@ public class RoleUserFace extends MultiSelectBox implements Face<RoleUser> {
         try {
             while(contact.next()){
                 getOptionNames().add(contact.getFriend().getName());
-                getOptionValues().add(contact.getUserId());
+                getOptionValues().add(contact.getFriend().getUserId());
             };
         } catch (Exception e) {
             e.printStackTrace();

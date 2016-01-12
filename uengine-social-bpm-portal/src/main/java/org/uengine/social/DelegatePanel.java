@@ -4,6 +4,8 @@ import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.Label;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.uengine.codi.mw3.model.*;
 import org.uengine.processmanager.ProcessManagerRemote;
@@ -79,5 +81,7 @@ public class DelegatePanel implements ContextAware{
     @ServiceMethod(callByContent = true)
     public void delegate() throws RemoteException {
         processManagerRemote.delegateWorkitem(getInstanceId(), getTracingTag(), getDelegator());
+
+        MetaworksRemoteService.wrapReturn(new Label("<center><h4>Delegated. Please refresh the work-items.</h4></center>"));
     }
 }

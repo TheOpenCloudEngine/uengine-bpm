@@ -88,7 +88,7 @@ var org_uengine_modeling_ElementView = function(objectId, className){
 
 		for(var i = 0 ; i < reservations.length; i++){
 			var reservedElementId = reservations[i];
-			reservedElement = this.renderer.getElementById(reservedElementId);
+			var reservedElement = this.renderer.getElementById(reservedElementId);
 			if(reservedElement){
 				element.appendChild(reservedElement);
 			}

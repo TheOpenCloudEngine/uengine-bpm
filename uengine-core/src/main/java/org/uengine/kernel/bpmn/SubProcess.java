@@ -381,7 +381,7 @@ public class SubProcess extends ScopeActivity{
 
         ExecutionScopeContext oldEsc = instance.getExecutionScopeContext();
 
-        ExecutionScopeContext esc = instance.issueNewExecutionScope(this, this, "sub");
+        ExecutionScopeContext esc = instance.issueNewExecutionScope(this, this, theValue != null ? theValue.toString() : "<No Name>");
         instance.setExecutionScopeContext(esc);
 
         initiateSubProcess(instance, null, theValue, false, pvv.getCursor());
@@ -444,12 +444,21 @@ public class SubProcess extends ScopeActivity{
                     forEachValue.next();
                 }
 
+                ExecutionScopeContext oldEsc = instance.getExecutionScopeContext();
+
+                ExecutionScopeContext esc = instance.issueNewExecutionScope(this, this, thisRM != null ? thisRM.getResourceName() : "<No Name>");
+                instance.setExecutionScopeContext(esc);
+
+
                 ProcessInstance thePI = initiateSubProcess(instance, thisRM, thisValue, isConnectedMultipleSubProcesses, roleMapping.getCursor());
 
                 subprocessInstances.add(thePI);
                 subprocessInstanceIds.add(thePI.getInstanceId());
 
                 subprocessLabels.add(thisRM.toString());
+
+                instance.setExecutionScopeContext(oldEsc);
+
             }while(roleMapping.next());
 
         }else if(getForEachVariable()!=null){
@@ -464,7 +473,7 @@ public class SubProcess extends ScopeActivity{
 
                 ExecutionScopeContext oldEsc = instance.getExecutionScopeContext();
 
-                ExecutionScopeContext esc = instance.issueNewExecutionScope(this, this, "sub");
+                ExecutionScopeContext esc = instance.issueNewExecutionScope(this, this, theValue != null ? theValue.toString() : "<No Name>");
                 instance.setExecutionScopeContext(esc);
 
                 ProcessInstance thePI = initiateSubProcess(instance, null, theValue, isConnectedMultipleSubProcesses, pvv.getCursor());

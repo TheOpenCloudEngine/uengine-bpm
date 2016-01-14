@@ -421,6 +421,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 					(instance.getExecutionScopeContext().getRootActivityInTheScope() == this 
 							|| instance.getExecutionScopeContext().getRootActivityInTheScope().isAncestorOf(this))){
 				kpv.setProperty("executionScope", instance.getExecutionScopeContext().getExecutionScope());
+				kpv.setProperty("executionScopeName", instance.getExecutionScopeContext().getName());
 			}
 			
 			Calendar dueDate = getDueDate(instance);

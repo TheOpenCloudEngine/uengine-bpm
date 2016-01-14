@@ -3,6 +3,7 @@ package org.uengine.social;
 import org.metaworks.website.MetaworksFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.uengine.codi.mw3.admin.WebEditor;
 import org.uengine.codi.mw3.model.User;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
 import org.uengine.uml.model.face.AttributeTypeSelector;
@@ -30,6 +31,9 @@ public class SocialBPMClassAttributeFace extends AttributeTypeSelector {
 
         getOptionNames().add("File");
         getOptionValues().add(MetaworksFile.class.getName());
+
+        getOptionNames().add("Long Text");
+        getOptionValues().add(WebEditor.class.getName());
 
         setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator());
     }

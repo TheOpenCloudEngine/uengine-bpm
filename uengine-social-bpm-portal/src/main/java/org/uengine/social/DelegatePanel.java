@@ -2,6 +2,7 @@ package org.uengine.social;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
+import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
@@ -15,6 +16,7 @@ import java.rmi.RemoteException;
 /**
  * Created by jjy on 2016. 1. 8..
  */
+@Face(displayName = "Delegate To ...")
 public class DelegatePanel implements ContextAware{
 
     public DelegatePanel(){}

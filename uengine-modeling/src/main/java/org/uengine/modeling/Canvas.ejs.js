@@ -7,10 +7,8 @@ var org_uengine_modeling_Canvas = function (objectId, className) {
     this.objectDivId = mw3._getObjectDivId(this.objectId);
     this.objectDiv = $('#' + this.objectDivId);
     this.metaworksContext = mw3.objectContexts[this.objectId].__metaworksContext;
-
+    this.viewstorage = {};
     this.objectDiv.addClass('mw3_resize').addClass('canvas').css('height', '100%');
-    this.history = [];
-    this.historyInit = true;
 
     this.canvasDivId = 'canvas_' + objectId;
     this.tracingTag = 0;
@@ -73,12 +71,9 @@ org_uengine_modeling_Canvas.prototype = {
 
         }
         this.canvas.setCurrentCanvas(this.canvas);
-
         mw3.canvas = this.canvas;
 
         this.eventBinding();
-
-
     },
 
     eventBinding: function () {
@@ -106,11 +101,13 @@ org_uengine_modeling_Canvas.prototype = {
             mw3.getFaceHelper(event.data.objectId).removeElement(element);
         });
         $(canvasDivObj).bind('pasteShape', {objectId: this.objectId}, function (event, copiedElement, selectedElement) {
-            //TODO. 그룹 카피일때 그룹 하위 요소 paste 처리.
 
-            for (var i = 0; i < copiedElement.length; i++) {
-                var elementViewId = 'org.uengine.modeling.ElementView@' + copiedElement[i].id;
+            function copyElement(copied, selected) {
+                var elementViewId = 'org.uengine.modeling.ElementView@' + copied.id;
                 var elementView = mw3.getAutowiredObject(elementViewId);
+                if (!elementView) {
+                    return;
+                }
                 var element = {};
                 mw3.copyObjectToObject(element, elementView.element);
                 element.tracingTag = null;
@@ -125,7 +122,7 @@ org_uengine_modeling_Canvas.prototype = {
                     __className: elementView.__className,
                     shapeId: elementView.shapeId,
                     label: elementView.label,
-                    id: selectedElement[i].id,
+                    id: selected.id,
                     metaworksContext: elementView.metaworksContext,
                     element: element
                 };
@@ -135,18 +132,9 @@ org_uengine_modeling_Canvas.prototype = {
 
                 mw3.call(newElementView.__objectId, 'duplicate');
             }
-        });
 
-        $(canvasDivObj).bind('change.' + this.objectId, {objectId: this.objectId}, function (event, element) {
-
-            mw3.getFaceHelper(event.data.objectId).addHistory();
-        });
-
-        $(canvasDivObj).bind("keydown." + this.objectId, {objectId: this.objectId}, function (event) {
-            if (event.shiftKey && (event.ctrlKey || event.metaKey) && event.keyCode === KeyEvent.DOM_VK_Z) {
-                mw3.getFaceHelper(event.data.objectId).redo();
-            } else if ((event.ctrlKey || event.metaKey) && event.keyCode === KeyEvent.DOM_VK_Z) {
-                mw3.getFaceHelper(event.data.objectId).undo();
+            for (var i = 0; i < copiedElement.length; i++) {
+                copyElement(copiedElement[i], selectedElement[i]);
             }
         });
 
@@ -177,16 +165,10 @@ org_uengine_modeling_Canvas.prototype = {
 
                 mw3.getFaceHelper(event.data.objectId).toAppend(activityView);
                 mw3.onLoadFaceHelperScript();
-
             }
-            mw3.getFaceHelper(event.data.objectId).initHistory();
-
-            mw3.getFaceHelper(event.data.objectId).addRedoList();
         });
 
         this.objectDiv.bind('divideLane', {objectId: this.objectId}, function (event, divideLane) {
-            //TODO Lane 분기 버튼을 통해 생성된 Lane 서버 동기 처리
-
             var rootLane = canvas._RENDERER.getRootLane(divideLane);
             var elementViewId = 'org.uengine.modeling.ElementView@' + rootLane.id;
             var elementView = mw3.getAutowiredObject(elementViewId);
@@ -195,7 +177,7 @@ org_uengine_modeling_Canvas.prototype = {
             mw3.copyObjectToObject(element, elementView.element);
             element.tracingTag = null;
             element.name = null;
-            if(element.displayName){
+            if (element.displayName) {
                 element.displayName.text = '';
             }
 
@@ -210,9 +192,16 @@ org_uengine_modeling_Canvas.prototype = {
 
             mw3.getFaceHelper(event.data.objectId).toAppend(newElementView);
             mw3.onLoadFaceHelperScript();
+        });
 
-            var newViewId = 'org.uengine.modeling.ElementView@' + divideLane.id;
-            var newView = mw3.getAutowiredObject(newViewId);
+        this.objectDiv.bind('undo', {objectId: this.objectId}, function (event) {
+            mw3.getFaceHelper(event.data.objectId).updateViewStorage();
+            mw3.getFaceHelper(event.data.objectId).syncCanvasAndView(canvas._RENDERER.getAllShapes());
+        });
+
+        this.objectDiv.bind('redo', {objectId: this.objectId}, function (event) {
+            mw3.getFaceHelper(event.data.objectId).updateViewStorage();
+            mw3.getFaceHelper(event.data.objectId).syncCanvasAndView(canvas._RENDERER.getAllShapes());
         });
 
         //정렬 기능을 위하여
@@ -293,32 +282,14 @@ org_uengine_modeling_Canvas.prototype = {
         return this.canvas;
     },
 
-    initHistory: function () {
-        if (this.historyInit) {
-            this.history = [this.getCanvas().toJSON()];
-            this.historyIndex = 0;
-        }
-    },
-
-    addHistory: function () {
-        this.historyInit = false;
-
-        this.history.splice(this.historyIndex + 1);
-        this.history.push(this.getCanvas().toJSON());
-        this.historyIndex = this.history.length - 1;
-    },
-
     undo: function () {
-        if (this.historyIndex > 0)
-            this.canvas.loadJSON(this.history[--this.historyIndex]);
+        this.canvas._RENDERER.undo();
     },
     redo: function () {
-        if (this.historyIndex < this.history.length - 1)
-            this.canvas.loadJSON(this.history[++this.historyIndex]);
+        this.canvas._RENDERER.redo();
     },
 
     toAppend: function (object) {
-        this.historyInit = false;
 
         object.x = mw3.dropX - $("#canvas_" + this.objectId)[0].offsetLeft + $("#canvas_" + this.objectId)[0].scrollLeft - $("#canvas_" + this.objectId).offsetParent().offset().left;
         object.y = mw3.dropY - $('#canvas_' + this.objectId)[0].offsetTop + $('#canvas_' + this.objectId)[0].scrollTop - $('#canvas_' + this.objectId).offsetParent().offset().top;
@@ -382,15 +353,15 @@ org_uengine_modeling_Canvas.prototype = {
         if (!targetElementView) throw new Error("can't find targetElementView of [" + to.id + "]");
 
         var shapeId = from.shape.SHAPE_ID.split('.')[2];
-        var transitionView;
+        var transition, transitionView;
 
         if (from.shape.SHAPE_ID == "OG.shape.bpmn.Value_Chain") {
-            var transition = {
+            transition = {
                 __className: 'org.uengine.modeling.Relation',
                 sourceElement: sourceElementView.element,
                 targetElement: targetElementView.element
             };
-            var transitionView = {
+            transitionView = {
                 __className: 'org.uengine.modeling.RelationView',
                 id: edge.id,
                 from: $(edge).attr('_from'),
@@ -398,12 +369,12 @@ org_uengine_modeling_Canvas.prototype = {
                 relation: transition
             };
         } else if (from.shape.SHAPE_ID == "OG.shape.bpmn.Value_Chain_Module") {
-            var transition = {
+            transition = {
                 __className: 'org.uengine.modeling.Relation',
                 sourceElement: sourceElementView.element,
                 targetElement: targetElementView.element
             };
-            var transitionView = {
+            transitionView = {
                 __className: 'org.uengine.modeling.RelationView',
                 id: edge.id,
                 from: $(edge).attr('_from'),
@@ -411,12 +382,12 @@ org_uengine_modeling_Canvas.prototype = {
                 relation: transition
             };
         } else if (shapeId == "essencia") {
-            var transition = {
+            transition = {
                 __className: 'org.uengine.uml.model.CompositionRelation',
                 sourceElement: sourceElementView.element,
                 targetElement: targetElementView.element
             };
-            var transitionView = {
+            transitionView = {
                 __className: 'org.uengine.uml.ui.CompositionRelationView',
                 id: edge.id,
                 from: $(edge).attr('_from'),
@@ -424,14 +395,14 @@ org_uengine_modeling_Canvas.prototype = {
                 relation: transition
             };
         } else {
-            var transition = {
+            transition = {
                 __className: 'org.uengine.kernel.bpmn.SequenceFlow',
                 sourceElement: sourceElementView.element,
                 targetElement: targetElementView.element,
                 source: sourceElementView.element.tracingTag,
                 target: targetElementView.element.tracingTag
             };
-            var transitionView = {
+            transitionView = {
                 __className: 'org.uengine.kernel.bpmn.view.SequenceFlowView',
                 id: edge.id,
                 from: $(edge).attr('_from'),
@@ -442,7 +413,6 @@ org_uengine_modeling_Canvas.prototype = {
 
         var relationViewListId = mw3.getChildObjectId(this.objectId, 'relationViewList');
         var relationViewListObject = mw3.objects[relationViewListId];
-
         relationViewListObject.__faceHelper.add(transitionView);
     },
 
@@ -460,7 +430,34 @@ org_uengine_modeling_Canvas.prototype = {
         }
     },
 
-    addRedoList: function () {
+    updateViewStorage: function () {
+        var viewStorage = this.viewstorage;
+        var elementViewListId = mw3.getChildObjectId(this.objectId, 'elementViewList');
+        var elementViewListObject = mw3.objects[elementViewListId];
+        var relatioinViewListId = mw3.getChildObjectId(this.objectId, 'relationViewList');
+        var relatioinViewListObject = mw3.objects[relatioinViewListId];
+
+        var addStorage = function (view) {
+            if (!view.id) {
+                return;
+            }
+            if (!viewStorage[view.id]) {
+                viewStorage[view.id] = view;
+            }
+        };
+
+        $.each(elementViewListObject, function (index, elementView) {
+            addStorage(elementView);
+        });
+        $.each(relatioinViewListObject, function (index, relationView) {
+            addStorage(relationView);
+        });
+
+        this.viewstorage = viewStorage;
+    },
+
+    syncCanvasAndView: function (elements) {
+        //TODO 현재 캔버스와 뷰의 싱크 맞추기 작업 필요.
     }
 };
 

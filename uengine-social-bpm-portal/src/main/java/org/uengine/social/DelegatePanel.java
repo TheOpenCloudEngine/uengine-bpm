@@ -2,11 +2,15 @@ package org.uengine.social;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
+import org.metaworks.Remover;
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Label;
+import org.metaworks.widget.ModalWindow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.uengine.codi.mw3.model.*;
 import org.uengine.processmanager.ProcessManagerRemote;
@@ -69,6 +73,7 @@ public class DelegatePanel implements ContextAware{
         }
 
     RoleUser delegator;
+    @Available(when= MetaworksContext.WHEN_EDIT)
         public RoleUser getDelegator() {
             return delegator;
         }
@@ -81,9 +86,29 @@ public class DelegatePanel implements ContextAware{
     public ProcessManagerRemote processManagerRemote;
 
     @ServiceMethod(callByContent = true)
+    @Available(when= MetaworksContext.WHEN_EDIT)
     public void delegate() throws RemoteException {
         processManagerRemote.delegateWorkitem(getInstanceId(), getTracingTag(), getDelegator());
 
-        MetaworksRemoteService.wrapReturn(new Label("<center><h4>Delegated. Please refresh the work-items.</h4></center>"));
+        setMessage(new Label("<center><h4>Delegated. Please refresh the work-items.</h4></center>"));
+        getMetaworksContext().setWhen("done");
+    }
+
+    Label message;
+    @Available(when="done")
+    @Face(displayName = "")
+        public Label getMessage() {
+            return message;
+        }
+        public void setMessage(Label message) {
+            this.message = message;
+        }
+
+
+
+    @ServiceMethod
+    @Available(when="done")
+    public void dismiss(){
+        MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()));
     }
 }

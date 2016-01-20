@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Make current as a version</h4>
+    </div>
+    <div class="panel-body">
+        <%=methods.majorVersionUp.here()%><%=methods.minorVersionUp.here()%>
+        <br>
+        <%=fields.makeThisVersionAsProduction.here()%> also make this as the production.
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Existing versions</h4>
+    </div>
+    <div class="panel-body">
+        <%=fields.versions.here()%>
+    </div>
+</div>

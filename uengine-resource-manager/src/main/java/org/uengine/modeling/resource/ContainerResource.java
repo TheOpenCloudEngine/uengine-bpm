@@ -4,6 +4,7 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ModalWindow;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -192,4 +193,11 @@ public class ContainerResource extends DefaultResource implements IContainer {
 	public void open(@AutowiredFromClient ResourceControlDelegate resourceControlDelegate) throws Exception {
 	//	super.open(resourceControlDelegate);
 	}
+
+	@ServiceMethod(target = ServiceMethod.TARGET_POPUP, inContextMenu = true)
+	public VersionManager versionManager(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+		return resourceNavigator.versionManager();
+	}
+
+
 }

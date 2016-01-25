@@ -7,7 +7,6 @@ import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
-import org.uengine.processpublisher.ObjectFactoryUtil;
 
 import javax.xml.namespace.QName;
 import java.util.Hashtable;

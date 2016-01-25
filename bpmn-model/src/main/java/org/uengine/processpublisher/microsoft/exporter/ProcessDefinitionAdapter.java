@@ -5,7 +5,9 @@ import org.uengine.kernel.Activity;
 import org.uengine.kernel.HumanActivity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
-import org.uengine.processpublisher.microsoft.Adapter;
+import org.uengine.processpublisher.Adapter;
+
+import java.util.Hashtable;
 
 /**
  * Created by MisakaMikoto on 2015. 10. 21..
@@ -13,7 +15,7 @@ import org.uengine.processpublisher.microsoft.Adapter;
 public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, ProjectFile> {
 
     @Override
-    public ProjectFile convert(ProcessDefinition src) throws Exception {
+    public ProjectFile convert(ProcessDefinition src, Hashtable keyedContext) throws Exception {
         // base data-structure for project files
         ProjectFile projectfile = new ProjectFile();
 
@@ -39,4 +41,5 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
         }
         return projectfile;
     }
+
 }

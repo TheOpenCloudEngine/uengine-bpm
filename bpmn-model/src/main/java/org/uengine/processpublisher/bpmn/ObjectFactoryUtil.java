@@ -1,4 +1,4 @@
-package org.uengine.processpublisher;
+package org.uengine.processpublisher.bpmn;
 
 import javax.xml.bind.JAXBElement;
 import java.lang.reflect.InvocationTargetException;

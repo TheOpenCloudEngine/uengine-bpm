@@ -2,45 +2,55 @@ package org.uengine.processpublisher;
 
 
 import org.uengine.kernel.ProcessDefinition;
+import org.uengine.processpublisher.bpmn.Adapter;
+import org.uengine.processpublisher.microsoft.importer.MSProjectFileAdapter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Hashtable;
 
 public class BPMNUtil {
+    public static final String MSProject = "project";
+    public static final String VP = "definitions";
 
     static Hashtable adapters = new Hashtable();
 
-    public static Adapter getAdapter(Class activityType, boolean isImporter){
-
-        Class originalType = activityType;
-
-        if(adapters.containsKey(activityType.getName()))
-            return (Adapter)adapters.get(activityType.getName());
+    public static Adapter getAdapter(Class clazz, boolean isImporter){
+        if(adapters.containsKey(clazz.getName())) {
+            return (Adapter) adapters.get(clazz.getName());
+        }
 
         Adapter adapter = null;
-        do{
-            try{
-                String activityTypeName = org.uengine.util.UEngineUtil.getClassNameOnly(activityType);
 
-                adapter = (Adapter)Thread.currentThread().getContextClassLoader().loadClass("org.uengine.processpublisher.bpmn." + (isImporter ? "importer" : "exporter") + "." + activityTypeName + "Adapter").newInstance();
+        do {
+            try {
+                String activityTypeName = org.uengine.util.UEngineUtil.getClassNameOnly(clazz);
+                String packageStr = clazz.getPackage().getName();
+                packageStr = packageStr.substring(0, packageStr.lastIndexOf("."));
 
-                if(adapter!=null)
-                    adapters.put(activityType.getName(), adapter);
+                if(activityTypeName.toLowerCase().contains("microsoft")) {
+                    adapter = (Adapter) Thread.currentThread().getContextClassLoader().loadClass(packageStr + "." + (isImporter ? "importer" : "exporter") + "." + activityTypeName + "Adapter").newInstance();
+                } else {
+                    adapter = (Adapter) Thread.currentThread().getContextClassLoader().loadClass(packageStr + "." + (isImporter ? "importer" : "exporter") + "." + activityTypeName + "Adapter").newInstance();
+                }
+                if(adapter!=null) {
+                    adapters.put(clazz.getName(), adapter);
+                }
 
-            }catch(Exception e){
-                activityType = activityType.getSuperclass();
+            } catch(Exception e){
+                clazz = clazz.getSuperclass();
             }
-        }while(adapter==null && activityType!=Object.class);
 
-        if(adapter==null)
-            System.out.println("ProcessDefinitionAdapter::getAdapter : can't find adapter for " + originalType);
-        else {
-            System.out.println("matching adapter for " + originalType + " is " + adapter);
-            adapters.put(originalType.getName(), adapter);
+        } while(adapter == null && clazz != Object.class);
+
+        if(adapter==null) {
+            System.out.println("ProcessDefinitionAdapter::getAdapter : can't find adapter for " + clazz);
+
+        } else {
+            System.out.println("matching adapter for " + clazz + " is " + adapter);
+            adapters.put(clazz.getName(), adapter);
         }
 
         return adapter;
@@ -64,29 +74,103 @@ public class BPMNUtil {
 
 
     public static ProcessDefinition adapt(File file) throws Exception{
-        JAXBContext jc = JAXBContext.newInstance("org.omg.spec.bpmn._20100524.model:org.omg.spec.bpmn._20100524.di:org.activiti.bpmn");
-        Unmarshaller um = jc.createUnmarshaller();
+        ProcessDefinition processDefinition = null;
+        String productName = checkProductName(file);
 
-        JAXBElement element = (JAXBElement) um.unmarshal(file);
+        if(VP.equals(productName)) {
+            JAXBContext jc = JAXBContext.newInstance("org.omg.spec.bpmn._20100524.model:org.omg.spec.bpmn._20100524.di:org.activiti.bpmn");
+            Unmarshaller um = jc.createUnmarshaller();
+            JAXBElement element = (JAXBElement) um.unmarshal(file);
 
+            processDefinition = (ProcessDefinition) adapt(element.getValue());
+            processDefinition.afterDeserialization();
 
-        ProcessDefinition processDefinition = (ProcessDefinition) adapt(element.getValue());
-        processDefinition.afterDeserialization();
+        } else if(MSProject.equals(productName)) {
+            processDefinition = (ProcessDefinition) adapt(new MSProjectFileAdapter());
+            processDefinition.afterDeserialization();
+
+        } else {
+            ;
+        }
 
         return processDefinition;
     }
 
     public static ProcessDefinition adapt(InputStream is) throws Exception{
-        JAXBContext jc = JAXBContext.newInstance("org.omg.spec.bpmn._20100524.model:org.omg.spec.bpmn._20100524.di:org.activiti.bpmn");
-        Unmarshaller um = jc.createUnmarshaller();
+        ProcessDefinition processDefinition = null;
+        String productName = checkProductName(is);
 
-        JAXBElement element = (JAXBElement) um.unmarshal(is);
+        if(VP.equals(productName)) {
+            JAXBContext jc = JAXBContext.newInstance("org.omg.spec.bpmn._20100524.model:org.omg.spec.bpmn._20100524.di:org.activiti.bpmn");
+            Unmarshaller um = jc.createUnmarshaller();
+            JAXBElement element = (JAXBElement) um.unmarshal(is);
 
+            processDefinition = (ProcessDefinition) adapt(element.getValue());
+            processDefinition.afterDeserialization();
 
-        ProcessDefinition processDefinition = (ProcessDefinition) adapt(element.getValue());
-        processDefinition.afterDeserialization();
+        } else if(MSProject.equals(productName)) {
+            processDefinition = (ProcessDefinition) adapt(new MSProjectFileAdapter());
+            processDefinition.afterDeserialization();
+
+        } else {
+            ;
+        }
 
         return processDefinition;
+    }
+
+    public static String checkProductName(Object object) {
+        FileInputStream fileInputStream = null;
+        InputStreamReader inputStreamReader = null;
+        BufferedReader bufferedReader = null;
+
+        String productName = null;
+        String temp = null;
+        String content = null;
+
+        int lineCount = 0;
+
+        try {
+            if(object instanceof File) {
+                fileInputStream = new FileInputStream((File) object);
+                inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+                bufferedReader = new BufferedReader(inputStreamReader);
+
+            } else if(object instanceof InputStream){
+                inputStreamReader = new InputStreamReader((InputStream) object, "UTF-8");
+                bufferedReader = new BufferedReader(inputStreamReader);
+
+            } else {
+                ;
+            }
+
+            while( (temp = bufferedReader.readLine()) != null) {
+                ++lineCount;
+
+                // lineCount 2 is first XML's element
+                if(lineCount == 2) {
+                    content = temp;
+
+                    break;
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(content.toLowerCase().contains(MSProject)) {
+            productName = MSProject;
+
+        } else {
+            productName = VP;
+        }
+
+        return productName;
     }
 
 }

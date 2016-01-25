@@ -1,24 +1,16 @@
-package org.uengine.test;
+package org.uengine.modeling.modeler.test;
 
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.mpx.MPXWriter;
-import net.sf.mpxj.mspdi.MSPDIWriter;
-import org.uengine.kernel.GlobalContext;
-import org.uengine.kernel.HumanActivity;
-import org.uengine.kernel.ProcessDefinition;
-import org.uengine.kernel.Role;
+import org.omg.spec.bpmn._20100524.model.TDefinitions;
+import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.kernel.bpmn.view.SequenceFlowView;
 import org.uengine.kernel.view.HumanActivityView;
 import org.uengine.kernel.view.RoleView;
-import org.uengine.processpublisher.microsoft.exporter.ProcessDefinitionAdapter;
+import org.uengine.processpublisher.BPMNUtil;
+import javax.xml.bind.*;
+import java.io.File;
 
-import java.io.FileInputStream;
-
-/**
- * Created by MisakaMikoto on 2015. 10. 21..
- */
-public class Export2MSProjectTest {
+public class Export2BPMNTest {
 
     public static void main(String[] args){
         ProcessDefinition processDefinition = new ProcessDefinition();
@@ -64,7 +56,6 @@ public class Export2MSProjectTest {
         activity1.setElementView(humanActivityView1);
         activity1.setTracingTag("1");
         activity1.setName("act1");
-        activity1.setDuration(3);
         activity1.setRole(role1);
 
 
@@ -81,7 +72,6 @@ public class Export2MSProjectTest {
         activity2.setElementView(humanActivityView2);
         activity2.setTracingTag("2");
         activity2.setName("act2");
-        activity1.setDuration(5);
         activity2.setRole(role2);
 
         // sequenceFlow
@@ -94,6 +84,10 @@ public class Export2MSProjectTest {
         SequenceFlowView sequenceFlowView = new SequenceFlowView();
         sequenceFlowView.setId("OG_9423_8");
         sequenceFlowView.setShapeId("OG.shape.EdgeShape");
+        sequenceFlowView.setX(375);
+        sequenceFlowView.setY(187);
+        sequenceFlowView.setWidth(818);
+        sequenceFlowView.setHeight(300);
         sequenceFlow.setRelationView(sequenceFlowView);
 
         // processDefinition
@@ -106,22 +100,19 @@ public class Export2MSProjectTest {
         processDefinition.getSequenceFlows().add(sequenceFlow);
 
         try {
-//            processDefinition.beforeSerialization();
-//            ProjectFile projectFile = processDefinitionAdapter.convert(processDefinition);
+            processDefinition.beforeSerialization();
+            TDefinitions tDefinitions = (TDefinitions) BPMNUtil.export(processDefinition);
 
-            ProcessDefinitionAdapter processDefinitionAdapter = new ProcessDefinitionAdapter();
-            //String filePath = "/Users/uengine/oce/repository/codebase/1001/codi/ProcessDefinitionToMSProject.process";
+            org.omg.spec.bpmn._20100524.model.ObjectFactory objectFactory = new org.omg.spec.bpmn._20100524.model.ObjectFactory();
+            JAXBElement<TDefinitions> element = objectFactory.createDefinitions(tDefinitions);
 
-            //ProcessDefinition pd = (ProcessDefinition) GlobalContext.deserialize(new FileInputStream(filePath), String.class);
-            //pd.beforeSerialization();
-            ProjectFile projectFile = processDefinitionAdapter.convert(processDefinition);
+            File file = new File("example.xml");
+            JAXBContext jaxbContext =JAXBContext.newInstance(TDefinitions.class);
+            Marshaller marshaller = jaxbContext.createMarshaller();
 
-            MSPDIWriter mspdiWriter = new MSPDIWriter();
-
-            // processDefinitionAdapter.convert 메서드를 통해
-            // ProcessDefinitionToMSProject.process 에서 export_process_exampleproject.xml 으로 컨버트.
-
-            mspdiWriter.write(projectFile, "D:\\export_process_exampleproject.xml");
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(element, file);
+            marshaller.marshal(element, System.out);
 
         } catch (Exception e) {
 

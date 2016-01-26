@@ -1,13 +1,11 @@
 package org.uengine.processpublisher.bpmn.exporter;
 
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
-import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
-import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.*;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.SequenceFlow;
-import org.uengine.processpublisher.Adapter;
+import org.uengine.processpublisher.bpmn.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;

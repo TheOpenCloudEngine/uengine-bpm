@@ -1,4 +1,4 @@
-package org.uengine.test;
+package org.uengine.modeling.modeler.test;
 
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.uengine.kernel.*;

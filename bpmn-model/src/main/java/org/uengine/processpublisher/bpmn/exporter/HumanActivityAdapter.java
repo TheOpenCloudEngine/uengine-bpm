@@ -6,7 +6,6 @@ import org.omg.spec.bpmn._20100524.model.TUserTask;
 import org.uengine.kernel.HumanActivity;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
-import org.uengine.processpublisher.ObjectFactoryUtil;
 
 import javax.xml.namespace.QName;
 import java.util.Hashtable;

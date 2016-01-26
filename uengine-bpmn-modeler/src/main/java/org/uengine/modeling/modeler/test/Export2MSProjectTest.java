@@ -1,4 +1,4 @@
-package org.uengine.test;
+package org.uengine.modeling.modeler.test;
 
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.mpx.MPXWriter;
@@ -112,9 +112,15 @@ public class Export2MSProjectTest {
             ProcessDefinitionAdapter processDefinitionAdapter = new ProcessDefinitionAdapter();
             String filePath = GlobalContext.getPropertyString("filesystem.path", "D:\\oce\\repository\\codebase\\1001\\codi\\New Process.process");
 
+<<<<<<< HEAD:uengine-bpmn-modeler/src/main/java/org/uengine/test/Export2MSProjectTest.java
             ProcessDefinition pd = (ProcessDefinition) GlobalContext.deserialize(new FileInputStream(filePath), String.class);
             pd.beforeSerialization();
             ProjectFile projectFile = processDefinitionAdapter.convert(pd);
+=======
+            //ProcessDefinition pd = (ProcessDefinition) GlobalContext.deserialize(new FileInputStream(filePath), String.class);
+            //pd.beforeSerialization();
+            ProjectFile projectFile = processDefinitionAdapter.convert(processDefinition, null);
+>>>>>>> origin/master:uengine-bpmn-modeler/src/main/java/org/uengine/modeling/modeler/test/Export2MSProjectTest.java
 
             MSPDIWriter mspdiWriter = new MSPDIWriter();
 

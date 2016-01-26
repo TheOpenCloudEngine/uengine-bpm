@@ -4,7 +4,6 @@ import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.dd._20100524.dc.Point;
 import org.uengine.modeling.RelationView;
 import org.uengine.processpublisher.Adapter;
-import org.uengine.processpublisher.ObjectFactoryUtil;
 import java.util.Hashtable;
 
 /**

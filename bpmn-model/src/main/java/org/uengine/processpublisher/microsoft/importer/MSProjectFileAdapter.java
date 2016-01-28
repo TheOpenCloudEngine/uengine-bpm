@@ -8,10 +8,9 @@ import net.sf.mpxj.reader.ProjectReader;
 import org.uengine.kernel.HumanActivity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
-import org.uengine.processpublisher.Adapter;
+import org.uengine.processpublisher.microsoft.Adapter;
 
 import java.io.File;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -46,7 +45,7 @@ public class MSProjectFileAdapter implements Adapter<File, ProcessDefinition> {
     }
 
     @Override
-    public ProcessDefinition convert(File src, Hashtable keyedContext) throws Exception {
+    public ProcessDefinition convert(File src) throws Exception {
             this.createReader(src);
             ProjectFile projectFile = this.createProjectFile(src);
 

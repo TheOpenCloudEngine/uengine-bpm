@@ -1,4 +1,4 @@
-package org.uengine.processpublisher;
+package org.uengine.processpublisher.bpmn;
 
 /**
  * @author Jinyoung Jang

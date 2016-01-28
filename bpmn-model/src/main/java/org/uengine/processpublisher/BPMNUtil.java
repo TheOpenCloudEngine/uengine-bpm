@@ -2,6 +2,7 @@ package org.uengine.processpublisher;
 
 
 import org.uengine.kernel.ProcessDefinition;
+import org.uengine.processpublisher.bpmn.Adapter;
 import org.uengine.processpublisher.microsoft.importer.MSProjectFileAdapter;
 
 import javax.xml.bind.JAXBContext;

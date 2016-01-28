@@ -2,8 +2,7 @@ package org.uengine.processpublisher.bpmn.exporter;
 
 import org.omg.spec.bpmn._20100524.model.TExpression;
 import org.uengine.kernel.Condition;
-import org.uengine.processpublisher.Adapter;
-
+import org.uengine.processpublisher.bpmn.Adapter;
 import java.util.Hashtable;
 
 /**

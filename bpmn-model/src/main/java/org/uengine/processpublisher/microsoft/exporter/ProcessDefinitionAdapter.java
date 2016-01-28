@@ -6,9 +6,10 @@ import org.uengine.kernel.HumanActivity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
 import org.uengine.kernel.bpmn.StartEvent;
-import org.uengine.processpublisher.microsoft.Adapter;
+import org.uengine.processpublisher.Adapter;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
      *****************************************************************************************/
 
     @Override
-    public ProjectFile convert(ProcessDefinition src) throws Exception {
+    public ProjectFile convert(ProcessDefinition src, Hashtable keyedContext) throws Exception {
         // base data-structure for project files
         ProjectFile projectFile = new ProjectFile();
         // find Activity
@@ -86,4 +87,5 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
             currentTask.addPredecessor(projectFile.getTaskByUniqueID(taskUniqueID), RelationType.FINISH_START, Duration.getInstance(incomingHumanActivity.getDuration(), TimeUnit.HOURS));
         }
     }
+
 }

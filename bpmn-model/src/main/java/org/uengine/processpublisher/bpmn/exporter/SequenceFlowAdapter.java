@@ -4,7 +4,7 @@ import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.uengine.kernel.bpmn.SequenceFlow;
-import org.uengine.processpublisher.bpmn.Adapter;
+import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
 
 import javax.xml.namespace.QName;

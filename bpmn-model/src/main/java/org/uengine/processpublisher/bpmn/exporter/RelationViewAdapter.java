@@ -3,7 +3,7 @@ package org.uengine.processpublisher.bpmn.exporter;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.dd._20100524.dc.Point;
 import org.uengine.modeling.RelationView;
-import org.uengine.processpublisher.bpmn.Adapter;
+import org.uengine.processpublisher.Adapter;
 import java.util.Hashtable;
 
 /**

@@ -198,7 +198,7 @@ public class DefaultResource implements IResource {
 			editorPanel.setNew(true);
 		}
 		else{
-			editor.setEditingObject(resourceManager.getStorage().getObject(this));
+			editor.setEditingObject(resourceManager.getObject(this));
 		}
 
 		editorPanel.setEditor(editor);
@@ -232,7 +232,7 @@ public class DefaultResource implements IResource {
 	@ServiceMethod(inContextMenu=true, needToConfirm=true)
 	@Order(7)
 	public void delete() throws IOException {
-		resourceManager.getStorage().delete(this);
+		resourceManager.delete(this);
 
 		if(MetaworksRemoteService.metaworksCall()){
 			//refresh
@@ -249,7 +249,7 @@ public class DefaultResource implements IResource {
 	@Override
 	public void rename(String newName) {
 
-		resourceManager.getStorage().rename(this, newName);
+		resourceManager.rename(this, newName);
 	}
 
 
@@ -282,19 +282,19 @@ public class DefaultResource implements IResource {
 
 	@Override
 	public void save(Object editingObject) throws Exception {
-		resourceManager.getStorage().save(this, editingObject);
+		resourceManager.save(this, editingObject);
 	}
 
 	public Download download(String fileName, String mimeType) throws Exception {
-		return new Download(new FileTransfer(fileName, mimeType, resourceManager.getStorage().getInputStream(this)));
+		return new Download(new FileTransfer(fileName, mimeType, resourceManager.getInputStream(this)));
 	}
 
 	public void copy(String desPath) throws Exception {
-		resourceManager.getStorage().copy(this, desPath);
+		resourceManager.copy(this, desPath);
 	}
 
 	public void upload(InputStream is) {
-		try (OutputStream os = resourceManager.getStorage().getOutputStream(this)) {
+		try (OutputStream os = resourceManager.getOutputStream(this)) {
 			MetaworksFile.copyStream(is, os);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -302,7 +302,7 @@ public class DefaultResource implements IResource {
 	}
 
 	public void move(IContainer container) throws IOException {
-		resourceManager.getStorage().move(this, container);
+		resourceManager.move(this, container);
 	}
 
 	@Override

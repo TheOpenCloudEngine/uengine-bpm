@@ -8,6 +8,7 @@ import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dao.Database;
 import org.metaworks.dao.TransactionContext;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.Download;
 import org.metaworks.widget.ModalWindow;
 import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.context.annotation.Scope;
@@ -18,6 +19,9 @@ import org.uengine.codi.mw3.model.*;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.modeling.resource.*;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @Component
 @Scope("prototype")
@@ -80,6 +84,28 @@ public class ProcessAdminEditorPanel extends EditorPanel{
 
 		MetaworksRemoteService.wrapReturn(new ModalWindow(instanceView, 600, 600, "Feed on " + getResourceName()));
 
+	}
+
+
+	@Override
+	@ServiceMethod(payload = {"resourcePath"}, target=ServiceMethod.TARGET_STICK)
+	@org.metaworks.annotation.Order(5)
+	public Download download() throws FileNotFoundException, IOException, Exception {
+
+		//if(getResourcePath().endsWith(".method") || getResourcePath().endsWith(".process")){
+
+		if(MetaworksRemoteService.metaworksCall()) {
+			Popup popup = new Popup(new ProcessExporter(getResourcePath()));
+
+			MetaworksRemoteService.wrapReturn(popup);
+
+			return null;
+		}
+		//}
+
+		//return super.download();
+
+		return super.download();
 	}
 
 

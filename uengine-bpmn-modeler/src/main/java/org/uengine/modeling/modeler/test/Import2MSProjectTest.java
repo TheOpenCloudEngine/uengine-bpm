@@ -23,7 +23,7 @@ public class Import2MSProjectTest {
         File file = new File("export_process_exampleproject.xml");
 
         try {
-            processDefinition = msProjectFileAdapter.convert(file);
+            processDefinition = msProjectFileAdapter.convert(file, null);
             GlobalContext.serialize(processDefinition, new FileOutputStream("example.process"), String.class);
 
         } catch (Exception e) {

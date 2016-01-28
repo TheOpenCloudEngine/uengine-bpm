@@ -114,7 +114,7 @@ public class Export2MSProjectTest {
 
             ProcessDefinition pd = (ProcessDefinition) GlobalContext.deserialize(new FileInputStream(filePath), String.class);
             pd.beforeSerialization();
-            ProjectFile projectFile = processDefinitionAdapter.convert(pd);
+            ProjectFile projectFile = processDefinitionAdapter.convert(pd, null);
             //ProcessDefinition pd = (ProcessDefinition) GlobalContext.deserialize(new FileInputStream(filePath), String.class);
             //pd.beforeSerialization();
 

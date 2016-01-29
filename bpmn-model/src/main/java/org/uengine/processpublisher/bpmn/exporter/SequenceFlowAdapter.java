@@ -20,7 +20,8 @@ public class SequenceFlowAdapter implements Adapter <SequenceFlow, TSequenceFlow
         TSequenceFlow tSequenceFlow = ObjectFactoryUtil.createBPMNObject(TSequenceFlow.class);
         tSequenceFlow.setId(src.getRelationView().getId());
 
-        BPMNEdge bpmnEdge = (BPMNEdge) BPMNUtil.export(src.getRelationView());
+        RelationViewAdapter relationViewAdapter = new RelationViewAdapter();
+        BPMNEdge bpmnEdge = relationViewAdapter.convert(src.getRelationView(), null);
         bpmnEdge.setBpmnElement(new QName(src.getRelationView().getId()));
 
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");

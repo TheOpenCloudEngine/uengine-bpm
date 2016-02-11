@@ -282,9 +282,44 @@
 		}
 
 		$(document).ready(function() {
+			document.body.addEventListener("DOMNodeInserted", function (ev) {
+				//console.log('DOMNodeInserted');
+				//console.log(ev);
+			});
+
+			$.fn.cycle.defaults.autoSelector = '.slideshow';
+
+			var request = new Request();
+
+			if (navigator.appVersion.indexOf("Win")!=-1){
+				/*$('body').css('font-family', "'맑은 고딕', Malgun gothic, Arial");*/
+			}
+
+			//mw3.importClasses(["org.uengine.codi.mw3.model.*", "org.metaworks.widget.*"]);
+
+			mw3.recordingExceptClasses["org.uengine.codi.mw3.model.Session"] = true;
+
+			mw3.testSet={
+				"testScenario":
+						[{"value":{"__className":"org.uengine.codi.mw3.model.InstanceListPanel","metaworksContext":null},"objectKey":"org.uengine.codi.mw3.model.InstanceListPanel","methodName":"newInstance","scenario":"testScenario"},{"value":{"__className":"org.uengine.codi.mw3.model.CommentWorkItem","activityAppAlias":null,"content":null,"contentLoaded":false,"dueDate":null,"endDate":null,"endpoint":null,"extFile":null,"file":null,"genericWorkItemHandler":null,"implementationObject":null,"instId":null,"instantiation":true,"memo":null,"metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"edit","where":null},"parameters":null,"rootInstId":null,"saveDate":null,"sourceCode":null,"startDate":null,"status":null,"taskId":null,"title":"새글쓰기","tool":null,"type":"comment","workItemHandler":null,"writer":{"__className":"org.uengine.codi.mw3.model.User","implementationObject":null,"metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"workitem","where":"local"},"mood":null,"name":"Tester","network":null,"userId":"test","__objectId":323,"__faceHelper":{"objectId":"323","className":"org.uengine.codi.mw3.model.User","divId":"objDiv_323","windowObjectId":"54"}},"__objectId":207,"__faceHelper":{"objectId":"207","className":"org.uengine.codi.mw3.model.CommentWorkItem","commandTrigger":null,"commandActivityAppAlias":null,"commandParameters":null,"sending":false}},"objectKey":"org.uengine.codi.mw3.model.CommentWorkItem","methodName":"add","scenario":"testScenario"},{"value":{"__className":"org.uengine.codi.mw3.model.CommentWorkItem","activityAppAlias":null,"content":null,"contentLoaded":false,"dueDate":null,"endDate":null,"endpoint":null,"extFile":null,"file":null,"genericWorkItemHandler":null,"implementationObject":null,"instId":893,"instantiation":false,"memo":null,"metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"edit","where":null},"parameters":null,"rootInstId":null,"saveDate":null,"sourceCode":null,"startDate":null,"status":null,"taskId":-1,"title":"답달기","tool":null,"type":"comment","workItemHandler":null,"writer":{"__className":"org.uengine.codi.mw3.model.User","implementationObject":null,"metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"workitem","where":"local"},"mood":null,"name":"Tester","network":null,"userId":"test","__objectId":323,"__faceHelper":{"objectId":"323","className":"org.uengine.codi.mw3.model.User","divId":"objDiv_323","windowObjectId":"54"}},"__objectId":227,"__faceHelper":{"objectId":"227","className":"org.uengine.codi.mw3.model.CommentWorkItem","commandTrigger":null,"commandActivityAppAlias":null,"commandParameters":null,"sending":false}},"objectKey":"org.uengine.codi.mw3.model.CommentWorkItem@-1","methodName":"add","scenario":"testScenario"},{"value":{"__className":"org.uengine.codi.mw3.model.CommentWorkItem","activityAppAlias":null,"content":null,"contentLoaded":false,"dueDate":null,"endDate":null,"endpoint":null,"extFile":null,"file":null,"genericWorkItemHandler":null,"implementationObject":null,"instId":893,"instantiation":false,"memo":null,"metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"edit","where":null},"parameters":null,"rootInstId":null,"saveDate":null,"sourceCode":null,"startDate":null,"status":null,"taskId":-1,"title":"달달기2","tool":null,"type":"comment","workItemHandler":null,"writer":{"__className":"org.uengine.codi.mw3.model.User","implementationObject":null,"metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"workitem","where":"local"},"mood":null,"name":"Tester","network":null,"userId":"test","__objectId":323,"__faceHelper":{"objectId":"323","className":"org.uengine.codi.mw3.model.User","divId":"objDiv_323","windowObjectId":"54"}},"__objectId":227,"__faceHelper":{"objectId":"227","className":"org.uengine.codi.mw3.model.CommentWorkItem","commandTrigger":null,"commandActivityAppAlias":null,"commandParameters":null,"sending":false}},"objectKey":"org.uengine.codi.mw3.model.CommentWorkItem@-1","methodName":"add","scenario":"testScenario"},{"value":{"__className":"org.uengine.codi.mw3.model.CommentWorkItem","activityAppAlias":null,"content":null,"contentLoaded":false,"dueDate":null,"endDate":null,"endpoint":null,"extFile":null,"file":null,"genericWorkItemHandler":null,"implementationObject":null,"instId":893,"instantiation":false,"memo":null,"metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"edit","where":null},"parameters":null,"rootInstId":null,"saveDate":null,"sourceCode":null,"startDate":null,"status":null,"taskId":-1,"title":null,"tool":null,"type":"comment","workItemHandler":null,"writer":{"__className":"org.uengine.codi.mw3.model.User","implementationObject":null,"metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"workitem","where":"local"},"mood":null,"name":"Tester","network":null,"userId":"test","__objectId":323,"__faceHelper":{"objectId":"323","className":"org.uengine.codi.mw3.model.User","divId":"objDiv_323","windowObjectId":"54"}},"__objectId":227,"__faceHelper":{"objectId":"227","className":"org.uengine.codi.mw3.model.CommentWorkItem","commandTrigger":null,"commandActivityAppAlias":null,"commandParameters":null,"sending":false}},"objectKey":"org.uengine.codi.mw3.model.CommentWorkItem@-1","methodName":"newActivity","scenario":"testScenario"},{"value":{"__className":"org.uengine.codi.mw3.model.IProcessMap","metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"view","where":null},"defId":"examples/process/IssueManagement.process"},"objectKey":"org.uengine.codi.mw3.model.IProcessMap@examples/process/IssueManagement.process","methodName":"initiate","scenario":"testScenario"},{"value":{"__className":"org.uengine.codi.mw3.model.IProcessMap","metaworksContext":{"__className":"org.metaworks.MetaworksContext","how":null,"when":"view","where":null},"defId":"examples/process/IssueManagement.process"},"objectKey":"org.uengine.codi.mw3.model.IProcessMap@examples/process/IssueManagement.process","methodName":"initiate","scenario":"testScenario"}]
+			}
 
 			mw3.setWhen(mw3.WHEN_VIEW);
-
+//		 		mw3.template_error = function(e, actualFace) {
+//					if(e.lineNumber){
+//						if(e.lineText)
+//							var message = "["+actualFace+"] at line "+e.lineNumber+": "+e.lineText+": "+e.message;
+//						else
+//							var message = "["+actualFace+"] at line "+e.lineNumber+": "+e.message;
+//					}else
+//						var message = "["+actualFace+"] "+e.message;
+//
+//					var logger = mw3.getAutowiredObject('org.uengine.codi.platform.Console');
+//					if(logger) logger.__getFaceHelper().addLog( message );
+//					else
+//						alert(message);
+//
+//		 		};
 
 			Metaworks3.prototype.startLoading = function(){
 //			 			$('body').prepend('<div id=\"mw3_progress\" style=\"position:absolute; z-index:9999999; top:50%; left:50%; margin-top:-90px; margin-left:-60px;\"><div id=\"info_div_box\"><img src=\"images/loading.gif\"></div></div>');

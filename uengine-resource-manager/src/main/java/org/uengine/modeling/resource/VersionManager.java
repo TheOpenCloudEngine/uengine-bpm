@@ -165,7 +165,7 @@ public class VersionManager implements ContextAware{
         try {
             return (Version) resourceManager.getStorage().getObject(getProductionVersionInfo());
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
 
             return null;
         }

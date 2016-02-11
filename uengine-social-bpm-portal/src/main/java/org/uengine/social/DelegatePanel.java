@@ -3,7 +3,6 @@ package org.uengine.social;
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
 import org.metaworks.Remover;
-import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
@@ -12,7 +11,7 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Label;
 import org.metaworks.widget.ModalWindow;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.uengine.codi.mw3.model.*;
+import org.uengine.codi.mw3.model.RoleMappedUser;
 import org.uengine.processmanager.ProcessManagerRemote;
 
 import java.rmi.RemoteException;
@@ -29,7 +28,7 @@ public class DelegatePanel implements ContextAware{
         this.instanceId = instanceId;
         this.tracingTag = tracingTag;
 
-        setDelegator(new RoleUser());
+        setDelegator(new RoleMappedUser());
 
         setMetaworksContext(new MetaworksContext());
         getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
@@ -72,12 +71,12 @@ public class DelegatePanel implements ContextAware{
             this.roleName = roleName;
         }
 
-    RoleUser delegator;
+    RoleMappedUser delegator;
     @Available(when= MetaworksContext.WHEN_EDIT)
-        public RoleUser getDelegator() {
+        public RoleMappedUser getDelegator() {
             return delegator;
         }
-        public void setDelegator(RoleUser delegator) {
+        public void setDelegator(RoleMappedUser delegator) {
             this.delegator = delegator;
         }
 

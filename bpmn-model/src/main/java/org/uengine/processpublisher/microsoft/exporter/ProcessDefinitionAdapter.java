@@ -5,19 +5,13 @@ import org.uengine.kernel.Activity;
 import org.uengine.kernel.HumanActivity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
-import org.uengine.kernel.bpmn.StartEvent;
 import org.uengine.processpublisher.Adapter;
-
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Created by MisakaMikoto on 2015. 10. 21..
  */
 public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, ProjectFile> {
-    public final static String ROLE_NAME = "RoleName";
-
     // mpxj structure
     /****************************************************************************************
      *           -------------------------->  project <---------------------                *
@@ -38,6 +32,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
     public ProjectFile convert(ProcessDefinition src, Hashtable keyedContext) throws Exception {
         // base data-structure for project files
         ProjectFile projectFile = new ProjectFile();
+
         // find Activity
         if (src.getChildActivities() != null && src.getChildActivities().size() > 0) {
             for (Activity activity : src.getChildActivities()) {
@@ -55,6 +50,13 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
                 }
             }
         }
+
+        if(src.getRoles() != null && src.getRoles().length > 0) {
+            for(Role role : src.getRoles()) {
+                Resource resource = projectFile.addResource();
+                this.setResourceName(resource, role);
+            }
+        }
         return projectFile;
     }
 
@@ -65,13 +67,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
 
     private void setTaskName(Task currentTask, HumanActivity currentHumanActivity) {
         // if humanActivty mapped role, task name = task name + role name
-        if (currentHumanActivity.getRole() != null) {
-            Role role = currentHumanActivity.getRole();
-            currentTask.setName(currentHumanActivity.getName() + "(" + ROLE_NAME + " : " + role.getName() + ")");
-
-        } else {
-            currentTask.setName(currentHumanActivity.getName());
-        }
+        currentTask.setName(currentHumanActivity.getName());
     }
 
     private void setTaskDuration(Task currentTask, HumanActivity currentHumanActivity) {
@@ -84,8 +80,12 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
             HumanActivity incomingHumanActivity = (HumanActivity) currentHumanActivity.getIncomingSequenceFlows().get(0).getSourceElement();
             // humanActivity's tracingtag == task's uniqueID
             int taskUniqueID = Integer.parseInt(incomingHumanActivity.getTracingTag());
-            currentTask.addPredecessor(projectFile.getTaskByUniqueID(taskUniqueID), RelationType.FINISH_START, Duration.getInstance(incomingHumanActivity.getDuration(), TimeUnit.HOURS));
+            currentTask.addPredecessor(projectFile.getTaskByUniqueID(taskUniqueID), RelationType.FINISH_START, Duration.getInstance(0, TimeUnit.DAYS));
         }
+    }
+
+    private void setResourceName(Resource currentResource, Role currentRole) {
+        currentResource.setName(currentRole.getName());
     }
 
 }

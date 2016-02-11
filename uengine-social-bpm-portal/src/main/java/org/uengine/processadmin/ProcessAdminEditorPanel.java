@@ -95,8 +95,7 @@ public class ProcessAdminEditorPanel extends EditorPanel{
 		//if(getResourcePath().endsWith(".method") || getResourcePath().endsWith(".process")){
 
 		if(MetaworksRemoteService.metaworksCall()) {
-			Popup popup = new Popup(new ProcessExporter(getResourcePath()));
-
+			Popup popup = new Popup(new ProcessExporter());
 			MetaworksRemoteService.wrapReturn(popup);
 
 			return null;

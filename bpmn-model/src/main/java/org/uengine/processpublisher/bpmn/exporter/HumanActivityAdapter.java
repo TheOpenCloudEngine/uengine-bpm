@@ -23,7 +23,8 @@ public class HumanActivityAdapter implements Adapter<HumanActivity, TUserTask> {
         //tUserTask.getOutgoing().add();
         //tUserTask.getIncoming().add();
 
-        BPMNShape bpmnShape = (BPMNShape) BPMNUtil.export(src.getElementView());
+        ElementViewAdapter elementViewAdapter = new ElementViewAdapter();
+        BPMNShape bpmnShape = elementViewAdapter.convert(src.getElementView(), null);
         bpmnShape.setBpmnElement(new QName(src.getTracingTag()));
 
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");

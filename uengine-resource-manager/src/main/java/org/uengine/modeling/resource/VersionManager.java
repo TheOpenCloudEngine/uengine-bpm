@@ -145,6 +145,7 @@ public class VersionManager implements ContextAware{
         resourceManager.getStorage().copy(dev, newVersion.getPath());
 
         if(isMakeThisVersionAsProduction()){
+            MetaworksRemoteService.autowire(lastVersion);
             lastVersion.makeAsProduction(this);
         }
 
@@ -192,7 +193,7 @@ public class VersionManager implements ContextAware{
         if(productionVersion!=null) {
             String versionDirectory = productionVersion.getVersionDirectory(versionManager);
 
-            resourcePath = ("../" + versionDirectory + "/" + resourcePath);
+            resourcePath = ("../" + versionDirectory + (resourcePath!=null && resourcePath.length() > 0 ? "/" + resourcePath : ""));
         }
 
         return resourcePath;

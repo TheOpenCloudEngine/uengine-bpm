@@ -13,6 +13,7 @@ import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceNavigator;
+import org.uengine.modeling.resource.VersionManager;
 import org.uengine.modeling.resource.resources.ClassResource;
 import org.uengine.modeling.resource.resources.UrlappResource;
 
@@ -58,7 +59,12 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 
 	public void load() {
 
-		setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator());
+		setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator(){
+			@Override
+			protected String getAppName() {
+				return (super.getAppName() + "/" + VersionManager.getProductionResourcePath(super.getAppName(), ""));
+			}
+		});
 		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
 
 		getProcessAdminResourceNavigator().getRoot().filterResources(ClassResource.class);

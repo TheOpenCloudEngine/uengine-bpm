@@ -16,7 +16,15 @@ var org_uengine_modeling_Canvas = function (objectId, className) {
     if (this.object) {
         var faceHelper = this;
         faceHelper.load();
+
+        if(this.object.joinEditing){
+            //alert('xxx'); // listens the change event and send them to server
+
+
+            this.object.sendChanges();
+        }
     }
+
 
 };
 

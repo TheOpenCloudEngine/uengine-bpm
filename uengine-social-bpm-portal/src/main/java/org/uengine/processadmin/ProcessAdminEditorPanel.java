@@ -28,6 +28,7 @@ import java.io.IOException;
 @Order(10)
 public class ProcessAdminEditorPanel extends EditorPanel{
 
+
 	@AutowiredFromClient public Session session;
 
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true, when = MetaworksContext.WHEN_EDIT)

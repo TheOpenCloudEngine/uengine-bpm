@@ -181,6 +181,8 @@ public class VersionManager implements ContextAware{
 
     public static String getProductionResourcePath(String appName, String resourcePath){
 
+        resourcePath = withoutVersionPath(appName, resourcePath);
+
         Boolean isDevelopmentTime = (Boolean) TransactionContext.getThreadLocalInstance().getSharedContext("isDevelopmentTime");
         if(isDevelopmentTime!=null && isDevelopmentTime)
             return resourcePath;
@@ -196,6 +198,19 @@ public class VersionManager implements ContextAware{
             resourcePath = ("../" + versionDirectory + (resourcePath!=null && resourcePath.length() > 0 ? "/" + resourcePath : ""));
         }
 
+        return resourcePath;
+    }
+
+    public static String withoutVersionPath(String appName, String resourcePath) {
+        String prefix = appName + "/../" + appName + VERSION_DIR;
+        int wherePrefix = resourcePath.indexOf(prefix);
+
+        if(wherePrefix == 0){
+            resourcePath = resourcePath.substring(prefix.length() + 1, resourcePath.length());
+            int whereAfterVersionFolder = resourcePath.indexOf("/");
+
+            resourcePath = resourcePath.substring(whereAfterVersionFolder + 1, resourcePath.length());
+        }
         return resourcePath;
     }
 }

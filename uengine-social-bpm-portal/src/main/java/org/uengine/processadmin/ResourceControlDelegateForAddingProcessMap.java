@@ -24,38 +24,32 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
     @Override
     public void onDoubleClicked(IResource resource) {
         if(resource instanceof DefaultResource){
+            String alias = resource.getName();
+            String name = alias;
+
+            ProcessMap processMap = new ProcessMap();
+
+            autowire(processMap);
+
+            processMap.setMapId(processMap.session.getCompany().getComCode() + "." + resource.getPath());
+            processMap.setDefId(resource.getPath());
+            processMap.setName(name);
+            processMap.setComCode(processMap.session.getCompany().getComCode());
+
             try {
-//                String alias = resource.getName();
-                String alias = resource.getPath().substring(resource.getPath().indexOf("/") + 1);
+                if(processMap.databaseMe()!=null)
+                    throw new Exception("$AlreadyAddedApp");
 
-               // if(alias.endsWith(".process")) {
-                    String name = alias.substring(0, alias.length() - 8).replace("/",".");
+                processMap.createMe();
 
-
-                    ProcessMap processMap = new ProcessMap();
-
-                    autowire(processMap);
-
-                    processMap.setMapId(processMap.session.getCompany().getComCode() + "." + name);
-                    processMap.setDefId(alias);
-                    processMap.setName(name);
-                    processMap.setComCode(processMap.session.getCompany().getComCode());
+                ProcessMapList processMapList = new ProcessMapList();
+                processMapList.load(processMap.session);
 
 
-                    if(!processMap.confirmExist())
-                        throw new Exception("$AlreadyAddedApp");
-
-                    processMap.createMe();
-
-                    ProcessMapList processMapList = new ProcessMapList();
-                    processMapList.load(processMap.session);
-
-
-                    wrapReturn(new Remover(new ModalWindow()));
-                //}
+                wrapReturn(new Remover(new ModalWindow()));
 
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }

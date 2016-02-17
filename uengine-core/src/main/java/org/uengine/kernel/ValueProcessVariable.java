@@ -10,7 +10,7 @@ import org.uengine.kernel.CommandVariableValue;
 import org.uengine.kernel.GlobalContext;
 
 public class ValueProcessVariable extends ProcessVariable{
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	Serializable value;
 		public Serializable getValue() {

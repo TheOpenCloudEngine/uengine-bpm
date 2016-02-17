@@ -10,9 +10,13 @@ import org.uengine.kernel.SubProcessParameterContext;
 
 public class SubProcessParameterContextListFace extends ListFace<SubProcessParameterContext> {
 
-    @Order(1)
-    @Face(displayName="Add New")
-    @ServiceMethod(callByContent=true)
+    /**
+	 * 
+	 * @param processVariablePanel
+	 */
+	@Order(1)
+	@Face(displayName="Add New")
+	@ServiceMethod(callByContent=true)
     public void add(@AutowiredFromClient ProcessVariablePanel processVariablePanel) {
         super.add();
     }

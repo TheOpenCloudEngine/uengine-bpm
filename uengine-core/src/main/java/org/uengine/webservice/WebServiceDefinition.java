@@ -1,11 +1,6 @@
 package org.uengine.webservice;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 import org.metaworks.MetaworksException;

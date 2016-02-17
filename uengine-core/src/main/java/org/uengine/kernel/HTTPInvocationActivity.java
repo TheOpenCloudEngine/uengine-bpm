@@ -11,7 +11,7 @@ import org.metaworks.inputter.RadioInput;
 
 public class HTTPInvocationActivity extends DefaultActivity{
 	
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	final static int INVOC_TYPE_GET = 0;
 	final static int INVOC_TYPE_POST = 1;

@@ -320,7 +320,7 @@ public class Evaluate extends Condition{
 	}
 
 	@Order(3)
-	@Face(faceClass = GenericValueFace.class)
+	@Face(faceClass=GenericValueFace.class)
 	public Object getValue(){
 		return val;
 	}

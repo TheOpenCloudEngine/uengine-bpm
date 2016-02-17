@@ -115,7 +115,7 @@ public class ConditionNode implements Cloneable, ContextAware{
 		setValiableChoice(choice);
 	}
 
-	@ServiceMethod( callByContent=true, eventBinding="change", bindingFor={"valiableChoice"})
+	@ServiceMethod(callByContent=true, eventBinding="change", bindingFor={"valiableChoice"})
 	public Object[] makeValiableChoiceChild() throws Exception{
 		ConditionVariableSelectBox parentSelectBox = this.getValiableChoice();
 		parentSelectBox.conditionNode = this;
@@ -123,12 +123,12 @@ public class ConditionNode implements Cloneable, ContextAware{
 		return parentSelectBox.makeValiableChoice();
 	}
 
-	@ServiceMethod( callByContent=true ,target=ServiceMethodContext.TARGET_APPEND, eventBinding="change", bindingFor={"signChoice"})
+	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND, eventBinding="change", bindingFor={"signChoice"})
 	public Object[] toEventReceive() throws Exception{
 		return new Object[]{new ToEvent(ServiceMethodContext.TARGET_SELF, "saveCondition") };
 	}
 
-	@ServiceMethod( callByContent=true ,target=ServiceMethodContext.TARGET_APPEND, eventBinding="change", bindingFor={"expressionChoice"})
+	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND, eventBinding="change", bindingFor={"expressionChoice"})
 	public Object[] toEventReceiveExpression() throws Exception{
 		this.getConditionInput().setChangeType(this.getExpressionChoice().getSelected());
 		this.getConditionInput().changeInput();

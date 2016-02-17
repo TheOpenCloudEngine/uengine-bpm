@@ -17,7 +17,7 @@ import org.uengine.contexts.TextContext;
 
 public class EventHandler implements Serializable{
 	
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	public final static int TRIGGERING_BY_EVENTBUTTON = 1;
 	public final static int TRIGGERING_BY_API = 2;
@@ -104,7 +104,7 @@ public class EventHandler implements Serializable{
 	
 	
 	String name;
-	TextContext displayName = TextContext.createInstance();
+	TextContext displayName = org.uengine.contexts.TextContext.createInstance();
 	Activity handlerActivity;
 	Role openRoles;
 	int triggeringMethod = TRIGGERING_BY_EVENTBUTTON;

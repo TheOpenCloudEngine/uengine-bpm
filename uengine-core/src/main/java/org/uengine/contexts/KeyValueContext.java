@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.uengine.kernel.GlobalContext;
 
 public class KeyValueContext implements Serializable {
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	public KeyValueContext(){}
 	

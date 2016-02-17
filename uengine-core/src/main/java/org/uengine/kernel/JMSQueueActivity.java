@@ -18,7 +18,7 @@ import org.metaworks.inputter.SelectInput;
 
 public class JMSQueueActivity extends DefaultActivity {
 
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	public JMSQueueActivity(){
 		setName("JMS");

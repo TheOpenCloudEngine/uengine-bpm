@@ -29,7 +29,7 @@ public class RoleMapping implements java.io.Serializable, Cloneable, CommandVari
 	protected String title;
 	protected int assignType = 0;	
 	protected String assignParam1;
-	private int dispatchingOption = Role.DISPATCHINGOPTION_AUTO;
+	private int dispatchingOption = org.uengine.kernel.Role.DISPATCHINGOPTION_AUTO;
 	protected boolean isMale = true;
 	protected Date birthday;
 	protected boolean isGroup = false;

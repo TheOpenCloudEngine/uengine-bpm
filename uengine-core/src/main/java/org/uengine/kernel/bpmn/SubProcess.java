@@ -98,7 +98,7 @@ public class SubProcess extends ScopeActivity{
         this.createAsRootProcess = createAsRootProcess;
     }
 
-    TextContext multipleInstanceLabel = TextContext.createInstance();
+    TextContext multipleInstanceLabel = org.uengine.contexts.TextContext.createInstance();
     @Hidden
     public TextContext getMultipleInstanceLabel() {
         return multipleInstanceLabel;

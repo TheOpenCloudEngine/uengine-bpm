@@ -76,14 +76,16 @@ public class TextContext implements Serializable{
 //				setText(getProcessDefinition().getCurrentLocale(), value);
 //			else
 
-			if(MetaworksRemoteService.metaworksCall()) {
-				MetaworksRemoteService.autowire(this);
-				if (languageSelector != null && languageSelector.getLanguage() != null) {
-					setText(languageSelector.getLanguage(), value);
 
-					return;
-				}
-			}
+			//TODO enable for some time ?
+//			if(MetaworksRemoteService.metaworksCall()) {
+//				MetaworksRemoteService.autowire(this);
+//				if (languageSelector != null && languageSelector.getLanguage() != null) {
+//					setText(languageSelector.getLanguage(), value);
+//
+//					return;
+//				}
+//			}
 
 			text = value;
 		}

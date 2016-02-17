@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ActivityReference implements Serializable{
 
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	Activity activity;	
 	String absoluteTracingTag;

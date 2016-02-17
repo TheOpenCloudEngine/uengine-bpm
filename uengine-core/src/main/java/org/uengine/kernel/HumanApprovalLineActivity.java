@@ -15,7 +15,7 @@ import org.uengine.util.ActivityForLoop;
  * @version $Revision: 1.1 $
  */
 public class HumanApprovalLineActivity extends ScopeActivity {
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	public static final int LOOPINGOPTION_AUTO = 0;
 	public static final int LOOPINGOPTION_REPEATONREJECT = 1;

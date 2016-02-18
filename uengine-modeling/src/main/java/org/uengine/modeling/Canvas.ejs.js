@@ -16,14 +16,6 @@ var org_uengine_modeling_Canvas = function (objectId, className) {
     if (this.object) {
         var faceHelper = this;
         faceHelper.load();
-
-        if (this.object.joinEditing && this.object.resourcePath) {
-            console.log(this.object.resourcePath);
-            //alert('xxx'); // listens the change event and send them to server
-
-
-            //this.object.sendChanges();
-        }
     }
 
 
@@ -81,6 +73,16 @@ org_uengine_modeling_Canvas.prototype = {
         }
         this.canvas.setCurrentCanvas(this.canvas);
         mw3.canvas = this.canvas;
+
+        if (this.object.joinEditing && this.object.resourcePath) {
+            var identifier = this.object.resourcePath;
+            var key = this.object.remoteUserKey;
+            var name = this.object.remoteUserName;
+            var user = new OG.handler.RemoteUser(key, name);
+            OG.RemoteHandler.startRemote(this.canvas, identifier, user, function () {
+
+            });
+        }
 
         this.eventBinding();
     },

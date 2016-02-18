@@ -71,7 +71,7 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 			name = value;
 		}
 
-	TextContext displayName = TextContext.createInstance();
+	TextContext displayName = org.uengine.contexts.TextContext.createInstance();
 	@Order(2)
 	@Available(when={MetaworksContext.WHEN_EDIT})
 		public TextContext getDisplayName(){

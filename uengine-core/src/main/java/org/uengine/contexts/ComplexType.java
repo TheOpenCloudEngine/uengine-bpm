@@ -12,7 +12,7 @@ import org.uengine.processmanager.ProcessManagerRemote;
 
 public class ComplexType implements Serializable, PropertyListable{
 	
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	public static void metaworksCallback_changeMetadata(Type type){
 		FieldDescriptor fd;

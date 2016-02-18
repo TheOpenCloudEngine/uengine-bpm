@@ -38,7 +38,7 @@ public class MappingTree extends Tree{
 			this.parentEditorId = parentEditorId;
 		}
 
-	@ServiceMethod(payload={"id", "align","parentEditorId"} , target=ServiceMethodContext.TARGET_SELF)
+	@ServiceMethod(payload={"id", "align", "parentEditorId"}, target=ServiceMethodContext.TARGET_SELF)
 	public void init() throws Exception{
 		List<Role> roleList = parseRoles(canvas);//new ArrayList<Role>();//rolePanel.getRoleList();
         List<ProcessVariable> variableList = processVariablePanel.getProcessVariableList();

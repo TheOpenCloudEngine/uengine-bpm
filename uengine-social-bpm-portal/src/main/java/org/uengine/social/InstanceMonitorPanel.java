@@ -5,6 +5,7 @@ import org.metaworks.WebFieldDescriptor;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.ProcessVariable;
@@ -65,7 +66,9 @@ public class InstanceMonitorPanel {
 
     public ProcessModeler load(Long instanceId, ProcessManagerRemote processManager) throws Exception {
 
-        setElementViewActionDelegate(new ElementViewActionDelegateForInstanceMonitoring());
+        ElementViewActionDelegateForInstanceMonitoring elementViewActionDelegateForInstanceMonitoring = MetaworksRemoteService.getComponent(ElementViewActionDelegateForInstanceMonitoring.class);
+
+        setElementViewActionDelegate(elementViewActionDelegateForInstanceMonitoring);
 
         ProcessInstance processInstance = processManager.getProcessInstance(String.valueOf(instanceId));
         ProcessDefinition processDefinition = processInstance.getProcessDefinition();

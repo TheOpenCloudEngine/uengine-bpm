@@ -1026,7 +1026,7 @@ public class UEngineUtil {
                     byte[] ksc = String.valueOf(c).getBytes("KSC5601");
 
                     if (ksc.length != 2) {
-                        carry[i] = '\ufffd';
+                        carry[i] = '�';
 
                         //                    System.out.print("Warning : Some of Unicode 2.0 Hangul character was ignored");
                     } else {

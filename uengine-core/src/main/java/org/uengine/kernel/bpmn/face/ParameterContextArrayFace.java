@@ -10,9 +10,13 @@ import org.uengine.kernel.ParameterContext;
 
 public class ParameterContextArrayFace extends ArrayFace<ParameterContext> {
 
-    @Order(1)
-    @Face(displayName="Add New")
-    @ServiceMethod(callByContent=true)
+    /**
+	 * 
+	 * @param processVariablePanel
+	 */
+	@Order(1)
+	@Face(displayName="Add New")
+	@ServiceMethod(callByContent=true)
 
     public void add(@AutowiredFromClient ProcessVariablePanel processVariablePanel) {
         super.add();

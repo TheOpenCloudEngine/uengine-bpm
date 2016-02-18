@@ -9,7 +9,7 @@ import org.uengine.processdesigner.mapper.Transformer;
 
 public class ConcatTransformer extends Transformer{
 	
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	public ConcatTransformer() {
 		// TODO Auto-generated constructor stub

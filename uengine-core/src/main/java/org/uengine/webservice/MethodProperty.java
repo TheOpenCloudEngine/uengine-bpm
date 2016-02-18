@@ -1,7 +1,5 @@
 package org.uengine.webservice;
 
-import java.io.Serializable;
-
 import net.sf.json.JSONArray;
 
 import org.metaworks.annotation.Hidden;
@@ -9,6 +7,8 @@ import org.metaworks.annotation.Hidden;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
+import java.io.Serializable;
 
 @XStreamAlias("method")
 public class MethodProperty implements Serializable {

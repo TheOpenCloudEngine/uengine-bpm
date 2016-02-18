@@ -8,7 +8,7 @@ import org.uengine.util.dao.IDAO;
 
 public class TableListFieldType implements ListFieldType{
 
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	String fieldName;
 		public String getFieldName() {

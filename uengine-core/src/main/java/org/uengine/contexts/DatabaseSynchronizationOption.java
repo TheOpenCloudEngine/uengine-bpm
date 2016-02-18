@@ -16,7 +16,7 @@ import org.uengine.util.dao.IDAO;
 
 public class DatabaseSynchronizationOption implements SpecializedVariableValue{
 	
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
     // todo db lock isolation level
     public static int ISOLATION_READ_UNCOMMITTED = java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;

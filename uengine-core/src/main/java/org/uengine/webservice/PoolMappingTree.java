@@ -32,7 +32,7 @@ public class PoolMappingTree extends MappingTree {
 		}
 		
 	@Override
-	@ServiceMethod(payload={"id", "align","parentEditorId","activity","inOut"} , target=ServiceMethodContext.TARGET_SELF)
+	@ServiceMethod(payload={"id", "align", "parentEditorId", "activity", "inOut"}, target=ServiceMethodContext.TARGET_SELF)
 	public void init() throws Exception{
 		RestWebServiceActivity activity = (RestWebServiceActivity)this.getActivity();
 		TreeNode rootnode = new TreeNode();

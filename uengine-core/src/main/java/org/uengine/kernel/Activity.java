@@ -130,8 +130,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 
 	TextContext name;
 		@Name
-		@Face(displayName="이름")
-		@Order(value=1)
+	@Face(displayName="이름")
+	@Order(1)
 //		@Available(where=MetaworksContext.WHERE_DIALOG)
 		public String getName() {
 			if(name==null) return null;

@@ -352,7 +352,7 @@ public class HumanActivity extends ReceiveActivity{
 		return GlobalContext.getProperties().getProperty("workitemhandler.address", "localhost:8082");
 	}
 */
-	TextContext instruction = TextContext.createInstance();
+	TextContext instruction = org.uengine.contexts.TextContext.createInstance();
 	@Hidden
 	@Face(displayName="$instruction")
 	public TextContext getInstruction() {
@@ -362,7 +362,7 @@ public class HumanActivity extends ReceiveActivity{
 			instruction = string;
 		}
 		
-	TextContext keyword = TextContext.createInstance();
+	TextContext keyword = org.uengine.contexts.TextContext.createInstance();
 	@Hidden
 	@Face(displayName="$keyword")
 		public TextContext getKeyword() {

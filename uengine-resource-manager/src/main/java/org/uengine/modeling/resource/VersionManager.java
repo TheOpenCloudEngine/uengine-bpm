@@ -8,6 +8,7 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Label;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -166,7 +167,9 @@ public class VersionManager implements ContextAware{
         try {
             return (Version) resourceManager.getStorage().getObject(getProductionVersionInfo());
         } catch (Exception e) {
-            e.printStackTrace();
+
+            if(!(e instanceof FileNotFoundException))
+                e.printStackTrace();
 
             return null;
         }

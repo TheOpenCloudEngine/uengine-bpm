@@ -103,7 +103,7 @@ public class And extends Condition{
 	}
 
 
-	@ServiceMethod(inContextMenu = true, callByContent = true)
+	@ServiceMethod(inContextMenu=true, callByContent=true)
 	@Order(6)
 	public void newAnd(){
 		if(getConditionsVt()==null)
@@ -112,7 +112,7 @@ public class And extends Condition{
 		getConditionsVt().add(new And());
 	}
 
-	@ServiceMethod(inContextMenu = true, callByContent = true)
+	@ServiceMethod(inContextMenu=true, callByContent=true)
 	@Order(5)
 	public void newOr(){
 		if(getConditionsVt()==null)
@@ -121,7 +121,7 @@ public class And extends Condition{
 		getConditionsVt().add(new Or());
 	}
 
-	@ServiceMethod(inContextMenu = true, callByContent = true)
+	@ServiceMethod(inContextMenu=true, callByContent=true)
 	@Order(1)
 	public void newEvaluate(){
 		if(getConditionsVt()==null)
@@ -130,7 +130,7 @@ public class And extends Condition{
 		getConditionsVt().add(new Evaluate());
 	}
 
-	@ServiceMethod(inContextMenu = true, callByContent = true)
+	@ServiceMethod(inContextMenu=true, callByContent=true)
 	@Order(2)
 	public void newScriptEvaluation(){
 		if(getConditionsVt()==null)
@@ -139,7 +139,7 @@ public class And extends Condition{
 		getConditionsVt().add(new ExpressionEvaluteCondition());
 	}
 
-	@ServiceMethod(inContextMenu = true, callByContent = true)
+	@ServiceMethod(inContextMenu=true, callByContent=true)
 	@Order(10)
 	public void refresh(){
 		if(getConditionsVt()!=null) {

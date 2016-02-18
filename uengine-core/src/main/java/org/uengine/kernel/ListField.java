@@ -12,7 +12,7 @@ import org.uengine.util.ExpressionFormatter;
 
 public class ListField implements Serializable{
 	
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	public ListField(){
 	}
@@ -79,7 +79,7 @@ public class ListField implements Serializable{
 		
 	}
 
-	TextContext displayName = TextContext.createInstance();
+	TextContext displayName = org.uengine.contexts.TextContext.createInstance();
 		public TextContext getDisplayName() {
 			if(displayName.getText()==null){
 				TextContext tc = TextContext.createInstance();
@@ -100,7 +100,7 @@ public class ListField implements Serializable{
 			this.listFieldType = listFieldType;
 		}
 		
-	TextContext formatString = TextContext.createInstance();
+	TextContext formatString = org.uengine.contexts.TextContext.createInstance();
 		public TextContext getFormatString() {
 			return formatString;
 		}

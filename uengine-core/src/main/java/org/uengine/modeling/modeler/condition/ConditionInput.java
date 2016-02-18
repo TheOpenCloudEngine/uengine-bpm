@@ -70,12 +70,12 @@ public class ConditionInput implements ContextAware {
 		valiableChoice = new ConditionVariableSelectBox();
 	}
 
-	@ServiceMethod( payload={"changeType" , "valiableChoice"},eventBinding="change", bindingFor={"changeType"} )
+	@ServiceMethod(payload={"changeType", "valiableChoice"}, eventBinding="change", bindingFor={"changeType"})
 	public void changeInput() throws Exception{
 		this.getMetaworksContext().setHow(changeType);
 	}
 	
-	@ServiceMethod( callByContent=true ,eventBinding="change", bindingFor={"yesNo","expressionDate","expressionText"})
+	@ServiceMethod(callByContent=true, eventBinding="change", bindingFor={"yesNo", "expressionDate", "expressionText"})
 	public Object[] changeValue() throws Exception{
 		conditionNode.getConditionInput().setChangeType(this.getChangeType());
 		conditionNode.getConditionInput().setExpressionDate(getExpressionDate());

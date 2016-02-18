@@ -201,7 +201,7 @@ public class ConditionTreeNode  implements ContextAware{
 	}
 	
 	@ServiceMethod(inContextMenu=true, callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
-	@Available(how={"folder","root"})
+	@Available(how={"folder", "root"})
 	public Object newAND() throws Exception{
 		ConditionTreeNode node = this.makeConditionNode();
 		node.setName(CONDITION_AND);
@@ -214,7 +214,7 @@ public class ConditionTreeNode  implements ContextAware{
 	}
 	
 	@ServiceMethod(inContextMenu=true, callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
-	@Available(how={"folder","root"})
+	@Available(how={"folder", "root"})
 	public Object newOR() throws Exception{
 		ConditionTreeNode node = this.makeConditionNode();
 		node.setName(CONDITION_OR);
@@ -236,8 +236,13 @@ public class ConditionTreeNode  implements ContextAware{
 		return new ToAppend(this , node);
 	}
 	
+	/**
+	 * 
+	 * @param processVariablePanel
+	 * @param rolePanel
+	 */
 	@ServiceMethod(inContextMenu=true, callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
-	@Available(how={"folder","root"})
+	@Available(how={"folder", "root"})
 	public Object[] newExpression(@AutowiredFromClient ProcessVariablePanel processVariablePanel, @AutowiredFromClient RolePanel rolePanel) throws Exception{
 		if( this.getConditionType() == null ){
 			return null;
@@ -255,7 +260,7 @@ public class ConditionTreeNode  implements ContextAware{
 		}
 	}
 	
-	@ServiceMethod(inContextMenu=true, payload={"id","parentNode"}, target=ServiceMethodContext.TARGET_APPEND)
+	@ServiceMethod(inContextMenu=true, payload={"id", "parentNode"}, target=ServiceMethodContext.TARGET_APPEND)
 	public Object[] delete() throws Exception{
 		ConditionTreeNode parentNode = this.getParentNode();
 		parentNode.setSelected(true);

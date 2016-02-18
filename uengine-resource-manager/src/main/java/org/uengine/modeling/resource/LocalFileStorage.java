@@ -81,7 +81,7 @@ public class LocalFileStorage implements Storage{
 
             if(file.getName().startsWith(".")) continue;
 
-            String relativePath = file.getAbsolutePath();
+            String relativePath = file.getAbsolutePath().replace("\\", "/");
 
             relativePath = relativePath.substring(abstractTenantBasePath.length() + 1);
 

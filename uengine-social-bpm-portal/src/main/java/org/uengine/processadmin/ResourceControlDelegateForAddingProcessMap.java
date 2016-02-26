@@ -11,6 +11,7 @@ import org.uengine.codi.mw3.model.ProcessMapList;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceControlDelegate;
+import org.uengine.modeling.resource.VersionManager;
 import org.uengine.processmanager.ProcessManagerBean;
 
 import java.io.File;
@@ -31,7 +32,9 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
 
             autowire(processMap);
 
-            processMap.setMapId(processMap.session.getCompany().getComCode() + "." + resource.getPath());
+            String mapId = String.valueOf((processMap.session.getCompany().getComCode() + "." + VersionManager.withoutVersionPath("codi", resource.getPath())).hashCode());
+
+            processMap.setMapId(mapId);
             processMap.setDefId(resource.getPath());
             processMap.setName(name);
             processMap.setComCode(processMap.session.getCompany().getComCode());

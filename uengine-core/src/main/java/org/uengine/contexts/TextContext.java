@@ -41,12 +41,12 @@ public class TextContext implements Serializable{
 		@Name
 		public String getText() {
 
-			if(MetaworksRemoteService.metaworksCall()) {
-				MetaworksRemoteService.autowire(this);
-				if (languageSelector != null && languageSelector.getLanguage() != null) {
-					return getText(languageSelector.getLanguage());
-				}
-			}
+//			if(MetaworksRemoteService.metaworksCall()) {
+//				MetaworksRemoteService.autowire(this);
+//				if (languageSelector != null && languageSelector.getLanguage() != null) {
+//					return getText(languageSelector.getLanguage());
+//				}
+//			}
 
 			return text;
 		}

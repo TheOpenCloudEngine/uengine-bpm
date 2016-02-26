@@ -320,28 +320,29 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		logInst("delegateWorkitem", new Object[]{instanceId, tracingTag, roleMapping});
 		try{
 			ProcessInstance instance = getInstance(instanceId);
-			ProcessDefinition newPd = (ProcessDefinition)instance.getProcessDefinition().clone();
-			HumanActivity humanActivity = (HumanActivity)newPd.getActivity(tracingTag);
+			ProcessDefinition definition = instance.getProcessDefinition();
+//			ProcessDefinition newPd = (ProcessDefinition)instance.getProcessDefinition().clone();
+			HumanActivity humanActivity = (HumanActivity)definition.getActivity(tracingTag);
 			
 			//String newRoleName = "_" + humanActivity.getRole().getName();
-			String newRoleName = humanActivity.getRole().getName();
+//			String newRoleName = humanActivity.getRole().getName();
+//
+//			if (!newRoleName.matches("TRCTAG\\[[0-9]{1,}\\]:.*")) {
+//				newRoleName = "TRCTAG[" + tracingTag + "]:" + newRoleName;
+//			}
+//
+//			Role newRole = new Role();
+//			newRole.setName(newRoleName);
+//			humanActivity.setRole(newRole);
 			
-			if (!newRoleName.matches("TRCTAG\\[[0-9]{1,}\\]:.*")) {
-				newRoleName = "TRCTAG[" + tracingTag + "]:" + newRoleName;
-			}
+			//newPd.addRole(newRole);
+			//newPd.registerToProcessDefinition(false, false);
+			//changeProcessDefinition(instanceId, newPd);
 			
-			Role newRole = new Role();
-			newRole.setName(newRoleName);
-			humanActivity.setRole(newRole);
-			
-			newPd.addRole(newRole);
-			newPd.registerToProcessDefinition(false, false);	
-			changeProcessDefinition(instanceId, newPd);
-			
-			roleMapping.setName(newRoleName);
+			//roleMapping.setName(newRoleName);
 			humanActivity.delegate(instance, roleMapping, false);
 			
-			humanActivity.afterExecute(instance);
+			//humanActivity.afterExecute(instance);
 			
 			return humanActivity.getTaskIds(instance);
 		}catch(Exception e){

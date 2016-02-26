@@ -150,7 +150,7 @@ public class VersionManager implements ContextAware{
             lastVersion.makeAsProduction(this);
         }
 
-        MetaworksRemoteService.wrapReturn(new Label("<h3>Version has been set as " + lastVersion.getMajor() + "." + lastVersion.getMinor()) + "</h4>");
+        MetaworksRemoteService.wrapReturn(new Label("<div class='alert alert-success' role='alert'>Version has been set as " + lastVersion.getMajor() + "." + lastVersion.getMinor() + "</div>"));
     }
 
 

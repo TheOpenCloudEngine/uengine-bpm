@@ -3,6 +3,7 @@ package org.uengine.processadmin;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.layout.Layout;
+import org.oce.garuda.multitenancy.TenantContext;
 import org.uengine.codi.mw3.marketplace.MarketplaceWindow;
 
 /**
@@ -10,18 +11,32 @@ import org.uengine.codi.mw3.marketplace.MarketplaceWindow;
  */
 public class ProcessAdminLayout {
     Layout layout;
-        public Layout getLayout() {
-            return layout;
-        }
-        public void setLayout(Layout layout) {
-            this.layout = layout;
-        }
+
+    public Layout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
 
     public ProcessAdminLayout() {
     }
 
-    @ServiceMethod(target = ServiceMethodContext.TARGET_APPEND)
+    String jiraTenant;
+
+    public String getJiraTenant() {
+        return jiraTenant;
+    }
+
+    public void setJiraTenant(String jiraTenant) {
+        this.jiraTenant = jiraTenant;
+    }
+
+    @ServiceMethod(callByContent = true, target = ServiceMethodContext.TARGET_APPEND)
     public void showProcessAdmin() throws Exception {
+        new TenantContext(this.getJiraTenant());
+
         Layout centerLayout = new Layout();
         centerLayout.setCenter(new ProcessAdminWorkbench());
         centerLayout.setOptions("togglerLength_open:0, spacing_open:0, spacing_closed:0, south__spacing_open:5, west__spacing_open:5, west__size:300");
@@ -39,6 +54,8 @@ public class ProcessAdminLayout {
 
     @ServiceMethod(target = ServiceMethodContext.TARGET_APPEND)
     public void showMarketPlace() throws Exception {
+
+
         MarketplaceWindow marketplaceWindow = new MarketplaceWindow();
         Layout marketPlaceLayout = new Layout();
         marketPlaceLayout.setOptions("togglerLength_open:0, spacing_open:0, spacing_closed:0, east__size:250");

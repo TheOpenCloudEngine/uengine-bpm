@@ -36,15 +36,6 @@ public class ProcessModeler extends DefaultModeler {
         this.elementViewActionDelegate = elementViewActionDelegate;
     }
 
-
-//	public RolePanel getRolePanel() {
-//		try {
-//			return ((SimplePalette) getPalette()).getRolePalette().getRolePanel();
-//		}catch (Exception e){
-//			return null;
-//		}
-//	}
-
     public ProcessVariablePanel getProcessVariablePanel() {
         try {
             return ((BPMNPalette) getPalette()).getProcessVariablePalette().getProcessVariablePanel();
@@ -52,9 +43,6 @@ public class ProcessModeler extends DefaultModeler {
             return null;
         }
     }
-//	public void setProcessVariablePanel(ProcessVariablePanel processVariablePanel) {
-//		this.processVariablePanel = processVariablePanel;
-//	}
 
     public ProcessModeler() {
         setType(SUFFIX);
@@ -64,115 +52,6 @@ public class ProcessModeler extends DefaultModeler {
 //		this.setProcessVariablePanel(new ProcessVariablePanel());
 
     }
-
-
-//	@ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
-//	public ModalWindow openRolePanel(){
-//		return new ModalWindow(getRolePanel());
-//	}
-
-//	public void setModelForMonitor(IModel model, final ProcessInstance insatnce) throws Exception {
-//		if (model == null)
-//			return;
-//
-//		ProcessDefinition def = (ProcessDefinition) GlobalContext.deserialize(GlobalContext.serialize(model, String.class), String.class);
-//
-//		final List<ElementView> elementViewList = new ArrayList<ElementView>();
-//		List<RelationView> relationViewList = new ArrayList<RelationView>();
-//
-//		/**
-//		 * on Load ProcessDefinition
-//		 * if Acitivity is SubProcesss, get ChildActvities and adding to elementViewList
-//		 */
-//		ActivityFor addingElemenViewLoop = new ActivityFor() {
-//
-//			@Override
-//			public void logic(Activity activity) {
-//				ElementView elementView = activity.getElementView();
-//
-//				activity.setElementView(null); //prevent cyclic reference
-//				elementView.setElement(activity);
-//				try {
-//					elementView.setInstStatus(insatnce.getStatus(activity.getTracingTag()));
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//
-//				elementViewList.add(elementView);
-//			}
-//
-//		};
-//
-//		for (Activity activity : def.getChildActivities()) {
-//
-//			addingElemenViewLoop.run(activity);
-//
-//			if (activity instanceof SubProcess) {
-//				ArrayList<SequenceFlow> sequenceFlowList = ((SubProcess) activity).getSequenceFlows();
-//
-//				for (IRelation relation : sequenceFlowList) {
-//
-//					SequenceFlow sequenceFlow = (SequenceFlow) relation;
-//					SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
-//					sequenceFlow.setRelationView(null);
-//					sequenceFlowView.setRelation(sequenceFlow);
-//					relationViewList.add(sequenceFlowView);
-//				}
-//			}
-//
-//		}
-//		for (IRelation relation : def.getSequenceFlows()) {
-//			SequenceFlow sequenceFlow = (SequenceFlow) relation;
-//			SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
-//			sequenceFlow.setRelationView(null);
-//			sequenceFlowView.setRelation(sequenceFlow);
-//			relationViewList.add(sequenceFlowView);
-//		}
-//
-//		if (def.getRoles() != null) {
-//
-//			for (Role role : def.getRoles()) {
-//				if (role.getElementView() != null) {
-//					ElementView elementView = role.getElementView();
-//					role.setElementView(null);
-//					elementView.setElement(role);
-//
-//					TextContext text = role.getDisplayName();
-//					elementView.setLabel(text.getText());
-//					elementViewList.add(elementView);
-//				}
-//			}
-//
-//		}
-//
-//		this.getCanvas().setElementViewList(elementViewList);
-//		this.getCanvas().setRelationViewList(relationViewList);
-//
-//		ActivityFor loop = new ActivityFor() {
-//			public int maxTT = 0;
-//
-//			@Override
-//			public void logic(Activity activity) {
-//
-//				try {
-//					int tt = Integer.parseInt(activity.getTracingTag());
-//
-//					if (tt > maxTT) {
-//						maxTT = tt;
-//
-//						setReturnValue(maxTT);
-//					}
-//				} catch (Exception e) {
-//				}
-//			}
-//
-//		};
-//
-//		loop.run(def);
-//
-//		if (loop.getReturnValue() != null)
-//			setLastTracingTag((int) loop.getReturnValue());
-//	}
 
     @Override
     public void setModel(IModel model) throws Exception {

@@ -3,7 +3,9 @@ package org.uengine.processadmin;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Label;
+import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.model.IProcessMap;
@@ -95,5 +97,20 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 
 		getProcessAdminResourceNavigator().getRoot().initMetaworksContext(metaworksContext);
 	}
-	
+
+	String jiraTenant;
+		@Hidden
+		public String getJiraTenant() {
+			return jiraTenant;
+		}
+
+		public void setJiraTenant(String jiraTenant) {
+			this.jiraTenant = jiraTenant;
+		}
+
+	@ServiceMethod(callByContent = true)
+	public void loadJira() {
+		new TenantContext(this.getJiraTenant());
+		this.load();
+	}
 }

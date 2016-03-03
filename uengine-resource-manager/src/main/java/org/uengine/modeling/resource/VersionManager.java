@@ -199,6 +199,12 @@ public class VersionManager implements ContextAware{
             String versionDirectory = productionVersion.getVersionDirectory(versionManager);
 
             resourcePath = ("../" + versionDirectory + (resourcePath!=null && resourcePath.length() > 0 ? "/" + resourcePath : ""));
+        }else{
+            String prefix = appName + "/";
+            int wherePrefix = resourcePath.indexOf(prefix);
+            if(wherePrefix == 0){
+                resourcePath = resourcePath.substring(prefix.length(), resourcePath.length());
+            }
         }
 
         return resourcePath;

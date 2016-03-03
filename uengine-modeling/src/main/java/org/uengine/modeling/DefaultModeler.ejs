@@ -1,3 +1,6 @@
+<%
+	if(value){
+%>
 <br/><div class="ui-layout-center"><%=fields.canvas.here()%></div>
 <%
 	if(value.palette && (!mw3.isHidden(fields.palette))){
@@ -5,5 +8,6 @@
 		<div class="ui-layout-west"><%=fields.palette.here()%>
 		</div>
 <%
+	}
 	}
 %>

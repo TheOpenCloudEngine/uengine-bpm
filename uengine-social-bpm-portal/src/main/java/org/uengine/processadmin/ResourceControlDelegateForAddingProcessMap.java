@@ -1,6 +1,7 @@
 package org.uengine.processadmin;
 
 import com.itextpdf.text.Meta;
+import org.metaworks.Refresh;
 import org.metaworks.Remover;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
@@ -8,6 +9,8 @@ import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.CodiProcessDefinitionFactory;
 import org.uengine.codi.mw3.model.ProcessMap;
 import org.uengine.codi.mw3.model.ProcessMapList;
+import org.uengine.codi.mw3.model.ProcessMapPanel;
+import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceControlDelegate;
@@ -49,11 +52,19 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
                 processMapList.load(processMap.session);
 
 
-                wrapReturn(new Remover(new ModalWindow()));
+                ProcessMapPanel processMapPanel = new ProcessMapPanel();
+                Session session = MetaworksRemoteService.getComponent(Session.class);
+
+                processMapPanel.load(session);
+
+
+                wrapReturn(new Remover(new ModalWindow()), new Refresh(processMapPanel));
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+
+
         }
     }
 

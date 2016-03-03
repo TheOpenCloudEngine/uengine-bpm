@@ -8,6 +8,7 @@ import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.annotation.*;
 import org.springframework.stereotype.Component;
 import org.uengine.contexts.ComplexType;
 import org.uengine.kernel.face.ProcessVariableTypeSelector;
@@ -22,6 +23,7 @@ import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelecto
  */
 @Component
 @Scope("prototype")
+@org.springframework.core.annotation.Order(10)
 @org.metaworks.annotation.Face(ejsPath="genericfaces/CleanObjectFace.ejs")
 public class SocialBPMProcessVariableTypeSelector extends ProcessVariableTypeSelector implements ContextAware{
 

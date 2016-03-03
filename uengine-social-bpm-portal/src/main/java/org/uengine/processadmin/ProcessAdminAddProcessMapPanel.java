@@ -2,7 +2,6 @@ package org.uengine.processadmin;
 
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
-import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.widget.Label;
 import org.springframework.context.annotation.Scope;
@@ -12,13 +11,10 @@ import org.uengine.codi.mw3.model.ProcessMapList;
 import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
-import org.uengine.modeling.resource.ResourceNavigator;
 import org.uengine.modeling.resource.VersionManager;
 import org.uengine.modeling.resource.resources.ClassResource;
 import org.uengine.modeling.resource.resources.UrlappResource;
 
-import javax.annotation.PostConstruct;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,8 +63,8 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 		});
 		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
 
-		getProcessAdminResourceNavigator().getRoot().filterResources(ClassResource.class);
-		getProcessAdminResourceNavigator().getRoot().filterResources(UrlappResource.class);
+		getProcessAdminResourceNavigator().getRoot().filtResources(ClassResource.class);
+		getProcessAdminResourceNavigator().getRoot().filtResources(UrlappResource.class);
 
 		try {
 			ProcessMapList processMapList = new ProcessMapList();

@@ -57,7 +57,7 @@ public class VersionManager implements ContextAware{
         setMetaworksContext(new MetaworksContext());
         getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 
-        String rootPath = resourceNavigator.getRootPath();
+        String rootPath = resourceNavigator.getRoot().getPath();
         setRootPath(rootPath);
 
         String versionPath = versionDirectoryOf();

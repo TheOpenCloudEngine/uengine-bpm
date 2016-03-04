@@ -55,7 +55,7 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
                 ProcessMapPanel processMapPanel = new ProcessMapPanel();
                 Session session = MetaworksRemoteService.getComponent(Session.class);
 
-                processMapPanel.load(session);
+                processMapPanel.load(processMap.session);
 
 
                 wrapReturn(new Remover(new ModalWindow()), new Refresh(processMapPanel));

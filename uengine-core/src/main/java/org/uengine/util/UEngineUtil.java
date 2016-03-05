@@ -71,18 +71,29 @@ public class UEngineUtil {
 
 
     static public Object addArrayElement(Object array, Object newElement) {
-        return addArrayElement(array, newElement, newElement.getClass());
+        return addArrayElement(array, newElement, newElement.getClass(), false);
     }
 
+    static public Object addArrayElementAtFirst(Object array, Object newElement) {
+        return addArrayElement(array, newElement, newElement.getClass(), true);
+    }
 
     static public Object addArrayElement(Object array, Object newElement, Class type) {
+        return addArrayElement(array, newElement, type, false);
+    }
+
+    static public Object addArrayElement(Object array, Object newElement, Class type, boolean insertAtFirst) {
         int length = array != null ? Array.getLength(array) : 0;
         Object newArray = Array.newInstance(type, length + 1);
 
         if (length > 0)
-            System.arraycopy(array, 0, newArray, 0, length);
+            System.arraycopy(array, 0, newArray, (insertAtFirst ? 1:0), length);
 
-        Array.set(newArray, length, newElement);
+        if(insertAtFirst)
+            Array.set(newArray, 0, newElement);
+        else
+            Array.set(newArray, length, newElement);
+
 
         return newArray;
     }
@@ -1231,13 +1242,6 @@ public class UEngineUtil {
     }
 
 
-    /**
-     * 8859_1�� ǥ��� ���ڿ�; �Էµ� CharSet Ÿ�Կ� �´� ���ڿ��� �ٲ��ش�.
-     *
-     * @param 8859_1�� ǥ��� ���ڿ�
-     * @return �ش� ��� CharacterSet 8�� ��ȯ�� ���ڿ�
-     * @throws UnsupportedEncodingException
-     */
     public static String toEncode(String str) {
         if (false) {
             return str;

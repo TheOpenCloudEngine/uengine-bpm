@@ -42,5 +42,10 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
         return processDefinition;
     }
 
+	public ProcessDefinition getEditingObject() {
+		// TODO - implement ProcessEditor.getEditingObject
+		throw new UnsupportedOperationException();
+	}
+
 
 }

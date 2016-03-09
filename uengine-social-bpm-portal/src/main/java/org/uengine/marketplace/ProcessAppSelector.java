@@ -3,10 +3,6 @@ package org.uengine.marketplace;
 import org.metaworks.Face;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.widget.Label;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.model.IProcessMap;
 import org.uengine.codi.mw3.model.ProcessMapList;
 import org.uengine.codi.mw3.model.Session;
@@ -17,7 +13,6 @@ import org.uengine.modeling.resource.resources.UrlappResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
 import org.uengine.processadmin.ResourceControlDelegateForAddingProcessMap;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +39,8 @@ public class ProcessAppSelector implements Face<String> {
 		setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator());
 		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
 
-		getProcessAdminResourceNavigator().getRoot().filterResources(ClassResource.class);
-		getProcessAdminResourceNavigator().getRoot().filterResources(UrlappResource.class);
+		getProcessAdminResourceNavigator().getRoot().filtResources(ClassResource.class);
+		getProcessAdminResourceNavigator().getRoot().filtResources(UrlappResource.class);
 
 		try {
 			ProcessMapList processMapList = new ProcessMapList();

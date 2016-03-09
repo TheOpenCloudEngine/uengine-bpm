@@ -1,6 +1,7 @@
 package org.uengine.processadmin;
 
 import com.itextpdf.text.Meta;
+import org.metaworks.Refresh;
 import org.metaworks.Remover;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
@@ -8,9 +9,12 @@ import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.CodiProcessDefinitionFactory;
 import org.uengine.codi.mw3.model.ProcessMap;
 import org.uengine.codi.mw3.model.ProcessMapList;
+import org.uengine.codi.mw3.model.ProcessMapPanel;
+import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceControlDelegate;
+import org.uengine.modeling.resource.VersionManager;
 import org.uengine.processmanager.ProcessManagerBean;
 
 import java.io.File;
@@ -24,39 +28,43 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
     @Override
     public void onDoubleClicked(IResource resource) {
         if(resource instanceof DefaultResource){
+            String alias = resource.getName();
+            String name = alias;
+
+            ProcessMap processMap = new ProcessMap();
+
+            autowire(processMap);
+
+            String mapId = String.valueOf((processMap.session.getCompany().getComCode() + "." + VersionManager.withoutVersionPath("codi", resource.getPath())).hashCode());
+
+            processMap.setMapId(mapId);
+            processMap.setDefId(resource.getPath());
+            processMap.setName(name);
+            processMap.setComCode(processMap.session.getCompany().getComCode());
+
             try {
-//                String alias = resource.getName();
-                String alias = resource.getPath().substring(resource.getPath().indexOf("/") + 1);
+                if(processMap.databaseMe()!=null)
+                    throw new Exception("$AlreadyAddedApp");
 
-               // if(alias.endsWith(".process")) {
-                    String name = alias.substring(0, alias.length() - 8).replace("/",".");
+                processMap.createMe();
 
-
-                    ProcessMap processMap = new ProcessMap();
-
-                    autowire(processMap);
-
-                    processMap.setMapId(processMap.session.getCompany().getComCode() + "." + name);
-                    processMap.setDefId(alias);
-                    processMap.setName(name);
-                    processMap.setComCode(processMap.session.getCompany().getComCode());
+                ProcessMapList processMapList = new ProcessMapList();
+                processMapList.load(processMap.session);
 
 
-                    if(!processMap.confirmExist())
-                        throw new Exception("$AlreadyAddedApp");
+                ProcessMapPanel processMapPanel = new ProcessMapPanel();
+                Session session = MetaworksRemoteService.getComponent(Session.class);
 
-                    processMap.createMe();
-
-                    ProcessMapList processMapList = new ProcessMapList();
-                    processMapList.load(processMap.session);
+                processMapPanel.load(processMap.session);
 
 
-                    wrapReturn(new Remover(new ModalWindow()));
-                //}
+                wrapReturn(new Remover(new ModalWindow()), new Refresh(processMapPanel));
 
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
+
+
         }
     }
 

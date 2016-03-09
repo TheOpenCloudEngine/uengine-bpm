@@ -14,7 +14,7 @@ import org.uengine.contexts.TextContext;
  */
 public class HumanApprovalActivity extends HumanActivity {
 	
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	public final static String KEY_APPR_STATUS = "KEY_APPR_STATUS";
 	public final static String SIGN_DRAFT = "SIGN_DRAFT";

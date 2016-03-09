@@ -58,16 +58,6 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         this.shapeId = shapeId;
     }
 
-//    String x;
-//
-//    public String getX() {
-//        return x;
-//    }
-//
-//    public void setX(String x) {
-//        this.x = x;
-//    }
-
     double x;
         public double getX() {
             return x;
@@ -98,18 +88,6 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         }
 
 
-//    public String getWidth() {
-//        return width;
-//    }
-//
-//    public void setWidth(String width) {
-//        this.width = width;
-//    }
-
-//    public void setWidth(int width) {
-//        this.width = String.valueOf(width);
-//    }
-
     double height;
         public double getHeight() {
             return height;
@@ -119,18 +97,6 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
             this.height = height;
         }
 
-
-//    public String getHeight() {
-//        return height;
-//    }
-//
-//    public void setHeight(String height) {
-//        this.height = height;
-//    }
-//
-//    public void setHeight(int height) {
-//        this.height = String.valueOf(height);
-//    }
 
     String fromEdge;
 
@@ -323,4 +289,11 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         return element;
     }
 
+    boolean byDrop;
+        public boolean getByDrop() {
+            return byDrop;
+        }
+        public void setByDrop(boolean byDrop) {
+            this.byDrop = byDrop;
+        }
 }

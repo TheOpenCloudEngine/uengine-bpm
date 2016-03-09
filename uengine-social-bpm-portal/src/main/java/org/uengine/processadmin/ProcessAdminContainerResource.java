@@ -109,7 +109,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
         autowire(resource);
 
 
-        resource.setPath(getPath() + File.separator + "New URL Application.urlapp");
+        resource.setPath(getPath() + "/New URL Application.urlapp");
         resource.setParent(this);
 
         resource.newOpen();

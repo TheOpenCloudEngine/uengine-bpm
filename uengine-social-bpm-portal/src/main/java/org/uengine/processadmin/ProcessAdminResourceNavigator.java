@@ -22,8 +22,11 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
 
     public ProcessAdminResourceNavigator(){
         super();
-
         this.load();
+    }
+
+    protected String getAppName(){
+        return "codi";
     }
 
     @Override
@@ -32,7 +35,7 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
         ProcessAdminContainerResource processAdminContainerResource = MetaworksRemoteService.getComponent(ProcessAdminContainerResource.class);
 
         setRoot(processAdminContainerResource);
-        getRoot().setPath("codi");
+        getRoot().setPath(getAppName());
         getRoot().setMetaworksContext(new MetaworksContext());
 
         ResourceManager resourceManager;

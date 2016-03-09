@@ -6,8 +6,6 @@ import org.omg.spec.bpmn._20100524.model.TUserTask;
 import org.uengine.kernel.HumanActivity;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
-import org.uengine.processpublisher.ObjectFactoryUtil;
-
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
 
@@ -25,7 +23,8 @@ public class HumanActivityAdapter implements Adapter<HumanActivity, TUserTask> {
         //tUserTask.getOutgoing().add();
         //tUserTask.getIncoming().add();
 
-        BPMNShape bpmnShape = (BPMNShape) BPMNUtil.export(src.getElementView());
+        ElementViewAdapter elementViewAdapter = new ElementViewAdapter();
+        BPMNShape bpmnShape = elementViewAdapter.convert(src.getElementView(), null);
         bpmnShape.setBpmnElement(new QName(src.getTracingTag()));
 
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");

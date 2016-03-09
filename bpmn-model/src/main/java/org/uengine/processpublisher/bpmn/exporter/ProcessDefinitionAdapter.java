@@ -1,15 +1,12 @@
 package org.uengine.processpublisher.bpmn.exporter;
 
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
-import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
-import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.*;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
-import org.uengine.processpublisher.ObjectFactoryUtil;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
@@ -79,7 +76,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
             // uengine role = bpmn Lane
             for (Role role : src.getRoles()) {
                 // role adapter -> TLane make and setting
-                TLane tLane = (TLane) BPMNUtil.export(role, context);
+                RoleAdapter roleAdapter = new RoleAdapter();
+                TLane tLane = roleAdapter.convert(role, context);
                 tLaneSet.getLane().add(tLane);
 
             }
@@ -93,7 +91,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
                 if (activity instanceof HumanActivity) {
                     HumanActivity humanActivity = (HumanActivity) activity;
                     // humanActivity adapter -> TUserTask create and setting
-                    TUserTask tUserTask = (TUserTask) BPMNUtil.export(humanActivity, context);
+                    HumanActivityAdapter humanActivityAdapter = new HumanActivityAdapter();
+                    TUserTask tUserTask = humanActivityAdapter.convert(humanActivity, context);
 
                     if(humanActivity.getRole() != null) {
                         // find TLaneSet
@@ -128,7 +127,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
         if (src.getSequenceFlows() != null && src.getSequenceFlows().size() > 0) {
             for (SequenceFlow sequenceFlow : src.getSequenceFlows()) {
                 // SequenceFlowAdapter -> TSequenceFlow make and setting
-                TSequenceFlow tSequenceFlow = (TSequenceFlow) BPMNUtil.export(sequenceFlow, context);
+                SequenceFlowAdapter sequenceFlowAdapter = new SequenceFlowAdapter();
+                TSequenceFlow tSequenceFlow = sequenceFlowAdapter.convert(sequenceFlow, context);
 
                 // find process's all elements
                 if(tProcess.getFlowElement() != null && tProcess.getFlowElement().size() > 0) {
@@ -149,7 +149,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
                 // find ConditionExpression
                 if (sequenceFlow.getCondition() != null) {
                     // Condition adapter -> TExpression make and setting
-                    TExpression tExpression = (TExpression) BPMNUtil.export(sequenceFlow.getCondition());
+                    ConditionAdapter conditionAdapter = new ConditionAdapter();
+                    TExpression tExpression = conditionAdapter.convert(sequenceFlow.getCondition(), null);
                     // add Condition
                     tSequenceFlow.setConditionExpression(tExpression);
                 }

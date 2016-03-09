@@ -3,7 +3,6 @@ package org.uengine.modeling.resource;
 import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.*;
-import org.metaworks.dwr.MetaworksRemoteService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,15 +108,19 @@ public class ContainerResource extends DefaultResource implements IContainer {
 	}
 
 	@Override
-	public <T extends IResource> void filterResources(Class<T> clazz){
+	public <T extends IResource> void filtResources(Class<T> clazz){
+		filtResources(clazz, true);
+	}
+
+	public <T extends IResource> void filtResources(Class<T> clazz, boolean filtOut){
 		List<IResource> resourceList = this.getChildren();
 		Iterator<IResource> resourceIterator = resourceList.iterator();
 
 		while(resourceIterator.hasNext()){
 			IResource resource = resourceIterator.next();
 			if(resource instanceof ContainerResource){
-				((ContainerResource)resource).filterResources(clazz);
-			}else if(clazz.isInstance(resource)){
+				((ContainerResource)resource).filtResources(clazz, filtOut);
+			}else if((!filtOut && !clazz.isInstance(resource)) || (filtOut && clazz.isInstance(resource))){
 				resourceIterator.remove();;
 			}
 		}
@@ -192,4 +195,11 @@ public class ContainerResource extends DefaultResource implements IContainer {
 	public void open(@AutowiredFromClient ResourceControlDelegate resourceControlDelegate) throws Exception {
 	//	super.open(resourceControlDelegate);
 	}
+
+	@ServiceMethod(target = ServiceMethod.TARGET_POPUP, inContextMenu = true)
+	public VersionManager versionManager(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+		return resourceNavigator.versionManager();
+	}
+
+
 }

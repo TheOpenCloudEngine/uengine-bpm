@@ -162,6 +162,7 @@ public class JDBCExtWorkList implements WorkList{
 			
 			if(parameterMap.containsKey("executionScope")){
 				wl.setExecScope((String)parameterMap.get("executionScope"));
+				wl.setTitle(wl.getTitle() + "(" + parameterMap.get("executionScopeName") + ")");
 			}
 						
 			if(parameterMap.containsKey("extValue1")){

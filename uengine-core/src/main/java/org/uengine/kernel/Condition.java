@@ -20,7 +20,7 @@ public abstract class Condition implements Validatable, Serializable, ContextAwa
 		return new ValidationContext();  
 	}
 
-	TextContext description = TextContext.createInstance();
+	TextContext description = org.uengine.contexts.TextContext.createInstance();
 		public TextContext getDescription() {
 			return description;
 		}

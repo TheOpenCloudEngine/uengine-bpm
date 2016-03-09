@@ -32,6 +32,9 @@ public class VariablePointer implements Serializable{
 
         ProcessVariableValue pvv = instance.getMultiple("", getKey());
 
+        if(pvv == null)
+            return null;
+
         if(pvv.size() <= getIndex()){
             return null;
         }

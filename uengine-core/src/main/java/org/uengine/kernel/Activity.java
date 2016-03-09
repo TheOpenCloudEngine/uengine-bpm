@@ -130,8 +130,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 
 	TextContext name;
 		@Name
-		@Face(displayName="이름")
-		@Order(value=1)
+	@Face(displayName="이름")
+	@Order(1)
 //		@Available(where=MetaworksContext.WHERE_DIALOG)
 		public String getName() {
 			if(name==null) return null;
@@ -155,12 +155,12 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setName(String name) {
 			if(getName() == null){
 				TextContext textCtx = null;
-				if(getProcessDefinition() == null) {
-					textCtx = TextContext.createInstance();
+//				if(getProcessDefinition() == null) {
+				textCtx = TextContext.createInstance();
 
-				} else {
-					textCtx = TextContext.createInstance(getProcessDefinition());
-				}
+//				} else {
+//					textCtx = TextContext.createInstance(getProcessDefinition());
+//				}
 				setName(textCtx);
 			}
 			
@@ -181,12 +181,12 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setDescription(String name) {
 			if(getDescription()==null){
 				TextContext textCtx = null;
-				if(getProcessDefinition() == null) {
+				//if(getProcessDefinition() == null) {
 					textCtx = TextContext.createInstance();
 
-				} else {
-					textCtx = TextContext.createInstance(getProcessDefinition());
-				}
+//				} else {
+//					textCtx = TextContext.createInstance(getProcessDefinition());
+//				}
 
 				setDescription(textCtx);
 			}

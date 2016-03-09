@@ -14,8 +14,9 @@ import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.util.UEngineUtil;
 import org.uengine.webservice.ApplyProperties;
+import java.io.*;
 
-@Face(ejsPath="genericfaces/ActivityFace.ejs", options={"fieldOrder"},values={"name,description"})
+@Face(ejsPath="genericfaces/ActivityFace.ejs", options={"fieldOrder"}, values={"name,description"})
 public class Pool implements IElement, java.io.Serializable, ContextAware{
 
 	transient MetaworksContext metaworksContext;
@@ -36,7 +37,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 		this.name = name;
 	}
 		
-	TextContext description = TextContext.createInstance();
+	TextContext description = org.uengine.contexts.TextContext.createInstance();
 	@Name
 	@Face(displayName="$poolDisplayName")
 	@Order(2)

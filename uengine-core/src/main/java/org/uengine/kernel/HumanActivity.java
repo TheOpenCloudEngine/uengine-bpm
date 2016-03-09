@@ -352,7 +352,7 @@ public class HumanActivity extends ReceiveActivity{
 		return GlobalContext.getProperties().getProperty("workitemhandler.address", "localhost:8082");
 	}
 */
-	TextContext instruction = TextContext.createInstance();
+	TextContext instruction = org.uengine.contexts.TextContext.createInstance();
 	@Hidden
 	@Face(displayName="$instruction")
 	public TextContext getInstruction() {
@@ -362,7 +362,7 @@ public class HumanActivity extends ReceiveActivity{
 			instruction = string;
 		}
 		
-	TextContext keyword = TextContext.createInstance();
+	TextContext keyword = org.uengine.contexts.TextContext.createInstance();
 	@Hidden
 	@Face(displayName="$keyword")
 		public TextContext getKeyword() {
@@ -421,6 +421,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 					(instance.getExecutionScopeContext().getRootActivityInTheScope() == this 
 							|| instance.getExecutionScopeContext().getRootActivityInTheScope().isAncestorOf(this))){
 				kpv.setProperty("executionScope", instance.getExecutionScopeContext().getExecutionScope());
+				kpv.setProperty("executionScopeName", instance.getExecutionScopeContext().getName());
 			}
 			
 			Calendar dueDate = getDueDate(instance);
@@ -640,10 +641,11 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 			
 			
 			if(
-					roleMapping.getResourceName().equals(roleMapping.getEndpoint())
+					roleMapping.getResourceName()==null || roleMapping.getResourceName().equals(roleMapping.getEndpoint())
 					|| !UEngineUtil.isNotEmpty(roleMapping.getResourceName())
 			)
 				roleMapping.fill(instance);
+
 			kpv.put("resourceName", roleMapping.getResourceName());
 
 			String[] params = roleMapping.getDispatchingParameters();

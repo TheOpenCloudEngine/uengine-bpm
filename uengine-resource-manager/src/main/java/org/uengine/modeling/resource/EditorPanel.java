@@ -2,6 +2,7 @@ package org.uengine.modeling.resource;
 
 import org.metaworks.*;
 import org.metaworks.annotation.*;
+import org.metaworks.dao.TransactionContext;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Download;
 import org.metaworks.widget.Label;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.uengine.kernel.LeveledException;
 import org.uengine.kernel.Validatable;
 import org.uengine.kernel.ValidationContext;
+import org.uengine.modeling.LanguageSelector;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.xml.ws.Service;
@@ -49,6 +51,17 @@ public class EditorPanel implements ContextAware {
 			this.resourcePath = resourcePath;
 		}
 
+
+	LanguageSelector languageSelector = new LanguageSelector();
+		public LanguageSelector getLanguageSelector() {
+			return languageSelector;
+		}
+
+		public void setLanguageSelector(LanguageSelector languageSelector) {
+			this.languageSelector = languageSelector;
+		}
+
+
 	String resourceName;
 		public String getResourceName() {
 			if(resourceName==null && resourcePath!=null){
@@ -84,7 +97,7 @@ public class EditorPanel implements ContextAware {
 
 	@ServiceMethod(keyBinding="Ctrl+S", callByContent = true, when = MetaworksContext.WHEN_EDIT)
 	@Order(1)
-	public void save(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+	public void save() throws Exception {
 		if(isNew() && getResourceName()==null){
 			throw new Exception("Please enter a file name");
 		}
@@ -107,6 +120,12 @@ public class EditorPanel implements ContextAware {
 
 		defaultResource.save(getEditor().createEditedObject());
 
+		String appName = getResourcePath().substring(0, getResourcePath().indexOf("/"));
+
+		ResourceNavigator resourceNavigator = new ResourceNavigator();
+		resourceNavigator.setRoot(new ContainerResource());
+		resourceNavigator.getRoot().setPath(appName);
+		MetaworksRemoteService.wrapReturn(resourceNavigator);
 		resourceNavigator.load();
 
 		autowire(this);
@@ -170,8 +189,8 @@ public class EditorPanel implements ContextAware {
 //	@Hidden
 	@ServiceMethod(callByContent=true, except="fileTransfer", target="append")
 	@Order(5)
-	public Download download(@AutowiredFromClient ResourceNavigator resourceNavigator) throws FileNotFoundException, IOException, Exception{
-		this.save(resourceNavigator);
+	public Download download() throws FileNotFoundException, IOException, Exception{
+		this.save();
 
 		String fileName = getResourceName() + getResourcePath().substring(getResourcePath().lastIndexOf("."));
 		MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
@@ -250,10 +269,23 @@ public class EditorPanel implements ContextAware {
 		}
 	}
 
-	@ServiceMethod(keyBinding="Ctrl+S", callByContent=true)
-	public void save() throws Exception {
-		// TODO - implement EditorPanel.save
-		throw new UnsupportedOperationException();
+
+	@ServiceMethod(callByContent = true, target = ServiceMethod.TARGET_POPUP)
+	public void simulate() throws Exception {
+		TransactionContext.getThreadLocalInstance().setSharedContext("isDevelopmentTime", true);
+
+		save();
+
+		if(getEditor() instanceof Simulatable) {
+			ModalWindow runner = new ModalWindow();
+
+			IResource resource = new DefaultResource();
+			resource.setPath(getResourcePath());
+
+			runner.setPanel(((Simulatable) getEditor()).simulator(resource));
+
+			MetaworksRemoteService.wrapReturn(runner);
+		}
 	}
 
 }

@@ -10,7 +10,7 @@ import org.metaworks.inputter.InputterAdapter;
 import org.metaworks.inputter.TextInput;
 
 public class ActivityDueDatePointingProcessVariable extends ProcessVariable{
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	public ActivityDueDatePointingProcessVariable(final HumanActivity finalActivity){
 

@@ -166,7 +166,6 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 	private java.lang.String name;
 	@Name
 	@Face(displayName="역할 이름")
-	//@Available(when={MetaworksContext.WHEN_EDIT})
 	@Order(1)
 		public String getName() {
 			return name;
@@ -256,7 +255,7 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 			defaultEndpoint = string;
 		}
 		
-	private TextContext displayName = TextContext.createInstance();
+	private TextContext displayName = org.uengine.contexts.TextContext.createInstance();
 	@Available(when={MetaworksContext.WHEN_EDIT})
 	@Face(displayName="역할 설명")
 	@Order(2)

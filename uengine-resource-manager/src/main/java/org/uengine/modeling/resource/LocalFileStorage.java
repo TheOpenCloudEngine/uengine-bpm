@@ -53,12 +53,12 @@ public class LocalFileStorage implements Storage{
         File sourceFile = getFile(src);
 
         if(sourceFile.isDirectory()){
-            destinationFile.mkdirs();
+            FileUtils.copyDirectory(getFile(src), destinationFile);
         }else{
             destinationFile.getParentFile().mkdirs();
+            Files.copy(getFile(src).toPath(), destinationFile.toPath());
         }
 
-        Files.copy(getFile(src).toPath(), destinationFile.toPath());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class LocalFileStorage implements Storage{
 
             if(file.getName().startsWith(".")) continue;
 
-            String relativePath = file.getAbsolutePath();
+            String relativePath = file.getAbsolutePath().replace("\\", "/");
 
             relativePath = relativePath.substring(abstractTenantBasePath.length() + 1);
 

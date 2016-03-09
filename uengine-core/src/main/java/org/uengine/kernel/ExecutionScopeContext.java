@@ -3,7 +3,7 @@ package org.uengine.kernel;
 import java.io.Serializable;
 
 public class ExecutionScopeContext implements Serializable{
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	String executionScope;
 	transient Activity rootActivityInTheScope;

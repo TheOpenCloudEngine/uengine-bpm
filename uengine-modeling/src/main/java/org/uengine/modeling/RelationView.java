@@ -108,6 +108,9 @@ public class RelationView implements Serializable, ContextAware, Cloneable {
         this.to = to + TERMINAL_IN_OUT;
     }
 
+    /**
+     * contains the way-points
+     */
     String value;
 
     public String getValue() {

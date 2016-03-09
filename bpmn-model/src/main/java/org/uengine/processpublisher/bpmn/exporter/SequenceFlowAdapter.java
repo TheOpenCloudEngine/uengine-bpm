@@ -2,12 +2,10 @@ package org.uengine.processpublisher.bpmn.exporter;
 
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
-import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
-import org.uengine.processpublisher.ObjectFactoryUtil;
 
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
@@ -22,7 +20,8 @@ public class SequenceFlowAdapter implements Adapter <SequenceFlow, TSequenceFlow
         TSequenceFlow tSequenceFlow = ObjectFactoryUtil.createBPMNObject(TSequenceFlow.class);
         tSequenceFlow.setId(src.getRelationView().getId());
 
-        BPMNEdge bpmnEdge = (BPMNEdge) BPMNUtil.export(src.getRelationView());
+        RelationViewAdapter relationViewAdapter = new RelationViewAdapter();
+        BPMNEdge bpmnEdge = relationViewAdapter.convert(src.getRelationView(), null);
         bpmnEdge.setBpmnElement(new QName(src.getRelationView().getId()));
 
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");

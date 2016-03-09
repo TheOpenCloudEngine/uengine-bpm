@@ -1045,6 +1045,10 @@ public abstract class AbstractGenericDAO implements InvocationHandler, IDAO {
 	}
 	
 	
+	/**
+	 * 
+	 * @param propertyName
+	 */
 	@SuppressWarnings("deprecation")
 	public static String replaceReservedKeyword(String propertyName) {
 		try {

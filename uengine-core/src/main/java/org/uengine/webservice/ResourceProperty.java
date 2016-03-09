@@ -7,7 +7,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("resource")
-public class ResourceProperty implements Serializable{
+public class ResourceProperty implements Serializable {
 	
 	@XStreamAsAttribute
 	String path;

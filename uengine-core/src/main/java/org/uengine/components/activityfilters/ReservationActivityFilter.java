@@ -17,10 +17,7 @@ import org.uengine.webservices.worklist.WorkList;
 
 public class ReservationActivityFilter implements SensitiveActivityFilter {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
+	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	private void addReservedWorklist(Activity activity, ProcessInstance instance) throws Exception {
 		ProcessDefinition	pd = instance.getProcessDefinition();

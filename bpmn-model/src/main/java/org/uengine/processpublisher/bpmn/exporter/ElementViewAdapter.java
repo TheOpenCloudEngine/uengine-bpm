@@ -2,12 +2,8 @@ package org.uengine.processpublisher.bpmn.exporter;
 
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.dd._20100524.dc.Bounds;
-import org.uengine.kernel.Activity;
 import org.uengine.modeling.ElementView;
 import org.uengine.processpublisher.Adapter;
-import org.uengine.processpublisher.ObjectFactoryUtil;
-
-import javax.xml.namespace.QName;
 import java.util.Hashtable;
 
 /**

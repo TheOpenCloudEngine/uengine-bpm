@@ -109,7 +109,7 @@ public class SubProcessActivity extends DefaultActivity {
 	}
 
 
-	int versionSelectOption = ProcessDefinition.VERSIONSELECTOPTION_CURRENT_PROD_VER;
+	int versionSelectOption = org.uengine.kernel.ProcessDefinition.VERSIONSELECTOPTION_CURRENT_PROD_VER;
 	@Hidden
 	@Range(
 			options={		  
@@ -169,7 +169,7 @@ public class SubProcessActivity extends DefaultActivity {
 		this.createAsRootProcess = createAsRootProcess;
 	}
 
-	TextContext multipleInstanceLabel = TextContext.createInstance();
+	TextContext multipleInstanceLabel = org.uengine.contexts.TextContext.createInstance();
 	@Hidden
 	public TextContext getMultipleInstanceLabel() {
 		return multipleInstanceLabel;

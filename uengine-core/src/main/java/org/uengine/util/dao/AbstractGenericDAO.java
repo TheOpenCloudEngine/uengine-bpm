@@ -870,9 +870,25 @@ public abstract class AbstractGenericDAO implements InvocationHandler, IDAO {
 		}
 
 		if(MetaworksRemoteService.getInstance().isLowerCaseSQL()){
-			return realSql.toString().toLowerCase();
+			char[] sqlChars = realSql.toString().toCharArray();
+			StringBuffer lowerSql = new StringBuffer();
+			boolean flag = false;
+			for (int i = 0; i < sqlChars.length; i++) {
+				if (sqlChars[i] == '\'' ||  //Single Quotation
+						sqlChars[i] == '\"' ) {  //Double Quotation
+					flag = !flag;
+					lowerSql.append(sqlChars[i]);
+					continue;
+				}
+				if(flag) {
+					lowerSql.append(sqlChars[i]);
+				} else {
+					lowerSql.append(Character.toLowerCase(sqlChars[i]));
+				}
+			}
+			return lowerSql.toString();
+			//return realSql.toString().toLowerCase();
 		}
-
 
 		return realSql.toString();
     }

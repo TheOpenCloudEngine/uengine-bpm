@@ -75,8 +75,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 //			ProcessInstanceRepositoryHomeLocal pirh = GlobalContext.createProcessInstanceRepositoryHomeLocal();
 //			processInstanceRepositoryLocal = pirh.findByPrimaryKey(new Long(getInstanceId()));
 //		}
-//		
-//		return processInstanceRepositoryLocal;			
+//
+//		return processInstanceRepositoryLocal;
 //	}
 
 	ProcessInstanceDAO processInstanceDAO;
@@ -84,8 +84,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		if(processInstanceDAO == null){
 			ProcessInstanceDAOType pidt = ProcessInstanceDAOType.getInstance(getProcessTransactionContext());
 			processInstanceDAO = pidt.findByPrimaryKey(new Long(getInstanceId()));
-			processInstanceDAO.getImplementationObject().setTableName("BPM_PROCINST");
-			processInstanceDAO.getImplementationObject().setKeyField("INSTID");
+			processInstanceDAO.getImplementationObject().setTableName("bpm_procinst");
+			processInstanceDAO.getImplementationObject().setKeyField("instid");
 			processInstanceDAO.getImplementationObject().createUpdateSql();
 		}
 
@@ -104,8 +104,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	public EJBProcessInstance (ProcessDefinition procDef, String name, Map options) throws Exception{
 		setCaching(true);
 
-		//isNew field is for recognizing the instance is just initiated in the transaction. 
-		// when the argument procDef is provided, it means also initiation stage. 
+		//isNew field is for recognizing the instance is just initiated in the transaction.
+		// when the argument procDef is provided, it means also initiation stage.
 		if(procDef != null)
 			isNew = true;
 
@@ -189,14 +189,14 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		if(!UEngineUtil.isNotEmpty(instanceId)){
 			throw new UEngineException("Check your parameter! Instance Id is null");
-			
+
 /*			EJBProcessInstance tempInst =  new EJBProcessInstance();
 			tempInst.setCaching(true);
 			tempInst.setInstanceId( null);
 			if (options != null && options.get("ptc") != null ) {
 				tempInst.setProcessTransactionContext( (TransactionContext)options.get("ptc") );
 			}
-			
+
 			return tempInst;
 */		}
 
@@ -248,7 +248,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			}
 //			ProcessInstance inst = create();
 //			inst.setInstanceId(instanceId);
-//		
+//
 //			return inst;
 			getProcessTransactionContext().addTransactionListener(this);
 			ptc.registerProcessInstance(this);
@@ -278,8 +278,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	public void applyChanges() throws Exception{
 
 		ProcessInstanceDAO procInsDAO = getProcessInstanceDAO();
-		procInsDAO.getImplementationObject().setTableName("BPM_PROCINST");
-		procInsDAO.getImplementationObject().setKeyField("INSTID");
+		procInsDAO.getImplementationObject().setTableName("bpm_procinst");
+		procInsDAO.getImplementationObject().setKeyField("instid");
 		procInsDAO.setModDate(GlobalContext.getNow(getProcessTransactionContext()).getTime());
 
 		if(isNew){
@@ -294,7 +294,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		setCaching(true);
 		if(modifiedKeyMap!=null){
 			setProcessVariablesFile(getVariables());
-			
+
 			/*만일을 위해 DB에도 값을 넣는다.*/
 			/*
 			getProcessVariableDAOFacade().deleteValue(getInstanceId(), modifiedKeyMap.keySet().iterator());
@@ -302,13 +302,13 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			ProcessVariableDAO pvd = getProcessVariableDAOFacade().createProcessVariableDAOForBatchInsert();
 			for(Iterator iterator = modifiedKeyMap.keySet().iterator(); iterator.hasNext();){
 				String fullKey = (String)iterator.next();
-				
+
 				String[] scopeAndKey = (String[])modifiedKeyMap.get(fullKey);
 				String scope = scopeAndKey[0];
 				String key = scopeAndKey[1];
-				
+
 				boolean isProperty = isProperty(fullKey);
-				
+
 				Serializable cachedValue = (isProperty ? this.getProperty(scope, key) : this.getSourceValue(scope, key));
 				if(cachedValue instanceof IndexedProcessVariableMap){
 					ProcessVariableValue multipleValue = (ProcessVariableValue)getMultiple(scope, key);
@@ -322,7 +322,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 				else
 					setImpl(scope, key, cachedValue, 0, false, false, true, pvd, isProperty);
 			}
-			
+
 			pvd.updateBatch();
 			*/
 		}
@@ -478,26 +478,26 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		if ( !isBatch )
 			setProcessVariablesFile(createFullKey(scopeByTracingTag, key, isProperty), val);
-		
-		
+
+
 		/*만일을 대비해 데이터를 넣어놓는다.*/
 		/*
 		int dataType =getDataType(val);
 
 		if(dataType==TYPE_ANY){
 			//try{
-			//TODO: type-sensitive serialization is enabled now. You may let this disabled for the performance issue						
+			//TODO: type-sensitive serialization is enabled now. You may let this disabled for the performance issue
 			ProcessVariable pd = null;{
-				pd = getProcessDefinition()	
+				pd = getProcessDefinition()
 					.getProcessVariable(key);
 			}
-											
+
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			
+
 			GlobalContext.serialize(val, bos, pd);
 									//encoding
 			String xml = bos.toString(GlobalContext.DATABASE_ENCODING);
-						
+
 			//TODO: [serious] value should be very short if you use oracle.. how to?
 			//if(xml.length() > GlobalContext.DATABASE_MAXSTRLENGTH)
 			//	xml = xml.substring(GlobalContext.DATABASE_MAXSTRLENGTH);
@@ -506,18 +506,18 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 //
 //			}catch(Exception e){
 //				e.printStackTrace();
-//			}	
-		}		
-		
+//			}
+		}
+
 		String fullKey = createFullKey(scopeByTracingTag, key, isProperty);
-		
-		if(isBatch){			
+
+		if(isBatch){
 			getProcessVariableDAOFacade().insertValueBatch(pvd, getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType, index);
 		}else{
 			if(!append){
-				getProcessVariableDAOFacade().updateValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType); 
+				getProcessVariableDAOFacade().updateValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType);
 			}else{
-				getProcessVariableDAOFacade().insertValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType, index); 
+				getProcessVariableDAOFacade().insertValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType, index);
 			}
 		}
 		*/
@@ -549,7 +549,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 					//20120911 var filePath read
 					//20130815 var filePath save
 
-					Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+					Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(starteddate);
 					String calendarDirectory = cal.get(Calendar.YEAR)
@@ -713,7 +713,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			if(!processVariablesAreCached && !variables.containsKey(createFullKey(scopeByTracingTag, key, false))){
 				try{
 					if(!isNew){
-						variables.putAll(getAll()); // there may be some extra values 
+						variables.putAll(getAll()); // there may be some extra values
 					}
 
 					processVariablesAreCached = true;
@@ -742,7 +742,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		ProcessInstanceDAO piDAO = null;
 		//forward status of pi to processinstance
 		if(scope.equals("")){
-			//remove if this instance doesn't need to be archived				
+			//remove if this instance doesn't need to be archived
 			if(status.equals(Activity.STATUS_COMPLETED) && !getProcessDefinition().isArchive())
 				remove();
 			else{
@@ -842,7 +842,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 				procDef = ProcessDefinitionFactory.getInstance(getProcessTransactionContext()).getDefinitionWithPath(getProcessInstanceDAO().getDefPath());
 			}else
 				procDef = ProcessDefinitionFactory.getInstance(getProcessTransactionContext()).getDefinition(getProcessInstanceDAO().getDefVerId().toString());
-				
+
 /*				if(procDef.isAdhoc()){
 					//TODO reload if adhoc.. bad performance?
 					procDef = ProcessDefinitionFactory.getDefinition(piRemote.getDefinition(), true);
@@ -859,7 +859,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 //			}catch(javax.ejb.ObjectNotFoundException onfe){
 //System.out.println("EJBActivityInstance::getProcessDefinition(): can't find process instance!");
-//				
+//
 //			}catch(Exception e){
 //				e.printStackTrace();
 //				setProcessDefinition(null);
@@ -1232,7 +1232,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	private void setProcessVariablesFile (Map modifiedVariables) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1265,7 +1265,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	private void setProcessVariablesFile (String key, Serializable val) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1298,7 +1298,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	private Map getAllFile() throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1317,7 +1317,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	private ProcessVariableValue getMultipeFromFile(String scopeByTracingTag, String key) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1362,7 +1362,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		return getProcessVariableDAOFacade().getAsProcessVariableValue(getInstanceId(), scopeByTracingTag, key);
 	}
 	private Serializable getFile(String scopeByTracingTag, String key, String firstPart, boolean isProperty) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)

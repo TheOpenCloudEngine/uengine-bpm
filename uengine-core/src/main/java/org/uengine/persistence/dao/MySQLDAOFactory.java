@@ -22,85 +22,85 @@ import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
  * @author Jinyoung Jang
  */
 public class MySQLDAOFactory extends OracleDAOFactory{
-	
+
 	static Hashtable currKeys = new Hashtable();
-	
+
 	public WorkListDAO createWorkListDAOForInsertCall(Map options) throws Exception{
 		return (WorkListDAO)Proxy.newProxyInstance(
-			WorkListDAO.class.getClassLoader(),
-			new Class[]{WorkListDAO.class},
-			new ConnectiveDAO(
+				WorkListDAO.class.getClassLoader(),
+				new Class[]{WorkListDAO.class},
+				new ConnectiveDAO(
 
-				getConnectionFactory(),
-					true,
-				"insert into BPM_WORKLIST(TASKID, TITLE, DESCRIPTION, ENDPOINT, RESNAME, STATUS, PRIORITY, STARTDATE, ENDDATE, DUEDATE, INSTID, ROOTINSTID, DEFID, DEFNAME, TRCTAG, TOOL, DISPATCHOPTION, PARAMETER, ROLENAME, REFROLENAME, DISPATCHPARAM1)	values(?TASKID, ?TITLE, ?DESCRIPTION, ?ENDPOINT, ?RESNAME, ?STATUS, ?PRIORITY, ?STARTDATE, ?ENDDATE, ?DUEDATE, ?INSTID, ?ROOTINSTID, ?DEFID, ?DEFNAME, ?TRCTAG, ?TOOL, ?DISPATCHOPTION, ?PARAMETER, ?ROLENAME, ?REFROLENAME, ?DISPATCHPARAM1)",
-				WorkListDAO.class
-			){
-				public int call() throws Exception{
-					
-					Number var_taskId = (Number)get("TASKID");
-					
-					if(var_taskId!=null){
-						WorkListDAO existingWorklist = (WorkListDAO)GenericDAO.createDAOImpl(
-							getConnectionFactory(),
-							"delete from BPM_WORKLIST where TASKID=?TASKID",
-							WorkListDAO.class
-						);
-						existingWorklist.setTaskId(var_taskId);
-						existingWorklist.update();
-					}else{
-						KeyGeneratorDAO kg = DAOFactory.getInstance(getConnectionFactory()).createKeyGenerator("WORKLIST", null);
-						kg.select();
-						kg.next();
-								
-						Number taskId = kg.getKeyNumber();
-						
-						set("TASKID", taskId);
+						getConnectionFactory(),
+						true,
+						"insert into bpm_worklist(taskid, title, description, endpoint, resname, status, priority, startdate, enddate, duedate, instid, rootinstid, defid, defname, trctag, tool, dispatchoption, parameter, rolename, refrolename, dispatchparam1)	values(?taskid, ?title, ?description, ?endpoint, ?resname, ?status, ?priority, ?startdate, ?enddate, ?duedate, ?instid, ?rootinstid, ?defid, ?defname, ?trctag, ?tool, ?dispatchoption, ?parameter, ?rolename, ?refrolename, ?dispatchparam1)",
+						WorkListDAO.class
+				){
+					public int call() throws Exception{
+
+						Number var_taskId = (Number)get("taskid");
+
+						if(var_taskId!=null){
+							WorkListDAO existingWorklist = (WorkListDAO)GenericDAO.createDAOImpl(
+									getConnectionFactory(),
+									"delete from bpm_worklist where taskid=?taskid",
+									WorkListDAO.class
+							);
+							existingWorklist.setTaskId(var_taskId);
+							existingWorklist.update();
+						}else{
+							KeyGeneratorDAO kg = DAOFactory.getInstance(getConnectionFactory()).createKeyGenerator("worklist", null);
+							kg.select();
+							kg.next();
+
+							Number taskId = kg.getKeyNumber();
+
+							set("taskid", taskId);
+						}
+
+						int cnt = super.insert();
+
+
+						return cnt;
 					}
-				
-					int cnt = super.insert();
-					
-					
-					return cnt;
-				}
 
-				
-			}
+
+				}
 		);
 	}
-	
+
 	public KeyGeneratorDAO createKeyGenerator(final String forWhat, final Map options) throws Exception {
-		
+
 		boolean option_useTableNameHeader = true;
 		if(options!=null && options.containsKey("useTableNameHeader")){
 			option_useTableNameHeader = !"false".equals(options.get("useTableNameHeader"));
 		}
-		
+
 		final boolean useTableNameHeader = option_useTableNameHeader;
 
 		return new KeyGeneratorDAO(){
 
 			public Number getKeyNumber() {
-				
+
 				String forTableName = new String(forWhat);
 				String forColumnName = new String(((useTableNameHeader) ? forWhat : "") + "id");
 				forColumnName = forColumnName.replaceFirst("Proc", "");
-//				forTableName = forTableName.toLowerCase();
-				forTableName = forTableName.toUpperCase();
-				if (forTableName.equals("WORKITEM")) {
-					forColumnName = "TASKID";
+				forTableName = forTableName.toLowerCase();
+//				forTableName = forTableName.toUpperCase();
+				if (forTableName.equals("worklist")) {
+					forColumnName = "taskid";
 				}
-				
+
 				Connection conn = null;
 				Statement stmt_select_seq = null;
 				ResultSet rs_select_seq = null;
-				
+
 				Statement stmt_select_table_max_key = null;
 				ResultSet rs_select_table_max_key = null;
-				
+
 				PreparedStatement pstmt_update_seq = null;
 				PreparedStatement pstmt_insert_seq = null;
-				
+
 				try {
 					//conn = DefaultConnectionFactory.create().getConnection(); //may cause connection leak and undesired sequence number increment.
 					conn = getConnectionFactory().getConnection();
@@ -109,47 +109,47 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 						throw new RuntimeException("Database connection is null.");
 
 					conn.setAutoCommit(false);
-					
+
 					Long seq_key  = null;
-						stmt_select_seq = conn.createStatement();
-						rs_select_seq = stmt_select_seq.executeQuery("select ifnull(max(SEQ),0) + 1 as LASTKEY from BPM_SEQ where TBNAME = '" + forTableName + "'");
-						if (rs_select_seq.next()) {
-							seq_key = rs_select_seq.getLong("LASTKEY");
-						} else {
-							seq_key = new Long(1);
-						}
-					
+					stmt_select_seq = conn.createStatement();
+					rs_select_seq = stmt_select_seq.executeQuery("select ifnull(max(seq),0) + 1 as lastkey from bpm_seq where tbname = '" + forTableName + "'");
+					if (rs_select_seq.next()) {
+						seq_key = rs_select_seq.getLong("lastkey");
+					} else {
+						seq_key = new Long(1);
+					}
+
 					Long id_key  = null;
-						stmt_select_table_max_key = conn.createStatement();
-						rs_select_table_max_key = stmt_select_table_max_key.executeQuery("select ifnull(max("+forColumnName+"),0) as LASTKEY from " +(forTableName.equals("WORKITEM")? "BPM_WORKLIST" : ((useTableNameHeader)?"BPM_":"") + forTableName));
-						if (rs_select_table_max_key.next()) {
-							id_key = rs_select_table_max_key.getLong("LASTKEY");
-						}
-					
+					stmt_select_table_max_key = conn.createStatement();
+					rs_select_table_max_key = stmt_select_table_max_key.executeQuery("select ifnull(max("+forColumnName+"),0) as lastkey from " +(forTableName.equals("workitem")? "bpm_worklist" : ((useTableNameHeader)?"bpm_":"") + forTableName));
+					if (rs_select_table_max_key.next()) {
+						id_key = rs_select_table_max_key.getLong("lastkey");
+					}
+
 					Long key = null;
-						if (seq_key.longValue() > id_key.longValue()) {
-							key = seq_key;
-						} else {
-							key = new Long(id_key.longValue() + 1);
-						}
-					
-					pstmt_update_seq = conn.prepareStatement("update BPM_SEQ set SEQ = ? , MODDATE = now() where  TBNAME = ?");
+					if (seq_key.longValue() > id_key.longValue()) {
+						key = seq_key;
+					} else {
+						key = new Long(id_key.longValue() + 1);
+					}
+
+					pstmt_update_seq = conn.prepareStatement("update bpm_seq set seq = ? , moddate = now() where  tbname = ?");
 					pstmt_update_seq.setLong(1, key);
 					pstmt_update_seq.setString(2, forTableName);
 					int modcount = pstmt_update_seq.executeUpdate();
-					
+
 					if(modcount == 0) {
-						pstmt_insert_seq = conn.prepareStatement("insert into BPM_SEQ (TBNAME, SEQ, DESCRIPTION, MODDATE) values(?, ?, ?, now())");
+						pstmt_insert_seq = conn.prepareStatement("insert into bpm_seq (tbname, seq, description, moddate) values(?, ?, ?, now())");
 						pstmt_insert_seq.setString(1, forTableName);
 						pstmt_insert_seq.setLong(2, key);
 						pstmt_insert_seq.setString(3, forTableName);
 						pstmt_insert_seq.executeUpdate();
 					}
-					
-				//	conn.commit();
-					
+
+					//	conn.commit();
+
 					return key;
-					
+
 				} catch (Exception e1) {
 
 //					if(conn!=null)
@@ -159,35 +159,35 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 //					} catch (SQLException e) {
 //						e.printStackTrace();
 //					}
-					
+
 					throw new RuntimeException(e1);
 				} finally {
 					if (stmt_select_seq != null) try { stmt_select_seq.close(); } catch (SQLException e1) {}
 					if (rs_select_seq != null) try { rs_select_seq.close(); } catch (SQLException e1) {}
-					
+
 					if (stmt_select_table_max_key != null) try { stmt_select_table_max_key.close(); } catch (SQLException e1) {}
 					if (rs_select_table_max_key != null) try { rs_select_table_max_key.close(); } catch (SQLException e1) {}
-					
+
 					if (pstmt_update_seq != null) try { pstmt_update_seq.close(); } catch (SQLException e1) {}
 					if (pstmt_insert_seq != null) try { pstmt_insert_seq.close(); } catch (SQLException e1) {}
-					
+
 //					if (conn != null) try { conn.setAutoCommit(true); } catch (SQLException e1) {}
 //					if (conn != null) try { conn.close(); } catch (SQLException e) {}
 				}
-				
+
 //				TransactionContext tc = new SimpleTransactionContext();
 //				try {
-//					
+//
 //					String forTableName  = new String(forWhat);
 //					String forColumnName = new String(((useTableNameHeader)?forWhat:"") + "id");
 //					forColumnName = forColumnName.replaceFirst("Proc","");
 //					forTableName = forTableName.toLowerCase();
 //					if(forTableName.equals("workitem")) 	forColumnName = "taskid";
-//                    
+//
 //					//bpm_seq sequence getting///////////////////////////////////////////////////////////////////
 //					Long seq_key  = null;
 //					IDAO gdao = ConnectiveDAO.createDAOImpl(
-//							tc, 
+//							tc,
 //							"select ifnull(max(seq),0) + 1 as lastKey from bpm_seq where tbname = '" + forTableName + "'",
 //							IDAO.class
 //						);
@@ -198,11 +198,11 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 //				    } else {
 //				    	seq_key = new Long(1);
 //				    }
-//				    
+//
 //                    //table sequence getting/////////////////////////////////////////////////////////////////////
 //				    Long id_key  = null;
 //					IDAO tdao = ConnectiveDAO.createDAOImpl(
-//							tc, 
+//							tc,
 //							"select ifnull(max("+forColumnName+"),0) as lastKey from " +(forTableName.equals("workitem")? "bpm_worklist" : ((useTableNameHeader)?"bpm_":"") + forTableName) ,
 //							IDAO.class
 //						);
@@ -210,43 +210,43 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 //					if(tdao.next()){
 //					 	Number currKey = (Number)tdao.get("lastKey");
 //					 	id_key = new Long(currKey.longValue());
-//					} 
-//					
+//					}
+//
 //					//update key/////////////////////////////////////////////////////////////////////////////////
 //					Long key  = null;
 //					if(seq_key.longValue() > id_key.longValue()) key = seq_key;
 //					else key = new Long(id_key.longValue()+1);
-//					
+//
 //					IDAO udao = ConnectiveDAO.createDAOImpl(
-//							tc, 
+//							tc,
 //							"update bpm_seq set seq = ?seq , moddate = now() where  tbname = ?tbname",
 //							IDAO.class
 //						);
-//					
+//
 //					udao.set("seq", key);
 //					udao.set("tbname", forTableName);
 //					//udao.set("preSeq", new Long(key.longValue()-1));
-//					
+//
 //					//if seq dont't exist,seq insert ////////////////////////////////////////////////////////////
 //					int modcount = udao.update();
 //					if(modcount == 0){
 //						IDAO idao = ConnectiveDAO.createDAOImpl(
-//								tc, 
+//								tc,
 //								"insert into bpm_seq (tbname, seq, description, moddate) values(?tbname, ?seq, ?description, now())",
 //								IDAO.class
 //							);
 //						idao.set("tbname", forTableName);
 //						idao.set("seq", key);
 //						idao.set("description", forTableName);
-//						idao.insert();					
+//						idao.insert();
 //					}
-//					
+//
 //					return key;
-//					
+//
 //				} catch (Exception e) {
 //					// TODO Auto-generated catch block
 //					//e.printStackTrace();
-//					
+//
 //					throw new RuntimeException(e);
 //				} finally {
 //					try {
@@ -260,12 +260,12 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 
 			public void setKeyNumber(Number id) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void select() throws Exception {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public int insert() throws Exception {
@@ -285,7 +285,7 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 
 			public void beforeFirst() throws Exception {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public boolean previous() throws Exception {
@@ -302,10 +302,10 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			public void afterLast() throws Exception {
 			}
-			
+
 			public boolean last() throws Exception {
 				return false;
 			}
@@ -332,7 +332,7 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 
 			public void addBatch() throws Exception {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public int[] updateBatch() throws Exception {
@@ -377,11 +377,11 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 
 			public void releaseResource() throws Exception {
 				// TODO Auto-generated method stub
-				
+
 			}
 		};
 	}
-	
+
 	public String getSequenceSql(String seqName) throws Exception {
 		// TODO Auto-generated method stub
 		return "";
@@ -390,15 +390,15 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 	public String getDBMSProductName() throws Exception {
 		return "MySQL";
 	}
-	
+
 	public Calendar getNow() throws Exception {
-		IDAO nowQuery = (IDAO)create(IDAO.class, "select now() as NOW"); //SELECT DATE_FORMAT(now(), '%Y-%m-%d')
+		IDAO nowQuery = (IDAO)create(IDAO.class, "select now() as now"); //SELECT DATE_FORMAT(now(), '%Y-%m-%d')
 		nowQuery.select();
-		
+
 		if(nowQuery.next()){
 			Calendar now = Calendar.getInstance();
-			now.setTime((Date)nowQuery.get("NOW"));
-			
+			now.setTime((Date)nowQuery.get("now"));
+
 			return now;
 		}else{
 			throw new Exception("Can't get current system date from DB.");

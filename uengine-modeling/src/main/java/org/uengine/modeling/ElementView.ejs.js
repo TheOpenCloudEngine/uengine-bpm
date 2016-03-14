@@ -206,6 +206,15 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
         $(this.element).trigger('loaded.' + this.element.id);
 
+        //캔버스가 서버로부터 받은 데이터를 적용시키는 과정이 아닐 경우 브로드캐스트 수행.
+        if (this.canvas.getRemotable()) {
+            if (!this.canvas.getRemoteDuring()) {
+                OG.RemoteHandler.broadCastCanvas(this.canvas, function (canvas) {
+
+                });
+            }
+        }
+
         this.bindMapping();
     }
 

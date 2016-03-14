@@ -177,17 +177,17 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 
 //				TransactionContext tc = new SimpleTransactionContext();
 //				try {
-//
+//					
 //					String forTableName  = new String(forWhat);
 //					String forColumnName = new String(((useTableNameHeader)?forWhat:"") + "id");
 //					forColumnName = forColumnName.replaceFirst("Proc","");
 //					forTableName = forTableName.toLowerCase();
 //					if(forTableName.equals("workitem")) 	forColumnName = "taskid";
-//
+//                    
 //					//bpm_seq sequence getting///////////////////////////////////////////////////////////////////
 //					Long seq_key  = null;
 //					IDAO gdao = ConnectiveDAO.createDAOImpl(
-//							tc,
+//							tc, 
 //							"select ifnull(max(seq),0) + 1 as lastKey from bpm_seq where tbname = '" + forTableName + "'",
 //							IDAO.class
 //						);
@@ -198,11 +198,11 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 //				    } else {
 //				    	seq_key = new Long(1);
 //				    }
-//
+//				    
 //                    //table sequence getting/////////////////////////////////////////////////////////////////////
 //				    Long id_key  = null;
 //					IDAO tdao = ConnectiveDAO.createDAOImpl(
-//							tc,
+//							tc, 
 //							"select ifnull(max("+forColumnName+"),0) as lastKey from " +(forTableName.equals("workitem")? "bpm_worklist" : ((useTableNameHeader)?"bpm_":"") + forTableName) ,
 //							IDAO.class
 //						);
@@ -210,43 +210,43 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 //					if(tdao.next()){
 //					 	Number currKey = (Number)tdao.get("lastKey");
 //					 	id_key = new Long(currKey.longValue());
-//					}
-//
+//					} 
+//					
 //					//update key/////////////////////////////////////////////////////////////////////////////////
 //					Long key  = null;
 //					if(seq_key.longValue() > id_key.longValue()) key = seq_key;
 //					else key = new Long(id_key.longValue()+1);
-//
+//					
 //					IDAO udao = ConnectiveDAO.createDAOImpl(
-//							tc,
+//							tc, 
 //							"update bpm_seq set seq = ?seq , moddate = now() where  tbname = ?tbname",
 //							IDAO.class
 //						);
-//
+//					
 //					udao.set("seq", key);
 //					udao.set("tbname", forTableName);
 //					//udao.set("preSeq", new Long(key.longValue()-1));
-//
+//					
 //					//if seq dont't exist,seq insert ////////////////////////////////////////////////////////////
 //					int modcount = udao.update();
 //					if(modcount == 0){
 //						IDAO idao = ConnectiveDAO.createDAOImpl(
-//								tc,
+//								tc, 
 //								"insert into bpm_seq (tbname, seq, description, moddate) values(?tbname, ?seq, ?description, now())",
 //								IDAO.class
 //							);
 //						idao.set("tbname", forTableName);
 //						idao.set("seq", key);
 //						idao.set("description", forTableName);
-//						idao.insert();
+//						idao.insert();					
 //					}
-//
+//					
 //					return key;
-//
+//					
 //				} catch (Exception e) {
 //					// TODO Auto-generated catch block
 //					//e.printStackTrace();
-//
+//					
 //					throw new RuntimeException(e);
 //				} finally {
 //					try {

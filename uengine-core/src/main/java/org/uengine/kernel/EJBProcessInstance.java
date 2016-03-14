@@ -84,8 +84,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		if(processInstanceDAO == null){
 			ProcessInstanceDAOType pidt = ProcessInstanceDAOType.getInstance(getProcessTransactionContext());
 			processInstanceDAO = pidt.findByPrimaryKey(new Long(getInstanceId()));
-			processInstanceDAO.getImplementationObject().setTableName("bpm_procinst");
-			processInstanceDAO.getImplementationObject().setKeyField("instid");
+			processInstanceDAO.getImplementationObject().setTableName("BPM_PROCINST");
+			processInstanceDAO.getImplementationObject().setKeyField("INSTID");
 			processInstanceDAO.getImplementationObject().createUpdateSql();
 		}
 
@@ -278,8 +278,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	public void applyChanges() throws Exception{
 
 		ProcessInstanceDAO procInsDAO = getProcessInstanceDAO();
-		procInsDAO.getImplementationObject().setTableName("bpm_procinst");
-		procInsDAO.getImplementationObject().setKeyField("instid");
+		procInsDAO.getImplementationObject().setTableName("BPM_PROCINST");
+		procInsDAO.getImplementationObject().setKeyField("INSTID");
 		procInsDAO.setModDate(GlobalContext.getNow(getProcessTransactionContext()).getTime());
 
 		if(isNew){
@@ -549,7 +549,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 					//20120911 var filePath read
 					//20130815 var filePath save
 
-					Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
+					Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(starteddate);
 					String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1232,7 +1232,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	private void setProcessVariablesFile (Map modifiedVariables) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1265,7 +1265,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	private void setProcessVariablesFile (String key, Serializable val) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1298,7 +1298,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	private Map getAllFile() throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1317,7 +1317,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	private ProcessVariableValue getMultipeFromFile(String scopeByTracingTag, String key) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
@@ -1362,7 +1362,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		return getProcessVariableDAOFacade().getAsProcessVariableValue(getInstanceId(), scopeByTracingTag, key);
 	}
 	private Serializable getFile(String scopeByTracingTag, String key, String firstPart, boolean isProperty) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("starteddate");
+		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)

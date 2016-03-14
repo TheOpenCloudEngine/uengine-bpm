@@ -85,6 +85,7 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 				String forTableName = new String(forWhat);
 				String forColumnName = new String(((useTableNameHeader) ? forWhat : "") + "id");
 				forColumnName = forColumnName.replaceFirst("Proc", "");
+				forColumnName = forColumnName.toLowerCase();
 				forTableName = forTableName.toLowerCase();
 //				forTableName = forTableName.toUpperCase();
 				if (forTableName.equals("worklist")) {

@@ -1,286 +1,304 @@
-var org_uengine_modeling_ElementView = function(objectId, className){
-	this.objectId = objectId;
-	this.className = className;
-	this.object = mw3.objects[this.objectId];
-	this.objectDivId = mw3._getObjectDivId(this.objectId);
-	this.objectDiv = $(document.getElementById(this.objectDivId));
-	if(!this.object) return true;
+var org_uengine_modeling_ElementView = function (objectId, className) {
+    this.objectId = objectId;
+    this.className = className;
+    this.object = mw3.objects[this.objectId];
+    this.objectDivId = mw3._getObjectDivId(this.objectId);
+    this.objectDiv = $(document.getElementById(this.objectDivId));
+    if (!this.object) return true;
 
-	this.isNew = true;
-	this.metadata = mw3.getMetadata(this.className);
-
-
-	this.getValue = function(){
-		if(this.element){
-			if($('#' + this.element.id).length == 0)
-				return {__objectId: this.objectId, __className: this.className};
-
-			this.element = document.getElementById(this.element.id);
-			this.object.label = this.element.shape.label;
-			this.object.x = this.element.shape.geom.getBoundary().getCentroid().x;
-			this.object.y = this.element.shape.geom.getBoundary().getCentroid().y;
-			this.object.width = this.element.shape.geom.getBoundary().getWidth();
-			this.object.height = this.element.shape.geom.getBoundary().getHeight();
-			this.object.id = this.element.id;
-			this.object.shapeId = this.element.shape.SHAPE_ID;
-			this.object.style = escape(OG.JSON.encode(this.element.shapeStyle));
-			this.object.toEdge = $(this.element).attr('_toedge');
-			this.object.fromEdge = $(this.element).attr('_fromedge');
-			this.object.index = $(this.element).prevAll().length;
-			if($(this.element).parent().attr('id') === $(this.rootgroup).attr('id')){
-				this.object.parent = $(this.rootgroup).attr('id');
-			}else{
-				this.object.parent = $(this.element).parent().attr('id');
-			}
-
-			return this.object;
-		}
-	}
+    this.isNew = true;
+    this.metadata = mw3.getMetadata(this.className);
 
 
-	this.getLabel = function(){
-		if(this.object.element && this.object.element.name)
-			this.object.label = this.object.element.name;
-		//mw3.getObjectNameValue(this.object.element, true);
+    this.getValue = function () {
+        if (this.element) {
+            if ($('#' + this.element.id).length == 0)
+                return {__objectId: this.objectId, __className: this.className};
 
-		return unescape(this.object.label?this.object.label:'');
-	}
+            this.element = document.getElementById(this.element.id);
+            this.object.label = this.element.shape.label;
+            this.object.x = this.element.shape.geom.getBoundary().getCentroid().x;
+            this.object.y = this.element.shape.geom.getBoundary().getCentroid().y;
+            this.object.width = this.element.shape.geom.getBoundary().getWidth();
+            this.object.height = this.element.shape.geom.getBoundary().getHeight();
+            this.object.id = this.element.id;
+            this.object.shapeId = this.element.shape.SHAPE_ID;
+            this.object.style = escape(OG.JSON.encode(this.element.shapeStyle));
+            this.object.toEdge = $(this.element).attr('_toedge');
+            this.object.fromEdge = $(this.element).attr('_fromedge');
+            this.object.index = $(this.element).prevAll().length;
+            if ($(this.element).parent().attr('id') === $(this.rootgroup).attr('id')) {
+                this.object.parent = $(this.rootgroup).attr('id');
+            } else {
+                this.object.parent = $(this.element).parent().attr('id');
+            }
 
-	this.getCanvas = function(){
-
-		var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
-		return mw3.getFaceHelper(canvasId).getCanvas();
-	}
-
-	this.getRenderer = function(){
-		return this.getCanvas()._RENDERER;
-	}
-
-	this.setParent = function(elementId , parentId){
-		if(!elementId || !parentId){
-			return;
-		}
-		if(!this.canvas.groupReservations){
-			this.canvas.groupReservations = {};
-		}
-		var element = this.renderer.getElementById(elementId);
-		var parentElement = this.renderer.getElementById(parentId);
-
-		if(!element){
-			return;
-		}
-
-		//부모가 캔버스에 아직 그려지지 않았을 경우 예약을 걸어놓는다.
-		if(!parentElement){
-			if(!this.canvas.groupReservations[parentId]){
-				this.canvas.groupReservations[parentId] = [];
-			}
-			if(this.canvas.groupReservations[parentId].indexOf(elementId) === -1){
-				this.canvas.groupReservations[parentId].push(elementId);
-			}
-		}
-
-		//자신에게 예약이 걸려있는것이 있다면 그룹을 맺는다.
-		var reservations = this.canvas.groupReservations[elementId];
-		if(!reservations){
-			return;
-		}
-
-		for(var i = 0 ; i < reservations.length; i++){
-			var reservedElementId = reservations[i];
-			var reservedElement = this.renderer.getElementById(reservedElementId);
-			if(reservedElement){
-				element.appendChild(reservedElement);
-			}
-		}
-	}
-
-	this.init = function(){
-		this.canvas = this.getCanvas();
-		this.renderer = this.getRenderer();
-		this.element = null;
-		this.rootgroup = this.renderer.getRootGroup();
-
-		//verification data first.
-		if(this.object.shapeId == null)
-			throw new Error("No shape Id is set for " + this.object);
+            return this.object;
+        }
+    }
 
 
-		//concern 별 색상 적용을 위해 by soo
-		//이 부분과
-		var concern, concernColor, lineColor;
-		if(this.object && this.object.element && this.object.element.concern != null){
-			concern = this.object.element.concern;
+    this.getLabel = function () {
+        if (this.object.element && this.object.element.name)
+            this.object.label = this.object.element.name;
+        //mw3.getObjectNameValue(this.object.element, true);
 
-			if(concern == "Customer"){
-				concernColor = "#f1c40f ";
-				lineColor = "#f39c12 ";
-			}
-			else if(concern == "Solution"){
-				concernColor = "#2ecc71 ";
-				lineColor = "#27ae60 ";
-			}
-			else if(concern == "Endeavor"){
-				concernColor = "#3498db ";
-				lineColor = "#2980b9 ";
-			}
-		}
+        return unescape(this.object.label ? this.object.label : '');
+    }
 
+    this.getCanvas = function () {
 
-		var existElement = document.getElementById(this.object.id);
-		if(existElement){
-			this.canvas.drawLabel(existElement, this.getLabel());
-			this.element = existElement;
-			this.isNew = false;
+        var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
+        return mw3.getFaceHelper(canvasId).getCanvas();
+    }
 
-			//concern 별 color 적용 by soo
-			//이 부분
-			if(concern != null)
-				this.canvas._RENDERER.setShapeStyle(this.element, {"fill": concernColor, "fill-opacity": 1, "stroke" : lineColor});
+    this.getRenderer = function () {
+        return this.getCanvas()._RENDERER;
+    }
 
-		}else{
+    this.setParent = function (elementId, parentId) {
+        if (!elementId || !parentId) {
+            return;
+        }
+        if (!this.canvas.groupReservations) {
+            this.canvas.groupReservations = {};
+        }
+        var element = this.renderer.getElementById(elementId);
+        var parentElement = this.renderer.getElementById(parentId);
 
-			var shape = eval('new ' + this.object.shapeId);
-			shape.label = this.getLabel();
+        if (!element) {
+            return;
+        }
 
-			if( this.object.instStatus ){
-				if("Completed" == this.object.instStatus || "Running" == this.object.instStatus ){
-					shape.status = this.object.instStatus;
-				}
-			}
+        //부모가 캔버스에 아직 그려지지 않았을 경우 예약을 걸어놓는다.
+        if (!parentElement) {
+            if (!this.canvas.groupReservations[parentId]) {
+                this.canvas.groupReservations[parentId] = [];
+            }
+            if (this.canvas.groupReservations[parentId].indexOf(elementId) === -1) {
+                this.canvas.groupReservations[parentId].push(elementId);
+            }
+        }
 
-			var style = this.object.style;
-			var boundary;
+        //자신에게 예약이 걸려있는것이 있다면 그룹을 맺는다.
+        var reservations = this.canvas.groupReservations[elementId];
+        if (!reservations) {
+            return;
+        }
 
-			//concern 별 color 적용 by soo
-			//이 부분을 추가하시면 될 것 같습니다.
-			if(style == "null" && concern != null){
-				style = new OG.geometry.Style({
-					fill: concernColor,
-					"fill-opacity": 1,
-					'stroke': lineColor
-				});
-			}
+        for (var i = 0; i < reservations.length; i++) {
+            var reservedElementId = reservations[i];
+            var reservedElement = this.renderer.getElementById(reservedElementId);
+            if (reservedElement) {
+                element.appendChild(reservedElement);
+            }
+        }
+    }
 
-			this.element = this.canvas.drawShape([this.object.x, this.object.y],
-				shape,
-				[parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
-				OG.JSON.decode(unescape(style)),
-				this.object.id,
-				this.object.parent,
-				null);
+    this.init = function () {
+        this.canvas = this.getCanvas();
+        this.renderer = this.getRenderer();
+        this.element = null;
+        this.rootgroup = this.renderer.getRootGroup();
+        this.byDrop = this.object.byDrop;
 
-			this.setParent(this.element.id , this.object.parent);
-
-			boundary = this.element.shape.geom.boundary;
-
-			this.autoResizeCanvas(boundary);
-
-			this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
-
-			mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
-		}
+        //verification data first.
+        if (this.object.shapeId == null)
+            throw new Error("No shape Id is set for " + this.object);
 
 
-		if (this.object.toEdge) {
-			$(this.element).attr('_toedge', this.object.toEdge);
-		}
+        //concern 별 색상 적용을 위해 by soo
+        //이 부분과
+        var concern, concernColor, lineColor;
+        if (this.object && this.object.element && this.object.element.concern != null) {
+            concern = this.object.element.concern;
 
-		if (this.object.fromEdge) {
-			$(this.element).attr('_fromedge', this.object.fromEdge);
-		}
+            if (concern == "Customer") {
+                concernColor = "#f1c40f ";
+                lineColor = "#f39c12 ";
+            }
+            else if (concern == "Solution") {
+                concernColor = "#2ecc71 ";
+                lineColor = "#27ae60 ";
+            }
+            else if (concern == "Endeavor") {
+                concernColor = "#3498db ";
+                lineColor = "#2980b9 ";
+            }
+        }
 
-		boundary = this.element.shape.geom.boundary;
 
-		this.autoResizeCanvas(boundary);
+        var existElement = document.getElementById(this.object.id);
+        if (existElement) {
+            this.canvas.drawLabel(existElement, this.getLabel());
+            this.element = existElement;
+            this.isNew = false;
 
-		this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
+            //concern 별 color 적용 by soo
+            //이 부분
+            if (concern != null)
+                this.canvas._RENDERER.setShapeStyle(this.element, {
+                    "fill": concernColor,
+                    "fill-opacity": 1,
+                    "stroke": lineColor
+                });
 
-		mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
+        } else {
 
-		$(this.element).trigger('loaded.' + this.element.id);
+            var shape = eval('new ' + this.object.shapeId);
+            shape.label = this.getLabel();
 
-		this.bindMapping();
-	}
+            if (this.object.instStatus) {
+                if ("Completed" == this.object.instStatus || "Running" == this.object.instStatus) {
+                    shape.status = this.object.instStatus;
+                }
+            }
 
-	this.bindMapping = function(){
-		var metadata = mw3.getMetadata(this.className);
-		for(var methodName in metadata.serviceMethodContextMap){
-			if(mw3.isHiddenMethodContext(this.metadata.serviceMethodContextMap[methodName], this.object))
-				continue;
+            var style = this.object.style;
+            var boundary;
 
-			var methodContext = metadata.serviceMethodContextMap[methodName];
+            //concern 별 color 적용 by soo
+            //이 부분을 추가하시면 될 것 같습니다.
+            if (style == "null" && concern != null) {
+                style = new OG.geometry.Style({
+                    fill: concernColor,
+                    "fill-opacity": 1,
+                    'stroke': lineColor
+                });
+            }
 
-			if(methodContext.eventBinding){
-				for(var eventNameIndex in methodContext.eventBinding){
-					var eventName = methodContext.eventBinding[eventNameIndex];
+            var preventDrop = this.byDrop ? false : true;
+            this.element = this.canvas.drawShape([this.object.x, this.object.y],
+                shape,
+                [parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
+                OG.JSON.decode(unescape(style)),
+                this.object.id,
+                this.object.parent,
+                preventDrop);
 
-					this.bind(eventName);
-				}
-			}
+            this.setParent(this.element.id, this.object.parent);
 
-			if(methodContext.mouseBinding){
-				var which = 3;
-				if(methodContext.mouseBinding == "right")
-					which = 3;
-				else if(methodContext.mouseBinding == "left")
-					which = 1;
+            boundary = this.element.shape.geom.boundary;
 
-				if(methodContext.mouseBinding == "drop"){
+            this.autoResizeCanvas(boundary);
 
-					$(this.element).droppable({
-						greedy: true,
-						tolerance: 'geom'
-					}).attr('droppable', true);
+            this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
 
-					var command = "if(mw3.objects['"+ this.objectId +"']!=null) mw3.call("+this.objectId+", '"+methodName+"')";
-					$(this.element).on('drop.' + this.objectId, {command: command}, function(event, ui){
-						if(Object.prototype.toString.call(ui.draggable[0]) != "[object SVGGElement]"){
-							if(Object.prototype.toString.call(ui.draggable[0]) != "[object SVGRectElement]"){
-								eval(event.data.command);
-							}
-						}
-					});
-				}else{
-					// click(mouse right) is contextmenu block
-					if(which == 3){
+            mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
+        }
 
-						$(this.element).bind('contextmenu', function(event){
-							return false;
-						});
-					}
 
-					$(this.element).on((which==3?'mouseup':'click') + '.'+this.objectId, {which: which, objectId: this.objectId}, function(event){
-						$(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event);
-					});
+        if (this.object.toEdge) {
+            $(this.element).attr('_toedge', this.object.toEdge);
+        }
 
-				}
-			}
-		}
-	}
+        if (this.object.fromEdge) {
+            $(this.element).attr('_fromedge', this.object.fromEdge);
+        }
 
-	this.bind = function(name){
-		$(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function(event, ui){
-			$(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event.type);
-		});
-	}
+        boundary = this.element.shape.geom.boundary;
 
-	this.destroy = function(){
-		if($(this.element).attr('droppable'))
-			$(this.element).droppable( "destroy" );
+        this.autoResizeCanvas(boundary);
 
-		$(this.element).unbind('.' + this.objectId);
-	}
+        this.object[this.metadata.keyFieldDescriptor.name] = this.element.id;
 
-	this.autoResizeCanvas = function(boundary){
-		var rootBBox = this.canvas._RENDERER.getRootBBox();
-		if(rootBBox.width < (boundary._centroid.x + boundary._width) * this.canvas._CONFIG.SCALE){
-			this.canvas._RENDERER.setCanvasSize([boundary._centroid.x + boundary._width, rootBBox.height]);
-		}
-		if(rootBBox.height < (boundary._centroid.y + boundary._height) * this.canvas._CONFIG.SCALE){
-			this.canvas._RENDERER.setCanvasSize([rootBBox.width, boundary._centroid.y + boundary._height]);
-		}
-	}
+        mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
 
-	this.init();
+        $(this.element).trigger('loaded.' + this.element.id);
+
+        //캔버스가 서버로부터 받은 데이터를 적용시키는 과정이 아닐 경우 브로드캐스트 수행.
+        if (this.canvas.getRemotable()) {
+            if (!this.canvas.getRemoteDuring()) {
+                OG.RemoteHandler.broadCastCanvas(this.canvas, function (canvas) {
+
+                });
+            }
+        }
+
+        this.bindMapping();
+    }
+
+    this.bindMapping = function () {
+        var metadata = mw3.getMetadata(this.className);
+        for (var methodName in metadata.serviceMethodContextMap) {
+            if (mw3.isHiddenMethodContext(this.metadata.serviceMethodContextMap[methodName], this.object))
+                continue;
+
+            var methodContext = metadata.serviceMethodContextMap[methodName];
+
+            if (methodContext.eventBinding) {
+                for (var eventNameIndex in methodContext.eventBinding) {
+                    var eventName = methodContext.eventBinding[eventNameIndex];
+
+                    this.bind(eventName);
+                }
+            }
+
+            if (methodContext.mouseBinding) {
+                var which = 3;
+                if (methodContext.mouseBinding == "right")
+                    which = 3;
+                else if (methodContext.mouseBinding == "left")
+                    which = 1;
+
+                if (methodContext.mouseBinding == "drop") {
+
+                    $(this.element).droppable({
+                        greedy: true,
+                        tolerance: 'geom'
+                    }).attr('droppable', true);
+
+                    var command = "if(mw3.objects['" + this.objectId + "']!=null) mw3.call(" + this.objectId + ", '" + methodName + "')";
+                    $(this.element).on('drop.' + this.objectId, {command: command}, function (event, ui) {
+                        if (Object.prototype.toString.call(ui.draggable[0]) != "[object SVGGElement]") {
+                            if (Object.prototype.toString.call(ui.draggable[0]) != "[object SVGRectElement]") {
+                                eval(event.data.command);
+                            }
+                        }
+                    });
+                } else {
+                    // click(mouse right) is contextmenu block
+                    if (which == 3) {
+
+                        $(this.element).bind('contextmenu', function (event) {
+                            return false;
+                        });
+                    }
+
+                    $(this.element).on((which == 3 ? 'mouseup' : 'click') + '.' + this.objectId, {
+                        which: which,
+                        objectId: this.objectId
+                    }, function (event) {
+                        $(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event);
+                    });
+
+                }
+            }
+        }
+    }
+
+    this.bind = function (name) {
+        $(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function (event, ui) {
+            $(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event.type);
+        });
+    }
+
+    this.destroy = function () {
+        if ($(this.element).attr('droppable'))
+            $(this.element).droppable("destroy");
+
+        $(this.element).unbind('.' + this.objectId);
+    }
+
+    this.autoResizeCanvas = function (boundary) {
+        var rootBBox = this.canvas._RENDERER.getRootBBox();
+        if (rootBBox.width < (boundary._centroid.x + boundary._width) * this.canvas._CONFIG.SCALE) {
+            this.canvas._RENDERER.setCanvasSize([boundary._centroid.x + boundary._width, rootBBox.height]);
+        }
+        if (rootBBox.height < (boundary._centroid.y + boundary._height) * this.canvas._CONFIG.SCALE) {
+            this.canvas._RENDERER.setCanvasSize([rootBBox.width, boundary._centroid.y + boundary._height]);
+        }
+    }
+
+    this.init();
 };

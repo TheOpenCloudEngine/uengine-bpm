@@ -2,10 +2,7 @@ package org.uengine.social;
 
 import org.metaworks.MetaworksContext;
 import org.metaworks.dwr.MetaworksRemoteService;
-import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.resources.ClassResource;
-import org.uengine.modeling.resource.resources.JavaClassResource;
-import org.uengine.modeling.resource.resources.ProcessResource;
 import org.uengine.modeling.resource.resources.UrlappResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
 import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelector;
@@ -17,8 +14,8 @@ public class SocialBPMProcessDefinitionSelectorPopup extends SocialBPMProcessVar
 
     public SocialBPMProcessDefinitionSelectorPopup() {
         ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
-        classResourceNavigator.getRoot().filterResources(ClassResource.class);
-        classResourceNavigator.getRoot().filterResources(UrlappResource.class);
+        classResourceNavigator.getRoot().filtResources(ClassResource.class);
+        classResourceNavigator.getRoot().filtResources(UrlappResource.class);
 
         MetaworksRemoteService.autowire(classResourceNavigator);
 

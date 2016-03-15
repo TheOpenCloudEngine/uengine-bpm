@@ -271,6 +271,7 @@ public class EditorPanel implements ContextAware {
 
 
 	@ServiceMethod(callByContent = true, target = ServiceMethod.TARGET_POPUP)
+//	@Available(where = "simulatable")
 	public void simulate() throws Exception {
 		TransactionContext.getThreadLocalInstance().setSharedContext("isDevelopmentTime", true);
 
@@ -285,7 +286,9 @@ public class EditorPanel implements ContextAware {
 			runner.setPanel(((Simulatable) getEditor()).simulator(resource));
 
 			MetaworksRemoteService.wrapReturn(runner);
-		}
+		}else
+
+			MetaworksRemoteService.wrapReturn(new ModalWindow(new Label("This resource is not supporting simulation")));
 	}
 
 }

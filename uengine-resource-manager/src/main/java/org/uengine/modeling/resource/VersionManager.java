@@ -57,7 +57,7 @@ public class VersionManager implements ContextAware{
         setMetaworksContext(new MetaworksContext());
         getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 
-        String rootPath = resourceNavigator.getRootPath();
+        String rootPath = resourceNavigator.getRoot().getPath();
         setRootPath(rootPath);
 
         String versionPath = versionDirectoryOf();
@@ -150,7 +150,7 @@ public class VersionManager implements ContextAware{
             lastVersion.makeAsProduction(this);
         }
 
-        MetaworksRemoteService.wrapReturn(new Label("<h3>Version has been set as " + lastVersion.getMajor() + "." + lastVersion.getMinor()) + "</h4>");
+        MetaworksRemoteService.wrapReturn(new Label("<div class='alert alert-success' role='alert'>Version has been set as " + lastVersion.getMajor() + "." + lastVersion.getMinor() + "</div>"));
     }
 
 
@@ -199,6 +199,12 @@ public class VersionManager implements ContextAware{
             String versionDirectory = productionVersion.getVersionDirectory(versionManager);
 
             resourcePath = ("../" + versionDirectory + (resourcePath!=null && resourcePath.length() > 0 ? "/" + resourcePath : ""));
+        }else{
+            String prefix = appName + "/";
+            int wherePrefix = resourcePath.indexOf(prefix);
+            if(wherePrefix == 0){
+                resourcePath = resourcePath.substring(prefix.length(), resourcePath.length());
+            }
         }
 
         return resourcePath;

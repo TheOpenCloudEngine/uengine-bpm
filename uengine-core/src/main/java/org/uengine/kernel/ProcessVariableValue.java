@@ -26,10 +26,33 @@ public class ProcessVariableValue implements java.io.Serializable, Cloneable{
 		this.name = name;
 	}
 
+	public Serializable getValue(ProcessInstance instance) {
+		final Serializable sourceValue = getValue();
+
+		if(sourceValue instanceof VariablePointer){
+			try {
+
+				return
+						(Serializable) new InRootExecutionScope(){
+                            @Override
+                            public Object logic(ProcessInstance instance) throws Exception {
+                                return ((VariablePointer) sourceValue).getValue(instance);
+                            }
+                        }.run(instance);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return sourceValue;
+	}
+
 	public Serializable getValue() {
 		if(values.size() == 0) return null;
 		
-		return (Serializable)values.get(getCursor()); 
+		Serializable sourceValue = (Serializable)values.get(getCursor());
+
+		return sourceValue;
 	}
 
 	public void setValue(Serializable value) {

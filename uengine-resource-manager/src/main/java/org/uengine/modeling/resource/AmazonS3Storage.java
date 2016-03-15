@@ -7,10 +7,13 @@ import org.jets3t.service.ServiceException;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
 import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
+import org.jets3t.service.model.StorageObject;
 import org.jets3t.service.security.AWSCredentials;
+import org.metaworks.MetaworksContext;
 import org.metaworks.MetaworksException;
 import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ExceptionDepthComparator;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
@@ -74,7 +77,7 @@ public class AmazonS3Storage implements Storage{
     @Override
     public void delete(IResource resource) {
         try {
-            restS3Service.deleteObject(getAmazonS3Bucket() ,getS3Path(resource.getPath()));
+            restS3Service.deleteObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -102,13 +105,32 @@ public class AmazonS3Storage implements Storage{
     public List<IResource> listFiles(IContainer containerResource) throws Exception {
         List<IResource> resourceList = new ArrayList<>();
 
-        S3Object[] s3Objects = restS3Service.listObjects(getAmazonS3Bucket());
+        String containerPath = getS3Path(containerResource.getPath());
+        S3Object[] s3Objects = restS3Service.listObjects(getAmazonS3Bucket(), containerPath, null);
 
+        List<IResource> childList = null;
         for(S3Object s3Object : s3Objects){
             String path = getResourcePath(s3Object.getKey());
-            if(path.startsWith(containerResource.getPath())){
-                IResource resource = DefaultResource.createResource(path);
-                resourceList.add(resource);
+            if ( (containerResource.getPath() + "/").equals(path) )
+                continue;
+            if(path.endsWith("/")) {
+                ContainerResource subContainerResource = (ContainerResource) containerResource.getClass().newInstance();
+
+                subContainerResource.setPath(path);
+                subContainerResource.setMetaworksContext(new MetaworksContext());
+                if ( childList == null ) {
+                    resourceList.add(subContainerResource);
+                } else {
+                    childList.add(subContainerResource);
+                }
+                childList = new ArrayList<>();
+                subContainerResource.setChildren(childList);
+            } else {
+                if ( childList == null) {
+                    resourceList.add(DefaultResource.createResource(path));
+                } else {
+                    childList.add(DefaultResource.createResource(path));
+                }
             }
         }
 
@@ -117,13 +139,20 @@ public class AmazonS3Storage implements Storage{
 
     @Override
     public void createFolder(IContainer containerResource) throws Exception {
-        //TODO:  please implement this
+        final StorageObject object = new StorageObject(getS3Path(containerResource.getPath()) + "/");
+        object.setBucketName(getAmazonS3Bucket());
+        object.setContentLength(0);
+        object.setContentType("application/x-directory");
+        restS3Service.putObject(getAmazonS3Bucket(), object);
+//        S3Object object = new S3Object("object");
+//        object.setName(getS3Path(containerResource.getPath()));
+//        restS3Service.putObject(getAmazonS3Bucket(), object);
+
     }
 
     @Override
     public boolean exists(IResource resource) throws Exception {
-        //TODO:  please implement this
-        return false;
+        return restS3Service.isObjectInBucket(getAmazonS3Bucket(), getS3Path(resource.getPath()));
     }
 
     @Override
@@ -156,14 +185,17 @@ public class AmazonS3Storage implements Storage{
 
     @Override
     public InputStream getInputStream(IResource resource) throws Exception {
-        return null; //TODO: must be implemented
+        S3Object s3Object = restS3Service.getObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
+        return s3Object.getDataInputStream();
     }
 
     @Override
     public OutputStream getOutputStream(IResource resource) throws Exception {
+//        XStream xstream = new XStream();
+//
+//        S3Object s3Object = getS3Object(resource.getPath());
         return null; //TODO: must be implemented
     }
-
 
     private S3Object getS3Object(String path) throws IOException, NoSuchAlgorithmException {
         return new S3Object(getS3Path(path));
@@ -178,7 +210,9 @@ public class AmazonS3Storage implements Storage{
     }
 
     private String getResourcePath(String path){
-        return path.substring(getTenantBasePath().length()).replace(S3_SPERATOR,"/");
+        String basePath = getTenantBasePath();
+        int len = basePath.length();
+        return path.substring(len).replace(S3_SPERATOR,"/");
     }
 
     private String getTenantBasePath() {
@@ -193,6 +227,12 @@ public class AmazonS3Storage implements Storage{
 
     @Override
     public void move(IResource src, IContainer container) {
-
+        try {
+            String bucketName = getAmazonS3Bucket();
+            restS3Service.moveObject(bucketName, src.getName(), bucketName,
+                    getS3Object(container.getPath() + "/" + src.getName()), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -520,6 +520,16 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 
 	}
 
+	@Override
+	public void afterMWDeserialization() {
+		afterDeserialization();
+	}
+
+	@Override
+	public void beforeMWSerialization() {
+		beforeSerialization();
+	}
+
 //	@ServiceMethod(payload = {"uuid"})
 //	public void delete(@AutowiredFromClient ProcessVariablePanel processVariablePanel){
 //		for(ProcessVariable processVariable : processVariablePanel.getProcessVariableList()){

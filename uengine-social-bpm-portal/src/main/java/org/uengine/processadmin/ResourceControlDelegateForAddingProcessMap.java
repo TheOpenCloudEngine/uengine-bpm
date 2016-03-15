@@ -1,6 +1,7 @@
 package org.uengine.processadmin;
 
 import com.itextpdf.text.Meta;
+import org.metaworks.Refresh;
 import org.metaworks.Remover;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
@@ -8,9 +9,12 @@ import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.CodiProcessDefinitionFactory;
 import org.uengine.codi.mw3.model.ProcessMap;
 import org.uengine.codi.mw3.model.ProcessMapList;
+import org.uengine.codi.mw3.model.ProcessMapPanel;
+import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceControlDelegate;
+import org.uengine.modeling.resource.VersionManager;
 import org.uengine.processmanager.ProcessManagerBean;
 
 import java.io.File;
@@ -31,7 +35,9 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
 
             autowire(processMap);
 
-            processMap.setMapId(processMap.session.getCompany().getComCode() + "." + resource.getPath());
+            String mapId = String.valueOf((processMap.session.getCompany().getComCode() + "." + VersionManager.withoutVersionPath("codi", resource.getPath())).hashCode());
+
+            processMap.setMapId(mapId);
             processMap.setDefId(resource.getPath());
             processMap.setName(name);
             processMap.setComCode(processMap.session.getCompany().getComCode());
@@ -46,11 +52,19 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
                 processMapList.load(processMap.session);
 
 
-                wrapReturn(new Remover(new ModalWindow()));
+                ProcessMapPanel processMapPanel = new ProcessMapPanel();
+                Session session = MetaworksRemoteService.getComponent(Session.class);
+
+                processMapPanel.load(processMap.session);
+
+
+                wrapReturn(new Remover(new ModalWindow()), new Refresh(processMapPanel));
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+
+
         }
     }
 

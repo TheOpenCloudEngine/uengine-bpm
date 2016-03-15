@@ -107,6 +107,7 @@ public class Canvas {
 
 					elementView = element.createView();
 					elementView.fill(symbol);
+					elementView.setByDrop(true);
 
 					if(elementView.getMetaworksContext()==null) elementView.setMetaworksContext(new MetaworksContext());
 					elementView.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);

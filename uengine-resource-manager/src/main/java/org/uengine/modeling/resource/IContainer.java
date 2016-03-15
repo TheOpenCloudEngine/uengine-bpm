@@ -13,7 +13,8 @@ public interface IContainer extends IResource {
 	public List<IResource> getChildren();
 	public void setChildren(List<IResource> children);
 
-	public <T extends IResource> void filterResources(Class<T> clazz);
+	public <T extends IResource> void filtResources(Class<T> clazz);
+	public <T extends IResource> void filtResources(Class<T> clazz, boolean filtOut);
 	public void filterResources(List<IResource> resources);
 	public void initMetaworksContext(MetaworksContext metaworksContext);
 }

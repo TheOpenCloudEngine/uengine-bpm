@@ -48,6 +48,8 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 	abstract public Serializable get(String tracingTag, String key) throws Exception;
 	abstract public void add(String scopeByTracingTag, String key, Serializable val, int index) throws Exception;
 	abstract public void set(String scopeByTracingTag, ProcessVariableValue pvv) throws Exception;
+	abstract public void setAt(String scopeByTracingTag, String key, int index, Serializable val) throws Exception;
+	abstract public Serializable getAt(String tracingTag, String key, int index) throws Exception;
 
 	/**
 	 * @deprecated rather use 'ProcessVariable.getMultiple(instance, scope)'

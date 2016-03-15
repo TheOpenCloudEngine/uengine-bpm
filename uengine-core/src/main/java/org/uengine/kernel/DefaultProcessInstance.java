@@ -690,7 +690,42 @@ public class DefaultProcessInstance extends ProcessInstance{
 			add(pvv.getName(), pvv.getValue(), i++);			
 		}while(pvv.next());				
 	}
-	
+
+	@Override
+	public void setAt(String scopeByTracingTag, String key, int index, Serializable val) throws Exception {
+		Object sourceValue = getSourceValue(scopeByTracingTag, key);
+
+		IndexedProcessVariableMap indexedProcessVariableMap;
+
+		if(sourceValue instanceof IndexedProcessVariableMap){
+			indexedProcessVariableMap = ((IndexedProcessVariableMap) sourceValue);
+		}else{
+			indexedProcessVariableMap = new IndexedProcessVariableMap();
+			indexedProcessVariableMap.putProcessVariable(0, sourceValue);
+		}
+
+		indexedProcessVariableMap.putProcessVariable(index, val);
+
+		setSourceValue(scopeByTracingTag, key, indexedProcessVariableMap);
+	}
+
+	@Override
+	public Serializable getAt(String tracingTag, String key, int index) throws Exception {
+
+		Object sourceValue = getSourceValue(tracingTag, key);
+
+		IndexedProcessVariableMap indexedProcessVariableMap;
+
+		if(sourceValue instanceof IndexedProcessVariableMap){
+			indexedProcessVariableMap = ((IndexedProcessVariableMap) sourceValue);
+		}else{
+			indexedProcessVariableMap = new IndexedProcessVariableMap();
+			indexedProcessVariableMap.putProcessVariable(0, sourceValue);
+		}
+
+		return indexedProcessVariableMap.getProcessVariableAt(index);
+	}
+
 	public void setProperty(String tracingTag, String key, Serializable val) throws Exception {
 		String fullKey = createFullKey(tracingTag, key, true);
 		variables.put(fullKey, val);
@@ -700,13 +735,19 @@ public class DefaultProcessInstance extends ProcessInstance{
 		String fullKey = createFullKey(tracingTag, key, true);
 		return (Serializable)variables.get(fullKey);
 	}
-	
+
+
 	protected String createFullKey(String tracingTag, String key, boolean isProperty){
+		return createFullKey(tracingTag, key, isProperty, -1);
+	}
+
+	protected String createFullKey(String tracingTag, String key, boolean isProperty, int index){
 
 		return tracingTag
 				+ (getExecutionScopeContext() != null ? ":" + getExecutionScopeContext().getExecutionScope() : "")
 				+ ":" + key
 				+ (isProperty ? SUFFIX_PROPERTY : "")
+				+ (index > 0 ? "[" + index +"]" : "")
 				;
 	}
 	

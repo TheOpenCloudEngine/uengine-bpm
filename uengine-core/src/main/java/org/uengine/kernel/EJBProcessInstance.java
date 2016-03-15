@@ -1,10 +1,6 @@
 package org.uengine.kernel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,6 +53,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 	//for caching
 	boolean caching;
+	private boolean fileBasedPersistence = false;
+
 	public boolean isCaching() {
 		return caching;
 	}
@@ -293,38 +291,51 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		setCaching(true);
 		if(modifiedKeyMap!=null){
-			setProcessVariablesFile(getVariables());
-			
-			/*만일을 위해 DB에도 값을 넣는다.*/
-			/*
-			getProcessVariableDAOFacade().deleteValue(getInstanceId(), modifiedKeyMap.keySet().iterator());
 
-			ProcessVariableDAO pvd = getProcessVariableDAOFacade().createProcessVariableDAOForBatchInsert();
-			for(Iterator iterator = modifiedKeyMap.keySet().iterator(); iterator.hasNext();){
-				String fullKey = (String)iterator.next();
-				
-				String[] scopeAndKey = (String[])modifiedKeyMap.get(fullKey);
-				String scope = scopeAndKey[0];
-				String key = scopeAndKey[1];
-				
-				boolean isProperty = isProperty(fullKey);
-				
-				Serializable cachedValue = (isProperty ? this.getProperty(scope, key) : this.getSourceValue(scope, key));
-				if(cachedValue instanceof IndexedProcessVariableMap){
-					ProcessVariableValue multipleValue = (ProcessVariableValue)getMultiple(scope, key);
-					multipleValue.beforeFirst();
-					int i=0;
-					do{
-						setImpl(scope, key, multipleValue.getValue(), i, true, false, true, pvd, false);
-						i++;
-					}while(multipleValue.next());
+			if(fileBasedPersistence) {
+				setProcessVariablesFile(getVariables());
+			}else {
+				/*DB based.*/
+
+				getProcessVariableDAOFacade().deleteValue(getInstanceId(), modifiedKeyMap.keySet().iterator());
+
+				ProcessVariableDAO pvd = getProcessVariableDAOFacade().createProcessVariableDAOForBatchInsert();
+				for (Iterator iterator = modifiedKeyMap.keySet().iterator(); iterator.hasNext(); ) {
+					String fullKey = (String) iterator.next();
+
+					String[] scopeAndKeyAndIndex = (String[]) modifiedKeyMap.get(fullKey);
+					String scope = scopeAndKeyAndIndex[0];
+					String key = scopeAndKeyAndIndex[1];
+					int index = -1;
+					if(scopeAndKeyAndIndex.length > 2){
+						index = Integer.valueOf(scopeAndKeyAndIndex[2]);
+					}
+
+					boolean isProperty = isProperty(fullKey);
+
+					Serializable cachedValue = (isProperty ? this.getProperty(scope, key) : this.getSourceValue(scope, key));
+					if (cachedValue instanceof IndexedProcessVariableMap) {
+						if(index > -1){ //in the case that only single value of array in the specific index should be modified.
+							ProcessVariableValue multipleValue = (ProcessVariableValue) getMultiple(scope, key);
+							multipleValue.setCursor(index);
+							setImpl(scope, key, multipleValue.getValue(), index, true, false, true, pvd, false);
+						}else {
+
+							ProcessVariableValue multipleValue = (ProcessVariableValue) getMultiple(scope, key);
+							multipleValue.beforeFirst();
+							int i = 0;
+							do {
+								setImpl(scope, key, multipleValue.getValue(), i, true, false, true, pvd, false);
+								i++;
+							} while (multipleValue.next());
+						}
+					} else
+						setImpl(scope, key, cachedValue, 0, false, false, true, pvd, isProperty);
 				}
-				else
-					setImpl(scope, key, cachedValue, 0, false, false, true, pvd, isProperty);
+
+				pvd.updateBatch();
 			}
-			
-			pvd.updateBatch();
-			*/
+
 		}
 
 
@@ -409,7 +420,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			if(modifiedKeyMap==null)
 				modifiedKeyMap = new Hashtable();
 
-			modifiedKeyMap.put(createFullKey(scopeByTracingTag, key, false), new String[]{scopeByTracingTag, key});
+			modifiedKeyMap.put(createFullKey(scopeByTracingTag, key, false, index), new String[]{scopeByTracingTag, key, String.valueOf(index)});
 
 		}else
 
@@ -464,63 +475,75 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 			if(isProperty)
 				super.setProperty(scopeByTracingTag, key, val);
-			else
-				super.set(scopeByTracingTag, key, val);
+			else{
+
+				if(index > 0)
+					super.setAt(scopeByTracingTag, key, index, val);
+				else
+					super.set(scopeByTracingTag, key, val);
+
+			}
 
 			//check the values became dirty so that they can be updated into database later
 			if(modifiedKeyMap==null)
 				modifiedKeyMap = new Hashtable();
 
-			modifiedKeyMap.put(createFullKey(scopeByTracingTag, key, isProperty), new String[]{scopeByTracingTag/*, new Boolean(isInserted)*/, key});
+			modifiedKeyMap.put(createFullKey(scopeByTracingTag, key, isProperty, index), new String[]{scopeByTracingTag/*, new Boolean(isInserted)*/, key, String.valueOf(index)});
 
 			return;
 		}
 
-		if ( !isBatch )
-			setProcessVariablesFile(createFullKey(scopeByTracingTag, key, isProperty), val);
-		
-		
-		/*만일을 대비해 데이터를 넣어놓는다.*/
-		/*
-		int dataType =getDataType(val);
+		if(fileBasedPersistence) {
+			if(!isBatch)
+				setProcessVariablesFile(createFullKey(scopeByTracingTag, key, isProperty), val);
+		}else {
 
-		if(dataType==TYPE_ANY){
-			//try{
-			//TODO: type-sensitive serialization is enabled now. You may let this disabled for the performance issue						
-			ProcessVariable pd = null;{
-				pd = getProcessDefinition()	
-					.getProcessVariable(key);
-			}
-											
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			
-			GlobalContext.serialize(val, bos, pd);
-									//encoding
-			String xml = bos.toString(GlobalContext.DATABASE_ENCODING);
-						
-			//TODO: [serious] value should be very short if you use oracle.. how to?
-			//if(xml.length() > GlobalContext.DATABASE_MAXSTRLENGTH)
-			//	xml = xml.substring(GlobalContext.DATABASE_MAXSTRLENGTH);
 
-			val = xml;
-//
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}	
-		}		
-		
-		String fullKey = createFullKey(scopeByTracingTag, key, isProperty);
-		
-		if(isBatch){			
-			getProcessVariableDAOFacade().insertValueBatch(pvd, getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType, index);
-		}else{
-			if(!append){
-				getProcessVariableDAOFacade().updateValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType); 
-			}else{
-				getProcessVariableDAOFacade().insertValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType, index); 
+				/*만일을 대비해 데이터를 넣어놓는다.*/
+
+			int dataType = getDataType(val);
+
+			if (dataType == TYPE_ANY) {
+				//try{
+				//TODO: type-sensitive serialization is enabled now. You may let this disabled for the performance issue
+				ProcessVariable pd = null;
+				{
+					pd = getProcessDefinition()
+							.getProcessVariable(key);
+				}
+
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+				GlobalContext.serialize(val, bos, pd);
+				//encoding
+				String xml = bos.toString(GlobalContext.DATABASE_ENCODING);
+
+				//TODO: [serious] value should be very short if you use oracle.. how to?
+				//if(xml.length() > GlobalContext.DATABASE_MAXSTRLENGTH)
+				//	xml = xml.substring(GlobalContext.DATABASE_MAXSTRLENGTH);
+
+				val = xml;
+				//
+				//			}catch(Exception e){
+				//				e.printStackTrace();
+				//			}
 			}
+
+			String fullKey = createFullKey(scopeByTracingTag, key, isProperty, index);
+
+			if (isBatch) {
+				getProcessVariableDAOFacade().insertValueBatch(pvd, getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType, index);
+			} else {
+				if (!append) {
+					getProcessVariableDAOFacade().updateValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType);
+				} else {
+					getProcessVariableDAOFacade().insertValue(getInstanceId(), scopeByTracingTag, key, isProperty, fullKey, val, dataType, index);
+				}
+			}
+
 		}
-		*/
+
+
 
 	}
 
@@ -549,27 +572,29 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 					//20120911 var filePath read
 					//20130815 var filePath save
 
-					Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(starteddate);
-					String calendarDirectory = cal.get(Calendar.YEAR)
-							+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
-							+ cal.get(Calendar.DAY_OF_MONTH);
+					if(fileBasedPersistence){ //file based variable persistence is disabled for concurrent variable data change.
+						Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(starteddate);
+						String calendarDirectory = cal.get(Calendar.YEAR)
+								+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
+								+ cal.get(Calendar.DAY_OF_MONTH);
 
-					String filePath =GlobalContext.FILE_SYSTEM_DIR + (GlobalContext.FILE_SYSTEM_DIR.endsWith("/") ? "" : "/") + calendarDirectory +"/vars_" + getInstanceId() + ".json";
+						String filePath =GlobalContext.FILE_SYSTEM_DIR + (GlobalContext.FILE_SYSTEM_DIR.endsWith("/") ? "" : "/") + calendarDirectory +"/vars_" + getInstanceId() + ".json";
 
 
-					File varFile = new File(filePath);
-					if (varFile.exists()) {
-						Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
-						fileVariables.putAll(variables);
-						variables = fileVariables;
+						File varFile = new File(filePath);
+						if (varFile.exists()) {
+							Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
+							fileVariables.putAll(variables);
+							variables = fileVariables;
+						}
+
 					} else {
 
-						throw new Exception("Instance File doesn't exists: " + filePath);
-//						DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
-//						shotProcessInstance.variables.putAll(variables);
-//						variables = shotProcessInstance.variables;
+						DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
+						shotProcessInstance.variables.putAll(variables);
+						variables = shotProcessInstance.variables;
 					}
 
 					if(GlobalContext.logLevelIsDebug){
@@ -613,6 +638,25 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 	public Serializable get(String scopeByTracingTag, String key) throws Exception{
 		return getImpl(scopeByTracingTag, key, false);
+	}
+
+	@Override
+	public Serializable getAt(String tracingTag, String key, int index) throws Exception {
+		beginCaching(tracingTag, key, false);
+
+		return super.getAt(tracingTag, key, index);
+	}
+
+	@Override
+	public void setAt(String scopeByTracingTag, String key, int index, Serializable val) throws Exception {
+		beginCaching(scopeByTracingTag, key, false);
+
+		super.setAt(scopeByTracingTag, key, index, val);
+
+		if(modifiedKeyMap==null)
+			modifiedKeyMap = new Hashtable();
+
+		modifiedKeyMap.put(createFullKey(scopeByTracingTag, key, false, index), new String[]{scopeByTracingTag/*, new Boolean(isInserted)*/, key, String.valueOf(index)});
 	}
 
 	public Serializable getProperty(String scopeByTracingTag, String key) throws Exception {
@@ -729,7 +773,11 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	public Map getAll(String scope) throws Exception {
-		return getAllFile();
+
+		if(fileBasedPersistence)
+			return getAllFile();
+		else
+			return getProcessVariableDAOFacade().getAll(getInstanceId());
 	}
 
 	public String getStatus(String scope) throws Exception{

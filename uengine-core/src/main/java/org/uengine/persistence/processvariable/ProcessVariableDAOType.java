@@ -23,10 +23,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.uengine.contexts.IFileContent;
-import org.uengine.kernel.DefaultProcessInstance;
-import org.uengine.kernel.GlobalContext;
-import org.uengine.kernel.ProcessVariable;
-import org.uengine.kernel.ProcessVariableValue;
+import org.uengine.kernel.*;
 import org.uengine.persistence.AbstractDAOType;
 import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.UEngineUtil;
@@ -385,7 +382,34 @@ public class ProcessVariableDAOType extends AbstractDAOType {
 			Object value = getDeserializedValue(processVariable);
 			
 			if ( value != null ){
-				variableHT.put(processVariable.getKeyString(), value);
+				if(processVariable.getVarIndex().intValue() > 0 || variableHT.containsKey(processVariable.getKeyString())) {
+
+					Object firstValue = null;
+
+					String firstValueKeyString = processVariable.getKeyString();
+					int indexOfArraySignal = processVariable.getKeyString().indexOf("[");
+
+					if(indexOfArraySignal > 0){
+						firstValueKeyString = processVariable.getKeyString().substring(0, indexOfArraySignal);
+					}
+
+					firstValue = variableHT.get(firstValueKeyString);
+
+					IndexedProcessVariableMap indexedProcessVariableMap = null;
+					if (firstValue instanceof IndexedProcessVariableMap){
+						indexedProcessVariableMap = (IndexedProcessVariableMap) firstValue;
+					}else {
+						indexedProcessVariableMap = new IndexedProcessVariableMap();
+						indexedProcessVariableMap.putProcessVariable(0, firstValue);
+					}
+
+					indexedProcessVariableMap.putProcessVariable(processVariable.getVarIndex().intValue(), value);
+
+					variableHT.put(firstValueKeyString, indexedProcessVariableMap);
+				}else {
+
+					variableHT.put(processVariable.getKeyString(), value);
+				}
 			}
 		}		
 		
@@ -393,32 +417,40 @@ public class ProcessVariableDAOType extends AbstractDAOType {
 	}	
 	
 	public DefaultProcessInstance getAllVariablesAsDefaultProcessInstance(String instanceId) throws Exception{
-		ProcessVariableDAO processVariable = createDAOImpl(getAllValue_SQL);
-		processVariable.setInstId(new Long(instanceId));
-		processVariable.select();
-		
-		DefaultProcessInstance defaultProcessInstance = new DefaultProcessInstance();
-		
-		while (processVariable.next()) {
-			Serializable value = getDeserializedValue(processVariable);
-			String scope = processVariable.getTrcTag();
 
-			if(scope==null) scope = "";
-			
-			String key = processVariable.getKeyName();
-			boolean isProperty = processVariable.getIsProperty().booleanValue();
-			
-			//if ( value != null ){
-				if(isProperty){
-					defaultProcessInstance.setProperty(scope, key, value);
-				}else if(processVariable.getVarIndex().intValue() > 0)
-					defaultProcessInstance.add(scope, key, value, processVariable.getVarIndex().intValue());
-				else
-					defaultProcessInstance.set(scope, key, value);
-			//}
-		}
-		
+		//// TODO: OLD logic is better since it doesn't care about the detailed data format of DefaultProcessInstance's multiple data insertion
+//		ProcessVariableDAO processVariable = createDAOImpl(getAllValue_SQL);
+//		processVariable.setInstId(new Long(instanceId));
+//		processVariable.select();
+//
+//		DefaultProcessInstance defaultProcessInstance = new DefaultProcessInstance();
+//
+//		while (processVariable.next()) {
+//			Serializable value = getDeserializedValue(processVariable);
+//			String scope = processVariable.getTrcTag();
+//
+//			if(scope==null) scope = "";
+//
+//			String key = processVariable.getKeyName();
+//			boolean isProperty = processVariable.getIsProperty().booleanValue();
+//
+//			if(isProperty){
+//				defaultProcessInstance.setProperty(scope, key, value);
+//			}else if(processVariable.getVarIndex().intValue() > 0)
+//				defaultProcessInstance.add(scope, key, value, processVariable.getVarIndex().intValue());
+//			else
+//				defaultProcessInstance.set(scope, key, value);
+//		}
+//
+//		return defaultProcessInstance;
+
+
+		// TODO: New logic is not better than old
+		DefaultProcessInstance defaultProcessInstance = new DefaultProcessInstance();
+		defaultProcessInstance.setVariables(getAll(instanceId));
+
 		return defaultProcessInstance;
+
 	}	
 	
 

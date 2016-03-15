@@ -30,18 +30,7 @@ public class VariablePointer implements Serializable{
 
     public Serializable getValue(ProcessInstance instance) throws Exception {
 
-        ProcessVariableValue pvv = instance.getMultiple("", getKey());
-
-        if(pvv == null)
-            return null;
-
-        if(pvv.size() <= getIndex()){
-            return null;
-        }
-
-        pvv.setCursor(getIndex());
-
-        return pvv.getValue();
+        return instance.getAt("", getKey(), getIndex());
     }
 
     public void setValue(ProcessInstance instance, final Serializable value) throws Exception {
@@ -50,14 +39,11 @@ public class VariablePointer implements Serializable{
 
             @Override
             public Object logic(ProcessInstance instance) throws Exception {
-                ProcessVariableValue pvv = instance.getMultiple("", getKey());
-                pvv.setCursor(getIndex());
 
-                pvv.setValue(value);
-
-                instance.set("", getKey(), pvv);
+                instance.setAt("", getKey(), getIndex(), value);
 
                 return null;
+
             }
         }.run(instance);
 

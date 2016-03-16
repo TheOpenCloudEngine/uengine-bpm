@@ -53,7 +53,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 	//for caching
 	boolean caching;
-	private boolean fileBasedPersistence = false;
+	private boolean fileBasedPersistence = GlobalContext.getPropertyString("persistence.file-based", "false").equals("true");
 
 	public boolean isCaching() {
 		return caching;
@@ -652,6 +652,13 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		beginCaching(scopeByTracingTag, key, false);
 
 		super.setAt(scopeByTracingTag, key, index, val);
+
+
+		if(modifiedKeyMap==null)
+			modifiedKeyMap = new Hashtable();
+
+		modifiedKeyMap.put(createFullKey(scopeByTracingTag, key, false, index), new String[]{scopeByTracingTag/*, new Boolean(isInserted)*/, key, String.valueOf(index)});
+
 	}
 
 	public Serializable getProperty(String scopeByTracingTag, String key) throws Exception {

@@ -53,7 +53,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 	//for caching
 	boolean caching;
-	private boolean fileBasedPersistence = false;
+	private boolean fileBasedPersistence = GlobalContext.getPropertyString("persistence.file-based", "false").equals("true");
 
 	public boolean isCaching() {
 		return caching;

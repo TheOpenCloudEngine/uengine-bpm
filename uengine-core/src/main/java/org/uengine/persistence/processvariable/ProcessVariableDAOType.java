@@ -22,8 +22,12 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.metaworks.annotation.Resource;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.contexts.IFileContent;
 import org.uengine.kernel.*;
+import org.uengine.modeling.resource.DefaultResource;
+import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.persistence.AbstractDAOType;
 import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.UEngineUtil;
@@ -572,80 +576,84 @@ public class ProcessVariableDAOType extends AbstractDAOType {
 	}
 	
 	private String saveLongString(String keyString, String value) throws Exception {
-		String fileSystem = GlobalContext.getPropertyString(
-				"filesystem.path",
-				"." + File.separatorChar + "uengine" + File.separatorChar + "fileSystem" + File.separatorChar
-		);
+		String fileSystem = GlobalContext.FILE_SYSTEM_DIR;
 		
 		keyString = keyString.substring(1, keyString.length()).replace(":", ".");
 		
 		String dirPath = UEngineUtil.getCalendarDir();
-		File dirToCreate = new File(fileSystem + dirPath);
-		if (!dirToCreate.exists())
-			dirToCreate.mkdirs();
+		String filePath = dirPath + File.separatorChar + keyString + value.hashCode() + System.currentTimeMillis() + ".xml";
 
-		String filePath = dirPath + File.separatorChar + keyString + value.hashCode() + System.currentTimeMillis() + ".txt";
+		ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+		DefaultResource defaultResource = new DefaultResource();
+		defaultResource.setPath(fileSystem + filePath);
+		resourceManager.save(defaultResource, value);
 		
-		BufferedWriter bw = null;
-		try {
-			//bw = new BufferedWriter(new FileWriter(fileSystem + filePath));
-			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSystem + filePath), GlobalContext.ENCODING));
-			bw.write(value);
-			bw.flush();
-		} catch (IOException e) {
-			//e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				if (bw != null)
-					bw.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+//		BufferedWriter bw = null;
+//		try {
+//			//bw = new BufferedWriter(new FileWriter(fileSystem + filePath));
+//			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSystem + filePath), GlobalContext.ENCODING));
+//			bw.write(value);
+//			bw.flush();
+//		} catch (IOException e) {
+//			//e.printStackTrace();
+//			throw e;
+//		} finally {
+//			try {
+//				if (bw != null)
+//					bw.close();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
 
 		return filePath;
 	}
 	
 	private String loadLongString(String filePath) throws Exception {
-		String fileSystem = GlobalContext.getPropertyString(
-				"filesystem.path",
-				"." + File.separatorChar + "uengine" + File.separatorChar + "fileSystem" + File.separatorChar
-		);
+		String fileSystem = GlobalContext.FILE_SYSTEM_DIR;
 		
-		File file = new File(fileSystem + filePath);
+		//File file = new File(fileSystem + filePath);
 
 		StringBuffer totalStr = new StringBuffer();
-		if (file.exists()) {
-			char[] buff = new char[1024];
-	        int len = -1;
-	        BufferedReader br = null;
-	        
-			try {
-				//br = new BufferedReader(new FileReader(file));
-				br = new BufferedReader(new InputStreamReader(new FileInputStream(file), GlobalContext.ENCODING));
-				
-				while ((len = br.read(buff)) != -1) {
-					totalStr.append(new String(buff, 0, len));
-				}
-			} catch (FileNotFoundException e) {
-//				e.printStackTrace();
-				throw e;
-			} catch (IOException e) {
-//				e.printStackTrace();
-				throw e;
-			} finally {
-				try {
-					if (br != null)
-						br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			throw new FileNotFoundException(fileSystem + filePath + " 를 찾을 수 없습니다.");
-		}
+		ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+		DefaultResource defaultResource = new DefaultResource();
+		defaultResource.setPath(fileSystem + "/" + filePath);
 
-		return totalStr.toString();
+		return (String) resourceManager.getObject(defaultResource);
+
+//		if (file.exists()) {
+//
+
+
+//			char[] buff = new char[1024];
+//	        int len = -1;
+//	        BufferedReader br = null;
+//
+//			try {
+//				//br = new BufferedReader(new FileReader(file));
+//				br = new BufferedReader(new InputStreamReader(new FileInputStream(file), GlobalContext.ENCODING));
+//
+//				while ((len = br.read(buff)) != -1) {
+//					totalStr.append(new String(buff, 0, len));
+//				}
+//			} catch (FileNotFoundException e) {
+////				e.printStackTrace();
+//				throw e;
+//			} catch (IOException e) {
+////				e.printStackTrace();
+//				throw e;
+//			} finally {
+//				try {
+//					if (br != null)
+//						br.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		} else {
+//			throw new FileNotFoundException(fileSystem + filePath + " 를 찾을 수 없습니다.");
+//		}
+
+//		return totalStr.toString();
 	}
 }

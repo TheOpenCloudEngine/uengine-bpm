@@ -289,6 +289,14 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         return element;
     }
 
+    boolean changed;
+        public boolean getChanged() {
+            return changed;
+        }
+        public void setChanged(boolean changed) {
+            this.changed = changed;
+        }
+
     boolean byDrop;
         public boolean getByDrop() {
             return byDrop;

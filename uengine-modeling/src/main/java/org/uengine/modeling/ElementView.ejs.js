@@ -32,10 +32,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             } else {
                 this.object.parent = $(this.element).parent().attr('id');
             }
-
             return this.object;
         }
-    }
+    };
 
 
     this.getLabel = function () {
@@ -44,17 +43,17 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
         //mw3.getObjectNameValue(this.object.element, true);
 
         return unescape(this.object.label ? this.object.label : '');
-    }
+    };
 
     this.getCanvas = function () {
 
         var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
         return mw3.getFaceHelper(canvasId).getCanvas();
-    }
+    };
 
     this.getRenderer = function () {
         return this.getCanvas()._RENDERER;
-    }
+    };
 
     this.setParent = function (elementId, parentId) {
         if (!elementId || !parentId) {
@@ -93,7 +92,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
                 element.appendChild(reservedElement);
             }
         }
-    }
+    };
 
     this.init = function () {
         this.canvas = this.getCanvas();
@@ -206,9 +205,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
         $(this.element).trigger('loaded.' + this.element.id);
 
-        //캔버스가 서버로부터 받은 데이터를 적용시키는 과정이 아닐 경우 브로드캐스트 수행.
+        //캔버스가 리모트 모드이고 프로퍼티 변경으로 인해 새로 그려진 엘리먼트일경우 브로드캐스트 수행
         if (this.canvas.getRemotable()) {
-            if (!this.canvas.getRemoteDuring()) {
+            if (this.object.changed) {
                 OG.RemoteHandler.broadCastCanvas(this.canvas, function (canvas) {
 
                 });
@@ -216,7 +215,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
         }
 
         this.bindMapping();
-    }
+    };
 
     this.bindMapping = function () {
         var metadata = mw3.getMetadata(this.className);
@@ -275,20 +274,20 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
                 }
             }
         }
-    }
+    };
 
     this.bind = function (name) {
         $(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function (event, ui) {
             $(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event.type);
         });
-    }
+    };
 
     this.destroy = function () {
         if ($(this.element).attr('droppable'))
             $(this.element).droppable("destroy");
 
         $(this.element).unbind('.' + this.objectId);
-    }
+    };
 
     this.autoResizeCanvas = function (boundary) {
         var rootBBox = this.canvas._RENDERER.getRootBBox();
@@ -298,7 +297,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
         if (rootBBox.height < (boundary._centroid.y + boundary._height) * this.canvas._CONFIG.SCALE) {
             this.canvas._RENDERER.setCanvasSize([rootBBox.width, boundary._centroid.y + boundary._height]);
         }
-    }
+    };
 
     this.init();
 };

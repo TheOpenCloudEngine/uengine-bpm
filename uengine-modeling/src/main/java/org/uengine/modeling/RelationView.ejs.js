@@ -72,14 +72,6 @@ org_uengine_modeling_RelationView.prototype = {
 		return unescape(this.object.label!=null?this.object.label:'');
 	},
 	getCanvas : function(){
-
-		//var canvasDiv = this.objectDiv.closest('.canvas');
-		//var canvasId = canvasDiv.attr('objectId');
-		//var canvasId = this.objectDiv.closest('.canvas').attr('id').split("_")[1];
-
-		//var object = mw3.objects[canvasId];
-		//return object.getFaceHelper().getCanvas();
-
 		var canvasId = mw3.getAutowiredObject("org.uengine.modeling.Canvas").__objectId;
 		return mw3.getFaceHelper(canvasId).getCanvas();
 	},
@@ -187,6 +179,7 @@ org_uengine_modeling_RelationView.prototype = {
 
 			mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
 		}
+
 	},
 
 	bindMapping : function(){

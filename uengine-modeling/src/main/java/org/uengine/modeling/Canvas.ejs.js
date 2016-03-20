@@ -17,8 +17,6 @@ var org_uengine_modeling_Canvas = function (objectId, className) {
         var faceHelper = this;
         faceHelper.load();
     }
-
-
 };
 
 org_uengine_modeling_Canvas.prototype = {
@@ -206,13 +204,19 @@ org_uengine_modeling_Canvas.prototype = {
         });
 
         this.objectDiv.bind('undo', {objectId: this.objectId}, function (event) {
-            mw3.getFaceHelper(event.data.objectId).updateViewStorage();
-            mw3.getFaceHelper(event.data.objectId).syncCanvasAndView(canvas._RENDERER.getAllShapes());
+
         });
 
         this.objectDiv.bind('redo', {objectId: this.objectId}, function (event) {
-            mw3.getFaceHelper(event.data.objectId).updateViewStorage();
+
+        });
+
+        this.objectDiv.bind('updateCanvas', {objectId: this.objectId}, function (event, data) {
             mw3.getFaceHelper(event.data.objectId).syncCanvasAndView(canvas._RENDERER.getAllShapes());
+        });
+
+        this.objectDiv.bind('remoteStatusUpdated', {objectId: this.objectId}, function (event, data) {
+            mw3.getFaceHelper(event.data.objectId).syncCanvasEditable(data.editable);
         });
 
         //정렬 기능을 위하여
@@ -350,10 +354,10 @@ org_uengine_modeling_Canvas.prototype = {
         elementViewListObject.__faceHelper.add(poolView);
     },
 
-    createTransitionView: function (edge, from, to) {
+    createTransitionView: function (edge, from, to, byRemote) {
         var existEdge = mw3.getAutowiredObject('org.uengine.modeling.RelationView@' + edge.id);
 
-        if (existEdge) {
+        if (existEdge && !byRemote) {
             return null;
         }
 
@@ -467,8 +471,124 @@ org_uengine_modeling_Canvas.prototype = {
         this.viewstorage = viewStorage;
     },
 
+    syncCanvasEditable: function (editable) {
+        var btns = [];
+        $('[name=editorPanel]').find('button').each(function () {
+            var text = $(this).text();
+            if (text === 'Save (Ctrl+S)' || text === 'Save As ' || text === 'Rename ' || text === 'Delete ') {
+                btns.push($(this));
+            }
+        });
+        if (btns.length) {
+            $.each(btns, function (index, btn) {
+                if (editable) {
+                    btn.show();
+                } else {
+                    btn.hide();
+                }
+            });
+        }
+    },
+
     syncCanvasAndView: function (elements) {
-        //TODO 현재 캔버스와 뷰의 싱크 맞추기 작업 필요.
+        var me = this;
+
+        var elementViewListId = mw3.getChildObjectId(me.objectId, 'elementViewList');
+        var elementViewListObject = mw3.objects[elementViewListId];
+        $.each(elementViewListObject.__faceHelper.object, function (index, elementView) {
+            var objectId = elementView.__objectId;
+            mw3.removeObject(objectId);
+        });
+        elementViewListObject.__faceHelper.object = [];
+
+        var relationViewListId = mw3.getChildObjectId(this.objectId, 'relationViewList');
+        var relationViewListObject = mw3.objects[relationViewListId];
+        $.each(relationViewListObject.__faceHelper.object, function (index, relationView) {
+            var objectId = relationView.__objectId;
+            mw3.removeObject(objectId);
+        });
+        relationViewListObject.__faceHelper.object = [];
+
+        $.each(elements, function (index, element) {
+            var label;
+            var isEdge = me.canvas._RENDERER.isEdge(element);
+            if (isEdge) {
+                return;
+            }
+
+            var shape = element.shape;
+            if (shape && shape.label) {
+                label = shape.label;
+            } else {
+                label = '';
+            }
+
+            var shapeId = $(element).attr('_shape_id');
+            var className;
+            var viewClassname;
+
+            if (shapeId == 'OG.shape.essencia.Practice') {
+                className = 'org.uengine.essencia.model.Practice';
+                viewClassname = 'org.uengine.essencia.model.view.PracticeView'
+            }
+            else if (shapeId == 'OG.shape.essencia.Alpha') {
+                className = 'org.uengine.essencia.model.Alpha';
+                viewClassname = 'org.uengine.essencia.model.view.AlphaView'
+            }
+            else if (shapeId == 'OG.shape.essencia.ActivitySpace') {
+                className = 'org.uengine.essencia.model.ActivitySpace';
+                viewClassname = 'org.uengine.essencia.model.view.ActivitySpaceView'
+            }
+            else if (shapeId == 'OG.shape.essencia.Activity') {
+                className = 'org.uengine.essencia.model.Activity';
+                viewClassname = 'org.uengine.essencia.model.view.ActivityView'
+            }
+            else if (shapeId == 'OG.shape.essencia.Competency') {
+                className = 'org.uengine.essencia.model.Competency';
+                viewClassname = 'org.uengine.essencia.model.view.CompetencyView'
+            }
+            else if (shapeId == 'OG.shape.essencia.WorkProduct') {
+                className = 'org.uengine.essencia.model.WorkProduct';
+                viewClassname = 'org.uengine.essencia.model.view.WorkProductView'
+            } else {
+                className = 'org.uengine.essencia.model.Alpha';
+                viewClassname = 'org.uengine.essencia.model.view.AlphaView'
+            }
+
+            var _class = {
+                __className: className,
+                name: label
+            };
+            var _classView = {
+                __className: viewClassname,
+                shapeId: shapeId,
+                id: element.id,
+                element: _class,
+                label: label
+            };
+
+            elementViewListObject.__faceHelper.add(_classView);
+        });
+
+        $.each(elements, function (index, element) {
+            var isEdge = me.canvas._RENDERER.isEdge(element);
+            if (isEdge) {
+
+                var from = $(element).attr("_from");
+                var to = $(element).attr("_to");
+                var fromShape;
+                var toShape;
+                if (from) {
+                    fromShape = me.canvas._RENDERER._getShapeFromTerminal(from);
+                }
+                if (to) {
+                    toShape = me.canvas._RENDERER._getShapeFromTerminal(to);
+                }
+                if (fromShape && toShape) {
+                    me.createTransitionView(element, fromShape, toShape, true)
+                }
+            }
+        });
     }
 };
 

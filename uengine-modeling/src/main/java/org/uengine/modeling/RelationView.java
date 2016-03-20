@@ -235,5 +235,4 @@ public class RelationView implements Serializable, ContextAware, Cloneable {
         relation.setRelationView(this);
         return relation;
     }
-
 }

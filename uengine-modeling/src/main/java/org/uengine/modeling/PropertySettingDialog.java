@@ -79,6 +79,8 @@ public class PropertySettingDialog extends ModalWindow{
 
         getElementView().setElement(element);
 
+        getElementView().setChanged(true);
+
         return new Object[]{new Remover(new PropertySettingDialog()), new Refresh(getElementView(), true)};
 
     }

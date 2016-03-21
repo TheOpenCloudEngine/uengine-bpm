@@ -86,15 +86,17 @@ org_uengine_modeling_Canvas.prototype = {
     },
 
     eventBinding: function () {
+        var me = this;
         var canvas = this.canvas;
         var canvasDivObj = document.getElementById(this.canvasDivId);
         $(canvasDivObj).droppable({
             greedy: true,
             drop: function (event, ui) {
+                var obj = mw3.getAutowiredObject('org.metaworks.widget.Clipboard');
+                me.object.symbolContent = obj.content;
+
                 mw3.dropX = event.pageX;
                 mw3.dropY = event.pageY;
-
-                eval(this['dropCommand']);
 
                 if (isDroppable == true) {
                     isDroppable = false;

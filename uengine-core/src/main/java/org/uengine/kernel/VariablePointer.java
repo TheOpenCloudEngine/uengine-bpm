@@ -30,7 +30,16 @@ public class VariablePointer implements Serializable{
 
     public Serializable getValue(ProcessInstance instance) throws Exception {
 
-        return instance.getAt("", getKey(), getIndex());
+        return (Serializable) new InRootExecutionScope(){
+
+            @Override
+            public Object logic(ProcessInstance instance) throws Exception {
+                return instance.getAt("", getKey(), getIndex());
+            }
+
+        }.run(instance);
+
+        //return instance.getAt("", getKey(), getIndex());
     }
 
     public void setValue(ProcessInstance instance, final Serializable value) throws Exception {

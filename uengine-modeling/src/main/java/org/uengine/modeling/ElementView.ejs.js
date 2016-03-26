@@ -176,6 +176,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
                 preventDrop);
 
             this.setParent(this.element.id, this.object.parent);
+            if (this.renderer.isLane(this.element)) {
+                this.renderer.fitLaneOrder(this.element);
+            }
 
             boundary = this.element.shape.geom.boundary;
 

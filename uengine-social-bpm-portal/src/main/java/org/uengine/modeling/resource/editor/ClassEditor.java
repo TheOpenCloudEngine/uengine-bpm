@@ -36,9 +36,9 @@ public class ClassEditor implements IEditor<ClassDefinition>{
         return classDefinition;
     }
 
-	public ClassDefinition getEditingObject() {
-		// TODO - implement ClassEditor.getEditingObject
-		throw new UnsupportedOperationException();
-	}
+//	public ClassDefinition getEditingObject() {
+//		// TODO - implement ClassEditor.getEditingObject
+//		throw new UnsupportedOperationException();
+//	}
 
 }

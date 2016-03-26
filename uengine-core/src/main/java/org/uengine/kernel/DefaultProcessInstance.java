@@ -728,7 +728,10 @@ public class DefaultProcessInstance extends ProcessInstance{
 
 	public void setProperty(String tracingTag, String key, Serializable val) throws Exception {
 		String fullKey = createFullKey(tracingTag, key, true);
-		variables.put(fullKey, val);
+
+		if(val==null) variables.remove(fullKey);
+		else
+			variables.put(fullKey, val);
 	}
 	
 	public Serializable getProperty(String tracingTag, String key) throws Exception {

@@ -528,7 +528,8 @@ public class SubProcess extends ScopeActivity{
                 Map subProcesses = new Hashtable();
                 subProcesses.put(instance.getInstanceId(), instance);
 
-                applyVariableBindings(instance, spIds, subProcesses, optionsForVariableMapping);
+                ////// Since Introducing VariablePointer, apply variable changes to the main process execution scope is not required anymore.
+                //applyVariableBindings(instance, spIds, subProcesses, optionsForVariableMapping);
                 applyRoleBindings(instance, spIds, subProcesses, optionsForVariableMapping);
 
 
@@ -604,15 +605,6 @@ public class SubProcess extends ScopeActivity{
 
     protected void applyVariableBindings(ProcessInstance instance, Vector spIds, Map subProcesses, Map options) throws Exception{
 
-//        if(variableBindings!=null) //firstly empty the binding variables.
-//        for(int i=0; i<variableBindings.size(); i++){
-//          ParameterContext vb = variableBindings.get(i);
-//          if(vb.getVariable()==null ||
-//              (vb.getDirection()!=null && vb.getDirection().equals(ParameterContext.DIRECTION_IN))
-//          ) continue;
-//
-//          instance.set("", vb.getVariable().getName(), null);
-//        }
 
         String originalExecutionScope = null;
 
@@ -651,32 +643,34 @@ public class SubProcess extends ScopeActivity{
 
                 join = join || vb.getVariable() == getForEachVariable();
 
-              if(join){
-                   Serializable valueOfSP = subProcessInstance.get("", vb.getArgument().getText());
+                /*** since new version will use VariablePointer join mechanism is not required anymore. ***/
 
-                  /*in parent context*/instance.setExecutionScope(instance.getMainExecutionScope());
-                  {
-                      int whereStands = indexOfSP;
-                        if("loop".equals(getMultipleInstanceOption())){
-                            whereStands = getCurrForEachVariableIdx(instance);
-                        }
-
-                      instance.add("", vb.getVariable().getName(), valueOfSP, whereStands);//process multiple pv
-
-                  }instance.setExecutionScope(originalExecutionScope);
-
-              }else{
-                ProcessVariableValue valueOfSP = subProcessInstance.getMultiple("", vb.getArgument().getText());
-                valueOfSP.setName(vb.getVariable().getName());
-
-                  /*in parent context*/instance.setExecutionScope(instance.getMainExecutionScope());
-                  {
-
-                      instance.set("", valueOfSP);
-
-                  }instance.setExecutionScope(originalExecutionScope);
-
-              }
+//              if(join){
+//                   Serializable valueOfSP = subProcessInstance.get("", vb.getArgument().getText());
+//
+//                  /*in parent context*/instance.setExecutionScope(instance.getMainExecutionScope());
+//                  {
+//                      int whereStands = indexOfSP;
+//                        if("loop".equals(getMultipleInstanceOption())){
+//                            whereStands = getCurrForEachVariableIdx(instance);
+//                        }
+//
+//                      instance.add("", vb.getVariable().getName(), valueOfSP, whereStands);//process multiple pv
+//
+//                  }instance.setExecutionScope(originalExecutionScope);
+//
+//              }else{
+//                ProcessVariableValue valueOfSP = subProcessInstance.getMultiple("", vb.getArgument().getText());
+//                valueOfSP.setName(vb.getVariable().getName());
+//
+//                  /*in parent context*/instance.setExecutionScope(instance.getMainExecutionScope());
+//                  {
+//
+//                      instance.set("", valueOfSP);
+//
+//                  }instance.setExecutionScope(originalExecutionScope);
+//
+//              }
             }catch(Exception e){
               UEngineException richException = new UEngineException("Error when to set the value ["+vb.getVariable()+"] from returned subprocess", e);
               richException.setActivity(this);

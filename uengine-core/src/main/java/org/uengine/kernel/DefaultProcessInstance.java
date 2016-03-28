@@ -223,6 +223,8 @@ public class DefaultProcessInstance extends ProcessInstance{
 		Serializable existingValue = getSourceValue(scopeByTracingTag, key);
 		if(existingValue instanceof VariablePointer){
 			((VariablePointer) existingValue).setValue(this, val);
+
+			return;
 		}
 
 		if(val instanceof ProcessVariableValue){
@@ -616,6 +618,10 @@ public class DefaultProcessInstance extends ProcessInstance{
 
 		for(int i=0; i<maxIndex+1; i++){
 			Serializable value = ipvm.getProcessVariableAt(i);
+
+			if(value instanceof VariablePointer)
+				value = ((VariablePointer) value).getValue(this);
+
 			pvv.setValue(value);
 			pvv.moveToAdd();
 		}
@@ -682,7 +688,15 @@ public class DefaultProcessInstance extends ProcessInstance{
 	public void set(String scopeByTracingTag, ProcessVariableValue pvv) throws Exception {
 		if(pvv==null) throw new UEngineException("Not a valid ProcessVariableValue (null).");
 		if(pvv.getName()==null) throw new UEngineException("Not a valid ProcessVariableValue (should have name).");
-		
+
+		Serializable existingValue = getSourceValue(scopeByTracingTag, pvv.getName());
+		if(existingValue instanceof VariablePointer){
+			pvv.beforeFirst();
+			((VariablePointer) existingValue).setValue(this, pvv.getValue()); //only one item will be stored.
+
+			return;
+		}
+
 		setSourceValue(scopeByTracingTag, pvv.getName(), new IndexedProcessVariableMap());
 		pvv.beforeFirst();
 		int i=0;
@@ -728,7 +742,10 @@ public class DefaultProcessInstance extends ProcessInstance{
 
 	public void setProperty(String tracingTag, String key, Serializable val) throws Exception {
 		String fullKey = createFullKey(tracingTag, key, true);
-		variables.put(fullKey, val);
+
+		if(val==null) variables.remove(fullKey);
+		else
+			variables.put(fullKey, val);
 	}
 	
 	public Serializable getProperty(String tracingTag, String key) throws Exception {

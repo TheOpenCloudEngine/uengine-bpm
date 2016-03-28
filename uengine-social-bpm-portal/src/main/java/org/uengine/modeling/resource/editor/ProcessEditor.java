@@ -1,15 +1,19 @@
 package org.uengine.modeling.resource.editor;
 
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.uengine.codi.mw3.model.ProcessMap;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.modeling.modeler.ProcessModeler;
 import org.uengine.modeling.modeler.StandaloneProcessModeler;
 import org.uengine.modeling.resource.IEditor;
 import org.uengine.modeling.resource.IResource;
+import org.uengine.modeling.resource.Simulatable;
+import org.uengine.processmanager.ProcessManagerRemote;
 
 /**
  * Created by uengine on 2015. 7. 14..
  */
-public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefinition> {
+public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefinition>, Simulatable {
 
 
     public ProcessEditor() throws Exception {
@@ -46,6 +50,24 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
 //		// TODO - implement ProcessEditor.getEditingObject
 //		throw new UnsupportedOperationException();
 //	}
+
+
+    @Override
+    public Object simulator(IResource resource) {
+
+        ProcessManagerRemote processManager = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
+
+        ProcessMap processMap = new ProcessMap();
+        processMap.setName("[Test] " + resource.getName());
+        processMap.setDefId(resource.getPath().substring(resource.getPath().indexOf("/") + 1));
+        MetaworksRemoteService.autowire(processMap);
+
+        try {
+            return processMap.simulate();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }

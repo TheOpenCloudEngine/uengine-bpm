@@ -221,6 +221,32 @@ org_uengine_modeling_Canvas.prototype = {
             mw3.getFaceHelper(event.data.objectId).syncCanvasEditable(data.editable);
         });
 
+        this.objectDiv.bind('duplicated', {objectId: this.objectId}, function (event, target, copyed) {
+            var elementViewId = 'org.uengine.modeling.ElementView@' + target.id;
+            var elementView = mw3.getAutowiredObject(elementViewId);
+
+            var element = {};
+            mw3.copyObjectToObject(element, elementView.element);
+            element.tracingTag = null;
+            element.name = null;
+            if (element.displayName) {
+                element.displayName.text = '';
+            }
+
+            var newElementView = {
+                __className: elementView.__className,
+                shapeId: elementView.shapeId,
+                id: copyed.id,
+                label: '',
+                metaworksContext: elementView.metaworksContext,
+                element: element
+            };
+
+            mw3.getFaceHelper(event.data.objectId).toAppend(newElementView);
+            mw3.onLoadFaceHelperScript();
+        });
+
+
         //정렬 기능을 위하여
         this.objectDiv.bind('alignLeft', {objectId: this.objectId}, function (event) {
             mw3.getFaceHelper(event.data.objectId).getCanvas().alignLeft();

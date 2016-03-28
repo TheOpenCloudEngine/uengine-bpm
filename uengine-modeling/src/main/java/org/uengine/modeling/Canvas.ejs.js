@@ -233,6 +233,7 @@ org_uengine_modeling_Canvas.prototype = {
                 element.displayName.text = '';
             }
 
+
             var newElementView = {
                 __className: elementView.__className,
                 shapeId: elementView.shapeId,

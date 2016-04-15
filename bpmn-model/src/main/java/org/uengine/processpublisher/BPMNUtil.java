@@ -2,6 +2,7 @@ package org.uengine.processpublisher;
 
 
 import org.uengine.kernel.ProcessDefinition;
+import org.uengine.processpublisher.bpmn.importer.TBoundaryEventAdapter;
 import org.uengine.processpublisher.microsoft.importer.MSProjectFileAdapter;
 
 import javax.xml.bind.JAXBContext;
@@ -29,6 +30,7 @@ public class BPMNUtil {
                 String packageStr = clazz.getPackage().getName();
                 packageStr = packageStr.substring(0, packageStr.lastIndexOf("."));
 
+                packageStr = BPMNUtil.class.getPackage().getName() + ".bpmn";
                 if(activityTypeName.toLowerCase().contains("microsoft")) {
                     adapter = (Adapter) Thread.currentThread().getContextClassLoader().loadClass(packageStr + "." + (isImporter ? "importer" : "exporter") + "." + activityTypeName + "Adapter").newInstance();
                 } else {

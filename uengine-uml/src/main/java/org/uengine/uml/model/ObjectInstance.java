@@ -125,4 +125,16 @@ public class ObjectInstance implements Serializable, ContextAware, BeanPropertyR
 
         return this;
     }
+
+    @Override
+    public String toString() {
+
+        if(getValueMap()!=null && getClassDefinition()!=null && getClassDefinition().getFieldDescriptors()!=null && getClassDefinition().getFieldDescriptors().length > 0){
+            Object keyObject = getValueMap().get(getClassDefinition().getFieldDescriptors()[0].getName());
+            if(keyObject!=null)
+                return keyObject.toString();
+        }
+
+        return super.toString();
+    }
 }

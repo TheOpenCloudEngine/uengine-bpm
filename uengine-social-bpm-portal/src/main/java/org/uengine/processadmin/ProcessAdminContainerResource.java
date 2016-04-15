@@ -116,6 +116,20 @@ public class ProcessAdminContainerResource extends ContainerResource {
     }
 
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
+    public void newJavaClass() throws Exception {
+
+        DefaultResource resource = new DefaultResource();
+
+        autowire(resource);
+
+
+        resource.setPath(getPath() + "/New Java Class.javaclass");
+        resource.setParent(this);
+
+        resource.newOpen();
+    }
+
+    @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     @Face(displayName = "Import")
     public void importResource() throws Exception {
 

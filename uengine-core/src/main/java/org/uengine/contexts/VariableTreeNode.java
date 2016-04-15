@@ -4,11 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.metaworks.FieldDescriptor;
-import org.metaworks.ServiceMethodContext;
-import org.metaworks.ToAppend;
-import org.metaworks.WebFieldDescriptor;
-import org.metaworks.WebObjectType;
+import org.metaworks.*;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.component.Tree;
 import org.metaworks.component.TreeNode;
@@ -81,15 +77,23 @@ public class VariableTreeNode extends TreeNode {
 						ClassDefinition classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(processVariable.getTypeClassName()));
 
 						if(classDefinition!=null){
-							node.setChild(loadClassProperties(node, classDefinition));
+							node.setChild(loadClassProperties(node, classDefinition.metaworks2Type()));
 						}
+					}else
+					if(processVariable.getTypeClassName()!=null){
+
+						WebObjectType webObjectType = MetaworksRemoteService.getInstance().getMetaworksType(processVariable.getTypeClassName());
+						if(webObjectType!=null){
+							node.setChild(loadClassProperties(node, webObjectType.metaworks2Type()));
+						}
+
 					}else
 					if (processVariable.getDefaultValue()!=null && processVariable.getDefaultValue() instanceof ObjectInstance){
 						ObjectInstance objectInstance = (ObjectInstance) processVariable.getDefaultValue();
 						ClassDefinition classDefinition = objectInstance.getClassDefinition();
 
 						if(classDefinition!=null){
-							node.setChild(loadClassProperties(node, classDefinition));
+							node.setChild(loadClassProperties(node, classDefinition.metaworks2Type()));
 						}
 					}
 
@@ -102,12 +106,12 @@ public class VariableTreeNode extends TreeNode {
 	}
 
 
-	private ArrayList<TreeNode> loadClassProperties(VariableTreeNode node, ClassDefinition classDefinition) throws Exception{
+	private ArrayList<TreeNode> loadClassProperties(VariableTreeNode node, Type classDefinition) throws Exception{
 
 		ArrayList<TreeNode> child = new ArrayList<TreeNode>();
 
-		Attribute[] fields = classDefinition.getFieldDescriptors();
-		for(Attribute attribute : fields){
+		FieldDescriptor[] fields = classDefinition.getFieldDescriptors();
+		for(FieldDescriptor attribute : fields){
 			VariableTreeNode childNode = new VariableTreeNode();
 
 			childNode.setId(node.getId() + "-" + attribute.getName());

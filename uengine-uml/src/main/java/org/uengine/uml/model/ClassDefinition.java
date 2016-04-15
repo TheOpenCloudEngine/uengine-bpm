@@ -47,10 +47,28 @@ public class ClassDefinition extends WebObjectType implements Serializable{
         objectInstance.setClassDefinition(this);
         objectInstance.setClassName(getName());
 
-//        for(Attribute attribute : getAttributeList()){
-//            objectInstance.getAttributeInstanceList().add(attribute.createInstance());
-//
-//        }
+        if(getFieldDescriptors()!=null)
+        for(Attribute attribute: getFieldDescriptors()){
+            if(MetaworksFile.class.getName().equals(attribute.getClassName())){
+                objectInstance.setBeanProperty(attribute.getName(), new MetaworksFile());
+            }
+
+//			else if("org.uengine.social.RoleUser".equals(attribute.getClassName())){
+//				try {
+//					instance.setBeanProperty(attribute.getName(), Thread.currentThread().getContextClassLoader().loadClass(attribute.getClassName()).newInstance());
+//				} catch (Exception e) {
+//					throw new RuntimeException("Failed to create a default instance of " + attribute.getName() + "(" + attribute.getClassName() + ")", e);
+//				}
+//			}
+
+            else if (!attribute.getClassName().startsWith("java.lang")){
+                try {
+                    objectInstance.setBeanProperty(attribute.getName(), Thread.currentThread().getContextClassLoader().loadClass(attribute.getClassName()).newInstance());
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to create a default instance of " + attribute.getName() + "(" + attribute.getClassName() + ")", e);
+                }
+            }
+        }
 
         if(metaworksCall()) wrapReturn(new ModalWindow(objectInstance));
 

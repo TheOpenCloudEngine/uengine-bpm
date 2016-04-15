@@ -5,10 +5,13 @@ import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.modeling.resource.*;
 import org.uengine.modeling.resource.resources.ClassResource;
-import org.uengine.modeling.resource.resources.JavaClassResource;
-import org.uengine.modeling.resource.resources.ProcessResource;
+import org.uengine.modeling.resource.resources.JavaclassResource;
+import org.uengine.modeling.resource.resources.UrlappResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
 import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelector;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by jangjinyoung on 15. 9. 17..
@@ -50,18 +53,24 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
 
     public SocialBPMProcessVariableTypeSelectorPopup(){
         ProcessAdminResourceNavigator classResourceNavigator = new ProcessAdminResourceNavigator();
-        classResourceNavigator.getRoot().filtResources(ClassResource.class, false);
+
+        Set<Class> resourceTypes = new HashSet<Class>();
+        resourceTypes.add(ClassResource.class);
+        resourceTypes.add(UrlappResource.class);
+        resourceTypes.add(JavaclassResource.class);
+
+        classResourceNavigator.getRoot().filtResources(resourceTypes, false);
 
         MetaworksRemoteService.autowire(classResourceNavigator);
 
 
         {
-            DefaultResource primitive = new JavaClassResource();
+            DefaultResource primitive = new JavaclassResource();
             primitive.setPath("java.lang.String");
             classResourceNavigator.getRoot().getChildren().add(0, primitive);
         }
         {
-            DefaultResource primitive = new JavaClassResource();
+            DefaultResource primitive = new JavaclassResource();
             primitive.setPath(RoleUser.class.getName());
             classResourceNavigator.getRoot().getChildren().add(0, primitive);
         }

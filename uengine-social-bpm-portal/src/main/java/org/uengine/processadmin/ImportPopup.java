@@ -45,7 +45,11 @@ public class ImportPopup {
         if(getSelectFile().getFileTransfer()!=null){
             ProcessResource processResource = new ProcessResource();
 
-            String fileNameToUpload = getSelectFile().getFilename();//.replaceFirst("[.][^.]+$", "") + ".process";
+            String fileNameToUpload = getSelectFile().getFilename().replaceFirst("[.][^.]+$", "") + ".process";
+
+            if(getSelectFile().getFilename().endsWith(".bpmn")) {
+                fileNameToUpload = fileNameToUpload.replaceFirst("[.][^.]+$", "") + ".process";
+            }
 
             processResource.setPath("codi/" + fileNameToUpload);
 

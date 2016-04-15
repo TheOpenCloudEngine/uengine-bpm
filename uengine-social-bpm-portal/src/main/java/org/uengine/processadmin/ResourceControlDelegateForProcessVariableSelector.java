@@ -4,9 +4,12 @@ import org.metaworks.Remover;
 import org.metaworks.ToOpener;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
+import org.uengine.contexts.JavaClassDefinition;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceControlDelegate;
+import org.uengine.modeling.resource.ResourceManager;
+import org.uengine.modeling.resource.resources.JavaclassResource;
 import org.uengine.social.SocialBPMProcessVariableTypeSelector;
 
 /**
@@ -19,7 +22,16 @@ public class ResourceControlDelegateForProcessVariableSelector implements Resour
             try {
 
                 SocialBPMProcessVariableTypeSelector socialBPMProcessVariableTypeSelector = new SocialBPMProcessVariableTypeSelector();
-                socialBPMProcessVariableTypeSelector.setSelectedClassName(resource.getPath());
+
+                if(resource instanceof JavaclassResource){
+                    ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+                    JavaClassDefinition javaClassDefinition = (JavaClassDefinition) resourceManager.getObject(resource);
+
+                    socialBPMProcessVariableTypeSelector.setSelectedClassName(javaClassDefinition.getClassName());
+                }else
+
+                    socialBPMProcessVariableTypeSelector.setSelectedClassName(resource.getPath());
+
 
                 MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
 

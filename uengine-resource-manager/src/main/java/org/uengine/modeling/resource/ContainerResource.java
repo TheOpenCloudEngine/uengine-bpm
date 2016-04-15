@@ -4,10 +4,7 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ContainerResource extends DefaultResource implements IContainer {
 
@@ -108,20 +105,51 @@ public class ContainerResource extends DefaultResource implements IContainer {
 	}
 
 	@Override
-	public <T extends IResource> void filtResources(Class<T> clazz){
+	public void filtResources(Class<? extends IResource> clazz){
 		filtResources(clazz, true);
 	}
 
-	public <T extends IResource> void filtResources(Class<T> clazz, boolean filtOut){
+	public void filtResources(Class<? extends IResource> clazz, boolean filtOut){
+
+		Set<Class> classes = new HashSet<Class>();
+		classes.add(clazz);
+
+		filtResources(classes, filtOut);
+	}
+
+	@Override
+	public void filtResources(Set<Class> classes, boolean filtOut) {
 		List<IResource> resourceList = this.getChildren();
 		Iterator<IResource> resourceIterator = resourceList.iterator();
 
 		while(resourceIterator.hasNext()){
 			IResource resource = resourceIterator.next();
 			if(resource instanceof ContainerResource){
-				((ContainerResource)resource).filtResources(clazz, filtOut);
-			}else if((!filtOut && !clazz.isInstance(resource)) || (filtOut && clazz.isInstance(resource))){
-				resourceIterator.remove();;
+				((ContainerResource)resource).filtResources(classes, filtOut);
+			}else{
+
+				boolean foundInList = false;
+
+				for(Class clazz : classes){
+					if(filtOut){
+						if(clazz.isInstance(resource)) {
+							resourceIterator.remove();
+
+							break;
+						}
+					}else{
+						if(clazz.isInstance(resource)){
+							foundInList = true;
+
+							break;
+						}
+					}
+				}
+
+				if(!filtOut && !foundInList){
+					resourceIterator.remove();
+				}
+
 			}
 		}
 	}

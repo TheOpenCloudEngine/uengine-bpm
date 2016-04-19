@@ -98,7 +98,25 @@ public class AmazonS3Storage implements Storage{
 
     @Override
     public void copy(IResource src, String desPath) throws ServiceException, IOException, NoSuchAlgorithmException {
-        restS3Service.copyObject(getAmazonS3Bucket(), getS3Path(src.getPath()),getAmazonS3Bucket(),getS3Object(desPath), true);
+        copy(getS3Path(src.getPath()), desPath);
+    }
+
+    //TODO: find out the signal for copying multiple files in the folder someday for performance issue.
+    private void copy(String srcPath, String desPath) throws ServiceException, IOException, NoSuchAlgorithmException {
+        S3Object[] s3Objects = restS3Service.listObjects(getAmazonS3Bucket(), srcPath, null);
+
+        for(S3Object s3Object : s3Objects) {
+            String path = s3Object.getKey();
+
+//            if (path.endsWith("/")) {
+//                copy(path, desPath);
+//            }else{
+
+                String desObjKey = desPath + path.substring(srcPath.length());
+                restS3Service.copyObject(getAmazonS3Bucket(), path, getAmazonS3Bucket(), getS3Object(desObjKey), true);
+            //}
+
+        }
     }
 
     @Override
@@ -116,7 +134,7 @@ public class AmazonS3Storage implements Storage{
             if(path.endsWith("/")) {
                 ContainerResource subContainerResource = (ContainerResource) containerResource.getClass().newInstance();
 
-                subContainerResource.setPath(path);
+                subContainerResource.setPath(path.substring(0, path.length()-1));
                 subContainerResource.setMetaworksContext(new MetaworksContext());
                 if ( childList == null ) {
                     resourceList.add(subContainerResource);
@@ -159,17 +177,17 @@ public class AmazonS3Storage implements Storage{
     public Object getObject(IResource resource) throws Exception {
         S3Object s3Object = restS3Service.getObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
 
-        XStream xstream = new XStream();
+        //XStream xstream = new XStream();
 
-        Object object = xstream.fromXML(new InputStreamReader(s3Object.getDataInputStream(), StandardCharsets.UTF_8));
+        Object object = Serializer.deserialize(s3Object.getDataInputStream());
 
         return object;
     }
 
     @Override
     public void save(IResource resource, Object object) throws Exception {
-        XStream xstream = new XStream();
-        String objectXml = xstream.toXML(object);
+        //XStream xstream = new XStream();
+        String objectXml = Serializer.serialize(object);
 
         // Create an object containing a greeting string as input stream data.
         S3Object s3Object = getS3Object(resource.getPath());
@@ -180,7 +198,7 @@ public class AmazonS3Storage implements Storage{
 
         s3Object = restS3Service.putObject(getAmazonS3Bucket(),s3Object);
 
-        xstream.toXML(s3Object,System.out);
+        //xstream.toXML(s3Object,System.out);
     }
 
     @Override

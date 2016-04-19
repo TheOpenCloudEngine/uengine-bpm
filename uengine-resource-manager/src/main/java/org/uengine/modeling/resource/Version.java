@@ -2,6 +2,7 @@ package org.uengine.modeling.resource;
 
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,13 +42,12 @@ public class Version implements Serializable{
         this.description = description;
     }
 
-    @Autowired
-    public ResourceManager resourceManager;
-
     @ServiceMethod(callByContent = true, target = ServiceMethod.TARGET_SELF)
     public void makeAsProduction(@AutowiredFromClient VersionManager versionManager) throws Exception {
 
         DefaultResource productionInfoXML = versionManager.getProductionVersionInfo();
+
+        ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
         resourceManager.getStorage().save(productionInfoXML, this);
         setProduction(true);

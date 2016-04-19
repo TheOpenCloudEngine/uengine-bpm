@@ -56,6 +56,7 @@ public class ProcessAdminContainerResource extends ContainerResource {
     @Face(displayName = "New Folder")
     @ServiceMethod(inContextMenu = true, target = ServiceMethodContext.TARGET_POPUP)
     public ModalWindow openNewFolderPopup() throws Exception {
+        setMetaworksContext(new MetaworksContext());
         this.getMetaworksContext().setWhen(WHEN_NEW_FOLDER);
         ModalWindow modalWindow = new ModalWindow(this, 200, 100, "New Folder");
         return modalWindow;

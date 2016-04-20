@@ -469,18 +469,14 @@
 			});
 
 			var resourcePath = request.getParameter('resourcePath');
-			var email = request.getParameter('email');
+			var accessToken = request.getParameter('accessToken');
 
 			mw3.setWhen(mw3.WHEN_EDIT);
 			mw3.setWhere(mw3.WHERE_EVER);
 			var editor = new MetaworksObject({
 				__className : "org.uengine.processadmin.ProcessAdminEditorPanel",
 				resourcePath : resourcePath,
-				session: {
-					user: {
-						email: email
-					}
-				}
+				accessToken: accessToken
 			}, 'body');
 
 			editor.load();

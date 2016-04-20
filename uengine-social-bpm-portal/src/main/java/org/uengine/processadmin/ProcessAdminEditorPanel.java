@@ -41,10 +41,24 @@ public class ProcessAdminEditorPanel extends EditorPanel{
 
 	}
 
+	String accessToken;
+		public String getAccessToken() {
+			return accessToken;
+		}
+		public void setAccessToken(String accessToken) {
+			this.accessToken = accessToken;
+		}
+
+
+
 	@ServiceMethod(callByContent = true)
 	public void load() throws Exception {
 
-		if(session.getUser().getEmail()!=null){
+		if(getAccessToken()!=null){
+
+			Session session = new Session();
+			session.setUser(new User());
+			session.getUser().setEmail(getAccessToken());
 
 			Employee emp = new Employee();
 			emp.setEmail(session.getUser().getEmail());
@@ -56,7 +70,7 @@ public class ProcessAdminEditorPanel extends EditorPanel{
 			session.setEmployee(findEmp);
 			session.fillSession();
 
-			new TenantContext(session.getCompany().getComCode());
+			new TenantContext(session.getEmployee().getGlobalCom());
 		}
 
 		DefaultResource defaultResource = new DefaultResource();

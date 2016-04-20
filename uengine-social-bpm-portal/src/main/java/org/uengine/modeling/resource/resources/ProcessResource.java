@@ -3,6 +3,8 @@ package org.uengine.modeling.resource.resources;
 import org.metaworks.EventContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.*;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ToBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -28,6 +30,12 @@ public class ProcessResource extends DefaultResource {
 
         definitionFactory.removeFromCache(getPath().substring(CodiProcessDefinitionFactory.codiProcessDefinitionFolder.length() + 1));
     }
+
+    @ServiceMethod(target=ServiceMethodContext.TARGET_APPEND, inContextMenu = true, callByContent = true)
+    public void openInNewWindow(){
+        MetaworksRemoteService.wrapReturn(new ToBlank("resource-editor.html?resourcePath=" + getPath() + "&accessToken=" + session.getEmployee().getEmail()));
+    }
+
 
     @Autowired
     public ProcessDefinitionFactory definitionFactory;

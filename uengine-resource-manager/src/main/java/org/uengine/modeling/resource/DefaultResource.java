@@ -7,6 +7,7 @@ import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Download;
+import org.metaworks.widget.ToBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Id;
@@ -207,7 +208,6 @@ public class DefaultResource implements IResource {
 
 		return editorPanel;
 	}
-
 
 	@Override
 	public void accept(IResourceVisitor visitor) {

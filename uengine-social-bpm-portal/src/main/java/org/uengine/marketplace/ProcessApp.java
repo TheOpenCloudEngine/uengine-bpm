@@ -127,17 +127,25 @@ public class ProcessApp extends App{
         InputStream origin = null;
 
         for(IResource resource : resourceList){
-            if(resource instanceof DefaultResource && !(resource instanceof IContainer)){
+
+            if(resource instanceof DefaultResource && !(resource instanceof IContainer)) {
                 origin = resourceManager.getStorage().getInputStream(resource);
-            }
 
-            ZipEntry entry = new ZipEntry(UEngineUtil.getFileName(resource.getPath()));
-            out.putNextEntry(entry);
+                try {
+                    ZipEntry entry = new ZipEntry(UEngineUtil.getFileName(resource.getPath()));
+                    out.putNextEntry(entry);
 
-            int count;
-            while((count = origin.read(data, 0,
-                    BUFFER)) != -1) {
-                out.write(data, 0, count);
+                    int count;
+                    while ((count = origin.read(data, 0,
+                            BUFFER)) != -1) {
+                        out.write(data, 0, count);
+                    }
+                } catch (Exception e) {
+                    throw e;
+                } finally {
+                    if (origin != null)
+                        origin.close();
+                }
             }
         }
 

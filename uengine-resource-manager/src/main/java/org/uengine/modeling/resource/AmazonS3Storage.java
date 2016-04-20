@@ -208,11 +208,39 @@ public class AmazonS3Storage implements Storage{
     }
 
     @Override
-    public OutputStream getOutputStream(IResource resource) throws Exception {
-//        XStream xstream = new XStream();
-//
-//        S3Object s3Object = getS3Object(resource.getPath());
-        return null; //TODO: must be implemented
+    public OutputStream getOutputStream(final IResource resource) throws Exception {
+
+        //since there's no interface for accessing the output stream directly by the JetS3 library, implement it.
+        OutputStream outputStream = new OutputStream() {
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
+
+            @Override
+            public void write(int b) throws IOException {
+                bao.write(b);
+            }
+
+            @Override
+            public void close() throws IOException {
+                bao.close();
+
+                try{
+                    S3Object s3Object = getS3Object(resource.getPath());
+                    ByteArrayInputStream objectIS = new ByteArrayInputStream(bao.toByteArray());
+                    s3Object.setDataInputStream(objectIS);
+                    s3Object.setContentLength(bao.toByteArray().length);
+                    s3Object.setContentType("text/" + resource.getType());
+
+                    s3Object = restS3Service.putObject(getAmazonS3Bucket(),s3Object);
+
+
+                }catch (Exception e){
+                    throw new IOException(e);
+                }
+
+            }
+        };
+
+        return outputStream;
     }
 
     private S3Object getS3Object(String path) throws IOException, NoSuchAlgorithmException {

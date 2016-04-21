@@ -1,23 +1,17 @@
 package org.uengine.modeling.resource;
 
-import com.thoughtworks.xstream.XStream;
-import org.jets3t.service.Constants;
 import org.jets3t.service.S3ServiceException;
 import org.jets3t.service.ServiceException;
 import org.jets3t.service.impl.rest.httpclient.RestS3Service;
-import org.jets3t.service.model.S3Bucket;
 import org.jets3t.service.model.S3Object;
 import org.jets3t.service.model.StorageObject;
 import org.jets3t.service.security.AWSCredentials;
 import org.metaworks.MetaworksContext;
-import org.metaworks.MetaworksException;
 import org.oce.garuda.multitenancy.TenantContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ExceptionDepthComparator;
+import org.oce.garuda.multitenancy.TenantSpecificUtil;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -175,13 +169,20 @@ public class AmazonS3Storage implements Storage{
 
     @Override
     public Object getObject(IResource resource) throws Exception {
-        S3Object s3Object = restS3Service.getObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
 
-        //XStream xstream = new XStream();
+        try{
+            S3Object s3Object = restS3Service.getObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
 
-        Object object = Serializer.deserialize(s3Object.getDataInputStream());
+            //XStream xstream = new XStream();
 
-        return object;
+            Object object = Serializer.deserialize(s3Object.getDataInputStream());
+
+            return object;
+
+        }catch (S3ServiceException e){
+            throw new IOException(e.getErrorCode());
+        }
+
     }
 
     @Override
@@ -203,8 +204,13 @@ public class AmazonS3Storage implements Storage{
 
     @Override
     public InputStream getInputStream(IResource resource) throws Exception {
-        S3Object s3Object = restS3Service.getObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
-        return s3Object.getDataInputStream();
+
+        try {
+            S3Object s3Object = restS3Service.getObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
+            return s3Object.getDataInputStream();
+        }catch (S3ServiceException e){
+            throw new IOException(e.getErrorCode());
+        }
     }
 
     @Override
@@ -213,6 +219,7 @@ public class AmazonS3Storage implements Storage{
         //since there's no interface for accessing the output stream directly by the JetS3 library, implement it.
         OutputStream outputStream = new OutputStream() {
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
+            String tenantId = TenantContext.getThreadLocalInstance().getTenantId();
 
             @Override
             public void write(int b) throws IOException {
@@ -220,10 +227,13 @@ public class AmazonS3Storage implements Storage{
             }
 
             @Override
-            public void close() throws IOException {
-                bao.close();
+            public void flush() throws IOException {
 
                 try{
+                    String originalTenantId = TenantContext.getThreadLocalInstance().getTenantId();
+                    new TenantContext(tenantId);
+
+
                     S3Object s3Object = getS3Object(resource.getPath());
                     ByteArrayInputStream objectIS = new ByteArrayInputStream(bao.toByteArray());
                     s3Object.setDataInputStream(objectIS);
@@ -233,10 +243,15 @@ public class AmazonS3Storage implements Storage{
                     s3Object = restS3Service.putObject(getAmazonS3Bucket(),s3Object);
 
 
+                    new TenantContext(originalTenantId);
                 }catch (Exception e){
                     throw new IOException(e);
                 }
+            }
 
+            @Override
+            public void close() throws IOException {
+               // flush();
             }
         };
 

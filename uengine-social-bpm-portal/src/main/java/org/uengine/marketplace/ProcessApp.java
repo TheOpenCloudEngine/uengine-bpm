@@ -208,7 +208,7 @@ public class ProcessApp extends App{
             dest.close();
         }
 
-        return new Object[]{new Label("<center><h2>앱 취득을 성공하였습니다.</h2></center>")};//super.addApp();
+        return new Object[]{new Label("<center><h2>$AppHasBeenInstalledSucessfully</h2></center>")};//super.addApp();
 
        // return super.addApp();
     }

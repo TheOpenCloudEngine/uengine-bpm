@@ -1,6 +1,7 @@
 package org.uengine.social;
 
 import org.metaworks.widget.ModalWindow;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.model.InstanceTooltip;

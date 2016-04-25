@@ -17,7 +17,7 @@ public class SocialBPMTenantLifecycle implements TenantLifecycle {
         try {
             processApp = new ProcessApp();
             MetaworksRemoteService.autowire(processApp);
-            processApp.setAppId(-1); // -1 means default app jesus!
+            processApp.setAppId(-1); // -1 means default app, omg!
 
             processApp.addApp();
 

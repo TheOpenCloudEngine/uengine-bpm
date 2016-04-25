@@ -15,6 +15,8 @@ import org.uengine.codi.mw3.marketplace.App;
 import org.uengine.codi.mw3.marketplace.AppTypePanel;
 import org.uengine.codi.mw3.marketplace.category.Category;
 import org.uengine.codi.mw3.marketplace.category.ICategory;
+import org.uengine.codi.mw3.model.IProcessMap;
+import org.uengine.codi.mw3.model.ProcessMap;
 import org.uengine.modeling.resource.*;
 import org.uengine.social.SocialBPMProcessDefinitionSelector;
 import org.uengine.util.UEngineUtil;
@@ -206,10 +208,33 @@ public class ProcessApp extends App{
             }
             dest.flush();
             dest.close();
+
+            deployApp(defaultResource);
         }
 
         return new Object[]{new Label("<center><h2>$AppHasBeenInstalledSucessfully</h2></center>")};//super.addApp();
 
        // return super.addApp();
     }
+
+    protected void deployApp(DefaultResource defaultResource) {
+        String type = defaultResource.getType();
+
+        if("process".equals(type) || "method".equals(type)){
+            IProcessMap processMap = new ProcessMap();
+            processMap.setMapId(TenantContext.getThreadLocalInstance().getTenantId() + "." + defaultResource.getName());
+            processMap.setDefId(defaultResource.getPath());
+            processMap.setName(defaultResource.getName());
+            processMap.setComCode(TenantContext.getThreadLocalInstance().getTenantId());
+            //processMap.setNo(i);
+            //processMap.setIconFile(new MetaworksFile());
+            //processMap.getIconFile().setUploadedPath(upLoadedPath[i]);
+            try {
+                processMap.createMe();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 }

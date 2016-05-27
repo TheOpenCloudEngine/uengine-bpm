@@ -198,7 +198,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		 */
 	String tracingTag;
 	@Id
-	@Hidden
+	//@Hidden
 		public String getTracingTag() {
 			return tracingTag;
 		}

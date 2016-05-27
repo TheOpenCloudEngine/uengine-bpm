@@ -69,7 +69,7 @@ public class PropertySettingDialog extends ModalWindow{
         setPanel(element);
     }
 
-    @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_APPEND/*, validate = true*/)
+    @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_APPEND/*, validate = true*/, keyBinding = "Enter")
     public Object apply(){
         IElement element = (IElement)getPanel();
 

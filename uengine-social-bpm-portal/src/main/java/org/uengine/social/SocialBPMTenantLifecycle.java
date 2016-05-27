@@ -22,7 +22,10 @@ public class SocialBPMTenantLifecycle implements TenantLifecycle {
             processApp.addApp();
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
+
+            //that's ok even if not worked.
+            e.printStackTrace();
         }
     }
 }

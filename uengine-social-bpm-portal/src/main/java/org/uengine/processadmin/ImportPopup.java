@@ -2,13 +2,16 @@ package org.uengine.processadmin;
 
 import org.metaworks.MetaworksContext;
 import org.metaworks.Remover;
+import org.metaworks.ToEvent;
 import org.metaworks.annotation.Face;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.website.MetaworksFile;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.widget.Label;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.modeling.resource.ResourceManager;
+import org.uengine.modeling.resource.ResourceNavigator;
 import org.uengine.modeling.resource.Serializer;
 import org.uengine.modeling.resource.resources.ProcessResource;
 import org.uengine.processpublisher.BPMNUtil;
@@ -21,7 +24,7 @@ import java.io.FileNotFoundException;
 /**
  * Created by jjy on 2015. 10. 15..
  */
-@Face(ejsPath="genericfaces/CleanObjectFace.ejs")
+@Face(ejsPath="genericfaces/CleanObjectFace.ejs", displayName = "Import")
 public class ImportPopup {
 
     public ImportPopup(){}
@@ -45,7 +48,7 @@ public class ImportPopup {
         if(getSelectFile().getFileTransfer()!=null){
             ProcessResource processResource = new ProcessResource();
 
-            String fileNameToUpload = getSelectFile().getFilename().replaceFirst("[.][^.]+$", "") + ".process";
+            String fileNameToUpload = getSelectFile().getFilename();//.replaceFirst("[.][^.]+$", "") + ".process";
 
             if(getSelectFile().getFilename().endsWith(".bpmn")) {
                 fileNameToUpload = fileNameToUpload.replaceFirst("[.][^.]+$", "") + ".process";
@@ -77,8 +80,10 @@ public class ImportPopup {
 
             processResource.save(definition);
 
-            MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()));
+            //MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()), new ModalWindow(new ));
 
+
+            MetaworksRemoteService.wrapReturn(new Label("<h2> Successfully imported.</h1> Refresh the navigator to see the imported file."));
         }
 
     }

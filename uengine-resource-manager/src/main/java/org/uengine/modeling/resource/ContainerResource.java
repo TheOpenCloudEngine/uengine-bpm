@@ -42,7 +42,10 @@ public class ContainerResource extends DefaultResource implements IContainer {
 
 	public void setChildren(List<IResource> children) {
 		this.children = children;
-		sort();
+
+		try {
+			sort();
+		}catch (Exception e){}
 	}
 
 	@Field(descriptor = "container")

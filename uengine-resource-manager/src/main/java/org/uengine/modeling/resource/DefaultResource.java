@@ -236,6 +236,11 @@ public class DefaultResource implements IResource {
 
 		if(MetaworksRemoteService.metaworksCall()){
 			//refresh
+			try {
+				MetaworksRemoteService.addReturn(new ToEvent(new ResourceNavigator(), "refresh"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

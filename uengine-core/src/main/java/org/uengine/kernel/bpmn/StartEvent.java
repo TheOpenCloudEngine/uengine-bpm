@@ -13,6 +13,15 @@ public class StartEvent extends Event {
 	protected void executeActivity(ProcessInstance instance) throws Exception {
 		fireComplete(instance);
 	}
-	
+
+	String startTriggerCode;
+		public String getStartTriggerCode() {
+			return startTriggerCode;
+		}
+
+		public void setStartTriggerCode(String startTriggerCode) {
+			this.startTriggerCode = startTriggerCode;
+		}
+
 
 }

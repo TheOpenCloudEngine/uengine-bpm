@@ -408,7 +408,7 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		}
 			
 	DatabaseSynchronizationOption databaseSynchronizationOption;
-	@Hidden
+	//@Hidden
 		public DatabaseSynchronizationOption getDatabaseSynchronizationOption() {
 			return databaseSynchronizationOption;
 		}

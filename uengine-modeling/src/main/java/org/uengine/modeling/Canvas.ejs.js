@@ -17,6 +17,7 @@ var org_uengine_modeling_Canvas = function (objectId, className) {
         var faceHelper = this;
         faceHelper.load();
     }
+    console.log('Debug');
 };
 
 org_uengine_modeling_Canvas.prototype = {

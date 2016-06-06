@@ -43,6 +43,7 @@ public class ParameterContext implements Serializable , ContextAware{
 		}
 	
 	TextContext argument = org.uengine.contexts.TextContext.createInstance();
+	@Name
 		public TextContext getArgument() {
 			if(argument.getText()==null && getVariable()!=null){
 				return getVariable().getDisplayName();

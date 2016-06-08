@@ -79,7 +79,6 @@ var org_uengine_kernel_designer_MappingCanvas = function (objectId, className) {
         }
         faceHelper.drawTerminals(this.id, false, canvas, null, false);
     }).bind('expanded', function () {
-        console.log(this.id);
         faceHelper.drawTerminals(this.id, false, canvas, null, false);
     }).bind('collapsed', function () {
         faceHelper.drawTerminals(this.id, false, canvas, null, false);
@@ -139,6 +138,8 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
                 var object = mw3.objects[objectId];
                 var id = object.id;
                 var shapeId = (isLeft ? 'FROM_' : 'TO_') + id;
+                //- 를 . 으로 변경
+                var name = object.id.replace(/-/gi, ".");
                 var isView = true;
                 var edgeIds;
                 var closedParentObjectId = mw3.getFaceHelper(treeObjectId).getClosedParentNodes(objectId);
@@ -160,11 +161,15 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
                         {"r": 5},
                         shapeId
                     );
+                    canvas.setCustomData(shapeElement, {
+                        type: isLeft ? 'variable' : 'argument',
+                        name: name
+                    });
 
                     edgeIds = $(shapeElement).attr(isLeft ? "_toedge" : "_fromedge");
                     if (edgeIds) {
                         $.each(edgeIds.split(","), function (indx, edgeId) {
-                            edge = canvas.getElementById(edgeId);
+                            var edge = canvas.getElementById(edgeId);
                             edge.shape.geom.style.map['stroke-dasharray'] = '';
                         });
                     }
@@ -184,10 +189,15 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
                             shapeId
                         );
 
+                        canvas.setCustomData(shapeElement, {
+                            type: isLeft ? 'variable' : 'argument',
+                            name: name
+                        });
+
                         edgeIds = $(shapeElement).attr(isLeft ? "_toedge" : "_fromedge");
                         if (edgeIds) {
                             $.each(edgeIds.split(","), function (indx, edgeId) {
-                                edge = canvas.getElementById(edgeId);
+                                var edge = canvas.getElementById(edgeId);
                                 edge.shape.geom.style.map['stroke-dasharray'] = '--';
                             });
                         }
@@ -220,7 +230,6 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
                 this.drawLine();
             }
         }
-        // sended data role : " fromElementId , toElementId "//TODO, (in|out|inOut) "
     },
     drawUnExtendedTerminal: function (shapeId, isLeft, parentElement) {
         var canvas = this.icanvas;
@@ -236,39 +245,130 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
         canvas.removeAllGuide();
         canvas.hide(shapeElement);
     },
-    drawLine: function () {
-        this.loadDrawed = true;
-        var elements = this.object.mappingElements;
-        if (typeof elements == 'undefined') {
-            return;
-        }
-        if (elements != null) {
-            for (var i = 0; i < elements.length; i++) {
-                var toId = 'TO_' + elements[i].argument.text;
-                //var fromId = 'FROM_' + elements[i].variable.selectedText;
-                var fromId = 'FROM_' + elements[i].variable.name;
-                // "." 을 "-" 로 변경
-                toId = toId.replace(/\./gi, "-");
-                fromId = fromId.replace(/\./gi, "-");
+    drawTransformerMappingLine: function (transformerMapping, toShape) {
+        var linkedArgumentName = transformerMapping.linkedArgumentName;
+        var transformer = transformerMapping.transformer;
+        var transformerClassName = transformer.__className;
+        var transformerJson = JSON.parse(transformer.transformerJson);
+        var argumentSourceMap = transformer.argumentSourceMap;
+        var drawData = this.getTransformerDrawDataByClassName(transformerClassName);
 
-                var fromShape = this.icanvas.getElementById(fromId);
-                var toShape = this.icanvas.getElementById(toId);
-                // 동적으로 생성되는 노드는 로드 시점에 아직 안그려져 있을수 있다.
-                if (typeof(fromShape) == "undefined" || fromShape == null) {
-                    var parentElement = this.findParentNode(fromId);
-                    // 선이 이어진 도형만 그린 후에 선을 연결시키고 숨겨준다.
-                    this.drawUnExtendedTerminal(fromId, true, parentElement);
-                    fromShape = this.icanvas.getElementById(fromId);
+        var transformerPanel = this.icanvas.getElementById(transformerJson.id);
+        if (!transformerPanel) {
+            this.icanvas.drawTransformer([transformerJson.x, transformerJson.y],
+                drawData.label, drawData.inputs, drawData.outputs, drawData, transformerJson.id);
+            transformerPanel = this.icanvas.getElementById(transformerJson.id);
+        }
+
+        //linkedArgument 와 toShape 의 연결
+        var fromShape = this.getTerminalFromTransFormByName(transformerPanel, linkedArgumentName);
+        if (fromShape) {
+            this.icanvas.connect(fromShape, toShape);
+        }
+
+        //argumentSourceMap 의 연결
+        for (var key in argumentSourceMap) {
+            var inputTerminal = this.getTerminalFromTransFormByName(transformerPanel, key);
+            var value = argumentSourceMap[key];
+            //레프트 트리에 연결되어있다.
+            if (typeof value === 'string') {
+                var leftTerminal = this.findLeftTerminalByName(value);
+                if (leftTerminal) {
+                    this.icanvas.connect(leftTerminal, inputTerminal);
                 }
-                if (typeof(toShape) == "undefined" || toShape == null) {
-                    var parentElement = this.findParentNode(toId);
-                    this.drawUnExtendedTerminal(toId, false, parentElement);
-                    toShape = this.icanvas.getElementById(toId);
-                }
-                // 선을 그린다.
-                this.icanvas.connect(fromShape, toShape);
+            }
+            //트랜스포머에 연결되어있다.
+            else {
+                this.drawTransformerMappingLine(value, inputTerminal);
             }
         }
+    },
+    drawLine: function () {
+        var me = this;
+        this.loadDrawed = true;
+        var mappingElements = this.object.mappingElements;
+        console.log(mappingElements);
+        if (typeof mappingElements == 'undefined') {
+            return;
+        }
+        if (mappingElements != null) {
+            $.each(mappingElements, function (index, mappingElement) {
+                var toShape = me.findRightTerminalByName(mappingElement.argument.text);
+                //트랜스포머 매핑
+                if (mappingElement.transformerMapping) {
+                    me.drawTransformerMappingLine(mappingElement.transformerMapping, toShape);
+                }
+                //variable 매핑
+                if (mappingElement.variable.name) {
+                    var fromShape = me.findLeftTerminalByName(mappingElement.variable.name);
+                    me.icanvas.connect(fromShape, toShape);
+                }
+            });
+            //for (var i = 0; i < elements.length; i++) {
+            //    var fromShape = me.findRightTerminalByName(elements[i].argument.text);
+            //
+            //    //트랜스포머
+            //    if (elements[i].transformerMapping) {
+            //
+            //    }
+            //    if (!elements[i].variable.name) {
+            //
+            //    }
+            //
+            //    var toId = 'TO_' + elements[i].argument.text;
+            //    var fromId = 'FROM_' + elements[i].variable.name;
+            //    // "." 을 "-" 로 변경
+            //    toId = toId.replace(/\./gi, "-");
+            //    fromId = fromId.replace(/\./gi, "-");
+            //
+            //    var fromShape = this.icanvas.getElementById(fromId);
+            //    var toShape = this.icanvas.getElementById(toId);
+            //    // 동적으로 생성되는 노드는 로드 시점에 아직 안그려져 있을수 있다.
+            //    if (typeof(fromShape) == "undefined" || fromShape == null) {
+            //        var parentElement = this.findParentNode(fromId);
+            //        // 선이 이어진 도형만 그린 후에 선을 연결시키고 숨겨준다.
+            //        this.drawUnExtendedTerminal(fromId, true, parentElement);
+            //        fromShape = this.icanvas.getElementById(fromId);
+            //    }
+            //    if (typeof(toShape) == "undefined" || toShape == null) {
+            //        var parentElement = this.findParentNode(toId);
+            //        this.drawUnExtendedTerminal(toId, false, parentElement);
+            //        toShape = this.icanvas.getElementById(toId);
+            //    }
+            //    // 선을 그린다.
+            //    this.icanvas.connect(fromShape, toShape);
+            //}
+        }
+    },
+    findRightTerminalByName: function (name) {
+        var terminal;
+        var shapes = this.icanvas._RENDERER.getAllShapes();
+        $.each(shapes, function (index, element) {
+            if (!element.data) {
+                return;
+            }
+            if (element.data.type == 'argument') {
+                if (element.data.name == name) {
+                    terminal = element;
+                }
+            }
+        });
+        return terminal;
+    },
+    findLeftTerminalByName: function (name) {
+        var terminal;
+        var shapes = this.icanvas._RENDERER.getAllShapes();
+        $.each(shapes, function (index, element) {
+            if (!element.data) {
+                return;
+            }
+            if (element.data.type == 'variable') {
+                if (element.data.name == name) {
+                    terminal = element;
+                }
+            }
+        });
+        return terminal;
     },
     findParentNode: function (nodeId) {
         var parentNodeId = nodeId.substring(0, nodeId.lastIndexOf("-"));
@@ -279,7 +379,139 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
             return shapeNode;
         }
     },
+    getLinkedArgumentsEdges: function () {
+        var argumentsEdges = [];
+        var to, toShape, customData;
+        var canvas = this.icanvas;
+        var edges = canvas._RENDERER.getAllEdges();
+        $.each(edges, function (index, edge) {
+            to = $(edge).attr("_to");
+            toShape = canvas._RENDERER._getShapeFromTerminal(to);
+            customData = canvas.getCustomData(toShape);
+            if (customData) {
+                if (customData['type'] == 'argument') {
+                    argumentsEdges.push(edge);
+                }
+            }
+        });
+        return argumentsEdges;
+    },
+    getLinkedElements: function (edge) {
+        var canvas = this.icanvas;
+        var from = $(edge).attr("_from");
+        var to = $(edge).attr("_to");
+        var fromShape = canvas._RENDERER._getShapeFromTerminal(from);
+        var toShape = canvas._RENDERER._getShapeFromTerminal(to);
+        return {
+            from: {
+                element: fromShape,
+                data: canvas.getCustomData(fromShape)
+            },
+            to: {
+                element: toShape,
+                data: canvas.getCustomData(toShape)
+            }
+        }
+    },
+    getTerminalFromTransFormByName: function (transform, name) {
+        var childs = this.icanvas._RENDERER.getChilds(transform);
+        var terminal;
+        $.each(childs, function (index, child) {
+            if (!child.data) {
+                return;
+            }
+            if (child.data.name == name)
+                terminal = child;
+        });
+        return terminal;
+    },
+    getTransformFromTerminal: function (element) {
+        return this.icanvas._RENDERER.getParent(element);
+    },
+    getTerminalsFromTerminal: function (element) {
+        var transform = this.getTransformFromTerminal(element);
+        var childs = this.icanvas._RENDERER.getChilds(transform);
+        var terminals = [];
+        $.each(childs, function (index, child) {
+            if (!child.data) {
+                return;
+            }
+            if (!child.data.type) {
+                return;
+            }
+            if (child.data.type != 'input' && child.data.type != 'output') {
+                return;
+            }
+            terminals.push(child)
+        });
+        return terminals;
+    },
+    getInputTerminalsFromOutTerminal: function (element) {
+        var outputTerminals = [];
+        var terminals = this.getTerminalsFromTerminal(element);
+        $.each(terminals, function (index, terminal) {
+            if (terminal.data.type == 'input') {
+                outputTerminals.push(terminal)
+            }
+        });
+        return outputTerminals;
+    },
+    createTransformerMapping: function (element) {
+        var me = this;
+        var fromType = element.data.type;
+        var processValiable;
+        var transformerMapping;
+        var transformer;
+        var argumentSourceMap = {};
+
+        var linkedArgumentName = element.data.name;
+        var className = element.data.className;
+        var transform = this.getTransformFromTerminal(element);
+        var boundary = this.icanvas._RENDERER.getBoundary(transform);
+        var centroid = boundary.getCentroid();
+
+        //동일한 트랜스폼 객체 내부의 input 터미널들마다 argumentSourceMap 의 키밸류를 구성.
+        var inputTerminals = this.getInputTerminalsFromOutTerminal(element);
+
+        $.each(inputTerminals, function (index, inputTerminal) {
+            var prevEdges = me.icanvas._RENDERER.getPrevEdges(inputTerminal);
+            if (prevEdges.length) {
+                var prevEdge = prevEdges[0];
+                var linkedElements = me.getLinkedElements(prevEdge);
+                var linkedFrom = linkedElements['from'];
+                var fromType = linkedFrom.data.type;
+                var fromName = linkedFrom.data.name;
+                //edge 의 from 이 좌측트리요소일경우
+                if (fromType == 'variable') {
+                    argumentSourceMap[inputTerminal.data.name] = fromName;
+                }
+                //edge 의 from 이 트랜스폼일경우
+                if (fromType == 'output') {
+                    argumentSourceMap[inputTerminal.data.name] = me.createTransformerMapping(linkedFrom.element);
+                }
+            }
+        });
+
+        transformer = {
+            __className: className,
+            name: element.data.label,
+            transformerJson: JSON.stringify({
+                id: transform.id,
+                x: centroid.x,
+                y: centroid.y
+            }),
+            argumentSourceMap: argumentSourceMap
+        };
+        transformerMapping = {
+            __className: 'org.uengine.processdesigner.mapper.TransformerMapping',
+            transformer: transformer,
+            linkedArgumentName: linkedArgumentName
+        };
+
+        return transformerMapping;
+    },
     getValue: function () {
+        var me = this;
         // startsWith 정의
         if (!String.prototype.startsWith) {
             String.prototype.startsWith = function (str) {
@@ -290,210 +522,197 @@ org_uengine_kernel_designer_MappingCanvas.prototype = {
         if (this.callCount == 1) {
             var returnObject = this.object;
             returnObject.mappingElements = [];
-            for (var i = 0; i < this.linekedInfo.size(); i++) {
-                var linkedInfoStr = this.linekedInfo.get(i);
-                var fromId = '';
-                var toId = '';
-                if (linkedInfoStr != null) {
-                    var tempStr = linkedInfoStr.split(",");
-                    fromId = tempStr[0];
-                    toId = tempStr[1];
-                    console.log(fromId, toId);
-                    //if (console && console.log) console.log('fromId = ' + fromId);
-                    //if (console && console.log) console.log('toId = ' + toId);
-                    // argument : 받은 변수정보 => toId
-                    // variable : 준 변수 정보 => formId
-                    var fromText;
-                    var toText;
-                    var direction;
-                    if (returnObject.inout && fromId.startsWith('TO_')) {
-                        // 새로 추가된 양방향 통신이 가능하도록.. (subprocessActivity)
-                        fromText = fromId.substring(3);
-                        toText = toId.substring(5);
-                        direction = 'out';
-                    } else {
-                        // 기존 mappingActivity, invocationActivity
-                        fromText = fromId.substring(5);
-                        toText = toId.substring(3);
-                        direction = 'in';
-                    }
+            var argumentsEdges = this.getLinkedArgumentsEdges();
+            $.each(argumentsEdges, function (index, argumentsEdge) {
+                var linkedElements = me.getLinkedElements(argumentsEdge);
+                var linkedFrom = linkedElements['from'];
+                var linkedTo = linkedElements['to'];
+                var fromType = linkedFrom.data.type;
+                var direction = 'in';
+                var processValiable;
+                var transformerMapping;
+                var mappingElement;
 
-                    if (console && console.log) console.log('fromText = ' + fromText);
-                    if (console && console.log) console.log('toText = ' + toText);
-                    fromText = fromText.replace(/-/gi, ".");
-                    toText = toText.replace(/-/gi, ".");
-                    var processValiable = {
+                //edge 의 from 이 좌측트리요소일경우
+                if (fromType == 'variable') {
+                    processValiable = {
                         __className: 'org.uengine.kernel.ProcessVariable',
-                        name: fromText
+                        name: linkedFrom.data.name
                     };
-                    var argumentText = {
-                        __className: 'org.uengine.contexts.TextContext',
-                        text: toText
-                    };
-                    var mappingElement = {
+                }
+                //edge 의 from 이 트랜스폼일경우
+                if (fromType == 'output') {
+                    transformerMapping = me.createTransformerMapping(linkedFrom.element)
+                }
+
+                var argumentText = {
+                    __className: 'org.uengine.contexts.TextContext',
+                    text: linkedTo.data.name
+                };
+                if (processValiable) {
+                    mappingElement = {
                         __className: 'org.uengine.kernel.ParameterContext',
                         direction: direction,
                         argument: argumentText,
                         variable: processValiable
                     };
-
-                    returnObject.mappingElements.push(mappingElement);
                 }
-            }
+                if (transformerMapping) {
+                    mappingElement = {
+                        __className: 'org.uengine.kernel.ParameterContext',
+                        direction: direction,
+                        argument: argumentText,
+                        transformerMapping: transformerMapping
+                    };
+                }
+                returnObject.mappingElements.push(mappingElement);
+            });
             this.object = returnObject;
             this.callCount = -1;
+            console.log(returnObject.mappingElements);
         }
         return this.object;
     },
+    getTransformerByName: function () {
 
+    },
+    setTransformerByName: function () {
+
+    },
+    getTransformerDrawDataByClassName: function (className) {
+        var data;
+        var drawDatas = this.transformerDrawData();
+        $.each(drawDatas, function (index, drawData) {
+            if (drawData.className == className) {
+                data = drawData;
+            }
+        });
+        return data;
+    },
+    transformerDrawData: function () {
+        return [
+            {
+                group: 'Math',
+                label: 'Max',
+                className: 'org.uengine.processdesigner.mapper.transformers.MaxTransformer',
+                inputs: ['in1', 'in2'],
+                outputs: ['out']
+            },
+            {
+                group: 'Math',
+                label: 'Min',
+                className: 'org.uengine.processdesigner.mapper.transformers.MinTransformer',
+                inputs: ['in1', 'in2'],
+                outputs: ['out']
+            },
+            {
+                group: 'Math',
+                label: 'To Number',
+                className: 'org.uengine.processdesigner.mapper.transformers.NumberTransformer',
+                inputs: ['in1'],
+                outputs: ['out']
+            },
+            {
+                group: 'Math',
+                label: 'Sum',
+                className: 'org.uengine.processdesigner.mapper.transformers.SumTransformer',
+                inputs: ['in1', 'in2', 'in3', 'in4', 'in5'],
+                outputs: ['out']
+            },
+            {
+                group: 'Math',
+                label: 'Floor',
+                className: 'org.uengine.processdesigner.mapper.transformers.FloorTransformer',
+                inputs: ['in1'],
+                outputs: ['out']
+            },
+            {
+                group: 'Math',
+                label: 'Round',
+                className: 'org.uengine.processdesigner.mapper.transformers.RoundTransformer',
+                inputs: ['in1'],
+                outputs: ['out']
+            },
+            {
+                group: 'Math',
+                label: 'Ceil',
+                className: 'org.uengine.processdesigner.mapper.transformers.CeilTransformer',
+                inputs: ['in1'],
+                outputs: ['out']
+            },
+            {
+                group: 'Math',
+                label: 'Abs',
+                className: 'org.uengine.processdesigner.mapper.transformers.AbsTransformer',
+                inputs: ['in1'],
+                outputs: ['out']
+            },
+            {
+                group: 'String',
+                label: 'Concat',
+                className: 'org.uengine.processdesigner.mapper.transformers.ConcatTransformer',
+                inputs: ['in1', 'in2', 'in3', 'in4', 'in5'],
+                outputs: ['out']
+            },
+            {
+                group: 'String',
+                label: 'Replace',
+                className: 'org.uengine.processdesigner.mapper.transformers.ReplaceTransformer',
+                inputs: ['in1'],
+                outputs: ['out']
+            },
+            {
+                group: 'String',
+                label: 'NumberFormat',
+                className: 'org.uengine.processdesigner.mapper.transformers.NumberFormatTransformer',
+                inputs: ['in1', 'in2'],
+                outputs: ['out']
+            }
+        ];
+    }
+    ,
     setContextMenu: function (canvas) {
-        var me = canvas;
+        var items = {};
+        items['Delete'] = {
+            name: 'Delete', callback: function () {
+                canvas._HANDLER.deleteSelectedShape();
+            }
+        };
+        var drawData = this.transformerDrawData();
+        $.each(drawData, function (index, data) {
+            var groupName = data.group;
+            var label = data.label;
+            var className = data.className;
+            var inputs = data.inputs;
+            var outputs = data.outputs;
+            if (!items[groupName]) {
+                items[groupName] = {
+                    name: groupName,
+                    items: {}
+                };
+            }
+            var group = items[groupName];
+            group.items[label] = {
+                name: label,
+                callback: function () {
+                    var root = canvas._RENDERER.getRootGroup();
+                    var offset = $(root).data('contextOffset');
+                    canvas.drawTransformer([offset.x, offset.y], label, inputs, outputs, data);
+                }
+            }
+        });
+
         $.contextMenu({
-            selector: '#' + me._RENDERER.getRootElement().id,
+            selector: '#' + canvas._RENDERER.getRootElement().id,
             build: function ($trigger, e) {
-                var root = me._RENDERER.getRootGroup(), shape, newElement, eventOffset = me._HANDLER._getOffset(event);
-                $(me._RENDERER.getContainer()).focus();
+                var root = canvas._RENDERER.getRootGroup();
+                var shape;
+                var newElement;
+                var eventOffset = canvas._HANDLER._getOffset(event);
+                $(root).data('contextOffset', eventOffset);
+                $(canvas._RENDERER.getContainer()).focus();
                 return {
-                    items: {
-                        'Delete': {
-                            name: 'Delete', callback: function () {
-                                me._HANDLER.deleteSelectedShape();
-                            }
-                        },
-                        'Math': {
-                            name: 'Math',
-                            items: {
-                                'Max': {
-                                    name: 'Max', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Max', ['in1', 'in2'], ['out']);
-                                    }
-                                },
-                                'Min': {
-                                    name: 'Min', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Min', ['in1', 'in2'], ['out']);
-                                    }
-                                },
-                                'To Number': {
-                                    name: 'To Number', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'To Number', ['in1'], ['out']);
-                                    }
-                                },
-                                'Sum': {
-                                    name: 'Sum', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Sum', ['in1', 'in2', 'in3', 'in4', 'in5'], ['out']);
-                                    }
-                                },
-                                'Floor': {
-                                    name: 'Floor', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Floor', 1, 1);
-                                    }
-                                },
-                                'Round': {
-                                    name: 'Round', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Round', 1, 1);
-                                    }
-                                },
-                                'Ceil': {
-                                    name: 'Ceil', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Ceil', 1, 1);
-                                    }
-                                },
-                                'Abs': {
-                                    name: 'Abs', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Abs', 1, 1);
-                                    }
-                                }
-                            }
-                        },
-                        'String': {
-                            name: 'String',
-                            items: {
-                                'Concat': {
-                                    name: 'Concat', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Concat', 5, 1);
-                                    }
-                                },
-                                'Replace': {
-                                    name: 'Replace', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'Replace', 1, 1);
-                                    }
-                                },
-                                'NumberFormat': {
-                                    name: 'NumberFormat', callback: function () {
-                                        me.drawTransformer([eventOffset.x, eventOffset.y], 'NumberFormat', 2, 1);
-                                    }
-                                }
-                            }
-                        },
-                        'XML': {
-                            name: 'XML',
-                            items: {
-                                'view_actualSize': {
-                                    name: 'Actual Size', callback: function () {
-                                        me._RENDERER.setScale(1);
-                                    }
-                                },
-                                'sep2_1': '---------',
-                                'view_fitWindow': {
-                                    name: 'Fit Window', callback: function () {
-                                        me.fitWindow();
-                                    }
-                                },
-                                'sep2_2': '---------',
-                                'view_25': {
-                                    name: '25%', callback: function () {
-                                        me._RENDERER.setScale(0.25);
-                                    }
-                                },
-                                'view_50': {
-                                    name: '50%', callback: function () {
-                                        me._RENDERER.setScale(0.5);
-                                    }
-                                },
-                                'view_75': {
-                                    name: '75%', callback: function () {
-                                        me._RENDERER.setScale(0.75);
-                                    }
-                                },
-                                'view_100': {
-                                    name: '100%', callback: function () {
-                                        me._RENDERER.setScale(1);
-                                    }
-                                },
-                                'view_150': {
-                                    name: '150%', callback: function () {
-                                        me._RENDERER.setScale(1.5);
-                                    }
-                                },
-                                'view_200': {
-                                    name: '200%', callback: function () {
-                                        me._RENDERER.setScale(2);
-                                    }
-                                },
-                                'view_300': {
-                                    name: '300%', callback: function () {
-                                        me._RENDERER.setScale(3);
-                                    }
-                                },
-                                'view_400': {
-                                    name: '400%', callback: function () {
-                                        me._RENDERER.setScale(4);
-                                    }
-                                },
-                                'sep2_3': '---------',
-                                'view_zoomin': {
-                                    name: 'Zoom In', callback: function () {
-                                        me.zoomIn();
-                                    }
-                                },
-                                'view_zoomout': {
-                                    name: 'Zoom Out', callback: function () {
-                                        me.zoomOut();
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    items: items
                 };
             }
         });

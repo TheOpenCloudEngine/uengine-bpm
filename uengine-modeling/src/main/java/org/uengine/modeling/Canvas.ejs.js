@@ -338,6 +338,8 @@ org_uengine_modeling_Canvas.prototype = {
 
         object.x = mw3.dropX - $("#canvas_" + this.objectId)[0].offsetLeft + $("#canvas_" + this.objectId)[0].scrollLeft - $("#canvas_" + this.objectId).offsetParent().offset().left;
         object.y = mw3.dropY - $('#canvas_' + this.objectId)[0].offsetTop + $('#canvas_' + this.objectId)[0].scrollTop - $('#canvas_' + this.objectId).offsetParent().offset().top;
+        object.x = object.x / this.canvas._CONFIG.SCALE;
+        object.y = object.y / this.canvas._CONFIG.SCALE;
 
         var isArray = Object.prototype.toString.call(object) == '[object Array]';
 

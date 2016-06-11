@@ -4,17 +4,15 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.xml.namespace.QName;
-
 import org.metaworks.annotation.Face;
+import org.uengine.modeling.resource.Describable;
+import org.uengine.modeling.HasThumbnail;
 import org.uengine.processmanager.ProcessManagerFactoryBean;
 import org.uengine.processmanager.ProcessManagerRemote;
 import org.uengine.processmanager.ProcessTransactionContext;
@@ -26,7 +24,7 @@ import org.uengine.util.UEngineUtil;
  */
 
 @Face(displayName="BPMN")
-public class ProcessDefinition extends ScopeActivity implements Serializable, IDefinitionModel {
+public class ProcessDefinition extends ScopeActivity implements Serializable, IDefinitionModel, Describable, HasThumbnail {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	private transient static ActivityFilter[] defaultActivityFilters;
 	
@@ -89,7 +87,9 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 	}		
 
 	transient Hashtable wholeChildActivities/* = new Hashtable()*/;
-		public Activity getActivity(String tracingTag){
+	private String thumbnailURL;
+
+	public Activity getActivity(String tracingTag){
 			
 			if(wholeChildActivities == null){
 				registerToProcessDefinition(false, false);
@@ -1100,5 +1100,13 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		public void setPoolInfo(Object poolInfo) {
 			this.poolInfo = poolInfo;
 		}
+
+	public void setThumbnailURL(String thumbnailURL) {
+		this.thumbnailURL = thumbnailURL;
+	}
+
+	public String getThumbnailURL() {
+		return thumbnailURL;
+	}
 }
 

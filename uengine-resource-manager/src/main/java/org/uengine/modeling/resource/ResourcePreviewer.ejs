@@ -1,0 +1,26 @@
+<!--replace-->
+
+<%
+
+ var thumbnailURL = value.thumbnailURL;
+
+
+   %>
+
+<div class="col-sm-6 col-md-4" id="objDiv_<%=objectId%>">
+    <div class="thumbnail">
+
+        <%
+        if(thumbnailURL){
+         %>
+        <img data-src="holder.js/100%x200" alt="100%x200" src='<%=thumbnailURL%>' data-holder-rendered="true" style="height: 200px; width: 100%; display: block;">
+
+        <%}%>
+        <div class="caption">
+            <h3><%=value.name%></h3>
+            <p><%=value.description%></p>
+            <p><a href="#" class="btn btn-primary" role="button" onclick="<%=methods.open.caller()%>">Open</a></p>
+        </div>
+    </div>
+</div>
+

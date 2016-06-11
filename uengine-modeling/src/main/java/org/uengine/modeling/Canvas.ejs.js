@@ -20,13 +20,27 @@ var org_uengine_modeling_Canvas = function (objectId, className) {
 };
 
 org_uengine_modeling_Canvas.prototype = {
-    startLoading: function () {
-        mw3.startLoading();
+
+    getValue: function(){
+
+        try{
+            var svg = document.querySelector( "svg" );
+            var svgData = new XMLSerializer().serializeToString( svg );
+            var srcURL = "data:image/svg+xml;utf-8," + svgData;
+
+            this.object.thumbnailURL = srcURL;
+        }catch(e){console.log("failed to create png image from svg. Maybe browser doesn't support HTML5"); console.log(e);}
+
+        return this.object;
     },
 
-    endLoading: function () {
-        mw3.endLoading();
-    },
+    //startLoading: function () {
+    //    mw3.startLoading();
+    //},
+    //
+    //endLoading: function () {
+    //    mw3.endLoading();
+    //},
 
     load: function () {
         OG.common.Constants.CANVAS_BACKGROUND = "#fff";

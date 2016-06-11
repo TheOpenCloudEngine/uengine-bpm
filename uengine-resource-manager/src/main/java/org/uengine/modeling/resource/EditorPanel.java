@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.uengine.kernel.LeveledException;
 import org.uengine.kernel.Validatable;
 import org.uengine.kernel.ValidationContext;
+import org.uengine.modeling.HasThumbnail;
 import org.uengine.modeling.LanguageSelector;
+import org.uengine.modeling.Modeler;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.xml.ws.Service;
@@ -118,7 +120,19 @@ public class EditorPanel implements ContextAware {
 			throw new Exception("$ExistingResourceName");
 		}
 
-		defaultResource.save(getEditor().createEditedObject());
+		Object editedObject = getEditor().createEditedObject();
+		defaultResource.save(editedObject);
+
+		saveRecentList(defaultResource);
+
+		if(editedObject instanceof HasThumbnail && getEditor() instanceof Modeler){
+			Modeler modeler = (Modeler) getEditor();
+			if(modeler.getCanvas().getThumbnailURL()!=null ){
+				HasThumbnail hasThumbnail = ((HasThumbnail)editedObject);
+			}
+		}
+
+
 
 		String appName = getResourcePath().substring(0, getResourcePath().indexOf("/"));
 
@@ -138,7 +152,36 @@ public class EditorPanel implements ContextAware {
 
 		this.setEditor(editor);
 
+
+
+
 		wrapReturn(resourceNavigator,this);
+	}
+
+	private void saveRecentList(IResource defaultResource) throws Exception{
+		String appRoot = defaultResource.getPath().split("/")[0];
+
+		DefaultResource recentListRS = new DefaultResource(appRoot + "/recent.xml");
+
+		try{
+			List<String> recentList = null;
+			try {
+				recentList = ((List<String>) resourceManager.getObject(recentListRS));
+			}catch (FileNotFoundException e){
+				//ignore.
+			}
+
+			if (recentList==null) recentList = new ArrayList<String>();
+
+			if(recentList.contains(defaultResource.getPath())) recentList.remove(defaultResource.getPath());
+
+			recentList.add(0, defaultResource.getPath());
+
+			resourceManager.save(recentListRS, recentList);
+
+		}catch (Exception e){
+			throw new Exception("failed to store recent list", e);
+		}
 	}
 
 	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)

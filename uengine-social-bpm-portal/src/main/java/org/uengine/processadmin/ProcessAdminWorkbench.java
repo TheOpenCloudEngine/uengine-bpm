@@ -23,6 +23,12 @@ import java.util.Date;
 public class ProcessAdminWorkbench extends Workbench {
     public ProcessAdminWorkbench() {
         super(new ProcessAdminResourceNavigator());
+
+        try {
+            setEditorPanel(new RecentEditedResourcesPanel(getResourceNavigator()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

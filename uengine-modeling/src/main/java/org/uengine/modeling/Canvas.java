@@ -19,7 +19,9 @@ import java.util.List;
 public class Canvas {
 	
 	List<ElementView> elementViewList;
-		public List<ElementView> getElementViewList() {
+	private String thumbnailURL;
+
+	public List<ElementView> getElementViewList() {
 			return elementViewList;
 		}
 		public void setElementViewList(List<ElementView> elementViewList) {
@@ -33,7 +35,7 @@ public class Canvas {
 		public void setRelationViewList(List<RelationView> relationViewList) {
 			this.relationViewList = relationViewList;
 		}
-			
+
 	public final static String CANVAS_DROP = "canvasdrop";
 
 	@AutowiredFromClient
@@ -128,5 +130,13 @@ public class Canvas {
 		}
 
 		MetaworksRemoteService.wrapReturn(new Refresh(new Clipboard(CANVAS_DROP)));
+	}
+
+	public String getThumbnailURL() {
+		return thumbnailURL;
+	}
+
+	public void setThumbnailURL(String thumbnailURL) {
+		this.thumbnailURL = thumbnailURL;
 	}
 }

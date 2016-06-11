@@ -6,4 +6,5 @@ package org.uengine.modeling;
 public interface HasThumbnail {
 
     String getThumbnailURL();
+    void setThumbnailURL(String url);
 }

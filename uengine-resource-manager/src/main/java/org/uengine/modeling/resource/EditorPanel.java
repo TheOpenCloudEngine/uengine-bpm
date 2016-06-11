@@ -121,16 +121,19 @@ public class EditorPanel implements ContextAware {
 		}
 
 		Object editedObject = getEditor().createEditedObject();
-		defaultResource.save(editedObject);
 
-		saveRecentList(defaultResource);
 
 		if(editedObject instanceof HasThumbnail && getEditor() instanceof Modeler){
 			Modeler modeler = (Modeler) getEditor();
 			if(modeler.getCanvas().getThumbnailURL()!=null ){
-				HasThumbnail hasThumbnail = ((HasThumbnail)editedObject);
+				((HasThumbnail)editedObject).setThumbnailURL(modeler.getCanvas().getThumbnailURL());
 			}
 		}
+
+		defaultResource.save(editedObject);
+
+		saveRecentList(defaultResource);
+
 
 
 

@@ -17,6 +17,7 @@ var org_uengine_modeling_Canvas = function (objectId, className) {
         var faceHelper = this;
         faceHelper.load();
     }
+    console.log('Debug');
 };
 
 org_uengine_modeling_Canvas.prototype = {
@@ -55,7 +56,7 @@ org_uengine_modeling_Canvas.prototype = {
                 resizable: true,
                 connectable: true,
                 selfConnectable: false,
-                connectCloneable: false,
+                connectCloneable: true,
                 connectRequired: true,
                 labelEditable: true,
                 groupDropable: true,
@@ -73,7 +74,7 @@ org_uengine_modeling_Canvas.prototype = {
                 resizable: false,
                 connectable: false,
                 selfConnectable: false,
-                connectCloneable: false,
+                connectCloneable: true,
                 connectRequired: false,
                 labelEditable: false,
                 groupDropable: false,
@@ -351,6 +352,8 @@ org_uengine_modeling_Canvas.prototype = {
 
         object.x = mw3.dropX - $("#canvas_" + this.objectId)[0].offsetLeft + $("#canvas_" + this.objectId)[0].scrollLeft - $("#canvas_" + this.objectId).offsetParent().offset().left;
         object.y = mw3.dropY - $('#canvas_' + this.objectId)[0].offsetTop + $('#canvas_' + this.objectId)[0].scrollTop - $('#canvas_' + this.objectId).offsetParent().offset().top;
+        object.x = object.x / this.canvas._CONFIG.SCALE;
+        object.y = object.y / this.canvas._CONFIG.SCALE;
 
         var isArray = Object.prototype.toString.call(object) == '[object Array]';
 

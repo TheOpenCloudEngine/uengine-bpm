@@ -1378,34 +1378,45 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		File varFile = new File(filePath);
 		if (varFile.exists()) {
 			Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
-			IndexedProcessVariableMap ipvm = (IndexedProcessVariableMap)fileVariables.get(createFullKey(scopeByTracingTag, key, false));
 
-			if(ipvm!=null) {
+			Object originalValue = fileVariables.get(createFullKey(scopeByTracingTag, key, false));
 
-				int maxIndex = ipvm.getMaxIndex();
-				ProcessVariableValue pvv = new ProcessVariableValue();
-				for (int i = 0; i < maxIndex + 1; i++) {
-					Serializable value = ipvm.getProcessVariableAt(i);
-					pvv.setValue(value);
-					pvv.moveToAdd();
-				}
-				pvv.beforeFirst();
-				if (pvv.size() == 0 || (pvv.size() == 1 && pvv.getValue() == null)) {
-					try {
-						Serializable value = (Serializable) getProcessDefinition().getProcessVariable(key).getDefaultValue();
+			if(originalValue instanceof IndexedProcessVariableMap) {
+				IndexedProcessVariableMap ipvm = (IndexedProcessVariableMap) originalValue;
+
+				if (ipvm != null) {
+
+					int maxIndex = ipvm.getMaxIndex();
+					ProcessVariableValue pvv = new ProcessVariableValue();
+					for (int i = 0; i < maxIndex + 1; i++) {
+						Serializable value = ipvm.getProcessVariableAt(i);
 						pvv.setValue(value);
-
-						return pvv;
-					} catch (Exception e) {
+						pvv.moveToAdd();
 					}
+					pvv.beforeFirst();
+					if (pvv.size() == 0 || (pvv.size() == 1 && pvv.getValue() == null)) {
+						try {
+							Serializable value = (Serializable) getProcessDefinition().getProcessVariable(key).getDefaultValue();
+							pvv.setValue(value);
+
+							return pvv;
+						} catch (Exception e) {
+						}
+					}
+
+					return pvv;
+				} else {
+					//				ProcessVariableValue pvv = new ProcessVariableValue();
+					//				pvv.setName(key);
+
+					return null;
 				}
+			}else{
+
+				ProcessVariableValue pvv = new ProcessVariableValue();
+				pvv.setValue(originalValue);
 
 				return pvv;
-			}else{
-//				ProcessVariableValue pvv = new ProcessVariableValue();
-//				pvv.setName(key);
-
-				return null;
 			}
 		}
 

@@ -7,11 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.Vector;
+import java.util.*;
 
 import org.uengine.kernel.ActivityRepository;
 import org.uengine.kernel.DefaultActivity;
@@ -49,6 +45,24 @@ public class XStreamSerializer implements Serializer{
 	
 	public void serialize(Object sourceObj, OutputStream os, Hashtable extendedContext) throws Exception{
 
+
+		if(sourceObj instanceof Collection){
+			for(Object value : ((Collection)sourceObj)){
+
+				if(value instanceof NeedArrangementToSerialize)
+					((NeedArrangementToSerialize)value).beforeSerialization();
+
+			}
+		}else
+
+		if(sourceObj instanceof Map){
+			for(Object value : ((Map)sourceObj).values()){
+				if(value instanceof NeedArrangementToSerialize)
+					((NeedArrangementToSerialize)value).beforeSerialization();
+
+			}
+		}else
+
 		if(sourceObj instanceof NeedArrangementToSerialize)
 			((NeedArrangementToSerialize)sourceObj).beforeSerialization();
 
@@ -75,7 +89,24 @@ public class XStreamSerializer implements Serializer{
 		}finally{
 			try{is.close();}catch(Exception exx){};
 		}
-		
+
+		if(obj instanceof Collection){
+			for(Object value : ((Collection)obj)){
+
+				if(value instanceof NeedArrangementToSerialize)
+					((NeedArrangementToSerialize)value).afterDeserialization();
+
+			}
+		}else
+
+		if(obj instanceof Map){
+			for(Object value : ((Map)obj).values()){
+				if(value instanceof NeedArrangementToSerialize)
+					((NeedArrangementToSerialize)value).afterDeserialization();
+
+			}
+		}else
+
 		if(obj instanceof NeedArrangementToSerialize)
 			((NeedArrangementToSerialize)obj).afterDeserialization();
 		

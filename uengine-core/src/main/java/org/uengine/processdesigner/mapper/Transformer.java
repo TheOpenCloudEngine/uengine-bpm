@@ -31,18 +31,29 @@ public abstract class Transformer implements NeedArrangementToSerialize, Seriali
 		public Point getLocation() {
 			return location;
 		}
-//		public void setLocation(Point location) {
-//			this.location = location;
-//		}
-		
+		public void setLocation(Point location) {
+			this.location = location;
+		}
+
+	//오픈그래프 Transformer 패널 아이디,x,y
+	String transformerJson;
+		public String getTransformerJson() {
+			return transformerJson;
+		}
+		public void setTransformerJson(String transformerJson) {
+			this.transformerJson = transformerJson;
+		}
+
 	/**
 	 * value will be available only when in run-time
 	 */
 	HashMap argumentSourceMap = new HashMap();
 		public HashMap getArgumentSourceMap() {
 			return argumentSourceMap;
-		}	
-		
+		}
+		public void setArgumentSourceMap(HashMap argumentSourceMap) {
+			this.argumentSourceMap = argumentSourceMap;
+		}
 
 	public Object letTransform(ProcessInstance instance, String outputArgumentName) throws Exception{
 		Map options = new HashMap();

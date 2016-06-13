@@ -99,6 +99,8 @@ public class VersionManager implements ContextAware{
                 return comp;
             }
         });
+
+        setMakeThisVersionAsProduction(true);
     }
 
     protected String versionDirectoryOf() {

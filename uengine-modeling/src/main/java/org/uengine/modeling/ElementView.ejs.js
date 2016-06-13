@@ -113,12 +113,12 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             concern = this.object.element.concern;
 
             if (concern == "Customer") {
-                concernColor = "#f1c40f ";
-                lineColor = "#f39c12 ";
-            }
-            else if (concern == "Solution") {
                 concernColor = "#2ecc71 ";
                 lineColor = "#27ae60 ";
+            }
+            else if (concern == "Solution") {
+                concernColor = "#f1c40f ";
+                lineColor = "#f39c12 ";
             }
             else if (concern == "Endeavor") {
                 concernColor = "#3498db ";

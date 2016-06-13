@@ -25,11 +25,17 @@ org_uengine_modeling_Canvas.prototype = {
     getValue: function(){
 
         try{
+
+            this.object = mw3.getObjectFromUI(this.objectId);
+
             var svg = document.querySelector( "svg" );
             var svgData = new XMLSerializer().serializeToString( svg );
             var srcURL = "data:image/svg+xml;utf-8," + svgData;
 
             this.object.thumbnailURL = srcURL;
+
+
+
         }catch(e){console.log("failed to create png image from svg. Maybe browser doesn't support HTML5"); console.log(e);}
 
         return this.object;

@@ -11,43 +11,34 @@ var org_uengine_modeling_Canvas = function (objectId, className) {
     this.objectDiv.addClass('mw3_resize').addClass('canvas').css('height', '100%');
 
     this.canvasDivId = 'canvas_' + objectId;
+    this.canvasSliderId = 'canvas_slider_' + objectId;
     this.tracingTag = 0;
 
     if (this.object) {
         var faceHelper = this;
         faceHelper.load();
     }
-    console.log('Debug');
 };
 
 org_uengine_modeling_Canvas.prototype = {
 
-    getValue: function(){
+    getValue: function () {
 
-        try{
-
+        try {
             this.object = mw3.getObjectFromUI(this.objectId);
-
-            var svg = document.querySelector( "svg" );
-            var svgData = new XMLSerializer().serializeToString( svg );
+            var svg = document.querySelector("svg");
+            var svgData = new XMLSerializer().serializeToString(svg);
             var srcURL = "data:image/svg+xml;utf-8," + svgData;
 
             this.object.thumbnailURL = srcURL;
 
-
-
-        }catch(e){console.log("failed to create png image from svg. Maybe browser doesn't support HTML5"); console.log(e);}
+        } catch (e) {
+            console.log("failed to create png image from svg. Maybe browser doesn't support HTML5");
+            console.log(e);
+        }
 
         return this.object;
     },
-
-    //startLoading: function () {
-    //    mw3.startLoading();
-    //},
-    //
-    //endLoading: function () {
-    //    mw3.endLoading();
-    //},
 
     load: function () {
         OG.common.Constants.CANVAS_BACKGROUND = "#fff";
@@ -104,6 +95,15 @@ org_uengine_modeling_Canvas.prototype = {
         }
 
         this.eventBinding();
+
+        if (this.metaworksContext.when == mw3.WHEN_EDIT || this.metaworksContext.when == mw3.WHEN_NEW) {
+            this.canvas.addSlider({
+                slider: $("#" + this.canvasSliderId),
+                width: 200,
+                height: 300,
+                appendTo: "body"
+            });
+        }
     },
 
     eventBinding: function () {

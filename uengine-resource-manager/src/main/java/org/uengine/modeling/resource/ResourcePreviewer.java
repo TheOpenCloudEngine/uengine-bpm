@@ -58,19 +58,21 @@ public class ResourcePreviewer {
 
     @ServiceMethod(onLoad = true, inContextMenu = true, target = ServiceMethod.TARGET_SELF)
     public void fill() throws Exception {
-        Object resource = resourceManager.getObject(new DefaultResource(getPath()));
+        try {
+            Object resource = resourceManager.getObject(new DefaultResource(getPath()));
 
-        if (resource instanceof HasThumbnail) {
-            setThumbnailURL(((HasThumbnail) resource).getThumbnailURL());
+            if (resource instanceof HasThumbnail) {
+                setThumbnailURL(((HasThumbnail) resource).getThumbnailURL());
 
-        }
+            }
 
-        if (resource instanceof Describable) {
-            Describable describable = (Describable) resource;
+            if (resource instanceof Describable) {
+                Describable describable = (Describable) resource;
 
-            setName(describable.getName());
-            setDescription(describable.getDescription());
-        }
+                setName(describable.getName());
+                setDescription(describable.getDescription());
+            }
+        }catch (Exception e){setDescription("Not available anymore.");}
     }
 
     @ServiceMethod(target= ServiceMethodContext.TARGET_POPUP)

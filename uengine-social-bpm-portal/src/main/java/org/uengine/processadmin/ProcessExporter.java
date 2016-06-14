@@ -4,7 +4,9 @@ import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.mspdi.MSPDIWriter;
 import org.directwebremoting.io.FileTransfer;
 import org.metaworks.annotation.AutowiredFromClient;
+import org.metaworks.annotation.Face;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Download;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.uengine.kernel.ProcessDefinition;
@@ -19,11 +21,15 @@ import java.io.ByteArrayOutputStream;
 /**
  * Created by jjy on 2016. 1. 28..
  */
+
+@Face(ejsPath="dwr/metaworks/genericfaces/CleanObjectFace.ejs")
 public class ProcessExporter {
     public ProcessExporter() {} // for dwr invocation
 
     @ServiceMethod(target = ServiceMethod.TARGET_APPEND)
     public Download downloadSource(@AutowiredFromClient ProcessAdminEditorPanel processAdminEditorPanel) throws Exception {
+        MetaworksRemoteService.autowire(processAdminEditorPanel);
+
         return processAdminEditorPanel.download();
     }
 

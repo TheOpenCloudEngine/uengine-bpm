@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.CodiProcessDefinitionFactory;
 import org.uengine.codi.mw3.model.Session;
+import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessDefinitionFactory;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.ResourceControlDelegate;
@@ -26,6 +27,9 @@ public class ProcessResource extends DefaultResource {
 
     @Override
     public void save(Object editingObject) throws Exception {
+        ProcessDefinition processDefinition = (ProcessDefinition) editingObject;
+        processDefinition.setName(getDisplayName());
+
         super.save(editingObject);
 
         definitionFactory.removeFromCache(getPath().substring(CodiProcessDefinitionFactory.codiProcessDefinitionFolder.length() + 1));

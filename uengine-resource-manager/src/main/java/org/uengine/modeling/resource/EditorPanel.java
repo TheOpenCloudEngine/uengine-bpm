@@ -180,6 +180,9 @@ public class EditorPanel implements ContextAware {
 
 			recentList.add(0, defaultResource.getPath());
 
+			if(recentList.size() > 10)
+				recentList = recentList.subList(0, 10);
+
 			resourceManager.save(recentListRS, recentList);
 
 		}catch (Exception e){

@@ -4,6 +4,7 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.Remover;
 import org.metaworks.ToEvent;
 import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Id;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.website.MetaworksFile;
 import org.metaworks.annotation.ServiceMethod;
@@ -29,10 +30,22 @@ public class ImportPopup {
 
     public ImportPopup(){}
 
+    String dir;
+    @Id
+        public String getDir() {
+            return dir;
+        }
+        public void setDir(String dir) {
+            this.dir = dir;
+        }
+
+
     public ImportPopup(ProcessAdminContainerResource processAdminContainerResource) {
         setSelectFile(new MetaworksFile());
         getSelectFile().setMetaworksContext(new MetaworksContext());
         getSelectFile().getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+
+        setDir(processAdminContainerResource.getPath());
     }
 
     MetaworksFile selectFile;
@@ -54,7 +67,7 @@ public class ImportPopup {
                 fileNameToUpload = fileNameToUpload.replaceFirst("[.][^.]+$", "") + ".process";
             }
 
-            processResource.setPath("codi/" + fileNameToUpload);
+            processResource.setPath(getDir() + "/" + fileNameToUpload);
 
             ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 

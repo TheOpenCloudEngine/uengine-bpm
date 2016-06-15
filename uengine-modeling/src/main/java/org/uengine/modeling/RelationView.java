@@ -151,6 +151,15 @@ public class RelationView implements Serializable, ContextAware, Cloneable {
         this.label = label;
     }
 
+    boolean needReconnect;
+
+    public boolean getNeedReconnect() {
+        return needReconnect;
+    }
+    public void setNeedReconnect(boolean needReconnect) {
+        this.needReconnect = needReconnect;
+    }
+
     IRelation relation;
 
     @Face(ejsPath = "dwr/metaworks/genericfaces/HiddenFace.ejs")

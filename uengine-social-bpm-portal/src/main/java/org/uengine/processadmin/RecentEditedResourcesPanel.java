@@ -20,7 +20,7 @@ public class RecentEditedResourcesPanel extends EditorPanel {
 
         ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
-        DefaultResource recentListRS = new DefaultResource("codi" + "/recent.xml");
+        DefaultResource recentListRS = new DefaultResource("codi" + "_recent.xml");
 
         try {
             setRecentList((List<String>) resourceManager.getObject(recentListRS));

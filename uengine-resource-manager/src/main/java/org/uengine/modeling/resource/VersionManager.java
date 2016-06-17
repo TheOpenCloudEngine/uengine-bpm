@@ -221,7 +221,17 @@ public class VersionManager implements ContextAware{
             int whereAfterVersionFolder = resourcePath.indexOf("/");
 
             resourcePath = resourcePath.substring(whereAfterVersionFolder + 1, resourcePath.length());
+        }else {
+
+            prefix = appName + "/";
+            wherePrefix = resourcePath.indexOf(prefix);
+
+            if (wherePrefix == 0) {
+
+                resourcePath = resourcePath.substring(prefix.length());
+            }
         }
+
         return resourcePath;
     }
 }

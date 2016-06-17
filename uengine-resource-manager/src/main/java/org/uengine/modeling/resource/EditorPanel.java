@@ -164,7 +164,7 @@ public class EditorPanel implements ContextAware {
 	private void saveRecentList(IResource defaultResource) throws Exception{
 		String appRoot = defaultResource.getPath().split("/")[0];
 
-		DefaultResource recentListRS = new DefaultResource(appRoot + "/recent.xml");
+		DefaultResource recentListRS = new DefaultResource(appRoot + "_recent.xml");
 
 		try{
 			List<String> recentList = null;

@@ -66,7 +66,6 @@ public class ProcessExporter {
         return new Download(new FileTransfer(fileName, MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(fileName), bio));
     }
 
-
     @ServiceMethod(target = ServiceMethod.TARGET_APPEND)
     public Download exportToMicrosoftProject(@AutowiredFromClient ProcessAdminEditorPanel processAdminEditorPanel) throws Exception {
         Adapter processDefinitionAdapter = new org.uengine.processpublisher.microsoft.exporter.ProcessDefinitionAdapter();

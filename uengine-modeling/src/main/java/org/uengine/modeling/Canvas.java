@@ -17,126 +17,142 @@ import java.util.List;
  * @author jyj
  */
 public class Canvas {
-	
-	List<ElementView> elementViewList;
-	private String thumbnailURL;
 
-	public List<ElementView> getElementViewList() {
-			return elementViewList;
-		}
-		public void setElementViewList(List<ElementView> elementViewList) {
-			this.elementViewList = elementViewList;
-		}
+    List<ElementView> elementViewList;
+    private String thumbnailURL;
 
-	List<RelationView> relationViewList;
-		public List<RelationView> getRelationViewList() {
-			return relationViewList;
-		}
-		public void setRelationViewList(List<RelationView> relationViewList) {
-			this.relationViewList = relationViewList;
-		}
+    //네비게이터의 사용 여부를 결정하는 함수.
+    private boolean navigator = true;
 
-	public final static String CANVAS_DROP = "canvasdrop";
+    public List<ElementView> getElementViewList() {
+        return elementViewList;
+    }
 
-	@AutowiredFromClient
-	public Clipboard clipboard;
-	private MetaworksContext metaworksContext;
-	private String modelerType;
+    public void setElementViewList(List<ElementView> elementViewList) {
+        this.elementViewList = elementViewList;
+    }
 
-	public Canvas() {
-		this.elementViewList = new ArrayList<ElementView>();
-		this.relationViewList = new ArrayList<RelationView>();
-	}
+    List<RelationView> relationViewList;
 
-	public Canvas(String modelerType) {
-		this();
-		this.setModelerType(modelerType);
-	}
+    public List<RelationView> getRelationViewList() {
+        return relationViewList;
+    }
 
-	public MetaworksContext getMetaworksContext() {
-		return metaworksContext;
-	}
+    public void setRelationViewList(List<RelationView> relationViewList) {
+        this.relationViewList = relationViewList;
+    }
 
-	public void setMetaworksContext(MetaworksContext metaworksContext) {
-		this.metaworksContext = metaworksContext;
-	}
+    public final static String CANVAS_DROP = "canvasdrop";
 
-	@Id
-	public String getModelerType() {
-		return modelerType;
-	}
+    @AutowiredFromClient
+    public Clipboard clipboard;
+    private MetaworksContext metaworksContext;
+    private String modelerType;
 
-	public void setModelerType(String modelerType) {
-		this.modelerType = modelerType;
+    public Canvas() {
+        this.elementViewList = new ArrayList<ElementView>();
+        this.relationViewList = new ArrayList<RelationView>();
+    }
 
-	}
+    public Canvas(String modelerType) {
+        this();
+        this.setModelerType(modelerType);
+    }
 
-	@Available(when = { MetaworksContext.WHEN_NEW, MetaworksContext.WHEN_EDIT })
-	@ServiceMethod(payload = { "clipboard", "modelerType" }, target = ServiceMethodContext.TARGET_APPEND, eventBinding = CANVAS_DROP)
-	public void drop() {
+    public MetaworksContext getMetaworksContext() {
+        return metaworksContext;
+    }
 
-		ElementView elementView = null;
+    public void setMetaworksContext(MetaworksContext metaworksContext) {
+        this.metaworksContext = metaworksContext;
+    }
 
-		Object content = clipboard.getContent();
-		if (content instanceof Symbol) {
-			Symbol symbol = (Symbol) content;
+    @Id
+    public String getModelerType() {
+        return modelerType;
+    }
 
-			if ("EDGE".equals(symbol.getShapeType())) {
-				RelationView relationView = null;
+    public void setModelerType(String modelerType) {
+        this.modelerType = modelerType;
 
-				try {
-					IRelation relation = (IRelation) Thread.currentThread().getContextClassLoader().loadClass(symbol.getElementClassName()).newInstance();
-					relationView = relation.createView();
-					relationView.fill(symbol);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
+    }
 
-				MetaworksRemoteService.wrapReturn(new Refresh(new Clipboard(CANVAS_DROP)), new ToAppend(ServiceMethodContext.TARGET_SELF, relationView));
+    @Available(when = {MetaworksContext.WHEN_NEW, MetaworksContext.WHEN_EDIT})
+    @ServiceMethod(payload = {"clipboard", "modelerType"}, target = ServiceMethodContext.TARGET_APPEND, eventBinding = CANVAS_DROP)
+    public void drop() {
 
-			} else {
+        ElementView elementView = null;
 
-				try {
-					IElement element = (IElement) Thread.currentThread().getContextClassLoader().loadClass(symbol.getElementClassName()).newInstance();
-					if (element instanceof ContextAware){
-						if(((ContextAware) element).getMetaworksContext()==null) ((ContextAware) element).setMetaworksContext(new MetaworksContext());
-						((ContextAware) element).getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
-					}
+        Object content = clipboard.getContent();
+        if (content instanceof Symbol) {
+            Symbol symbol = (Symbol) content;
 
-					elementView = element.createView();
-					elementView.fill(symbol);
-					elementView.setByDrop(true);
+            if ("EDGE".equals(symbol.getShapeType())) {
+                RelationView relationView = null;
 
-					if(elementView.getMetaworksContext()==null) elementView.setMetaworksContext(new MetaworksContext());
-					elementView.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+                try {
+                    IRelation relation = (IRelation) Thread.currentThread().getContextClassLoader().loadClass(symbol.getElementClassName()).newInstance();
+                    relationView = relation.createView();
+                    relationView.fill(symbol);
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
+                MetaworksRemoteService.wrapReturn(new Refresh(new Clipboard(CANVAS_DROP)), new ToAppend(ServiceMethodContext.TARGET_SELF, relationView));
+
+            } else {
+
+                try {
+                    IElement element = (IElement) Thread.currentThread().getContextClassLoader().loadClass(symbol.getElementClassName()).newInstance();
+                    if (element instanceof ContextAware) {
+                        if (((ContextAware) element).getMetaworksContext() == null)
+                            ((ContextAware) element).setMetaworksContext(new MetaworksContext());
+                        ((ContextAware) element).getMetaworksContext().setWhen(MetaworksContext.WHEN_NEW);
+                    }
+
+                    elementView = element.createView();
+                    elementView.fill(symbol);
+                    elementView.setByDrop(true);
+
+                    if (elementView.getMetaworksContext() == null)
+                        elementView.setMetaworksContext(new MetaworksContext());
+                    elementView.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
+
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
 
-				MetaworksRemoteService.wrapReturn ( new Refresh(new Clipboard(CANVAS_DROP)), new ToAppend(ServiceMethodContext.TARGET_SELF, elementView) );
+                MetaworksRemoteService.wrapReturn(new Refresh(new Clipboard(CANVAS_DROP)), new ToAppend(ServiceMethodContext.TARGET_SELF, elementView));
 
-				return;
-			}
-		}
+                return;
+            }
+        }
 
-		MetaworksRemoteService.wrapReturn(new Refresh(new Clipboard(CANVAS_DROP)));
-	}
+        MetaworksRemoteService.wrapReturn(new Refresh(new Clipboard(CANVAS_DROP)));
+    }
 
-	public String getThumbnailURL() {
-		return thumbnailURL;
-	}
+    public String getThumbnailURL() {
+        return thumbnailURL;
+    }
 
-	public void setThumbnailURL(String thumbnailURL) {
-		this.thumbnailURL = thumbnailURL;
-	}
+    public void setThumbnailURL(String thumbnailURL) {
+        this.thumbnailURL = thumbnailURL;
+    }
+
+    public boolean getNavigator() {
+        return navigator;
+    }
+
+    public void setNavigator(boolean navigator) {
+        this.navigator = navigator;
+    }
 }

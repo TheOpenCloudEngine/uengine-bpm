@@ -97,22 +97,27 @@ org_uengine_modeling_Canvas.prototype = {
         this.eventBinding();
 
         if (this.metaworksContext.when == mw3.WHEN_EDIT || this.metaworksContext.when == mw3.WHEN_NEW) {
-            var position;
-            var mainPage = $('div[classname="org.uengine.essencia.portal.Explorer"]');
-            if (mainPage) {
-                position = {my: "left top", at: "left top", of: document.getElementById(mainPage.attr('id'))}
+            if(this.object.navigator){
+                this.addSlider();
             }
-            this.canvas.addSlider({
-                slider: $("#" + this.canvasSliderId),
-                width: 200,
-                height: 300,
-                appendTo: "body",
-                position: position
-            });
-            $("#" + this.canvasSliderId).find('.scaleSliderWrapper').css({
-                padding: '10px'
-            })
         }
+    },
+    addSlider: function(){
+        var position;
+        var mainPage = $('div[classname="org.uengine.essencia.portal.Explorer"]');
+        if (mainPage) {
+            position = {my: "left top", at: "left top", of: document.getElementById(mainPage.attr('id'))}
+        }
+        this.canvas.addSlider({
+            slider: $("#" + this.canvasSliderId),
+            width: 200,
+            height: 300,
+            appendTo: "body",
+            position: position
+        });
+        $("#" + this.canvasSliderId).find('.scaleSliderWrapper').css({
+            padding: '10px'
+        })
     },
 
     eventBinding: function () {

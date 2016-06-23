@@ -5,10 +5,12 @@ import javax.naming.event.EventContext;
 import org.metaworks.Refresh;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.ToEvent;
+import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.NonEditable;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Clipboard;
 
+//@AutowiredFromClient(onDrag = true)
 public class Symbol {
 
 	String name;
@@ -71,9 +73,16 @@ public class Symbol {
 	}
 
 
-	@ServiceMethod(callByContent=true, mouseBinding="drag", target=ServiceMethodContext.TARGET_APPEND)
-	public Object drag(){
-		return new Refresh(new Clipboard("drop", this), true);
+	@ServiceMethod(callByContent=true, mouseBinding="drag", target=ServiceMethodContext.TARGET_APPEND, clientSide = true)
+	public void drag(){
+
+		/**
+		 *
+		 * alert('xxxx');
+		 *
+		 *
+		 */
+//		return new Refresh(new Clipboard("drop", this), true);
 	}
 	
 }

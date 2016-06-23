@@ -32,4 +32,10 @@ var org_uengine_modeling_Symbol = function(objectId, className){
 
 	};
 
+	this.drag = function(object, autowiredObjects){
+		var clipboard = mw3.getAutowiredObject("org.metaworks.widget.Clipboard");
+
+		clipboard.content = (object);
+	}
+
 };

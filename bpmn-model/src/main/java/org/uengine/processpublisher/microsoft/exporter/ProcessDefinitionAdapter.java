@@ -36,13 +36,15 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
             for (Activity activity : src.getChildActivities()) {
                 // if subProcess
                 if(activity instanceof SubProcess) {
-                    subProcessConvert((SubProcess) activity, projectFile);
+                    convertSubProcess((SubProcess) activity, projectFile);
                 }
 
                 // if HumanActivity
-                if (activity instanceof HumanActivity) {
+                else if (activity instanceof HumanActivity) {
                     setTask((HumanActivity) activity, projectFile);
 
+                } else {
+                    ;
                 }
             }
         }
@@ -54,19 +56,18 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proj
         return projectFile;
     }
 
-    private void subProcessConvert(SubProcess subProcess, ProjectFile projectFile) {
+    private void convertSubProcess(SubProcess subProcess, ProjectFile projectFile) {
         // find Activity
         if (subProcess.getChildActivities() != null && subProcess.getChildActivities().size() > 0) {
             for (Activity activity : subProcess.getChildActivities()) {
-                // if subProcess
-                if(activity instanceof SubProcess) {
-                    subProcessConvert((SubProcess) activity, projectFile);
-                }
-
-                // if HumanActivity
                 if (activity instanceof HumanActivity) {
                     setTask((HumanActivity) activity, projectFile);
 
+                } else if(activity instanceof SubProcess) {
+                    convertSubProcess((SubProcess) activity, projectFile);
+
+                } else {
+                    ;
                 }
             }
         }

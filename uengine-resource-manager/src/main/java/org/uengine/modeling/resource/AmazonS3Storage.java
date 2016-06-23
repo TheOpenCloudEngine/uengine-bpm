@@ -173,14 +173,12 @@ public class AmazonS3Storage implements Storage{
         try{
             S3Object s3Object = restS3Service.getObject(getAmazonS3Bucket(), getS3Path(resource.getPath()));
 
-            //XStream xstream = new XStream();
-
             Object object = Serializer.deserialize(s3Object.getDataInputStream());
 
             return object;
 
         }catch (S3ServiceException e){
-            throw new IOException(e.getErrorCode());
+            throw new FileNotFoundException(e.getErrorCode());
         }
 
     }

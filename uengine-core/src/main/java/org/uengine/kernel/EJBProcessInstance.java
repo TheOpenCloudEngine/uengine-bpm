@@ -669,7 +669,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 				Activity activity = getProcessDefinition().getActivity(scopeByTracingTag);
 
-				if(activity == esc.getRootActivityInTheScope() || esc.getRootActivityInTheScope().isAncestorOf(activity)){
+				if(activity!=null && (activity == esc.getRootActivityInTheScope() || esc.getRootActivityInTheScope().isAncestorOf(activity))){
 					scopeByTracingTag = scopeByTracingTag + "." + esc.getExecutionScope();
 				}
 			}

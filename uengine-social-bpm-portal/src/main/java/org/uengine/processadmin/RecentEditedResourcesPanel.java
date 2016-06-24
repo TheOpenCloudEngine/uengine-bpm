@@ -26,7 +26,9 @@ public class RecentEditedResourcesPanel extends EditorPanel {
             setRecentList((List<String>) resourceManager.getObject(recentListRS));
 
             setRecentPreviewers(new ArrayList<ResourcePreviewer>());
-            for(String recentItemPath : getRecentList()){
+            for(int i=0; i<getRecentList().size(); i++){
+
+                String recentItemPath = getRecentList().get(i);
 
                 DefaultResource defaultResource = new DefaultResource(recentItemPath);
                 ResourcePreviewer previewer = new ResourcePreviewer(defaultResource);
@@ -36,6 +38,9 @@ public class RecentEditedResourcesPanel extends EditorPanel {
         }catch (FileNotFoundException e){
 
             //ignore
+        }catch (Exception e){
+            //ignore too.
+            e.printStackTrace();
         }
     }
 

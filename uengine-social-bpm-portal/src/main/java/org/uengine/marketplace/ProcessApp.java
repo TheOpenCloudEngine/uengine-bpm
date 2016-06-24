@@ -22,6 +22,7 @@ import org.uengine.social.SocialBPMProcessDefinitionSelector;
 import org.uengine.util.UEngineUtil;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -86,14 +87,29 @@ public class ProcessApp extends App{
     @Override
     public Object save() throws Exception {
 
+        boolean resourceIsInDefaultFolder = (getProjectId().substring(getProjectId().indexOf("/")+1).indexOf("/") == -1);
+
+//        if(defaultFolder){
+//            throw new Exception("Definition must be in a package (folder)");
+//        }
+
         byte data[] = new byte[BUFFER];
 
         ContainerResource containerResource = new ContainerResource();
 
         autowire(containerResource);
 
-        containerResource.setPath(UEngineUtil.getFilePath(getProjectId()));
-        List<IResource> resourceList = containerResource.list();
+        List<IResource> resourceList;
+
+        if(!resourceIsInDefaultFolder) {
+            containerResource.setPath(UEngineUtil.getFilePath(getProjectId()));
+            resourceList = containerResource.list();
+        }else{
+            resourceList = new ArrayList<IResource>();
+
+            DefaultResource onlyOneResource = new DefaultResource(getProjectId());
+            resourceList.add(onlyOneResource);
+        }
 
 
         setUrl(containerResource.getPath());
@@ -198,6 +214,10 @@ public class ProcessApp extends App{
             DefaultResource defaultResource = new DefaultResource();
             defaultResource.setPath(getUrl() + "/" + entry.getName());
 
+            if(resourceManager.getStorage().exists(defaultResource)){
+                throw new Exception("There's already installed resource: " + defaultResource.getPath() + ". You must delete the resources before installing this resource.");
+            }
+
             OutputStream fos = resourceManager.getStorage().getOutputStream(defaultResource);
 
             dest = new
@@ -212,7 +232,7 @@ public class ProcessApp extends App{
             deployApp(defaultResource);
         }
 
-        return new Object[]{new Label("<center><h2>$AppHasBeenInstalledSucessfully</h2></center>")};//super.addApp();
+        return new Object[]{new Label("<center><h2>Successfully Installed.</h2></center>")};//super.addApp();
 
        // return super.addApp();
     }

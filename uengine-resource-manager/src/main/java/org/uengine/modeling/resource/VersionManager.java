@@ -114,14 +114,25 @@ public class VersionManager implements ContextAware{
 
     @ServiceMethod(callByContent = true, target=ServiceMethod.TARGET_SELF)
     public void minorVersionUp() throws Exception {
-        Version lastVersion = getVersions().get(0);
+
+        Version lastVersion = getLastVersion();
+
         lastVersion.setMinor(lastVersion.getMinor() + 1);
         versionUp(lastVersion);
+
     }
 
 
     @ServiceMethod(callByContent = true, target=ServiceMethod.TARGET_SELF)
     public void majorVersionUp() throws Exception {
+        Version lastVersion = getLastVersion();
+
+        lastVersion.setMajor(lastVersion.getMajor() + 1);
+        versionUp(lastVersion);
+
+    }
+
+    private Version getLastVersion() {
         Version lastVersion;
 
         if(getVersions()!=null && getVersions().size() > 0) {
@@ -131,10 +142,7 @@ public class VersionManager implements ContextAware{
             lastVersion.setMajor(0);
             lastVersion.setMinor(0);
         }
-
-        lastVersion.setMajor(lastVersion.getMajor() + 1);
-        versionUp(lastVersion);
-
+        return lastVersion;
     }
 
     private void versionUp(Version lastVersion) throws Exception {

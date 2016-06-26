@@ -2,11 +2,17 @@ package org.uengine.processpublisher.bpmn.exporter;
 
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
+import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.*;
+import org.omg.spec.dd._20100524.di.Diagram;
+import org.omg.spec.dd._20100524.di.DiagramElement;
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.SequenceFlow;
+import org.uengine.kernel.bpmn.*;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
+import org.uengine.processpublisher.bpmn.importer.TStartEventAdapter;
+
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
@@ -22,103 +28,68 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
         // make hashtable
         Hashtable context = new Hashtable();
 
-        // make TDefinitions
-        TDefinitions tDefinitions = ObjectFactoryUtil.createBPMNObject(TDefinitions.class);
-        tDefinitions.setId(src.getId());
-        tDefinitions.setName(src.getName());
+        // create TDefinitions
+        TDefinitions tDefinitions = createTDefinitions(src);
 
-        // make TProcess
+        // create TProcess
         TProcess tProcess = ObjectFactoryUtil.createBPMNObject(TProcess.class);
 
-        // make TCollaboration
-        TCollaboration tCollaboration = ObjectFactoryUtil.createBPMNObject(TCollaboration.class);
-        tCollaboration.setId("tCollaboration");
-        tCollaboration.setName("tCollaboration");
+        // create TCollaboration
+        TCollaboration tCollaboration = createTCollaboration();
 
-        // make TParticipant
-        TParticipant tParticipant = ObjectFactoryUtil.createBPMNObject(TParticipant.class);
-        tParticipant.setId("Participant");
-        tParticipant.setName("Pool");
+        // create TParticipant
+        TParticipant tParticipant = createTParticipant();
+
         // set TProcess's attribute
         tProcess.setId("process" + tParticipant.getId());
         tProcess.setName(tParticipant.getName());
+
         // set tParticipant's processRef
         tParticipant.setProcessRef(new QName(tProcess.getId()));
+
         // add TParticipant to TCollaboration
         tCollaboration.getParticipant().add(tParticipant);
+
         // add TCollaboration to TDefinitions
         JAXBElement<TCollaboration> tCollaborationElement = ObjectFactoryUtil.createDefaultJAXBElement(TCollaboration.class, tCollaboration);
         tDefinitions.getRootElement().add(tCollaborationElement);
 
-        // make BPMNDiagram
-        BPMNDiagram bpmnDiagram = ObjectFactoryUtil.createBPMNObject(BPMNDiagram.class);
-        //TODO: bpmndiagram id? name?
-        bpmnDiagram.setId("bpmnDiagram");
-        bpmnDiagram.setName("bpmnDiagram");
+        // create BPMNDiagram
+        BPMNDiagram bpmnDiagram = createBPMNDiagram();
 
         // make BPMNPLane
         BPMNPlane bpmnPlane = ObjectFactoryUtil.createBPMNObject(BPMNPlane.class);
+
         // bpmnShape's bpmnElement = tProcess's id
         bpmnPlane.setBpmnElement(new QName(tProcess.getId()));
+
         // BPMNDiagram set BPMNPLane
         bpmnDiagram.setBPMNPlane(bpmnPlane);
 
         context.put("bpmnDiagram", bpmnDiagram);
 
-        // find Role
+        // find Role (convert laneSet and lane)
         if (src.getRoles() != null && src.getRoles().length > 0) {
-            // make TLaneSet
-            TLaneSet tLaneSet = ObjectFactoryUtil.createBPMNObject(TLaneSet.class);
-            // TODO: TLaneSet id? name?
-            tLaneSet.setId("laneSetId");
-            tLaneSet.setName("laneSetName");
-
-            // uengine role = bpmn Lane
-            for (Role role : src.getRoles()) {
-                // role adapter -> TLane make and setting
-                RoleAdapter roleAdapter = new RoleAdapter();
-                TLane tLane = roleAdapter.convert(role, context);
-                tLaneSet.getLane().add(tLane);
-
-            }
-            tProcess.getLaneSet().add(tLaneSet);
+            convertTLaneSet(src, context, tProcess);
         }
 
-        // find Activity
+        // find Activity (convert task and subProcess)
         if (src.getChildActivities() != null && src.getChildActivities().size() > 0) {
             for (Activity activity : src.getChildActivities()) {
                 // if HumanActivity
                 if (activity instanceof HumanActivity) {
-                    HumanActivity humanActivity = (HumanActivity) activity;
-                    // humanActivity adapter -> TUserTask create and setting
-                    HumanActivityAdapter humanActivityAdapter = new HumanActivityAdapter();
-                    TUserTask tUserTask = humanActivityAdapter.convert(humanActivity, context);
+                    convertTUserTask((HumanActivity) activity, context, tProcess);
 
-                    if(humanActivity.getRole() != null) {
-                        // find TLaneSet
-                        if(tProcess.getLaneSet() != null && tProcess.getLaneSet().size() > 0) {
-                            Iterator<TLaneSet> tLaneSetIterator = tProcess.getLaneSet().iterator();
+                    // if HumanActivity
+                } else if (activity instanceof SubProcess) {
+                    SubProcess subProcess = (SubProcess) activity;
+                    convertSubProcess(subProcess, context, tProcess);
 
-                            // find TLane
-                            while (tLaneSetIterator.hasNext()) {
-                                List<TLane> tLaneList = tLaneSetIterator.next().getLane();
-
-                                for(TLane tLane : tLaneList) {
-                                    if(tLane.getId().equals(humanActivity.getRole().getElementView().getId())) {
-                                        // ObjectMethod used only model ObjectFactory
-                                        JAXBElement<Object> tLaneFlowNodeRefElement = ObjectFactoryUtil.createObjectJAXBElement("TLaneFlowNodeRef", tUserTask);
-                                        tLane.getFlowNodeRef().add(tLaneFlowNodeRefElement);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    // make JAXB Element and add TUserTask
-                    JAXBElement<TUserTask> tUserElement = ObjectFactoryUtil.createDefaultJAXBElement(TUserTask.class, tUserTask);
-                    tProcess.getFlowElement().add(tUserElement);
+                } else if(activity instanceof Event) {
+                    convertTEvent((Event) activity, context, tProcess);
 
                 } else {
-                    // TODO : etc Activities...
+                    ;
                 }
             }
         }
@@ -127,36 +98,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
         if (src.getSequenceFlows() != null && src.getSequenceFlows().size() > 0) {
             for (SequenceFlow sequenceFlow : src.getSequenceFlows()) {
                 // SequenceFlowAdapter -> TSequenceFlow make and setting
-                SequenceFlowAdapter sequenceFlowAdapter = new SequenceFlowAdapter();
-                TSequenceFlow tSequenceFlow = sequenceFlowAdapter.convert(sequenceFlow, context);
-
-                // find process's all elements
-                if(tProcess.getFlowElement() != null && tProcess.getFlowElement().size() > 0) {
-                    List<JAXBElement<? extends TFlowElement>> listTFlowElement = tProcess.getFlowElement();
-
-                    // find element's sourceref, targetref
-                    for(JAXBElement<? extends TFlowElement> tFlowElement : listTFlowElement) {
-                        if(tFlowElement.getValue().getId().equals(sequenceFlow.getSourceRef())) {
-                            tSequenceFlow.setSourceRef(tFlowElement.getValue());
-                        }
-
-                        if(tFlowElement.getValue().getId().equals(sequenceFlow.getTargetRef())) {
-                            tSequenceFlow.setTargetRef(tFlowElement.getValue());
-                        }
-                    }
-                }
-
-                // find ConditionExpression
-                if (sequenceFlow.getCondition() != null) {
-                    // Condition adapter -> TExpression make and setting
-                    ConditionAdapter conditionAdapter = new ConditionAdapter();
-                    TExpression tExpression = conditionAdapter.convert(sequenceFlow.getCondition(), null);
-                    // add Condition
-                    tSequenceFlow.setConditionExpression(tExpression);
-                }
-                // make JAXB Element and add TSequenceFlow
-                JAXBElement<TSequenceFlow> sequenceShapeElement = ObjectFactoryUtil.createDefaultJAXBElement(TSequenceFlow.class, tSequenceFlow);
-                tProcess.getFlowElement().add(sequenceShapeElement);
+                convertTSequenceFlow(sequenceFlow, context, tProcess, src.getChildActivities());
             }
         }
 
@@ -170,4 +112,280 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
         return tDefinitions;
     }
 
+    private TDefinitions createTDefinitions(ProcessDefinition src) {
+        // make TDefinitions
+        TDefinitions tDefinitions = ObjectFactoryUtil.createBPMNObject(TDefinitions.class);
+        tDefinitions.setId(src.getId());
+        tDefinitions.setName(src.getName());
+
+        return tDefinitions;
+    }
+
+    private TCollaboration createTCollaboration() {
+        TCollaboration tCollaboration = ObjectFactoryUtil.createBPMNObject(TCollaboration.class);
+        tCollaboration.setId("tCollaboration");
+        tCollaboration.setName("tCollaboration");
+
+        return tCollaboration;
+    }
+
+    private TParticipant createTParticipant() {
+        TParticipant tParticipant = ObjectFactoryUtil.createBPMNObject(TParticipant.class);
+        tParticipant.setId("Participant");
+        tParticipant.setName("Pool");
+
+        return tParticipant;
+    }
+
+    private BPMNDiagram createBPMNDiagram() {
+        BPMNDiagram bpmnDiagram = ObjectFactoryUtil.createBPMNObject(BPMNDiagram.class);
+        bpmnDiagram.setId("bpmnDiagram");
+        bpmnDiagram.setName("bpmnDiagram");
+
+        return bpmnDiagram;
+    }
+
+    private void convertTLaneSet(ProcessDefinition src, Hashtable context, TProcess tProcess) {
+        TLaneSet tLaneSet = ObjectFactoryUtil.createBPMNObject(TLaneSet.class);
+        tLaneSet.setId("rootRole");
+        tLaneSet.setName("rootRole");
+        tProcess.getLaneSet().add(tLaneSet);
+
+        // create tLaneSet and LaneSet (rootRole hard coding)
+        for (Role role : src.getRoles()) {
+            if(!(role.getName().equals("rootRole"))) {
+                RoleAdapter roleAdapter = new RoleAdapter();
+                try {
+                    TLane tLane = roleAdapter.convert(role, context);
+                    tLaneSet.getLane().add(tLane);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void convertTUserTask(HumanActivity humanActivity, Hashtable context, TProcess tProcess) {
+        // humanActivity adapter -> TUserTask create and setting
+        HumanActivityAdapter humanActivityAdapter = new HumanActivityAdapter();
+        try {
+            TUserTask tUserTask = humanActivityAdapter.convert(humanActivity, context);
+
+            if (humanActivity.getRole() != null) {
+                // find TLaneSet
+                if (tProcess.getLaneSet() != null && tProcess.getLaneSet().size() > 0) {
+                    addFlowNodeRefToLane(humanActivity, tUserTask, tProcess);
+                }
+            }
+            // make JAXB Element and add TUserTask
+            JAXBElement<TUserTask> tUserElement = ObjectFactoryUtil.createDefaultJAXBElement(TUserTask.class, tUserTask);
+            tProcess.getFlowElement().add(tUserElement);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addFlowNodeRefToLane(HumanActivity humanActivity, TUserTask tUserTask, TProcess tProcess) {
+        Iterator<TLaneSet> tLaneSetIterator = tProcess.getLaneSet().iterator();
+
+        // find TLane
+        while (tLaneSetIterator.hasNext()) {
+            List<TLane> tLaneList = tLaneSetIterator.next().getLane();
+
+            for (TLane tLane : tLaneList) {
+                if (tLane.getName().equals(humanActivity.getRole().getName())) {
+                    // ObjectMethod used only model ObjectFactory
+                    JAXBElement<Object> tLaneFlowNodeRefElement = ObjectFactoryUtil.createObjectJAXBElement("TLaneFlowNodeRef", tUserTask);
+                    tLane.getFlowNodeRef().add(tLaneFlowNodeRefElement);
+                }
+            }
+        }
+    }
+
+    private void addFlowNodeRefToLane(Event event, TEvent tEvent, TProcess tProcess, Hashtable context) {
+        Iterator<TLaneSet> tLaneSetIterator = tProcess.getLaneSet().iterator();
+
+        // find TLane
+        while (tLaneSetIterator.hasNext()) {
+            List<TLane> tLaneList = tLaneSetIterator.next().getLane();
+
+            for (TLane tLane : tLaneList) {
+                BPMNDiagram bpmnDiagram = (BPMNDiagram) context.get("bpmnDiagram");
+
+                for(JAXBElement bpmnDiagramElement : bpmnDiagram.getBPMNPlane().getDiagramElement()) {
+                    try {
+                        if(bpmnDiagramElement.getValue() instanceof BPMNShape) {
+                            BPMNShape bpmnShape = (BPMNShape) bpmnDiagramElement.getValue();
+
+                            if (bpmnShape.getBpmnElement().toString().equals(tLane.getId())) {
+                                if (isInEventToLane(event, bpmnShape)) {
+                                    JAXBElement<Object> tLaneFlowNodeRefElement = null;
+
+                                    if(tEvent instanceof TStartEvent) {
+                                        TStartEvent tStartEvent = (TStartEvent) tEvent;
+                                        tLaneFlowNodeRefElement = ObjectFactoryUtil.createObjectJAXBElement("TLaneFlowNodeRef", tStartEvent);
+
+                                    } else if(tEvent instanceof TEndEvent) {
+                                        TEndEvent tEndEvent = (TEndEvent) tEvent;
+                                        tLaneFlowNodeRefElement = ObjectFactoryUtil.createObjectJAXBElement("TLaneFlowNodeRef", tEndEvent);
+
+                                    } else {
+                                        ;
+                                    }
+                                    tLane.getFlowNodeRef().add(tLaneFlowNodeRefElement);
+                                }
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void convertSubProcess(SubProcess subProcess, Hashtable context, TProcess tProcess) {
+        // humanActivity adapter -> TUserTask create and setting
+        SubProcessAdapter subProcessAdapter = new SubProcessAdapter();
+        try {
+            TSubProcess tSubProcess = subProcessAdapter.convert(subProcess, context);
+
+            // make JAXB Element and add TUserTask
+            JAXBElement<TSubProcess> tSubProcessElement = ObjectFactoryUtil.createDefaultJAXBElement(TSubProcess.class, tSubProcess);
+            tProcess.getFlowElement().add(tSubProcessElement);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void convertTSequenceFlow(SequenceFlow sequenceFlow, Hashtable context, TProcess tProcess, List<Activity> childActivities) {
+        // SequenceFlowAdapter -> TSequenceFlow make and setting
+        SequenceFlowAdapter sequenceFlowAdapter = new SequenceFlowAdapter();
+        sequenceFlowAdapter.setChildActivities(childActivities);
+
+        try {
+            TSequenceFlow tSequenceFlow = sequenceFlowAdapter.convert(sequenceFlow, context);
+
+            // find process's all elements
+            if(tProcess.getFlowElement() != null && tProcess.getFlowElement().size() > 0) {
+                List<JAXBElement<? extends TFlowElement>> listTFlowElement = tProcess.getFlowElement();
+
+                // find element's sourceref, targetref
+                for(JAXBElement<? extends TFlowElement> tFlowElement : listTFlowElement) {
+                    if(tFlowElement.getValue().getId().equals(sequenceFlow.getSourceRef())) {
+                        tSequenceFlow.setSourceRef(tFlowElement.getValue());
+                    }
+
+                    if(tFlowElement.getValue().getId().equals(sequenceFlow.getTargetRef())) {
+                        tSequenceFlow.setTargetRef(tFlowElement.getValue());
+                    }
+                }
+            }
+
+            // find ConditionExpression
+            if (sequenceFlow.getCondition() != null) {
+                // Condition adapter -> TExpression make and setting
+                convertTExpression(sequenceFlow, tSequenceFlow);
+            }
+            // make JAXB Element and add TSequenceFlow
+            JAXBElement<TSequenceFlow> sequenceShapeElement = ObjectFactoryUtil.createDefaultJAXBElement(TSequenceFlow.class, tSequenceFlow);
+            tProcess.getFlowElement().add(sequenceShapeElement);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void convertTExpression(SequenceFlow sequenceFlow, TSequenceFlow tSequenceFlow) {
+        // Condition adapter -> TExpression make and setting
+        ConditionAdapter conditionAdapter = new ConditionAdapter();
+        try {
+            TExpression tExpression = conditionAdapter.convert(sequenceFlow.getCondition(), null);
+            // add Condition
+            tSequenceFlow.setConditionExpression(tExpression);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void convertTEvent(Event event, Hashtable context, TProcess tProcess) {
+        if(event.getClass() == StartEvent.class) {
+            StartEventAdapter startEventAdapter = new StartEventAdapter();
+
+            try {
+                TStartEvent tStartEvent = startEventAdapter.convert((StartEvent) event, context);
+                addFlowNodeRefToLane(event, tStartEvent, tProcess, context);
+
+                JAXBElement<TStartEvent> tStartEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TStartEvent.class, tStartEvent);
+                tProcess.getFlowElement().add(tStartEventElement);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        } else if(event.getClass() == EndEvent.class) {
+            EndEventAdapter endEventAdapter = new EndEventAdapter();
+
+            try {
+                TEndEvent tEndEvent = endEventAdapter.convert((EndEvent) event, context);
+                addFlowNodeRefToLane(event, tEndEvent, tProcess, context);
+
+                JAXBElement<TEndEvent> tEndEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TEndEvent.class, tEndEvent);
+                tProcess.getFlowElement().add(tEndEventElement);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else if(event.getClass() == TimerEvent.class) {
+            TimerEventAdapter timerEventAdapter = new TimerEventAdapter();
+
+            try {
+                TIntermediateCatchEvent tIntermediateCatchEvent = timerEventAdapter.convert((TimerEvent) event, context);
+                addFlowNodeRefToLane(event, tIntermediateCatchEvent, tProcess, context);
+
+                JAXBElement<TIntermediateCatchEvent> tIntermediateCatchEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TIntermediateCatchEvent.class, tIntermediateCatchEvent);
+                tProcess.getFlowElement().add(tIntermediateCatchEventElement);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            ;
+        }
+    }
+
+    private boolean isInEventToLane(Event event, BPMNShape bpmnShape) {
+        double x = (event.getElementView().getX());
+        double y = (event.getElementView().getY());
+        double width = (event.getElementView().getWidth());
+        double height = (event.getElementView().getHeight());
+        double left = x - (width / 2);
+        double right = x + (width / 2);
+        double top = y - (height / 2);
+        double bottom = y + (height / 2);
+
+        double p_x = (bpmnShape.getBounds().getX());
+        double p_y = (bpmnShape.getBounds().getY());
+        double p_width = (bpmnShape.getBounds().getWidth());
+        double p_height = (bpmnShape.getBounds().getHeight());
+        double p_left = p_x - (p_width / 2);
+        double p_right = p_x + (p_width / 2);
+        double p_top = p_y - (p_height / 2);
+        double p_bottom = p_y + (p_height / 2);
+
+        return (p_left < left &&
+                p_right > right &&
+                p_top < top &&
+                p_bottom > bottom
+        );
+    }
 }

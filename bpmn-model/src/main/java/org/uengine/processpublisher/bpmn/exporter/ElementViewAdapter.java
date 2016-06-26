@@ -15,8 +15,8 @@ public class ElementViewAdapter implements Adapter<ElementView, BPMNShape> {
         // make Shape
         BPMNShape bpmnShape = ObjectFactoryUtil.createBPMNObject(BPMNShape.class);
         bpmnShape.setBounds(ObjectFactoryUtil.createBPMNObject(Bounds.class));
-        bpmnShape.getBounds().setX(src.getX());
-        bpmnShape.getBounds().setY(src.getY());
+        bpmnShape.getBounds().setX(src.getX() - (src.getWidth() / 2));
+        bpmnShape.getBounds().setY(src.getY() - (src.getHeight() / 2));
         bpmnShape.getBounds().setWidth((src.getWidth()));
         bpmnShape.getBounds().setHeight((src.getHeight()));
 

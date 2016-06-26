@@ -563,8 +563,10 @@ public class ProcessModeler extends DefaultModeler {
                 continue;
             }
 
-            if (isIn(elementView, ev)) { //TODO
-                return (Role) ev.getElement();
+            if(!(ev.getId().equals("rootRole"))) {
+                if (isIn(elementView, ev)) { //TODO
+                    return (Role) ev.getElement();
+                }
             }
         }
 

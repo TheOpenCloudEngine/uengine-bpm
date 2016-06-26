@@ -18,7 +18,6 @@ public class RoleAdapter implements Adapter<Role, TLane> {
     public TLane convert(Role src, Hashtable keyedContext) throws Exception {
         // make TLane
         TLane tLane = ObjectFactoryUtil.createBPMNObject(TLane.class);
-        // TODO: role id?
         tLane.setId(src.getElementView().getId());
         tLane.setName(src.getName());
 

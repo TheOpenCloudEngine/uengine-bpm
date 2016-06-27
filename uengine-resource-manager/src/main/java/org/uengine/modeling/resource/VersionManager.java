@@ -196,6 +196,9 @@ public class VersionManager implements ContextAware{
 
         resourcePath = withoutVersionPath(appName, resourcePath);
 
+        String original = resourcePath;
+
+
         Boolean isDevelopmentTime = (Boolean) TransactionContext.getThreadLocalInstance().getSharedContext("isDevelopmentTime");
         if(isDevelopmentTime!=null && isDevelopmentTime)
             return resourcePath;
@@ -214,6 +217,17 @@ public class VersionManager implements ContextAware{
             int wherePrefix = resourcePath.indexOf(prefix);
             if(wherePrefix == 0){
                 resourcePath = resourcePath.substring(prefix.length(), resourcePath.length());
+            }
+        }
+
+        {// if there's no resource in production, return original one.
+            ResourceManager resourceManager1 = MetaworksRemoteService.getComponent(ResourceManager.class);
+            try {
+                if(!resourceManager1.getStorage().exists(new DefaultResource(appName + "/" + resourcePath))){
+                    return original;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

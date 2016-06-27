@@ -95,24 +95,25 @@ public class ProcessApp extends App{
 
         byte data[] = new byte[BUFFER];
 
-        ContainerResource containerResource = new ContainerResource();
-
-        autowire(containerResource);
-
         List<IResource> resourceList;
 
         if(!resourceIsInDefaultFolder) {
+            ContainerResource containerResource = new ContainerResource();
+
+            autowire(containerResource);
+
             containerResource.setPath(UEngineUtil.getFilePath(getProjectId()));
             resourceList = containerResource.list();
+            setUrl(containerResource.getPath());
         }else{
             resourceList = new ArrayList<IResource>();
 
             DefaultResource onlyOneResource = new DefaultResource(getProjectId());
             resourceList.add(onlyOneResource);
+
+            setUrl(UEngineUtil.getFilePath(getProjectId()));
         }
 
-
-        setUrl(containerResource.getPath());
 
         Object returnVal = super.save();
 
@@ -240,7 +241,29 @@ public class ProcessApp extends App{
     protected void deployApp(DefaultResource defaultResource) {
         String type = defaultResource.getType();
 
+
+
         if("process".equals(type) || "method".equals(type)){
+
+            {//dup check first
+                IProcessMap processMap = new ProcessMap();
+                processMap.setMapId(TenantContext.getThreadLocalInstance().getTenantId() + "." + defaultResource.getName());
+                processMap.setDefId(defaultResource.getPath());
+                processMap.setName(defaultResource.getName());
+                processMap.setComCode(TenantContext.getThreadLocalInstance().getTenantId());
+
+                try {
+                    processMap.select();
+
+                    if(processMap.next()){
+                        return; //if exists, skip deploying.
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
             IProcessMap processMap = new ProcessMap();
             processMap.setMapId(TenantContext.getThreadLocalInstance().getTenantId() + "." + defaultResource.getName());
             processMap.setDefId(defaultResource.getPath());

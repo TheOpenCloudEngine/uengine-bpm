@@ -6,9 +6,10 @@ import org.uengine.kernel.view.HumanActivityView;
 import org.uengine.kernel.view.RestWebServiceActivityView;
 import org.uengine.kernel.view.RoleView;
 import org.uengine.modeling.Palette;
+import org.uengine.modeling.PaletteWindow;
 import org.uengine.modeling.Symbol;
 
-public class TaskPalette extends Palette {
+public class TaskPalette extends PaletteWindow {
 
 	public TaskPalette() {
 		this.setName("Tasks");

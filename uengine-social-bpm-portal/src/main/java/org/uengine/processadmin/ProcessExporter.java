@@ -41,9 +41,7 @@ public class ProcessExporter {
         String fileName = processAdminEditorPanel.getResourcePath().substring(processAdminEditorPanel.getResourcePath().lastIndexOf("\\") + 1, processAdminEditorPanel.getResourcePath().lastIndexOf("."));
         fileName = fileName + "(BPMN).xml";
 
-        ByteArrayOutputStream bao = null;
         ByteArrayInputStream bio = null;
-
         try {
             TDefinitions tDefinitions = (TDefinitions) processDefinitionAdapter.convert(processDefinition, null);
             org.omg.spec.bpmn._20100524.model.ObjectFactory objectFactory = new org.omg.spec.bpmn._20100524.model.ObjectFactory();
@@ -54,10 +52,9 @@ public class ProcessExporter {
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            bao = new ByteArrayOutputStream();
-            bio = new ByteArrayInputStream(bao.toByteArray());
-
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
             marshaller.marshal(element, bao);
+            bio = new ByteArrayInputStream(bao.toByteArray());
 
         } catch (Exception e) {
             e.printStackTrace();

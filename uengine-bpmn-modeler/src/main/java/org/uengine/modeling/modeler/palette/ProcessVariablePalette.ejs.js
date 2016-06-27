@@ -97,7 +97,6 @@ var org_uengine_modeling_modeler_palette_ProcessVariablePalette = function (obje
                 saveDialogPosition(dialog, currentPosition);
             }
         });
-        console.log(getPositions());
     };
 
     var getPositions = function () {

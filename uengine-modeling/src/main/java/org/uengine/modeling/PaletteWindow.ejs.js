@@ -97,7 +97,6 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
                 saveDialogPosition(dialog, currentPosition);
             }
         });
-        console.log(getPositions());
     };
 
     var getPositions = function () {

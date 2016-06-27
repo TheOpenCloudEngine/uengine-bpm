@@ -4,9 +4,10 @@ import org.uengine.kernel.bpmn.view.ParallelGatewayView;
 import org.uengine.kernel.bpmn.view.GatewayView;
 import org.uengine.kernel.bpmn.view.InclusiveGatewayView;
 import org.uengine.modeling.Palette;
+import org.uengine.modeling.PaletteWindow;
 import org.uengine.modeling.Symbol;
 
-public class GatewayPalette extends Palette {
+public class GatewayPalette extends PaletteWindow {
 
 	public GatewayPalette(){
 		this.setName("Gateways");

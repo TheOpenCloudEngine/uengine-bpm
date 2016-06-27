@@ -2,8 +2,9 @@ package org.uengine.modeling.modeler.palette;
 
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.modeling.Palette;
+import org.uengine.modeling.PaletteWindow;
 
-public class ProcessVariablePalette extends Palette {
+public class ProcessVariablePalette extends PaletteWindow {
 
     public ProcessVariablePalette(){
 

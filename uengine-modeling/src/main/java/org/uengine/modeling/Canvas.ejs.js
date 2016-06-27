@@ -118,6 +118,11 @@ org_uengine_modeling_Canvas.prototype = {
         $("#" + this.canvasSliderId).find('.scaleSliderWrapper').css({
             padding: '10px'
         })
+
+        //슬라이더 아이콘 교체
+        var sliderParent = $("#" + this.canvasSliderId).parent();
+        var expandBtn = sliderParent.find('.ui-dialog-titlebar-close');
+        expandBtn.html('<img src="resources/images/symbol/slider-minus.png">');
     },
 
     eventBinding: function () {

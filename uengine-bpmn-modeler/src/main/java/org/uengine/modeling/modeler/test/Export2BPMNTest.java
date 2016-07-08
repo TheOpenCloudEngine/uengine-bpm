@@ -101,7 +101,7 @@ public class Export2BPMNTest {
 
         try {
             processDefinition.beforeSerialization();
-            TDefinitions tDefinitions = (TDefinitions) BPMNUtil.export(processDefinition);
+            TDefinitions tDefinitions = (TDefinitions) BPMNUtil.exportAdapt(processDefinition);
 
             org.omg.spec.bpmn._20100524.model.ObjectFactory objectFactory = new org.omg.spec.bpmn._20100524.model.ObjectFactory();
             JAXBElement<TDefinitions> element = objectFactory.createDefinitions(tDefinitions);

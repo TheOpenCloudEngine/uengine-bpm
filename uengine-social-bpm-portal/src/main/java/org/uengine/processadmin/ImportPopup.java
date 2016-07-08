@@ -60,7 +60,6 @@ public class ImportPopup {
     public void importTheFile() throws Exception {
         if(getSelectFile().getFileTransfer()!=null){
             ProcessResource processResource = new ProcessResource();
-
             String fileNameToUpload = getSelectFile().getFilename();//.replaceFirst("[.][^.]+$", "") + ".process";
 
             if(getSelectFile().getFilename().endsWith(".bpmn")) {
@@ -68,33 +67,27 @@ public class ImportPopup {
             }
 
             processResource.setPath(getDir() + "/" + fileNameToUpload);
-
             ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
             if(resourceManager.getStorage().exists(processResource)){
                 throw new Exception("$ExistingResourceName");
             }
 
-
             getSelectFile().upload();
-
             File file = new File(getSelectFile().getUploadedPath());
 
-            ProcessDefinition definition = null;
-
+            ProcessDefinition definition;
             if(getSelectFile().getFilename().endsWith(".bpmn")) {
-                definition = BPMNUtil.adapt(file);
-            }else{
+                definition = BPMNUtil.importAdapt(file);
+
+            } else{
                 definition = (ProcessDefinition) Serializer.deserialize(new FileInputStream(file));
             }
 
             MetaworksRemoteService.autowire(processResource);
-
-
             processResource.save(definition);
 
             //MetaworksRemoteService.wrapReturn(new Remover(new ModalWindow()), new ModalWindow(new ));
-
 
             MetaworksRemoteService.wrapReturn(new Label("<h2> Successfully imported.</h1> Refresh the navigator to see the imported file."));
         }

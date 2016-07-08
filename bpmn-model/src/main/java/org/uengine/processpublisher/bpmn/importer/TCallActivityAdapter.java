@@ -10,9 +10,7 @@ public class TCallActivityAdapter extends TFlowNodeAdapter<TCallActivity, CallAc
     @Override
     protected Activity create(TCallActivity src, Hashtable keyedContext) {
         CallActivity callActivity = new CallActivity();
-
         String subProcessId = src.getCalledElement().getLocalPart();
-
         callActivity.setDefinitionId(subProcessId);
 
         return callActivity;

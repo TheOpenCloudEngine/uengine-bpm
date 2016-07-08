@@ -15,7 +15,6 @@ public class TServiceTaskAdapter extends TTaskAdapter{
 
     @Override
     protected Activity create(TTask src, Hashtable keyedContext) {
-
         TServiceTask serviceTask = (TServiceTask) src;
 
         //in case of Java Activity
@@ -31,13 +30,15 @@ public class TServiceTaskAdapter extends TTaskAdapter{
                 }
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException("No such activity class : " + className, e);
+
             } catch (InstantiationException e) {
                 throw new RuntimeException("Activity class : " + className + " is not initialized.", e);
+
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Activity class : " + className + " is not initialized.", e);
             }
 
-        }else{
+        } else{
             return new DefaultActivity(src.getName());
         }
 

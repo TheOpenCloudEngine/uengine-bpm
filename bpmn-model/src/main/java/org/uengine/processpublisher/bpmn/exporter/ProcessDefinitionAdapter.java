@@ -154,9 +154,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
         // create tLaneSet and LaneSet (rootRole hard coding)
         for (Role role : src.getRoles()) {
             if(!(role.getName().equals("rootRole"))) {
-                RoleAdapter roleAdapter = new RoleAdapter();
                 try {
-                    TLane tLane = roleAdapter.convert(role, context);
+                    TLane tLane = (TLane) BPMNUtil.exportAdapt(role, context);
                     tLaneSet.getLane().add(tLane);
 
                 } catch (Exception e) {
@@ -168,9 +167,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
     private void convertTUserTask(HumanActivity humanActivity, Hashtable context, TProcess tProcess) {
         // humanActivity adapter -> TUserTask create and setting
-        HumanActivityAdapter humanActivityAdapter = new HumanActivityAdapter();
         try {
-            TUserTask tUserTask = humanActivityAdapter.convert(humanActivity, context);
+            TUserTask tUserTask = (TUserTask) BPMNUtil.exportAdapt(humanActivity, context);
 
             if (humanActivity.getRole() != null) {
                 // find TLaneSet
@@ -250,9 +248,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
     private void convertSubProcess(SubProcess subProcess, Hashtable context, TProcess tProcess) {
         // humanActivity adapter -> TUserTask create and setting
-        SubProcessAdapter subProcessAdapter = new SubProcessAdapter();
         try {
-            TSubProcess tSubProcess = subProcessAdapter.convert(subProcess, context);
+            TSubProcess tSubProcess = (TSubProcess) BPMNUtil.exportAdapt(subProcess, context);
 
             // make JAXB Element and add TUserTask
             JAXBElement<TSubProcess> tSubProcessElement = ObjectFactoryUtil.createDefaultJAXBElement(TSubProcess.class, tSubProcess);
@@ -265,11 +262,9 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
     private void convertTSequenceFlow(SequenceFlow sequenceFlow, Hashtable context, TProcess tProcess, List<Activity> childActivities) {
         // SequenceFlowAdapter -> TSequenceFlow make and setting
-        SequenceFlowAdapter sequenceFlowAdapter = new SequenceFlowAdapter();
-        sequenceFlowAdapter.setChildActivities(childActivities);
-
+        context.put("childActivities", childActivities);
         try {
-            TSequenceFlow tSequenceFlow = sequenceFlowAdapter.convert(sequenceFlow, context);
+            TSequenceFlow tSequenceFlow = (TSequenceFlow) BPMNUtil.exportAdapt(sequenceFlow, context);
 
             // find process's all elements
             if(tProcess.getFlowElement() != null && tProcess.getFlowElement().size() > 0) {
@@ -303,9 +298,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
     private void convertTExpression(SequenceFlow sequenceFlow, TSequenceFlow tSequenceFlow) {
         // Condition adapter -> TExpression make and setting
-        ConditionAdapter conditionAdapter = new ConditionAdapter();
         try {
-            TExpression tExpression = conditionAdapter.convert(sequenceFlow.getCondition(), null);
+            TExpression tExpression = (TExpression) BPMNUtil.exportAdapt(sequenceFlow.getCondition());
             // add Condition
             tSequenceFlow.setConditionExpression(tExpression);
 
@@ -316,10 +310,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
     private void convertTEvent(Event event, Hashtable context, TProcess tProcess) {
         if(event.getClass() == StartEvent.class) {
-            StartEventAdapter startEventAdapter = new StartEventAdapter();
-
             try {
-                TStartEvent tStartEvent = startEventAdapter.convert((StartEvent) event, context);
+                TStartEvent tStartEvent = (TStartEvent) BPMNUtil.exportAdapt(event, context);
                 addFlowNodeRefToLane(event, tStartEvent, tProcess, context);
 
                 JAXBElement<TStartEvent> tStartEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TStartEvent.class, tStartEvent);
@@ -331,10 +323,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
 
         } else if(event.getClass() == EndEvent.class) {
-            EndEventAdapter endEventAdapter = new EndEventAdapter();
-
             try {
-                TEndEvent tEndEvent = endEventAdapter.convert((EndEvent) event, context);
+                TEndEvent tEndEvent = (TEndEvent) BPMNUtil.exportAdapt(event, context);
                 addFlowNodeRefToLane(event, tEndEvent, tProcess, context);
 
                 JAXBElement<TEndEvent> tEndEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TEndEvent.class, tEndEvent);
@@ -345,10 +335,8 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
             }
 
         } else if(event.getClass() == TimerEvent.class) {
-            TimerEventAdapter timerEventAdapter = new TimerEventAdapter();
-
             try {
-                TIntermediateCatchEvent tIntermediateCatchEvent = timerEventAdapter.convert((TimerEvent) event, context);
+                TIntermediateCatchEvent tIntermediateCatchEvent = (TIntermediateCatchEvent) BPMNUtil.exportAdapt(event, context);
                 addFlowNodeRefToLane(event, tIntermediateCatchEvent, tProcess, context);
 
                 JAXBElement<TIntermediateCatchEvent> tIntermediateCatchEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TIntermediateCatchEvent.class, tIntermediateCatchEvent);

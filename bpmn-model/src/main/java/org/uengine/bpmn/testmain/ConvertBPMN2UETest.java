@@ -43,7 +43,7 @@ public class ConvertBPMN2UETest {
         BPMNPlane plane = ((TDefinitions) element.getValue()).getBPMNDiagram().get(0).getBPMNPlane();
 
 
-        ProcessDefinition definition = (ProcessDefinition) BPMNUtil.adapt(element.getValue());
+        ProcessDefinition definition = (ProcessDefinition) BPMNUtil.importAdapt(element.getValue());
 
         System.out.println(definition);
 

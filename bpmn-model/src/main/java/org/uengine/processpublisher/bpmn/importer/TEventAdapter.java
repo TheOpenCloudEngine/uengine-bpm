@@ -6,7 +6,6 @@ import org.uengine.kernel.bpmn.Event;
 import java.util.Hashtable;
 
 public class TEventAdapter extends TFlowNodeAdapter<TEvent, Event> {
-
     @Override
     public Event create(TEvent src, Hashtable keyedContext){
         return new Event();

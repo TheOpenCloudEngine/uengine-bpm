@@ -24,13 +24,11 @@ import java.util.Hashtable;
 public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinition>{
     @Override
     public ProcessDefinition convert(TDefinitions src, Hashtable keyedContext) throws Exception {
-
         ProcessDefinition processDefinition = new ProcessDefinition();
         Hashtable context = new Hashtable();
         context.put("processDefinition", processDefinition);
 
-
-        HashMap bpmnDiagramElementMap = new HashMap<String, DiagramElement>();
+        HashMap bpmnDiagramElementMap = new HashMap<>();
         context.put("BPMNDiagramElementMap", bpmnDiagramElementMap);
 
         for(BPMNDiagram bpmnDiagram : src.getBPMNDiagram()){
@@ -50,68 +48,38 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
 
         for(JAXBElement element : src.getRootElement()){
             if(element.getValue() instanceof TProcess){
-                TProcess bpmnProcess = (TProcess)element.getValue();
+                TProcess bpmnProcess = (TProcess) element.getValue();
                 context.put("tProcess", bpmnProcess);
-
                 processDefinition.setName(bpmnProcess.getName());
 
-                if(bpmnProcess.getLaneSet()!=null && bpmnProcess.getLaneSet().size()>0){
+                if(bpmnProcess.getLaneSet() != null && bpmnProcess.getLaneSet().size() > 0){
                     for(TLaneSet laneSet: bpmnProcess.getLaneSet()){
                         for(TLane tLane: laneSet.getLane()){
-                            Role role = new Role();
-
-                            role.setName(tLane.getName());
-
+                            Role role = (Role) BPMNUtil.importAdapt(tLane, context);
                             processDefinition.addRole(role);
-
-                            ElementView view = role.createView();
-
-//                            Pool pool = new Pool();
-//                            pool.setName(tLane.getName());
-//                            ElementView view = pool.createView();
-
-                            BPMNShape bpmnShape = (BPMNShape) bpmnDiagramElementMap.get(tLane.getId());
-
-                            view.setX((int) Math.round(bpmnShape.getBounds().getX()));
-                            view.setY((int) Math.round(bpmnShape.getBounds().getY()));
-                            view.setWidth((int) Math.round(bpmnShape.getBounds().getWidth()));
-                            view.setHeight((int) Math.round(bpmnShape.getBounds().getHeight()));
-                            view.setId(tLane.getId());
-
-                            role.setElementView(view);
-
-//                            processDefinition.addPool(pool);
-
                         }
-
                     }
                 }
 
-                if(bpmnProcess.getFlowElement()!=null && bpmnProcess.getFlowElement().size()>0){
+                if(bpmnProcess.getFlowElement() != null && bpmnProcess.getFlowElement().size() > 0){
                     for(JAXBElement flowElement: bpmnProcess.getFlowElement()){
                         context.put("parent", processDefinition);
 
-                        Object childElement = BPMNUtil.adapt(flowElement.getValue(), context);
-
+                        Object childElement = BPMNUtil.importAdapt(flowElement.getValue(), context);
                         if(childElement instanceof Activity){
+                            processDefinition.addChildActivity((Activity) childElement);
 
-                            processDefinition.addChildActivity((Activity)childElement);
 
-
-                        }else if(childElement instanceof SequenceFlow){
+                        } else if(childElement instanceof SequenceFlow){
                             processDefinition.addSequenceFlow((SequenceFlow) childElement);
 
+                        } else {
+                            ;
                         }
-
-
-
-
                     }
                 }
             }
-
         }
-
         return processDefinition;
     }
 }

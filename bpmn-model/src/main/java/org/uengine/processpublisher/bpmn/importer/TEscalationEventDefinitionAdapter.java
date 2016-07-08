@@ -7,12 +7,9 @@ import org.uengine.processpublisher.Adapter;
 import java.util.Hashtable;
 
 public class TEscalationEventDefinitionAdapter implements Adapter<TEscalationEventDefinition, Event> {
-
     @Override
     public Event convert(TEscalationEventDefinition src, Hashtable keyedContext) throws Exception {
-
         Event event = new Event();
-
 
         if(src.getEscalationRef()!=null) {
             String escalationCode = src.getEscalationRef().getLocalPart();

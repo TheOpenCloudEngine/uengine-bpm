@@ -9,25 +9,29 @@ import org.omg.spec.bpmn._20100524.model.TTimerEventDefinition;
 import org.uengine.kernel.bpmn.StartEvent;
 import org.uengine.kernel.bpmn.TimerEvent;
 import org.uengine.processpublisher.Adapter;
+import org.uengine.processpublisher.BPMNUtil;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
 
 /**
- * Created by uengine on 2016. 6. 25..
+ * Created by MisakaMikoto on 2016. 6. 25..
  */
 public class TimerEventAdapter implements Adapter<TimerEvent, TIntermediateCatchEvent> {
     @Override
     public TIntermediateCatchEvent convert(TimerEvent src, Hashtable keyedContext) throws Exception {
         TTimerEventDefinition tTimerEventDefinition = ObjectFactoryUtil.createBPMNObject(TTimerEventDefinition.class);
 
-        ExpressionAdapter expressionAdapter = new ExpressionAdapter();
-        tTimerEventDefinition.setTimeCycle(expressionAdapter.convert(src.getExpression(), null));
+        TExpression tExpression = new TExpression();
+        tExpression.getContent().add(src.getExpression());
+
+        tTimerEventDefinition.setTimeCycle(tExpression);
         JAXBElement<TTimerEventDefinition> tTimerEventDefinitionJAXBElement = ObjectFactoryUtil.createDefaultJAXBElement(TTimerEventDefinition.class, tTimerEventDefinition);
 
         TIntermediateCatchEvent tIntermediateCatchEvent = ObjectFactoryUtil.createBPMNObject(TIntermediateCatchEvent.class);
         tIntermediateCatchEvent.setId(src.getTracingTag());
+        tIntermediateCatchEvent.setName(src.getName());
         tIntermediateCatchEvent.getEventDefinition().add(tTimerEventDefinitionJAXBElement);
 
         String outgoing = getOutgoing(src);
@@ -41,8 +45,7 @@ public class TimerEventAdapter implements Adapter<TimerEvent, TIntermediateCatch
             tIntermediateCatchEvent.getIncoming().add(new QName(incoming));
         }
 
-        ElementViewAdapter elementViewAdapter = new ElementViewAdapter();
-        BPMNShape bpmnShape = elementViewAdapter.convert(src.getElementView(), null);
+        BPMNShape bpmnShape = (BPMNShape) BPMNUtil.exportAdapt(src.getElementView());
         bpmnShape.setBpmnElement(new QName(src.getTracingTag()));
 
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");

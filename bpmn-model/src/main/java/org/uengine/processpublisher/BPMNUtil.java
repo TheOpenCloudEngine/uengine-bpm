@@ -27,16 +27,14 @@ public class BPMNUtil {
         do {
             try {
                 String activityTypeName = org.uengine.util.UEngineUtil.getClassNameOnly(clazz);
-                String packageStr = clazz.getPackage().getName();
-                packageStr = packageStr.substring(0, packageStr.lastIndexOf("."));
+                String packageStr = BPMNUtil.class.getPackage().getName() + ".bpmn";
 
-                packageStr = BPMNUtil.class.getPackage().getName() + ".bpmn";
                 if(activityTypeName.toLowerCase().contains("microsoft")) {
                     adapter = (Adapter) Thread.currentThread().getContextClassLoader().loadClass(packageStr + "." + (isImporter ? "importer" : "exporter") + "." + activityTypeName + "Adapter").newInstance();
                 } else {
                     adapter = (Adapter) Thread.currentThread().getContextClassLoader().loadClass(packageStr + "." + (isImporter ? "importer" : "exporter") + "." + activityTypeName + "Adapter").newInstance();
                 }
-                if(adapter!=null) {
+                if(adapter != null) {
                     adapters.put(clazz.getName(), adapter);
                 }
 
@@ -46,7 +44,7 @@ public class BPMNUtil {
 
         } while(adapter == null && clazz != Object.class);
 
-        if(adapter==null) {
+        if(adapter == null) {
             System.out.println("ProcessDefinitionAdapter::getAdapter : can't find adapter for " + clazz);
 
         } else {
@@ -57,24 +55,24 @@ public class BPMNUtil {
         return adapter;
     }
 
-    public static Object adapt(Object value, Hashtable context) throws Exception {
+    public static Object importAdapt(Object value, Hashtable context) throws Exception {
         return getAdapter(value.getClass(), true).convert(value, context);
     }
 
-    public static Object export(Object value, Hashtable context) throws Exception {
+    public static Object exportAdapt(Object value, Hashtable context) throws Exception {
         return getAdapter(value.getClass(), false).convert(value, context);
     }
 
-    public static Object adapt(Object value) throws Exception {
+    public static Object importAdapt(Object value) throws Exception {
         return getAdapter(value.getClass(), true).convert(value, null);
     }
 
-    public static Object export(Object value) throws Exception {
+    public static Object exportAdapt(Object value) throws Exception {
         return getAdapter(value.getClass(), false).convert(value, null);
     }
 
 
-    public static ProcessDefinition adapt(File file) throws Exception{
+    public static ProcessDefinition importAdapt(File file) throws Exception{
         ProcessDefinition processDefinition = null;
         String productName = checkProductName(file);
 
@@ -83,11 +81,11 @@ public class BPMNUtil {
             Unmarshaller um = jc.createUnmarshaller();
             JAXBElement element = (JAXBElement) um.unmarshal(file);
 
-            processDefinition = (ProcessDefinition) adapt(element.getValue());
+            processDefinition = (ProcessDefinition) importAdapt(element.getValue());
             processDefinition.afterDeserialization();
 
         } else if(MSProject.equals(productName)) {
-            processDefinition = (ProcessDefinition) adapt(new MSProjectFileAdapter());
+            processDefinition = (ProcessDefinition) importAdapt(new MSProjectFileAdapter());
             processDefinition.afterDeserialization();
 
         } else {
@@ -97,7 +95,7 @@ public class BPMNUtil {
         return processDefinition;
     }
 
-    public static ProcessDefinition adapt(InputStream is) throws Exception{
+    public static ProcessDefinition importAdapt(InputStream is) throws Exception{
         ProcessDefinition processDefinition = null;
         String productName = checkProductName(is);
 
@@ -106,11 +104,11 @@ public class BPMNUtil {
             Unmarshaller um = jc.createUnmarshaller();
             JAXBElement element = (JAXBElement) um.unmarshal(is);
 
-            processDefinition = (ProcessDefinition) adapt(element.getValue());
+            processDefinition = (ProcessDefinition) importAdapt(element.getValue());
             processDefinition.afterDeserialization();
 
         } else if(MSProject.equals(productName)) {
-            processDefinition = (ProcessDefinition) adapt(new MSProjectFileAdapter());
+            processDefinition = (ProcessDefinition) importAdapt(new MSProjectFileAdapter());
             processDefinition.afterDeserialization();
 
         } else {
@@ -121,12 +119,12 @@ public class BPMNUtil {
     }
 
     public static String checkProductName(Object object) {
-        FileInputStream fileInputStream = null;
-        InputStreamReader inputStreamReader = null;
+        FileInputStream fileInputStream;
+        InputStreamReader inputStreamReader;
         BufferedReader bufferedReader = null;
 
-        String productName = null;
-        String temp = null;
+        String productName ;
+        String temp;
         String content = null;
 
         int lineCount = 0;

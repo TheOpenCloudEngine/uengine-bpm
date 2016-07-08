@@ -6,12 +6,13 @@ import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.uengine.kernel.bpmn.EndEvent;
 import org.uengine.kernel.bpmn.StartEvent;
 import org.uengine.processpublisher.Adapter;
+import org.uengine.processpublisher.BPMNUtil;
 
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
 
 /**
- * Created by uengine on 2016. 6. 25..
+ * Created by MisakaMikoto on 2016. 6. 25..
  */
 public class EndEventAdapter implements Adapter<EndEvent, TEndEvent> {
 
@@ -33,8 +34,7 @@ public class EndEventAdapter implements Adapter<EndEvent, TEndEvent> {
             tEndEvent.getIncoming().add(new QName(incoming));
         }
 
-        ElementViewAdapter elementViewAdapter = new ElementViewAdapter();
-        BPMNShape bpmnShape = elementViewAdapter.convert(src.getElementView(), null);
+        BPMNShape bpmnShape = (BPMNShape) BPMNUtil.exportAdapt(src.getElementView());
         bpmnShape.setBpmnElement(new QName(src.getTracingTag()));
 
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");

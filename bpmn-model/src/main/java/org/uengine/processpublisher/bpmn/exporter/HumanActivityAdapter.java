@@ -12,7 +12,7 @@ import javax.xml.namespace.QName;
 import java.util.Hashtable;
 
 /**
- * Created by uengine on 2015. 8. 14..
+ * Created by MisakaMikoto on 2015. 8. 14..
  */
 public class HumanActivityAdapter implements Adapter<HumanActivity, TUserTask> {
     @Override
@@ -33,8 +33,7 @@ public class HumanActivityAdapter implements Adapter<HumanActivity, TUserTask> {
             tUserTask.getIncoming().add(new QName(incoming));
         }
 
-        ElementViewAdapter elementViewAdapter = new ElementViewAdapter();
-        BPMNShape bpmnShape = elementViewAdapter.convert(src.getElementView(), null);
+        BPMNShape bpmnShape = (BPMNShape) BPMNUtil.exportAdapt(src.getElementView());
         bpmnShape.setBpmnElement(new QName(src.getTracingTag()));
 
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");

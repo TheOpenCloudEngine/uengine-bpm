@@ -6,7 +6,7 @@ import org.uengine.processpublisher.Adapter;
 import java.util.Hashtable;
 
 /**
- * Created by uengine on 2015. 8. 14..
+ * Created by MisakaMikoto on 2015. 8. 14..
  */
 public class ConditionAdapter implements Adapter<Condition, TExpression> {
     @Override

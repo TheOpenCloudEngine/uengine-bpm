@@ -14,7 +14,7 @@ public class ExampleBPMNExecution {
 
         ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
-        ProcessDefinition processDefinition = BPMNUtil.adapt(new File("/Users/kimsh/Documents/acitiviti sample/parallel.xml")); //new File("/java/autoinsurance.bpmn"));
+        ProcessDefinition processDefinition = BPMNUtil.importAdapt(new File("/Users/kimsh/Documents/acitiviti sample/parallel.xml")); //new File("/java/autoinsurance.bpmn"));
 
         ProcessInstance instance = processDefinition.createInstance();
 

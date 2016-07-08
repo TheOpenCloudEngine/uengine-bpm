@@ -8,6 +8,8 @@ import org.uengine.kernel.Activity;
 import org.uengine.kernel.HumanActivity;
 import org.uengine.kernel.bpmn.*;
 import org.uengine.processpublisher.Adapter;
+import org.uengine.processpublisher.BPMNUtil;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.Hashtable;
@@ -15,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by uengine on 2016. 6. 23..
+ * Created by MisakaMikoto on 2016. 6. 23..
  */
 public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
 
@@ -39,8 +41,7 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
         convertChildElement(src, tSubProcess, keyedContext);
         convertChildRelation(src, tSubProcess, keyedContext);
 
-        ElementViewAdapter elementViewAdapter = new ElementViewAdapter();
-        BPMNShape bpmnShape = elementViewAdapter.convert(src.getElementView(), null);
+        BPMNShape bpmnShape = (BPMNShape) BPMNUtil.exportAdapt(src.getElementView());
         bpmnShape.setBpmnElement(new QName(src.getTracingTag()));
         // expanded option !! important!!
         bpmnShape.setIsExpanded(true);
@@ -72,10 +73,8 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
         if (subProcess.getChildActivities() != null && subProcess.getChildActivities().size() > 0) {
             for (Activity activity : subProcess.getChildActivities()) {
                 if (activity instanceof HumanActivity) {
-                    HumanActivityAdapter humanActivityAdapter = new HumanActivityAdapter();
-
                     try {
-                        TUserTask tUserTask = humanActivityAdapter.convert((HumanActivity) activity, context);
+                        TUserTask tUserTask = (TUserTask) BPMNUtil.exportAdapt(activity, context);
                         // make JAXB Element and add TUserTask
                         JAXBElement<TUserTask> tUserElement = ObjectFactoryUtil.createDefaultJAXBElement(TUserTask.class, tUserTask);
                         tSubProcess.getFlowElement().add(tUserElement);
@@ -86,7 +85,7 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
 
                 } else if (activity instanceof SubProcess) {
                     try {
-                        TSubProcess childTSubProcess = convert((SubProcess) activity, context);
+                        TSubProcess childTSubProcess = (TSubProcess) BPMNUtil.exportAdapt(activity, context);
                         // make JAXB Element and add TSubProcess
                         JAXBElement<TSubProcess> tSubProcessElement = ObjectFactoryUtil.createDefaultJAXBElement(TSubProcess.class, childTSubProcess);
                         tSubProcess.getFlowElement().add(tSubProcessElement);
@@ -110,11 +109,10 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
         if (subProcess.getSequenceFlows() != null && subProcess.getSequenceFlows().size() > 0) {
             for (SequenceFlow subProcessSequenceFlow : subProcess.getSequenceFlows()) {
                 // SequenceFlowAdapter -> TSequenceFlow make and setting
-                SequenceFlowAdapter sequenceFlowAdapter = new SequenceFlowAdapter();
-                sequenceFlowAdapter.setChildActivities(subProcess.getChildActivities());
+                context.put("childActivities", subProcess.getChildActivities());
 
                 try {
-                    TSequenceFlow subProcessTSequenceFlow = sequenceFlowAdapter.convert(subProcessSequenceFlow, context);
+                    TSequenceFlow subProcessTSequenceFlow = (TSequenceFlow) BPMNUtil.exportAdapt(subProcessSequenceFlow, context);
 
                     // find process's all elements
                     if(tSubProcess.getFlowElement() != null && tSubProcess.getFlowElement().size() > 0) {
@@ -135,9 +133,8 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
                     // find ConditionExpression
                     if (subProcessSequenceFlow.getCondition() != null) {
                         // Condition adapter -> TExpression make and setting
-                        ConditionAdapter conditionAdapter = new ConditionAdapter();
                         try {
-                            TExpression tExpression = conditionAdapter.convert(subProcessSequenceFlow.getCondition(), null);
+                            TExpression tExpression = (TExpression) BPMNUtil.exportAdapt(subProcessSequenceFlow.getCondition());
                             // add Condition
                             subProcessTSequenceFlow.setConditionExpression(tExpression);
 
@@ -158,10 +155,8 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
 
     private void convertChildEvent(Event subProcessEvent, Hashtable context, TSubProcess tSubProcess) {
         if(subProcessEvent.getClass() == StartEvent.class) {
-            StartEventAdapter startEventAdapter = new StartEventAdapter();
-
             try {
-                TStartEvent tStartEvent = startEventAdapter.convert((StartEvent) subProcessEvent, context);
+                TStartEvent tStartEvent = (TStartEvent) BPMNUtil.exportAdapt(subProcessEvent, context);
                 JAXBElement<TStartEvent> tStartEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TStartEvent.class, tStartEvent);
                 tSubProcess.getFlowElement().add(tStartEventElement);
 
@@ -170,10 +165,8 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
             }
 
         } else if(subProcessEvent.getClass() == EndEvent.class) {
-            EndEventAdapter endEventAdapter = new EndEventAdapter();
-
             try {
-                TEndEvent tEndEvent = endEventAdapter.convert((EndEvent) subProcessEvent, context);
+                TEndEvent tEndEvent = (TEndEvent) BPMNUtil.exportAdapt(subProcessEvent, context);
                 JAXBElement<TEndEvent> tEndEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TEndEvent.class, tEndEvent);
                 tSubProcess.getFlowElement().add(tEndEventElement);
 
@@ -182,10 +175,8 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
             }
 
         } else if(subProcessEvent.getClass() == TimerEvent.class) {
-            TimerEventAdapter timerEventAdapter = new TimerEventAdapter();
-
             try {
-                TIntermediateCatchEvent tIntermediateCatchEvent = timerEventAdapter.convert((TimerEvent) subProcessEvent, context);
+                TIntermediateCatchEvent tIntermediateCatchEvent = (TIntermediateCatchEvent) BPMNUtil.exportAdapt(subProcessEvent, context);
                 JAXBElement<TIntermediateCatchEvent> tIntermediateCatchEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TIntermediateCatchEvent.class, tIntermediateCatchEvent);
                 tSubProcess.getFlowElement().add(tIntermediateCatchEventElement);
 

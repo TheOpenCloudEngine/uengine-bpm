@@ -6,7 +6,6 @@ import org.uengine.kernel.*;
 import java.util.Hashtable;
 
 public class TUserTaskAdapter extends TTaskAdapter{
-
     @Override
     protected Activity create(TTask src, Hashtable keyedContext) {
         return new HumanActivity();

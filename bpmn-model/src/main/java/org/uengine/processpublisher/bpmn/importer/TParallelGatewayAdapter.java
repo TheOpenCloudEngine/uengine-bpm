@@ -7,7 +7,6 @@ import org.uengine.kernel.bpmn.Gateway;
 import java.util.Hashtable;
 
 public class TParallelGatewayAdapter extends TFlowNodeAdapter<TGateway, ParallelGateway> {
-
     @Override
     public ParallelGateway create(TGateway src, Hashtable keyedContext){
         return new ParallelGateway();

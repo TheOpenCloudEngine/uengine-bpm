@@ -18,24 +18,15 @@ import java.util.List;
  * Created by MisakaMikoto on 2015. 8. 14..
  */
 public class SequenceFlowAdapter implements Adapter <SequenceFlow, TSequenceFlow> {
-    List<Activity> childActivities;
-    public List<Activity> getChildActivities() {
-        return childActivities;
-    }
-    public void setChildActivities(List<Activity> childActivities) {
-        this.childActivities = childActivities;
-    }
-
     @Override
     public TSequenceFlow convert(SequenceFlow src, Hashtable keyedContext) throws Exception {
         // make TSequenceFlow
         TSequenceFlow tSequenceFlow = ObjectFactoryUtil.createBPMNObject(TSequenceFlow.class);
         tSequenceFlow.setId(src.getRelationView().getId());
 
-        RelationViewAdapter relationViewAdapter = new RelationViewAdapter();
-        relationViewAdapter.setTargetRefElementView(findTargetRefElementView(src.getTargetRef()));
+        keyedContext.put("targetRefElementView", (findTargetRefElementView(src.getTargetRef(), keyedContext)));
 
-        BPMNEdge bpmnEdge = relationViewAdapter.convert(src.getRelationView(), null);
+        BPMNEdge bpmnEdge = (BPMNEdge) BPMNUtil.exportAdapt(src.getRelationView(), keyedContext);
         bpmnEdge.setBpmnElement(new QName(src.getRelationView().getId()));
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");
         // make diagramElement and PLane add bpmnShape
@@ -44,8 +35,9 @@ public class SequenceFlowAdapter implements Adapter <SequenceFlow, TSequenceFlow
         return tSequenceFlow;
     }
 
-    public ElementView findTargetRefElementView(String targetRefTracingTag) {
-        for(Activity activity : getChildActivities()) {
+    private ElementView findTargetRefElementView(String targetRefTracingTag, Hashtable keyedContext) {
+        List<Activity> childActivities = (List<Activity>) keyedContext.get("childActivities");
+        for(Activity activity : childActivities) {
             if(activity.getTracingTag().equals(targetRefTracingTag)) {
                 return activity.getElementView();
             }

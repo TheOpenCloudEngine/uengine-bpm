@@ -21,8 +21,7 @@ public class RoleAdapter implements Adapter<Role, TLane> {
         tLane.setId(src.getElementView().getId());
         tLane.setName(src.getName());
 
-        ElementViewAdapter elementViewAdapter = new ElementViewAdapter();
-        BPMNShape bpmnShape = elementViewAdapter.convert(src.getElementView(), null);
+        BPMNShape bpmnShape = (BPMNShape) BPMNUtil.exportAdapt(src.getElementView());
         bpmnShape.setBpmnElement(new QName(src.getElementView().getId()));
 
         BPMNDiagram bpmnDiagram = (BPMNDiagram) keyedContext.get("bpmnDiagram");

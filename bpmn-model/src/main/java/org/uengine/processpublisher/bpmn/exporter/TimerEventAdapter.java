@@ -2,10 +2,7 @@ package org.uengine.processpublisher.bpmn.exporter;
 
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
-import org.omg.spec.bpmn._20100524.model.TEndEvent;
-import org.omg.spec.bpmn._20100524.model.TExpression;
-import org.omg.spec.bpmn._20100524.model.TIntermediateCatchEvent;
-import org.omg.spec.bpmn._20100524.model.TTimerEventDefinition;
+import org.omg.spec.bpmn._20100524.model.*;
 import org.uengine.kernel.bpmn.StartEvent;
 import org.uengine.kernel.bpmn.TimerEvent;
 import org.uengine.processpublisher.Adapter;
@@ -18,31 +15,32 @@ import java.util.Hashtable;
 /**
  * Created by MisakaMikoto on 2016. 6. 25..
  */
-public class TimerEventAdapter implements Adapter<TimerEvent, TIntermediateCatchEvent> {
+public class TimerEventAdapter implements Adapter<TimerEvent, TBoundaryEvent> {
     @Override
-    public TIntermediateCatchEvent convert(TimerEvent src, Hashtable keyedContext) throws Exception {
+    public TBoundaryEvent convert(TimerEvent src, Hashtable keyedContext) throws Exception {
+        TBoundaryEvent tBoundaryEvent = ObjectFactoryUtil.createBPMNObject(TBoundaryEvent.class);
+        tBoundaryEvent.setId(src.getTracingTag());
+        tBoundaryEvent.setName(src.getName());
+        tBoundaryEvent.setCancelActivity(false);
+        tBoundaryEvent.setAttachedToRef(new QName(src.getParentActivity().getTracingTag()));
+
         TTimerEventDefinition tTimerEventDefinition = ObjectFactoryUtil.createBPMNObject(TTimerEventDefinition.class);
 
         TExpression tExpression = new TExpression();
         tExpression.getContent().add(src.getExpression());
-
         tTimerEventDefinition.setTimeCycle(tExpression);
         JAXBElement<TTimerEventDefinition> tTimerEventDefinitionJAXBElement = ObjectFactoryUtil.createDefaultJAXBElement(TTimerEventDefinition.class, tTimerEventDefinition);
-
-        TIntermediateCatchEvent tIntermediateCatchEvent = ObjectFactoryUtil.createBPMNObject(TIntermediateCatchEvent.class);
-        tIntermediateCatchEvent.setId(src.getTracingTag());
-        tIntermediateCatchEvent.setName(src.getName());
-        tIntermediateCatchEvent.getEventDefinition().add(tTimerEventDefinitionJAXBElement);
+        tBoundaryEvent.getEventDefinition().add(tTimerEventDefinitionJAXBElement);
 
         String outgoing = getOutgoing(src);
         String incoming = getIncoming(src);
 
         if(outgoing != null && outgoing.length() > 0) {
-            tIntermediateCatchEvent.getOutgoing().add(new QName(outgoing));
+            tBoundaryEvent.getOutgoing().add(new QName(outgoing));
         }
 
         if(incoming != null && incoming.length() > 0) {
-            tIntermediateCatchEvent.getIncoming().add(new QName(incoming));
+            tBoundaryEvent.getIncoming().add(new QName(incoming));
         }
 
         BPMNShape bpmnShape = (BPMNShape) BPMNUtil.exportAdapt(src.getElementView());
@@ -52,7 +50,7 @@ public class TimerEventAdapter implements Adapter<TimerEvent, TIntermediateCatch
         // make diagramElement and PLane add bpmnShape
         bpmnDiagram.getBPMNPlane().getDiagramElement().add(ObjectFactoryUtil.createDefaultJAXBElement(BPMNShape.class, bpmnShape));
 
-        return tIntermediateCatchEvent;
+        return tBoundaryEvent;
     }
 
     private String getOutgoing(TimerEvent timerEvent) {

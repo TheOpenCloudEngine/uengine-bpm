@@ -176,9 +176,9 @@ public class SubProcessAdapter implements Adapter<SubProcess, TSubProcess> {
 
         } else if(subProcessEvent.getClass() == TimerEvent.class) {
             try {
-                TIntermediateCatchEvent tIntermediateCatchEvent = (TIntermediateCatchEvent) BPMNUtil.exportAdapt(subProcessEvent, context);
-                JAXBElement<TIntermediateCatchEvent> tIntermediateCatchEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TIntermediateCatchEvent.class, tIntermediateCatchEvent);
-                tSubProcess.getFlowElement().add(tIntermediateCatchEventElement);
+                TBoundaryEvent tBoundaryEvent = (TBoundaryEvent) BPMNUtil.exportAdapt(subProcessEvent, context);
+                JAXBElement<TBoundaryEvent> TBoundaryEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TBoundaryEvent.class, tBoundaryEvent);
+                tSubProcess.getFlowElement().add(TBoundaryEventElement);
 
             } catch (Exception e) {
                 e.printStackTrace();

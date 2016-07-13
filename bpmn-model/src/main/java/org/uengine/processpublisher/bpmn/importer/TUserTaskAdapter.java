@@ -15,10 +15,8 @@ public class TUserTaskAdapter extends TTaskAdapter{
     public Activity convert(TTask src, Hashtable keyedContext) throws Exception {
         HumanActivity humanActivity = (HumanActivity) super.convert(src, keyedContext);
 
-        TTask task = (TTask)src;
-
-        if(task.getResourceRole()!=null && task.getResourceRole().size()>0){
-            String roleId = task.getResourceRole().get(0).getValue().getId();
+        if(src.getResourceRole() != null && src.getResourceRole().size() > 0){
+            String roleId = src.getResourceRole().get(0).getValue().getId();
             ProcessDefinition processDefinition = (ProcessDefinition) keyedContext.get("processDefinition");
 
             Role role = processDefinition.getRole(roleId);

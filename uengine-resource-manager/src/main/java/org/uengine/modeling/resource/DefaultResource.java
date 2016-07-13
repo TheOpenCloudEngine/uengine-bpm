@@ -183,11 +183,9 @@ public class DefaultResource implements IResource {
 		editorPanel.setResourcePath(getPath());
 		editorPanel.setMetaworksContext(new MetaworksContext());
 		editorPanel.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
-
 		editorPanel.setNew(isNew);
 
 		String type = getType();
-
 		String classNamePrefix = type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase();
 
 		Class editorClass = Thread.currentThread().getContextClassLoader().loadClass("org.uengine.modeling.resource.editor." + classNamePrefix + "Editor");
@@ -197,13 +195,12 @@ public class DefaultResource implements IResource {
 		if(isNew){
 			editor.setEditingObject(editor.newObject(this));
 			editorPanel.setNew(true);
-		}
-		else{
+
+		} else{
 			editor.setEditingObject(resourceManager.getObject(this));
 		}
 
 		editorPanel.setEditor(editor);
-
 		wrapReturn(new Refresh(editorPanel));
 
 		return editorPanel;

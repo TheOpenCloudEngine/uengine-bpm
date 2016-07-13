@@ -19,7 +19,7 @@ public class TSubProcessAdapter extends TFlowNodeAdapter<TSubProcess, SubProcess
                 Object childElement = BPMNUtil.importAdapt(flowElement.getValue(), context);
 
                 if(childElement instanceof Activity){
-                    subProcess.addChildActivity((Activity)childElement);
+                    subProcess.addChildActivity((Activity) childElement);
 
                 } else if(childElement instanceof SequenceFlow){
                     subProcess.addSequenceFlow((SequenceFlow) childElement);

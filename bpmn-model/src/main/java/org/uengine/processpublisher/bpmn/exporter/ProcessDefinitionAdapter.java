@@ -147,13 +147,26 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
     private void convertTLaneSet(ProcessDefinition src, Hashtable context, TProcess tProcess) {
         TLaneSet tLaneSet = ObjectFactoryUtil.createBPMNObject(TLaneSet.class);
-        tLaneSet.setId("rootRole");
-        tLaneSet.setName("rootRole");
-        tProcess.getLaneSet().add(tLaneSet);
-
         // create tLaneSet and LaneSet (rootRole hard coding)
         for (Role role : src.getRoles()) {
-            if(!(role.getName().equals("rootRole"))) {
+            if(role.getName().equals("rootRole")) {
+                tLaneSet.setId(role.getElementView().getId());
+                tLaneSet.setName(role.getName());
+
+                try {
+                    BPMNShape bpmnShape = (BPMNShape) BPMNUtil.exportAdapt(role.getElementView());
+                    bpmnShape.setBpmnElement(new QName(role.getElementView().getId()));
+
+                    BPMNDiagram bpmnDiagram = (BPMNDiagram) context.get("bpmnDiagram");
+                    // make diagramElement and PLane add bpmnShape
+                    bpmnDiagram.getBPMNPlane().getDiagramElement().add(ObjectFactoryUtil.createDefaultJAXBElement(BPMNShape.class, bpmnShape));
+                    tProcess.getLaneSet().add(tLaneSet);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else {
                 try {
                     TLane tLane = (TLane) BPMNUtil.exportAdapt(role, context);
                     tLaneSet.getLane().add(tLane);
@@ -336,11 +349,11 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
         } else if(event.getClass() == TimerEvent.class) {
             try {
-                TIntermediateCatchEvent tIntermediateCatchEvent = (TIntermediateCatchEvent) BPMNUtil.exportAdapt(event, context);
-                addFlowNodeRefToLane(event, tIntermediateCatchEvent, tProcess, context);
+                TBoundaryEvent tBoundaryEvent = (TBoundaryEvent) BPMNUtil.exportAdapt(event, context);
+                addFlowNodeRefToLane(event, tBoundaryEvent, tProcess, context);
 
-                JAXBElement<TIntermediateCatchEvent> tIntermediateCatchEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TIntermediateCatchEvent.class, tIntermediateCatchEvent);
-                tProcess.getFlowElement().add(tIntermediateCatchEventElement);
+                JAXBElement<TBoundaryEvent> tBoundaryEventElement = ObjectFactoryUtil.createDefaultJAXBElement(TBoundaryEvent.class, tBoundaryEvent);
+                tProcess.getFlowElement().add(tBoundaryEventElement);
 
             } catch (Exception e) {
                 e.printStackTrace();

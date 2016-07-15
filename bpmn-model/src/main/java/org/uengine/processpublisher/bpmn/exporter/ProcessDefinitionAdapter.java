@@ -147,9 +147,9 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, TDef
 
     private void convertTLaneSet(ProcessDefinition src, Hashtable context, TProcess tProcess) {
         TLaneSet tLaneSet = ObjectFactoryUtil.createBPMNObject(TLaneSet.class);
-        // create tLaneSet and LaneSet (rootRole hard coding)
         for (Role role : src.getRoles()) {
-            if(role.getName().equals("rootRole")) {
+            // get parent is null == root role
+            if(role.getElementView().getParent() == null) {
                 tLaneSet.setId(role.getElementView().getId());
                 tLaneSet.setName(role.getName());
 

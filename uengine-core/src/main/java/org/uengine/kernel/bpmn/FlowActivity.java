@@ -95,22 +95,18 @@ public class FlowActivity extends ComplexActivity {
 
 		List<Activity> startActivities = new ArrayList<Activity>();
 
-		//if the model is old version, returns the first child in the order.
-		if(getSequenceFlows()==null || getSequenceFlows().size()==0 && getChildActivities().size() > 0){
-			startActivities.add(getChildActivities().get(0));
-
-			return startActivities;
-		}
+		//if the model is old version, returns the first child in the order.  [changed] the danggling activties would be all the startable activities each other without start event.
+//		if(getSequenceFlows()==null || getSequenceFlows().size()==0 && getChildActivities().size() > 0){
+//			startActivities.add(getChildActivities().get(0));
+//
+//			return startActivities;
+//		}
 
 		Activity child = null;
 		// TODO 프로세스를 퍼블리싱하여 제공할때는 이벤트로 프로세스가 시작이 될수가 있다 이때를 위한 부분을 처리해야함
 		for (Iterator it = getChildActivities().iterator(); it.hasNext();) {
 			child = (Activity) it.next();
-			if( child.getOutgoingSequenceFlows().size() == 0 && child.getIncomingSequenceFlows().size() == 0){
-				// null 로 리턴될 경우 super 로직을 태움
-				continue;
-//				return null;
-			}else	if (child.getIncomingSequenceFlows().size() == 0) {
+			if (child.getIncomingSequenceFlows().size() == 0) {
 
 				////// TODO: why does following implementation try to ignore event activities as a start activity?
 //				if( child instanceof Event && child instanceof MessageListener ){

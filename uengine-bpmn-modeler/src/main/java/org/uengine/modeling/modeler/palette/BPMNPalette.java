@@ -9,7 +9,7 @@ import org.uengine.modeling.Palette;
 
 public class BPMNPalette extends CompositePalette {
 	public BPMNPalette(){
-		
+		this(null);
 	}
 
 	public BPMNPalette(String type){

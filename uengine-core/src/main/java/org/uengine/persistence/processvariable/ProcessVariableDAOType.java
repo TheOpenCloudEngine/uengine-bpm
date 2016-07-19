@@ -576,7 +576,7 @@ public class ProcessVariableDAOType extends AbstractDAOType {
 	}
 	
 	private String saveLongString(String keyString, String value) throws Exception {
-		String fileSystem = GlobalContext.FILE_SYSTEM_DIR;
+		String fileSystem = GlobalContext.FILE_SYSTEM_PATH;
 		
 		keyString = keyString.substring(1, keyString.length()).replace(":", ".");
 		
@@ -610,7 +610,7 @@ public class ProcessVariableDAOType extends AbstractDAOType {
 	}
 	
 	private String loadLongString(String filePath) throws Exception {
-		String fileSystem = GlobalContext.FILE_SYSTEM_DIR;
+		String fileSystem = GlobalContext.FILE_SYSTEM_PATH;
 		
 		//File file = new File(fileSystem + filePath);
 

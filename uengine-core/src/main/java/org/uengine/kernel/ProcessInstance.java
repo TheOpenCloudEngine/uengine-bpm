@@ -623,11 +623,11 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 			if (GlobalContext.logLevelIsDebug) {
 				PrintStream ps = null;
 				try {
-					File f = new File(GlobalContext.FILE_SYSTEM_DIR + "/log/" + getInstanceId() + "/");
+					File f = new File(GlobalContext.FILE_SYSTEM_PATH + "/log/" + getInstanceId() + "/");
 					f.mkdirs();
 					
 					ps = new PrintStream(
-							new FileOutputStream(GlobalContext.FILE_SYSTEM_DIR + "/log/" /*+ UEngineUtil.getCalendarDir() + "/" */+ getInstanceId() + "/" + activity.getTracingTag() + ".log.xml")
+							new FileOutputStream(GlobalContext.FILE_SYSTEM_PATH + "/log/" /*+ UEngineUtil.getCalendarDir() + "/" */+ getInstanceId() + "/" + activity.getTracingTag() + ".log.xml")
 					);
 					ps.print(getProcessTransactionContext().getDebugInfo());
 

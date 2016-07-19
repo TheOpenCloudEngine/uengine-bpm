@@ -2,6 +2,7 @@ package org.uengine.modeling.modeler;
 
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.*;
@@ -47,7 +48,7 @@ public class ProcessModeler extends DefaultModeler {
     public ProcessModeler() {
         setType(SUFFIX);
         this.setCanvas(new ProcessCanvas(getType()));
-        this.setPalette(new BPMNPalette(getType()));
+        this.setPalette(MetaworksRemoteService.getComponent(BPMNPalette.class));
 //		this.setRolePanel(new RolePanel());
 //		this.setProcessVariablePanel(new ProcessVariablePanel());
 

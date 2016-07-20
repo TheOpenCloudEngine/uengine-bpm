@@ -67,6 +67,7 @@ public class InstanceMonitorPanel {
     public ProcessModeler load(Long instanceId, ProcessManagerRemote processManager) throws Exception {
 
         ElementViewActionDelegateForInstanceMonitoring elementViewActionDelegateForInstanceMonitoring = MetaworksRemoteService.getComponent(ElementViewActionDelegateForInstanceMonitoring.class);
+        elementViewActionDelegateForInstanceMonitoring.setInstanceId(""+instanceId);
 
         setElementViewActionDelegate(elementViewActionDelegateForInstanceMonitoring);
 

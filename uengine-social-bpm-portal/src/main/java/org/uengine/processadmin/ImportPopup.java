@@ -10,6 +10,7 @@ import org.metaworks.website.MetaworksFile;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Label;
 import org.metaworks.widget.ModalWindow;
+import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.modeling.resource.ResourceNavigator;
@@ -74,7 +75,7 @@ public class ImportPopup {
             }
 
             getSelectFile().upload();
-            File file = new File(getSelectFile().getUploadedPath());
+            File file = new File(GlobalContext.FILE_SYSTEM_PATH + File.separator + getSelectFile().getUploadedPath());
 
             ProcessDefinition definition;
             if(getSelectFile().getFilename().endsWith(".bpmn")) {

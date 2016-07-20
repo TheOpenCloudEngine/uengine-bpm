@@ -11,9 +11,6 @@ public class ExampleBPMNExecution {
 
         ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
-
-
-
         ProcessDefinition processDefinition = BPMNUtil.importAdapt(Thread.currentThread().getContextClassLoader().getResourceAsStream("org/uengine/sample.bpmn")); //new File("/java/autoinsurance.bpmn"));
         processDefinition.afterDeserialization();
 

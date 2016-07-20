@@ -580,7 +580,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 								+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
 								+ cal.get(Calendar.DAY_OF_MONTH);
 
-						String filePath =GlobalContext.FILE_SYSTEM_DIR + (GlobalContext.FILE_SYSTEM_DIR.endsWith("/") ? "" : "/") + calendarDirectory +"/vars_" + getInstanceId() + ".json";
+						String filePath =GlobalContext.FILE_SYSTEM_PATH + (GlobalContext.FILE_SYSTEM_PATH.endsWith("/") ? "" : "/") + calendarDirectory +"/vars_" + getInstanceId() + ".json";
 
 
 						File varFile = new File(filePath);
@@ -1288,7 +1288,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		String calendarDirectory = cal.get(Calendar.YEAR)
 				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
 				+ cal.get(Calendar.DAY_OF_MONTH);
-		String filePath = GlobalContext.FILE_SYSTEM_DIR + (GlobalContext.FILE_SYSTEM_DIR.endsWith("/") ? "" : "/")  + calendarDirectory ;
+		String filePath = GlobalContext.FILE_SYSTEM_PATH + (GlobalContext.FILE_SYSTEM_PATH.endsWith("/") ? "" : "/")  + calendarDirectory ;
 
 		File newFile = new File(filePath);
 		File dir = newFile.getParentFile();
@@ -1321,7 +1321,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		String calendarDirectory = cal.get(Calendar.YEAR)
 				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
 				+ cal.get(Calendar.DAY_OF_MONTH);
-		String filePath = GlobalContext.FILE_SYSTEM_DIR + calendarDirectory ;
+		String filePath = GlobalContext.FILE_SYSTEM_PATH + calendarDirectory ;
 
 		File newFile = new File(filePath);
 		File dir = newFile.getParentFile();
@@ -1354,7 +1354,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		String calendarDirectory = cal.get(Calendar.YEAR)
 				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
 				+ cal.get(Calendar.DAY_OF_MONTH);
-		String filePath = GlobalContext.FILE_SYSTEM_DIR + calendarDirectory ;
+		String filePath = GlobalContext.FILE_SYSTEM_PATH + calendarDirectory ;
 
 		File varFile = new File(filePath +"/vars_"+getInstanceId() + ".json");
 		Map procVars = null;
@@ -1374,7 +1374,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
 				+ cal.get(Calendar.DAY_OF_MONTH);
 
-		String filePath =GlobalContext.FILE_SYSTEM_DIR +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
+		String filePath =GlobalContext.FILE_SYSTEM_PATH +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
 		File varFile = new File(filePath);
 		if (varFile.exists()) {
 			Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
@@ -1430,7 +1430,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
 				+ cal.get(Calendar.DAY_OF_MONTH);
 
-		String filePath =GlobalContext.FILE_SYSTEM_DIR +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
+		String filePath =GlobalContext.FILE_SYSTEM_PATH +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
 		File varFile = new File(filePath);
 		Serializable sourceValue;
 		if (varFile.exists()) {

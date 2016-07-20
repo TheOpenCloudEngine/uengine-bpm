@@ -76,7 +76,7 @@ public class GlobalContext{
 	public final static boolean captureSystemOut = "true".equals(GlobalContext.getPropertyString("capture.system.out", "false"));
 	public final static boolean logLevelIsDebug = "debug".equals(GlobalContext.getPropertyString("log.level", "prod"));
 	public final static boolean CONNECTION_LEAKAGE_DETECT = "true".equals(GlobalContext.getPropertyString("connection.leakage.detect", "false"));
-	public final static String FILE_SYSTEM_DIR = GlobalContext.getPropertyString("filesystem.dir", "./");
+	public final static String FILE_SYSTEM_PATH = GlobalContext.getPropertyString("filesystem.path", "./");
 	
 	public final static String USERTRANSACTION_JNDI_NAME = GlobalContext.getPropertyString("usertransaction.jndiname", "UserTransaction");
 	public final static String ACTIVITY_DESCRIPTION_COMPONENT_OVERRIDER_PACKAGE = GlobalContext.getPropertyString("activitydescriptioncomponent.override.package");

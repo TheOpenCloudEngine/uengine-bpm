@@ -9,8 +9,11 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     this.isNew = true;
     this.metadata = mw3.getMetadata(this.className);
 
+    this.init();
+}
 
-    this.getValue = function () {
+org_uengine_modeling_ElementView.prototype = {
+    getValue: function () {
         if (this.element) {
             if ($('#' + this.element.id).length == 0)
                 return {__objectId: this.objectId, __className: this.className};
@@ -32,28 +35,26 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             }
             return this.object;
         }
-    };
+    },
 
-
-    this.getLabel = function () {
+    getLabel: function() {
         if (this.object.element && this.object.element.name)
             this.object.label = this.object.element.name;
         //mw3.getObjectNameValue(this.object.element, true);
 
         return unescape(this.object.label ? this.object.label : '');
-    };
+    },
 
-    this.getCanvas = function () {
-
+    getCanvas: function() {
         var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
         return mw3.getFaceHelper(canvasId).getCanvas();
-    };
+    },
 
-    this.getRenderer = function () {
+    getRenderer: function() {
         return this.getCanvas()._RENDERER;
-    };
+    },
 
-    this.setParent = function (elementId, parentId) {
+    setParent: function(elementId, parentId) {
         if (!elementId || !parentId) {
             return;
         }
@@ -90,9 +91,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
                 element.appendChild(reservedElement);
             }
         }
-    };
+    },
 
-    this.init = function () {
+    init: function() {
         this.canvas = this.getCanvas();
         this.renderer = this.getRenderer();
         this.element = null;
@@ -141,8 +142,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
                 });
 
         } else {
-
-            var shape = eval('new ' + this.object.shapeId);
+            var shape = new OG.shape.IShape();
             shape.label = this.getLabel();
 
             if (this.object.instStatus) {
@@ -214,11 +214,10 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
                 });
             }
         }
-
         this.bindMapping();
-    };
+    },
 
-    this.bindMapping = function () {
+    bindMapping: function() {
         var metadata = mw3.getMetadata(this.className);
         for (var methodName in metadata.serviceMethodContextMap) {
             if (mw3.isHiddenMethodContext(this.metadata.serviceMethodContextMap[methodName], this.object))
@@ -275,22 +274,22 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
                 }
             }
         }
-    };
+    },
 
-    this.bind = function (name) {
+    bind: function() {
         $(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function (event, ui) {
             $(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event.type);
         });
-    };
+    },
 
-    this.destroy = function () {
+    destroy: function() {
         if ($(this.element).attr('droppable'))
             $(this.element).droppable("destroy");
 
         $(this.element).unbind('.' + this.objectId);
-    };
+    },
 
-    this.autoResizeCanvas = function (boundary) {
+    autoResizeCanvas: function (boundary) {
         var rootBBox = this.canvas._RENDERER.getRootBBox();
         if (rootBBox.width < (boundary._centroid.x + boundary._width) * this.canvas._CONFIG.SCALE) {
             this.canvas._RENDERER.setCanvasSize([boundary._centroid.x + boundary._width, rootBBox.height]);
@@ -298,7 +297,5 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
         if (rootBBox.height < (boundary._centroid.y + boundary._height) * this.canvas._CONFIG.SCALE) {
             this.canvas._RENDERER.setCanvasSize([rootBBox.width, boundary._centroid.y + boundary._height]);
         }
-    };
-
-    this.init();
-};
+    }
+}

@@ -9,11 +9,8 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     this.isNew = true;
     this.metadata = mw3.getMetadata(this.className);
 
-    this.init();
-}
 
-org_uengine_modeling_ElementView.prototype = {
-    getValue: function () {
+    this.getValue = function () {
         if (this.element) {
             if ($('#' + this.element.id).length == 0)
                 return {__objectId: this.objectId, __className: this.className};
@@ -35,26 +32,28 @@ org_uengine_modeling_ElementView.prototype = {
             }
             return this.object;
         }
-    },
+    };
 
-    getLabel: function() {
+
+    this.getLabel = function () {
         if (this.object.element && this.object.element.name)
             this.object.label = this.object.element.name;
         //mw3.getObjectNameValue(this.object.element, true);
 
         return unescape(this.object.label ? this.object.label : '');
-    },
+    };
 
-    getCanvas: function() {
+    this.getCanvas = function () {
+
         var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
         return mw3.getFaceHelper(canvasId).getCanvas();
-    },
+    };
 
-    getRenderer: function() {
+    this.getRenderer = function () {
         return this.getCanvas()._RENDERER;
-    },
+    };
 
-    setParent: function(elementId, parentId) {
+    this.setParent = function (elementId, parentId) {
         if (!elementId || !parentId) {
             return;
         }
@@ -91,9 +90,9 @@ org_uengine_modeling_ElementView.prototype = {
                 element.appendChild(reservedElement);
             }
         }
-    },
+    };
 
-    init: function() {
+    this.init = function () {
         this.canvas = this.getCanvas();
         this.renderer = this.getRenderer();
         this.element = null;
@@ -142,7 +141,8 @@ org_uengine_modeling_ElementView.prototype = {
                 });
 
         } else {
-            var shape = new OG.shape.IShape();
+
+            var shape = eval('new ' + this.object.shapeId);
             shape.label = this.getLabel();
 
             if (this.object.instStatus) {
@@ -214,10 +214,11 @@ org_uengine_modeling_ElementView.prototype = {
                 });
             }
         }
-        this.bindMapping();
-    },
 
-    bindMapping: function() {
+        this.bindMapping();
+    };
+
+    this.bindMapping = function () {
         var metadata = mw3.getMetadata(this.className);
         for (var methodName in metadata.serviceMethodContextMap) {
             if (mw3.isHiddenMethodContext(this.metadata.serviceMethodContextMap[methodName], this.object))
@@ -274,22 +275,22 @@ org_uengine_modeling_ElementView.prototype = {
                 }
             }
         }
-    },
+    };
 
-    bind: function() {
+    this.bind = function (name) {
         $(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function (event, ui) {
             $(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event.type);
         });
-    },
+    };
 
-    destroy: function() {
+    this.destroy = function () {
         if ($(this.element).attr('droppable'))
             $(this.element).droppable("destroy");
 
         $(this.element).unbind('.' + this.objectId);
-    },
+    };
 
-    autoResizeCanvas: function (boundary) {
+    this.autoResizeCanvas = function (boundary) {
         var rootBBox = this.canvas._RENDERER.getRootBBox();
         if (rootBBox.width < (boundary._centroid.x + boundary._width) * this.canvas._CONFIG.SCALE) {
             this.canvas._RENDERER.setCanvasSize([boundary._centroid.x + boundary._width, rootBBox.height]);
@@ -297,5 +298,7 @@ org_uengine_modeling_ElementView.prototype = {
         if (rootBBox.height < (boundary._centroid.y + boundary._height) * this.canvas._CONFIG.SCALE) {
             this.canvas._RENDERER.setCanvasSize([rootBBox.width, boundary._centroid.y + boundary._height]);
         }
-    }
-}
+    };
+
+    this.init();
+};

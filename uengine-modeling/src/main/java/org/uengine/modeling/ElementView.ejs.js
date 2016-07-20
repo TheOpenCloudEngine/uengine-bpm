@@ -27,7 +27,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             this.object.toEdge = $(this.element).attr('_toedge');
             this.object.fromEdge = $(this.element).attr('_fromedge');
             this.object.index = $(this.element).prevAll().length;
-            if ($(this.element).parent().attr('id') !== $(this.rootgroup).attr('id')) {
+            if ($(this.element).parent().attr('id') === $(this.rootgroup).attr('id')) {
+                this.object.parent = null;
+            } else {
                 this.object.parent = $(this.element).parent().attr('id');
             }
             return this.object;

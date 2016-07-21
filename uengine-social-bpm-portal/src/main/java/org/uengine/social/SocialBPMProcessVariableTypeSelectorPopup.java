@@ -71,6 +71,17 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
         }
         {
             DefaultResource primitive = new JavaclassResource();
+            primitive.setPath("java.lang.Long");
+            classResourceNavigator.getRoot().getChildren().add(0, primitive);
+        }
+        {
+            DefaultResource primitive = new JavaclassResource();
+            primitive.setPath("java.lang.Double");
+            classResourceNavigator.getRoot().getChildren().add(0, primitive);
+        }
+
+        {
+            DefaultResource primitive = new JavaclassResource();
             primitive.setPath(RoleUser.class.getName());
             classResourceNavigator.getRoot().getChildren().add(0, primitive);
         }

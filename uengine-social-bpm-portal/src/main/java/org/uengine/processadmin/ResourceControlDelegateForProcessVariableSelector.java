@@ -23,12 +23,13 @@ public class ResourceControlDelegateForProcessVariableSelector implements Resour
 
                 SocialBPMProcessVariableTypeSelector socialBPMProcessVariableTypeSelector = new SocialBPMProcessVariableTypeSelector();
 
-                if(resource instanceof JavaclassResource){
-                    ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
-                    JavaClassDefinition javaClassDefinition = (JavaClassDefinition) resourceManager.getObject(resource);
-
-                    socialBPMProcessVariableTypeSelector.setSelectedClassName(javaClassDefinition.getClassName());
-                }else
+//                if(resource instanceof JavaclassResource){
+////                    ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
+////                    JavaClassDefinition javaClassDefinition = (JavaClassDefinition) resourceManager.getObject(resource);
+//
+////                    socialBPMProcessVariableTypeSelector.setSelectedClassName(javaClassDefinition.getClassName());
+//
+//                }else
 
                     socialBPMProcessVariableTypeSelector.setSelectedClassName(resource.getPath());
 
@@ -38,7 +39,7 @@ public class ResourceControlDelegateForProcessVariableSelector implements Resour
 
 //                MetaworksRemoteService.wrapReturn(((DefaultResource) resource).select());
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }

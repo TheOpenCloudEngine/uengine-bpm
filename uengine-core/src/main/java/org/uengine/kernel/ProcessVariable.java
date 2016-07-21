@@ -489,11 +489,28 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 					throw new RuntimeException(e);
 				}
 			}else {
-				try {
-					processVariableValue = (Serializable) MetaworksRemoteService.getComponent(Thread.currentThread().getContextClassLoader().loadClass(typeClassName));
-				} catch (ClassNotFoundException e) {
-					throw new RuntimeException(e);
+				if(typeClassName.startsWith("java.lang")){
+					try {
+						Class<?> primitiveType = Class.forName(typeClassName);
+
+						if(Number.class.isAssignableFrom(primitiveType)){
+							processVariableValue = (Serializable) primitiveType.getConstructor(new Class[]{String.class}).newInstance(new Object[]{"0"});
+						}else{
+							processVariableValue = (Serializable) primitiveType.newInstance();
+						}
+
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}else {
+					try {
+						processVariableValue = (Serializable) MetaworksRemoteService.getComponent(Thread.currentThread().getContextClassLoader().loadClass(typeClassName));
+					} catch (ClassNotFoundException e) {
+						throw new RuntimeException(e);
+					}
+
 				}
+
 			}
 		} else {
 

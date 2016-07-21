@@ -1085,8 +1085,20 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		
 		int pos=0, endpos=0, oldpos=0;
 		String key;
-		String starter = "<%", ending="%>";	
+		String starter = "{", ending="}";
+
+		oldpos = evaluateContent_(instance, expression, validationContext, generating, oldpos, starter, ending);
+//System.out.println(generating.toString());			
+		generating.append(expression.substring(oldpos));
+		//end
 		
+		return generating;
+	}
+
+	private int evaluateContent_(ProcessInstance instance, String expression, ValidationContext validationContext, StringBuffer generating, int oldpos, String starter, String ending) {
+		int pos;
+		int endpos;
+		String key;
 		while((pos = expression.indexOf(starter, oldpos)) > -1){
 			pos += starter.length();
 			endpos = expression.indexOf(ending, pos);
@@ -1097,22 +1109,18 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 				if(key.startsWith("=")) key = key.substring(1, key.length());
 				if(key.startsWith("*")) key = key.substring(1, key.length());
 				if(key.startsWith("+")) key = key.substring(1, key.length());
-				
+
 				key = key.trim();
-				
+
 	System.out.println("Activity:: evaluateContent: key="+key);
 				Object val = Activity.getSpecialKeyValues(this, instance, key, validationContext);
-//	System.out.println("EMailActivity:: parseContent: val:"+val);	
+//	System.out.println("EMailActivity:: parseContent: val:"+val);
 				if(val!=null)
 					generating.append("" + val);
 			}
 			oldpos = endpos + ending.length();
 		}
-//System.out.println(generating.toString());			
-		generating.append(expression.substring(oldpos));
-		//end
-		
-		return generating;
+		return oldpos;
 	}
 
 	public StringBuffer evaluateContent(ProcessInstance instance, String expression){

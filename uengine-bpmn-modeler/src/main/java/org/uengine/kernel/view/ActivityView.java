@@ -1,5 +1,8 @@
 package org.uengine.kernel.view;
 
+import org.metaworks.EventContext;
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Label;
@@ -7,8 +10,10 @@ import org.metaworks.widget.Popup;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.HumanActivity;
 //import org.uengine.kernel.ReferenceActivity;
+import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
+import org.uengine.modeling.PropertySettingDialog;
 import org.uengine.modeling.Symbol;
 import org.uengine.modeling.modeler.palette.BPMNPalette;
 import org.uengine.modeling.modeler.palette.TaskPalette;
@@ -76,4 +81,10 @@ public class ActivityView extends ElementView {
 //		MetaworksRemoteService.wrapReturn(new Popup(new TaskPalette()));
 //	}
 
+
+	@ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
+	public Object showProperty(@AutowiredFromClient ProcessVariablePanel processVariablePanel) throws Exception {
+
+		return showProperty();
+	}
 }

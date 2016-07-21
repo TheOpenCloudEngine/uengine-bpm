@@ -275,7 +275,7 @@ public class EditorPanel implements ContextAware {
 
 			List<LeveledException> exceptions = new ArrayList<LeveledException>();
 
-			if(exceptions.size() > 0){
+			if(validationContext.size() > 0){
 				exceptions.addAll(validationContext);
 
 				wrapReturn(new ModalWindow(exceptions, "Validation Result"));

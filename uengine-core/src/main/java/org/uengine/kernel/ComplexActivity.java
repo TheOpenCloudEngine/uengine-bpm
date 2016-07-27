@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.ejb.RemoveException;
 
 import org.metaworks.annotation.Hidden;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.kernel.bpmn.Pool;
 import org.uengine.processmanager.ProcessManagerFactoryBean;
 import org.uengine.processmanager.ProcessManagerRemote;
@@ -405,6 +406,9 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 			}
 		}
 
+		//Temporal
+		act.setQueuingEnabled(false);
+
 		//override 2
 		if(act.isQueuingEnabled()){
 			use_jms = true;
@@ -438,7 +442,12 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 			}else{
 				final String instanceId = finalInstance.getInstanceId();
 
-				final Thread runner = new Thread(){
+				final ProcessExecutionThread runner = MetaworksRemoteService.getComponent(ProcessExecutionThread.class);
+				runner.setFinalInstance(finalInstance);
+				runner.setInstanceId(instanceId);
+				runner.setActivity(act);
+
+				/*final Thread runner = */new Thread(){
 
 					public void run() {
 						boolean success = false;
@@ -468,7 +477,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 									instance = finalInstance;
 								}
 
-								long timeInMillis_start = System.currentTimeMillis(); 
+								long timeInMillis_start = System.currentTimeMillis();
 
 								System.out.println("- [uEngine] Start Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ")");
 
@@ -477,7 +486,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 								long elapsedTime = (System.currentTimeMillis() - timeInMillis_start);
 
-								PrintStream logWriter = (elapsedTime < ERROR_LEVEL_TIMEINMS ? System.out : System.err); 
+								PrintStream logWriter = (elapsedTime < ERROR_LEVEL_TIMEINMS ? System.out : System.err);
 
 								logWriter.println("- [uEngine] End Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ") - Elapsed Time : " + elapsedTime);
 
@@ -492,7 +501,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 								if(!(e instanceof UEngineException)){
 									ByteArrayOutputStream bao = new ByteArrayOutputStream();
 									e.printStackTrace(new PrintStream(bao));
-									try{			
+									try{
 										ue = new UEngineException("uEngine Exception: " + e + "("+e.getMessage()+")", e);
 										ue.setDetails(bao.toString());
 									}catch(Exception e3){
@@ -509,7 +518,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 									final UEngineException finalUE = ue;
 
 									/**
-									 * run it after roll-back the main transaction to prevent that the fault marking job 
+									 * run it after roll-back the main transaction to prevent that the fault marking job
 									 * would be rolled back as well.
 									 */
 									instance.getProcessTransactionContext().addTransactionListener(new TransactionListener(){
@@ -580,8 +589,8 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 											};
 
-											//faultMarker.run(); 
-											faultMarker.start(); //run it in a different thread if you want to make sure to separate the transaction. 
+											//faultMarker.run();
+											faultMarker.start(); //run it in a different thread if you want to make sure to separate the transaction.
 
 										}
 
@@ -635,35 +644,6 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 				};//end of Thread runner
 
-				/*
-				 * by, HJ.Lee, 2008-06-12
-				 */
-				/*if(finalInstance.isNew()){
-					finalInstance.getProcessTransactionContext().addTransactionListener(
-						new TransactionListener(){
-							public void afterCommit(TransactionContext tx) throws Exception {
-								if(act.isQueuingEnabled()){
-									runner.start();
-								}else{
-									runner.run();
-								}
-							}
-							public void afterRollback(TransactionContext tx) throws Exception {
-							}
-							public void beforeCommit(TransactionContext tx) throws Exception {
-							}
-							public void beforeRollback(TransactionContext tx) throws Exception {
-							}
-						}
-					);
-				}else{
-					if(act.isQueuingEnabled()){
-						runner.start();
-					}else{
-						runner.run();
-					}
-
-				}*/
 				if(act.isQueuingEnabled()){
 					runner.start();
 				}else{

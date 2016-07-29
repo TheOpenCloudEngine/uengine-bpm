@@ -13,6 +13,9 @@ import javax.ejb.RemoveException;
 
 import org.metaworks.annotation.Hidden;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.springframework.integration.channel.QueueChannel;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.GenericMessage;
 import org.uengine.kernel.bpmn.Pool;
 import org.uengine.processmanager.ProcessManagerFactoryBean;
 import org.uengine.processmanager.ProcessManagerRemote;
@@ -442,12 +445,12 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 			}else{
 				final String instanceId = finalInstance.getInstanceId();
 
-				final ProcessExecutionThread runner = MetaworksRemoteService.getComponent(ProcessExecutionThread.class);
-				runner.setFinalInstance(finalInstance);
-				runner.setInstanceId(instanceId);
-				runner.setActivity(act);
+//				final ProcessExecutionThread runner = MetaworksRemoteService.getComponent(ProcessExecutionThread.class);
+//				runner.setFinalInstance(finalInstance);
+//				runner.setInstanceId(instanceId);
+//				runner.setActivity(act);
 
-				/*final Thread runner = */new Thread(){
+				final Thread runner = new Thread(){
 
 					public void run() {
 						boolean success = false;
@@ -645,10 +648,24 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 				};//end of Thread runner
 
 				if(act.isQueuingEnabled()){
-					runner.start();
+					//runner.start();
+
+					QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannel", QueueChannel.class);
+					//PollableChannel outputChannel = context.getBean("outputChannel", PollableChannel.class);
+					inputChannel.send(new GenericMessage<String[]>(new String[]{act.getTracingTag(), instanceId}));
+					//logger.info("==> HelloWorldDemo: " + outputChannel.receive(0).getPayload());
+
+					//TODO message publish
+
+
+
 				}else{
 					runner.run();
 				}
+
+
+
+
 			}
 
 		}catch(Exception e){

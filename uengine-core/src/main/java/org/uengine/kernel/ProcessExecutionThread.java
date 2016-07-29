@@ -1,6 +1,7 @@
 package org.uengine.kernel;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.uengine.processmanager.ProcessManagerRemote;
@@ -14,68 +15,25 @@ import java.rmi.RemoteException;
  * Created by jjy on 2016. 7. 27..
  */
 @Component
-public class ProcessExecutionThread extends Thread {
+public class ProcessExecutionThread {
 
     private static long ERROR_LEVEL_TIMEINMS = 20000;
 
     @Autowired
+    @Qualifier("processManagerBeanForQueue")
     ProcessManagerRemote pm;
 
-    Activity activity;
+    @Transactional
+    public String run(String[] tracingTagAndInstanceIdArr) throws Exception {
 
-    public Activity getActivity() {
-        return activity;
-    }
+        for(int i=0; i<10; i++) {/// retry 10 times if fails
 
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
+            Thread.sleep(2000);
 
-    String instanceId;
-
-    public String getInstanceId() {
-        return instanceId;
-    }
-
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
-    }
-
-    ProcessInstance finalInstance;
-
-    public ProcessInstance getFinalInstance() {
-        return finalInstance;
-    }
-
-    public void setFinalInstance(ProcessInstance finalInstance) {
-        this.finalInstance = finalInstance;
-    }
-
-
-    public void run() {
-        Activity act = getActivity();
-
-        boolean success = false;
-        int maxRetry = (act.isQueuingEnabled() ? act.getRetryLimit() : 1);
-        for (int retCnt = -1; !success && retCnt < maxRetry; retCnt++) {
-            if (retCnt > 0)
-                try {
-                    sleep(act.getRetryDelay() * 1000);
-                } catch (InterruptedException e5) {
-                    e5.printStackTrace();
-                }
-
-            final boolean isRetrying = (retCnt > 0 && retCnt < maxRetry - 1);
-
-            ProcessInstance instance = null;
 
             try {
-
-                if (act.isQueuingEnabled()) {
-                    instance = pm.getProcessInstance(instanceId);
-                } else {
-                    instance = finalInstance;
-                }
+                ProcessInstance instance = pm.getProcessInstance(tracingTagAndInstanceIdArr[1]);
+                Activity act = instance.getProcessDefinition().getActivity(tracingTagAndInstanceIdArr[0]);
 
                 long timeInMillis_start = System.currentTimeMillis();
 
@@ -90,42 +48,18 @@ public class ProcessExecutionThread extends Thread {
 
                 logWriter.println("- [uEngine] End Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ") - Elapsed Time : " + elapsedTime);
 
-                success = true;
+                break;
 
             } catch (Exception e) {
-
-                UEngineException ue = null;
-                if (!(e instanceof UEngineException)) {
-                    ByteArrayOutputStream bao = new ByteArrayOutputStream();
-                    e.printStackTrace(new PrintStream(bao));
-                    try {
-                        ue = new UEngineException("uEngine Exception: " + e + "(" + e.getMessage() + ")", e);
-                        ue.setDetails(bao.toString());
-                    } catch (Exception e3) {
-                        e3.printStackTrace();
-                    }
-
-                } else {
-                    ue = (UEngineException) e;
-
-                    final UEngineException finalUE = ue;
-                }
-
-
-                if (!act.isQueuingEnabled() && instance.getProcessTransactionContext().getSharedContext("faultTolerant") == null) {
-
-                    UEngineException richException = new UEngineException(e.getMessage(), null, e, instance, act);
-                    throw new RuntimeException(richException);
-                }
-
+                e.printStackTrace();
+                throw e;
             }
-        }//end of try
-    }//end of for-loop
+        }
 
-    @Transactional
-    public synchronized void start() {
-        super.start();
+        return null;
+
     }
+
 }
 
 

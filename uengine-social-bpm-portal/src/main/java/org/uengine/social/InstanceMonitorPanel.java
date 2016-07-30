@@ -2,9 +2,7 @@ package org.uengine.social;
 
 import org.metaworks.MetaworksContext;
 import org.metaworks.WebFieldDescriptor;
-import org.metaworks.annotation.AutowiredToClient;
-import org.metaworks.annotation.Face;
-import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessInstance;
@@ -37,6 +35,18 @@ public class InstanceMonitorPanel {
             this.elementViewActionDelegate = elementViewActionDelegate;
         }
 
+    Long instanceId;
+    @Id
+        public Long getInstanceId() {
+            return instanceId;
+        }
+
+        public void setInstanceId(Long instanceId) {
+            this.instanceId = instanceId;
+        }
+
+
+
 
     ProcessModeler processModeler;
         public ProcessModeler getProcessModeler() {
@@ -66,6 +76,8 @@ public class InstanceMonitorPanel {
 
     public ProcessModeler load(Long instanceId, ProcessManagerRemote processManager) throws Exception {
 
+        setInstanceId(instanceId);
+
         ElementViewActionDelegateForInstanceMonitoring elementViewActionDelegateForInstanceMonitoring = MetaworksRemoteService.getComponent(ElementViewActionDelegateForInstanceMonitoring.class);
         elementViewActionDelegateForInstanceMonitoring.setInstanceId(""+instanceId);
 
@@ -80,31 +92,43 @@ public class InstanceMonitorPanel {
 
         List<Attribute> fieldDescriptors = new ArrayList<Attribute>();
 
-        setProcessVariables(new ObjectInstance());
-        for(ProcessVariable processVariable : processInstance.getProcessDefinition().getProcessVariables()){
 
-            Serializable value = processVariable.get(processInstance, "");
-            getProcessVariables().setBeanProperty(processVariable.getName(), value);
+        if(processInstance.getProcessDefinition().getProcessVariables()!=null) {
+            setProcessVariables(new ObjectInstance());
 
-            Attribute attribute = new Attribute();
-            attribute.setName(processVariable.getName());
-            attribute.setClassName(value != null ? value.getClass().getName() :  Object.class.getName());
+            for (ProcessVariable processVariable : processInstance.getProcessDefinition().getProcessVariables()) {
+
+                Serializable value = processVariable.get(processInstance, "");
+                getProcessVariables().setBeanProperty(processVariable.getName(), value);
+
+                Attribute attribute = new Attribute();
+                attribute.setName(processVariable.getName());
+                attribute.setClassName(value != null ? value.getClass().getName() : Object.class.getName());
 //
 //            if(attribute.getClassName()==null){
 //                attribute.setClassName(Object.class.getName());  //must be not null
 //            }
 
-            fieldDescriptors.add(attribute);
+                fieldDescriptors.add(attribute);
+            }
+
+            getProcessVariables().setClassDefinition(new ClassDefinition());
+
+            Attribute[] dummy = new Attribute[fieldDescriptors.size()];
+            fieldDescriptors.toArray(dummy);
+            getProcessVariables().getClassDefinition().setFieldDescriptors(dummy);
+            getProcessVariables().getClassDefinition().setName("Process Variables");
+
         }
 
-        getProcessVariables().setClassDefinition(new ClassDefinition());
-
-        Attribute[] dummy = new Attribute[fieldDescriptors.size()];
-        fieldDescriptors.toArray(dummy);
-        getProcessVariables().getClassDefinition().setFieldDescriptors(dummy);
-        getProcessVariables().getClassDefinition().setName("Process Variables");
 
         return pm;
+    }
+
+    @ServiceMethod(inContextMenu = true, target = ServiceMethod.TARGET_SELF)
+    public void refresh() throws Exception {
+        ProcessManagerRemote processManagerRemote = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
+        load(getInstanceId(), processManagerRemote);
     }
 
 }

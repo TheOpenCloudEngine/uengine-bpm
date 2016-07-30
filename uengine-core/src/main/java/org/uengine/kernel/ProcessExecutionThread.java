@@ -1,5 +1,6 @@
 package org.uengine.kernel;
 
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -35,24 +36,18 @@ public class ProcessExecutionThread {
                 ProcessInstance instance = pm.getProcessInstance(tracingTagAndInstanceIdArr[1]);
                 Activity act = instance.getProcessDefinition().getActivity(tracingTagAndInstanceIdArr[0]);
 
-                long timeInMillis_start = System.currentTimeMillis();
+                act.executeActivity(instance);
 
-                System.out.println("- [uEngine] Start Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ")");
+                act.afterExecute(instance);
 
+                pm.applyChanges();
 
-                instance.execute(act.getTracingTag());
-
-                long elapsedTime = (System.currentTimeMillis() - timeInMillis_start);
-
-                PrintStream logWriter = (elapsedTime < ERROR_LEVEL_TIMEINMS ? System.out : System.err);
-
-                logWriter.println("- [uEngine] End Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ") - Elapsed Time : " + elapsedTime);
 
                 break;
 
             } catch (Exception e) {
                 e.printStackTrace();
-                throw e;
+                //throw e;
             }
         }
 

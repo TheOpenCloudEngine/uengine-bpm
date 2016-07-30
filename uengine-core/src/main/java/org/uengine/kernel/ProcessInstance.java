@@ -3,6 +3,9 @@ package org.uengine.kernel;
 import java.util.*;
 import java.io.*;
 
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.springframework.integration.channel.QueueChannel;
+import org.springframework.messaging.support.GenericMessage;
 import org.uengine.kernel.GlobalContext;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.util.*;
@@ -168,7 +171,12 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		setStatus(tracingTag, Activity.STATUS_RUNNING);
 
 		try{
-			activity.executeActivity(this);
+			if(activity.isQueuingEnabled()){
+				QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannel", QueueChannel.class);
+				inputChannel.send(new GenericMessage<String[]>(new String[]{activity.getTracingTag(), getInstanceId()}));
+			}else {
+				activity.executeActivity(this);
+			}
 		}catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
@@ -185,8 +193,10 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 			this.setFault(tracingTag, fc);
 			throw new Exception(e);
 		}
-		
-		activity.afterExecute(this);
+
+		if(!activity.isQueuingEnabled()) {
+			activity.afterExecute(this);
+		}
 	}
 
 	public Map getActivityDetails(String tracingTag) throws Exception{

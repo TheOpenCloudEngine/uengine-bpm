@@ -445,11 +445,6 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 			}else{
 				final String instanceId = finalInstance.getInstanceId();
 
-//				final ProcessExecutionThread runner = MetaworksRemoteService.getComponent(ProcessExecutionThread.class);
-//				runner.setFinalInstance(finalInstance);
-//				runner.setInstanceId(instanceId);
-//				runner.setActivity(act);
-
 				final Thread runner = new Thread(){
 
 					public void run() {
@@ -473,12 +468,12 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 							try{
 
-								if(act.isQueuingEnabled()){
-									pm = pmfb.getProcessManager();
-									instance = pm.getProcessInstance(instanceId);
-								}else{
+//								if(act.isQueuingEnabled()){
+//									pm = pmfb.getProcessManager();
+//									instance = pm.getProcessInstance(instanceId);
+//								}else{
 									instance = finalInstance;
-								}
+//								}
 
 								long timeInMillis_start = System.currentTimeMillis();
 
@@ -600,23 +595,8 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 									});
 								}
 
-								/*								if(act.isQueuingEnabled()){
-									try {
 
-										if(retCnt < act.getRetryLimit()){
-											act.setStatus(instance, Activity.STATUS_RETRYING);
-											act.setRetryCount(instance, retCnt+1);
-
-											run(); //recursive call to retry
-										}
-									} catch (Exception e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-								}*/
-
-
-								if(!act.isQueuingEnabled() && instance.getProcessTransactionContext().getSharedContext("faultTolerant")==null){
+								if(instance.getProcessTransactionContext().getSharedContext("faultTolerant")==null){
 
 									UEngineException richException = new UEngineException(e.getMessage(), null, e, instance, act);
 									throw new RuntimeException(richException);
@@ -647,21 +627,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 				};//end of Thread runner
 
-				if(act.isQueuingEnabled()){
-					//runner.start();
-
-					QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannel", QueueChannel.class);
-					//PollableChannel outputChannel = context.getBean("outputChannel", PollableChannel.class);
-					inputChannel.send(new GenericMessage<String[]>(new String[]{act.getTracingTag(), instanceId}));
-					//logger.info("==> HelloWorldDemo: " + outputChannel.receive(0).getPayload());
-
-					//TODO message publish
-
-
-
-				}else{
-					runner.run();
-				}
+				runner.run();
 
 
 

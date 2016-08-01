@@ -127,7 +127,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
         }
 
 
-        var existElement = document.getElementById(this.object.id);
+        var existElement = this.canvas.getElementById(this.object.id);
         if (existElement) {
             this.canvas.drawLabel(existElement, this.getLabel());
             this.element = existElement;

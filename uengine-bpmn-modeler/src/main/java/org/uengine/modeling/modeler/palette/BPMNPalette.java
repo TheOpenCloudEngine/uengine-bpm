@@ -6,6 +6,7 @@ import org.uengine.kernel.bpmn.view.*;
 import org.uengine.kernel.view.*;
 import org.uengine.modeling.CompositePalette;
 import org.uengine.modeling.Palette;
+import org.uengine.modeling.PaletteWindow;
 
 public class BPMNPalette extends CompositePalette {
 	public BPMNPalette(){
@@ -29,17 +30,22 @@ public class BPMNPalette extends CompositePalette {
 //		this.getSymbolList().add((new TimerEventView()).createSymbol());
 //		this.getSymbolList().add((new ReceiveRestMessageEventActivityView()).createSymbol());
 
+		CompositePalette bpmnPaletteWindow = new PaletteWindow();
+
 		Palette taskPallet = new TaskPalette();
 		Palette eventPallet = new EventPalette();
 		Palette gatewayPalette = new GatewayPalette();
-//		rolePalette = new RolePalette();
-		 processVariablePalette = new ProcessVariablePalette();
 
-		addPalette(eventPallet);
-		addPalette(taskPallet);
-		addPalette(gatewayPalette);
-//		addPalette(rolePalette);
+//		rolePalette = new RolePalette();
+		processVariablePalette = new ProcessVariablePalette();
+
+		bpmnPaletteWindow.addPalette(eventPallet);
+		bpmnPaletteWindow.addPalette(taskPallet);
+		bpmnPaletteWindow.addPalette(gatewayPalette);
+
+		addPalette(bpmnPaletteWindow);
 		addPalette(processVariablePalette);
+
 
 	}
 

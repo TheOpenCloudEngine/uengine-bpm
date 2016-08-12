@@ -6,7 +6,7 @@ import org.uengine.modeling.Palette;
 import org.uengine.modeling.PaletteWindow;
 import org.uengine.modeling.Symbol;
 
-public class EventPalette extends PaletteWindow {
+public class EventPalette extends Palette {
 
 	public EventPalette(){
 		this.setName("Events");

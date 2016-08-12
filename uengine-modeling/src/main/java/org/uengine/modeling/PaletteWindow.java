@@ -9,6 +9,6 @@ import java.util.List;
 /**
  * @author jyj
  */
-public class PaletteWindow extends Palette {
+public class PaletteWindow extends CompositePalette {
 
 }

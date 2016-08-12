@@ -7,7 +7,7 @@ import org.uengine.modeling.Palette;
 import org.uengine.modeling.PaletteWindow;
 import org.uengine.modeling.Symbol;
 
-public class GatewayPalette extends PaletteWindow {
+public class GatewayPalette extends Palette {
 
 	public GatewayPalette(){
 		this.setName("Gateways");

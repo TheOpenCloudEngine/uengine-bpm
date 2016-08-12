@@ -9,7 +9,7 @@ import org.uengine.modeling.Palette;
 import org.uengine.modeling.PaletteWindow;
 import org.uengine.modeling.Symbol;
 
-public class TaskPalette extends PaletteWindow {
+public class TaskPalette extends Palette {
 
 	public TaskPalette() {
 		this.setName("Tasks");

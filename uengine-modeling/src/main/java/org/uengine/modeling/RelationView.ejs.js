@@ -76,7 +76,8 @@ org_uengine_modeling_RelationView.prototype = {
         return mw3.getFaceHelper(canvasId).getCanvas();
     },
     init: function () {
-        var existElement = document.getElementById(this.object.id);
+        console.log('relation init');
+        var existElement = this.canvas.getElementById(this.object.id);
         var style = this.object.style;
         if (existElement) {
             this.element = existElement;

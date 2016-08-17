@@ -227,7 +227,7 @@ org_uengine_modeling_RelationView.prototype = {
         var toPos = this.object.to.indexOf('_TERMINAL_');
         var fromElementId = this.object.from.substring(0, fromPos);
         var toElementId = this.object.to.substring(0, toPos);
-        var existElement = document.getElementById(this.object.id);
+        var existElement = this.canvas.getElementById(this.object.id);
 
         if (!existElement) {
             if ($('#' + fromElementId).length && $('#' + toElementId).length) {

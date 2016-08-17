@@ -838,14 +838,14 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		final String archivePath = processArchive.save(getProcessTransactionContext());
 		//should be invoked after applyChanges() of this ProcessInstance
-		getProcessTransactionContext().addTransactionListener(new TransactionListener(){
+		getProcessTransactionContext().addTransactionListener(new TransactionListener() {
 
-			public void beforeCommit(TransactionContext tx) throws Exception{
+			public void beforeCommit(TransactionContext tx) throws Exception {
 				ProcessInstanceDAOType pidt = ProcessInstanceDAOType.getInstance(getProcessTransactionContext());
 				pidt.archiveInstance(new Long(getInstanceId()), archivePath);
 			}
 
-			public void beforeRollback(TransactionContext tx) throws Exception{
+			public void beforeRollback(TransactionContext tx) throws Exception {
 				// TODO Auto-generated method stub
 
 			}
@@ -1070,7 +1070,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	public Calendar calculateDueDate(Calendar startDate, int duration) {
-		startDate.setTimeInMillis(startDate.getTimeInMillis() + (long)duration * 86400000L);
+		startDate.setTimeInMillis(startDate.getTimeInMillis() + (long) duration * 86400000L);
 		return startDate;
 	}
 
@@ -1321,7 +1321,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		String calendarDirectory = cal.get(Calendar.YEAR)
 				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
 				+ cal.get(Calendar.DAY_OF_MONTH);
-		String filePath = GlobalContext.FILE_SYSTEM_PATH + calendarDirectory ;
+		String filePath = GlobalContext.FILE_SYSTEM_PATH + (GlobalContext.FILE_SYSTEM_PATH.endsWith("/") ? "" : "/")  + calendarDirectory ;
 
 		File newFile = new File(filePath);
 		File dir = newFile.getParentFile();
@@ -1342,7 +1342,9 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			procVars = shotProcessInstance.variables;
 		}
 
-		procVars.put(key, val);
+		if(val != null){
+			procVars.put(key, val);
+		}
 
 		GlobalContext.serialize(procVars,new FileOutputStream(filePath +"/vars_"+getInstanceId() + ".json"), Object.class);
 	}

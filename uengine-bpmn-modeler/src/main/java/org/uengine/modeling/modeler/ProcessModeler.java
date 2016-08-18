@@ -48,10 +48,13 @@ public class ProcessModeler extends DefaultModeler {
     public ProcessModeler() {
         setType(SUFFIX);
         this.setCanvas(new ProcessCanvas(getType()));
-        this.setPalette(MetaworksRemoteService.getComponent(BPMNPalette.class));
-//		this.setRolePanel(new RolePanel());
-//		this.setProcessVariablePanel(new ProcessVariablePanel());
-
+        BPMNPalette bpmnPalette = null;
+        try {
+            bpmnPalette = MetaworksRemoteService.getComponent(BPMNPalette.class);
+        } catch (Exception ex) {
+            bpmnPalette = new BPMNPalette(getType());
+        }
+        this.setPalette(bpmnPalette);
     }
 
     @Override
@@ -564,7 +567,7 @@ public class ProcessModeler extends DefaultModeler {
                 continue;
             }
 
-            if(!(ev.getId().equals("rootRole"))) {
+            if (!(ev.getId().equals("rootRole"))) {
                 if (isIn(elementView, ev)) { //TODO
                     return (Role) ev.getElement();
                 }

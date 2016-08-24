@@ -46,9 +46,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     };
 
     this.getCanvas = function () {
-
         var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
-        return mw3.getFaceHelper(canvasId).getCanvas();
+        var object = mw3.objects[canvasId];
+        return object.canvas;
     };
 
     this.getRenderer = function () {

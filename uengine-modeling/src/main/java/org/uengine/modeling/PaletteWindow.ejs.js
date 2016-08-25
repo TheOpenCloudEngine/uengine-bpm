@@ -10,6 +10,7 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
         overflow: 'auto'
     });
     var container = this.objectDiv.parent();
+
     var me = this;
     var slider = this.objectDiv;
 
@@ -213,4 +214,5 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
     });
     bindRemoveEvent(container);
 
+    this.objectDiv.css({ height: this.objectDiv.parent().height()-32});
 };

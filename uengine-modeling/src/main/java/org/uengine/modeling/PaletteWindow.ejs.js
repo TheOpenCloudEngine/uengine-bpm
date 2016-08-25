@@ -213,6 +213,4 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
         bindResizeEvent(dialog);
     });
     bindRemoveEvent(container);
-
-    this.objectDiv.css({ height: this.objectDiv.parent().height()-32});
 };

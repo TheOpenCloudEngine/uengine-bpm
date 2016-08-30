@@ -75,6 +75,9 @@ public class DefaultResource implements IResource {
 		return StringUtils.substringAfterLast(path, "/");
 	}
 
+
+	String displayName;
+
 	@Name
 	@Face(displayName = "name")
 	/**
@@ -83,6 +86,9 @@ public class DefaultResource implements IResource {
 	 */
 	public String getDisplayName() {
 		// File.separatorChar로 파일경로에서의 마지막 파일이나 폴더의 경로에서의 위치를 가져온다.
+
+		if(displayName!=null)
+			return displayName;
 
 		if(path==null)
 			return null;
@@ -98,6 +104,7 @@ public class DefaultResource implements IResource {
 	}
 
 	public void setDisplayName(String displayName){
+		this.displayName = displayName;
 	}
 
 

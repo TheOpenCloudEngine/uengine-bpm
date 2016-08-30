@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,6 +67,14 @@ public class ResourceManager implements Storage{
         TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", resource.getPath());
 
         Object object = getStorage().getObject(resource);
+
+        if(object instanceof List && object != null){
+            try{
+                ((List) object).iterator();
+            }catch (java.util.ConcurrentModificationException cme){
+                object = null;//new ArrayList((List)object);
+            }
+        }
 
         TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", null);
 

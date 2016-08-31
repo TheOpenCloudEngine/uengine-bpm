@@ -72,11 +72,11 @@ org_uengine_modeling_RelationView.prototype = {
         return unescape(this.object.label != null ? this.object.label : '');
     },
     getCanvas: function () {
-        var canvasId = mw3.getAutowiredObject("org.uengine.modeling.Canvas").__objectId;
-        return mw3.getFaceHelper(canvasId).getCanvas();
+        var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
+        var object = mw3.objects[canvasId];
+        return object.canvas;
     },
     init: function () {
-        console.log('relation init');
         var existElement = this.canvas.getElementById(this.object.id);
         var style = this.object.style;
         if (existElement) {

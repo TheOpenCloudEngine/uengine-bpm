@@ -83,6 +83,7 @@ org_uengine_modeling_Canvas.prototype = {
         }
         this.canvas.setCurrentCanvas(this.canvas);
         mw3.canvas = this.canvas;
+        var canvas = this.canvas;
 
         if (this.object.joinEditing && this.object.resourcePath) {
             var identifier = this.object.resourcePath;
@@ -97,12 +98,43 @@ org_uengine_modeling_Canvas.prototype = {
         this.eventBinding();
 
         if (this.metaworksContext.when == mw3.WHEN_EDIT || this.metaworksContext.when == mw3.WHEN_NEW) {
-            if(this.object.navigator){
+            if (this.object.navigator) {
                 this.addSlider();
             }
         }
+
+        this.object.canvas = this.canvas;
+
+        var elementViewListId = mw3.getChildObjectId(this.objectId, 'elementViewList');
+        var elementViewListObject = mw3.objects[elementViewListId];
+
+        var relationViewListId = mw3.getChildObjectId(this.objectId, 'relationViewList');
+        var relationViewListObject = mw3.objects[relationViewListId];
+
+        setTimeout(function(){
+            var __className,__objectId,existElement,i;
+            for (i = 0; i < elementViewListObject.length; i++) {
+                __className = elementViewListObject[i].__className;
+                __objectId = elementViewListObject[i].__objectId;
+                existElement = canvas.getElementById(elementViewListObject[i].id);
+                if(!existElement){
+                    elementViewListObject[i].__faceHelper = new org_uengine_modeling_ElementView(__objectId,__className);
+                    mw3.faceHelpers[__objectId] = elementViewListObject[i].__faceHelper;
+                }
+            }
+
+            for (i = 0; i < relationViewListObject.length; i++) {
+                __className = relationViewListObject[i].__className;
+                __objectId = relationViewListObject[i].__objectId;
+                existElement = canvas.getElementById(relationViewListObject[i].id);
+                if(!existElement){
+                    relationViewListObject[i].__faceHelper = new org_uengine_modeling_RelationView(__objectId,__className);
+                    mw3.faceHelpers[__objectId] = relationViewListObject[i].__faceHelper;
+                }
+            }
+        },100);
     },
-    addSlider: function(){
+    addSlider: function () {
         var position;
         var mainPage = $('div[classname="org.uengine.essencia.portal.Explorer"]');
         if (mainPage) {

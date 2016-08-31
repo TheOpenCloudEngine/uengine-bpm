@@ -1,18 +1,1 @@
-<div class="diagram_icon">
-    <table class="diagram_icon table">
-        <% if(mw3.where != "popUp"){
-        %>
-        <tr>
-            <td style="padding:10px; background-color:#bbbbbb;color:#ffffff;font-size:12pt;border-bottom:0px;" colspan="2">
-                <%=fields.name.here({when: 'view'})%>
-            </td>
-        </tr>
-        <%
-        }
-        %>
-
-        <tr>
-            <td><%=fields.processVariablePanel.here()%></td>
-        </tr>
-    </table>
-</div>
+<%=fields.processVariablePanel.here()%>

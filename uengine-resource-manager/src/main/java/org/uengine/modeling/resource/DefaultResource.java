@@ -90,17 +90,20 @@ public class DefaultResource implements IResource {
 		if(displayName!=null)
 			return displayName;
 
-		if(path==null)
-			return null;
 
-		int index = this.path.lastIndexOf("/") + 1;
-		// 경로에서 마지막 파일이나 폴더의 포인트 위치를 가져온다.
-		int pos = this.path.substring(index).indexOf(".");
-		if (pos == -1) {
-			return this.path.substring(index);
-		} else {
-			return this.path.substring(index, index + pos);
-		}
+		return getName();
+
+//		if(path==null)
+//			return null;
+//
+//		int index = this.path.lastIndexOf("/") + 1;
+//		// 경로에서 마지막 파일이나 폴더의 포인트 위치를 가져온다.
+//		int pos = this.path.substring(index).indexOf(".");
+//		if (pos == -1) {
+//			return this.path.substring(index);
+//		} else {
+//			return this.path.substring(index, index + pos);
+//		}
 	}
 
 	public void setDisplayName(String displayName){

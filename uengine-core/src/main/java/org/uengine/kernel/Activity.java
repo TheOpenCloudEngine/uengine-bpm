@@ -1085,7 +1085,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		
 		int pos=0, endpos=0, oldpos=0;
 		String key;
-		String starter = "{", ending="}";
+		String starter = "<%", ending="%>";
 
 		oldpos = evaluateContent_(instance, expression, validationContext, generating, oldpos, starter, ending);
 //System.out.println(generating.toString());			
@@ -1252,6 +1252,18 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 				}
 				
 			}catch(Exception e){
+
+				Object value = null;
+				try {
+					value = instance.getProperty("", k);
+
+					if(value!=null)
+						return value;
+
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+
 				e.printStackTrace();
 			}
 		}

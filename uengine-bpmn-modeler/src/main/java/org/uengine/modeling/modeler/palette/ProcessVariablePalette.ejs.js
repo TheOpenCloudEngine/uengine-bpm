@@ -191,7 +191,6 @@ var org_uengine_modeling_modeler_palette_ProcessVariablePalette = function (obje
         dialog.css('left', x + 'px');
         var btn = dialog.find('.ui-dialog-titlebar-close');
         var content = dialog.find('.ui-dialog-content');
-        content.height(position.height-30);
         if (!btn.data('collape')) {
             btn.data('collape', dialog.height());
             content.hide();

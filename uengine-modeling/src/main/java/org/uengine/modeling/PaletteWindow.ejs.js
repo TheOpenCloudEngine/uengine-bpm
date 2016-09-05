@@ -192,7 +192,6 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
         dialog.css('left', x + 'px');
         var btn = dialog.find('.ui-dialog-titlebar-close');
         var content = dialog.find('.ui-dialog-content');
-        content.height(position.height-30);
         if (!btn.data('collape')) {
             btn.data('collape', dialog.height());
             content.hide();

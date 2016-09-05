@@ -17,7 +17,11 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
     var bindExpandEvent = function (dialog) {
         var content = dialog.find('.ui-dialog-content');
         var expandBtn = dialog.find('.ui-dialog-titlebar-close');
-        expandBtn.html('<img src="resources/images/symbol/slider-minus.png">');
+        if ($(expandBtn).data('collape')) {
+            expandBtn.html('<img src="resources/images/symbol/slider-plus.png">');
+        } else {
+            expandBtn.html('<img src="resources/images/symbol/slider-minus.png">');
+        }
         expandBtn.append();
         expandBtn.unbind('click');
         expandBtn.bind('click', function () {
@@ -28,6 +32,7 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
                 dialog.height(height);
                 content.show();
                 $(this).data('collape', false);
+                expandBtn.html('<img src="resources/images/symbol/slider-minus.png">');
             }
             //접혀있지 않은 상태라면
             else {
@@ -35,6 +40,7 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
                 $(this).data('collape', height);
                 content.hide();
                 dialog.height(40);
+                expandBtn.html('<img src="resources/images/symbol/slider-plus.png">');
             }
             saveAllDialogsPosition();
         });
@@ -159,6 +165,7 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
 
         var btn = dialog.find('.ui-dialog-titlebar-close');
         var content = dialog.find('.ui-dialog-content');
+        content.height(position.height-30);
         //확장상태였다면
         if (position.expand) {
             content.show();
@@ -185,6 +192,7 @@ var org_uengine_modeling_PaletteWindow = function (objectId, className) {
         dialog.css('left', x + 'px');
         var btn = dialog.find('.ui-dialog-titlebar-close');
         var content = dialog.find('.ui-dialog-content');
+        content.height(position.height-30);
         if (!btn.data('collape')) {
             btn.data('collape', dialog.height());
             content.hide();

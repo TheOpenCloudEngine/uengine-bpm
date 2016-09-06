@@ -34,11 +34,11 @@ public class LeveledException extends Exception{
 
 	//Some exception types are difficult to be serialized to XML. So uEngine Exception doesn't serialize the cause exception.
 	transient Throwable cause;
-	
+
 		public Throwable getCauseException(){
 			return cause;
 		}
-			
+
 		public void setCauseException(Throwable value){
 			cause = value;
 		}

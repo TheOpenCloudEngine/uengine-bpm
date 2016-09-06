@@ -1,0 +1,16 @@
+<!--replace-->
+
+<div class="dropdown">
+    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Errors
+        <span class="badge"><%=value.exceptions.length%></span>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+
+        <% for (var i in value.exceptions){%>
+            <li>  <%=value.exceptions[i].message%>  </li>
+
+        <%}%>
+    </ul>
+</div>

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
 //import java.util.UUID;
 
@@ -35,7 +36,7 @@ import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
  * @author Jinyoung Jang
  */
 
-public class ProcessVariable implements java.io.Serializable, NeedArrangementToSerialize, Cloneable, ContextAware, SerializationSensitive {
+public class ProcessVariable implements java.io.Serializable, NeedArrangementToSerialize, Cloneable, ContextAware, SerializationSensitive, Validatable {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	transient MetaworksContext metaworksContext;
@@ -545,6 +546,16 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 	@Override
 	public void beforeMWSerialization() {
 		beforeSerialization();
+	}
+
+	@Override
+	public ValidationContext validate(Map options) {
+
+		ValidationContext validationContext = new ValidationContext();
+		//validationContext.set
+
+
+		return null;
 	}
 
 //	@ServiceMethod(payload = {"uuid"})

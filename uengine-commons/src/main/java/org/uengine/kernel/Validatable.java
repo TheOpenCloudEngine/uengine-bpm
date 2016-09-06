@@ -7,5 +7,6 @@ import java.util.Map;
 public interface Validatable {
 	
 	public ValidationContext validate(Map options);
+	//public void setIntegrity(int i);
 
 }

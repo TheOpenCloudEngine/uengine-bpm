@@ -34,6 +34,7 @@ import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
+import org.uengine.modeling.IIntegrityElement;
 import org.uengine.util.UEngineUtil;
 
 
@@ -48,7 +49,7 @@ import org.uengine.util.UEngineUtil;
  * @see org.uengine.kernel.ComplexActivity
  */
 //@Face(ejsPath="dwr/metaworks/genericfaces/FormFace.ejs")
-public abstract class Activity implements IElement, Validatable, java.io.Serializable, Cloneable, ContextAware{
+public abstract class Activity implements IElement, Validatable, java.io.Serializable, Cloneable, ContextAware, IIntegrityElement{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	final public static String ACTIVITY_DONE=		"activity done";
@@ -276,6 +277,16 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setHidden(boolean b) {
 			isHidden = b;
 		}
+
+
+	int integrity;  //range:  1:  error,   2:  warn,   0:  complete
+		public int getIntegrity() {
+			return integrity;
+		}
+		public void setIntegrity(int integrity) {
+			this.integrity = integrity;
+		}
+
 
 	transient ArrayList propertyChangeListeners = new ArrayList();
 		public void addProperyChangeListener(PropertyChangeListener pcl){

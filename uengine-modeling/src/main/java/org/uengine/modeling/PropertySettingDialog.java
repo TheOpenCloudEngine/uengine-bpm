@@ -4,6 +4,15 @@ import org.metaworks.*;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
+import org.uengine.kernel.LeveledException;
+import org.uengine.kernel.Validatable;
+import org.uengine.kernel.ValidationContext;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
 public class PropertySettingDialog extends ModalWindow{
 
@@ -66,10 +75,40 @@ public class PropertySettingDialog extends ModalWindow{
         }
 
         setTitle(element.getName());
+
+//        PropertySettingPanel propertySettingPanel = new PropertySettingPanel();
+//        propertySettingPanel.setElement(element);
+
         setPanel(element);
+
+        if(element instanceof Validatable){
+            ValidationContext validationContext = ((Validatable) element).validate(new HashMap());
+
+            List<LeveledException> exceptions = new ArrayList<LeveledException>();
+
+            if(validationContext.size() > 0){
+
+                exceptions.addAll(validationContext);
+
+                setValidationPanel(new ValidationPanel());
+
+                getValidationPanel().setExceptions(exceptions);
+            }
+
+        }
+
     }
 
-    @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_APPEND/*, validate = true*/, keyBinding = "Enter")
+    ValidationPanel validationPanel;
+        public ValidationPanel getValidationPanel() {
+            return validationPanel;
+        }
+        public void setValidationPanel(ValidationPanel validationPanel) {
+            this.validationPanel = validationPanel;
+        }
+
+
+    @ServiceMethod(payload={"panel", "elementView"}, target= ServiceMethodContext.TARGET_APPEND/*, validate = true*/, keyBinding = "Enter")
     public Object apply(){
         IElement element = (IElement)getPanel();
 
@@ -78,6 +117,22 @@ public class PropertySettingDialog extends ModalWindow{
         }
 
         getElementView().setElement(element);
+
+        if(element instanceof Validatable){
+            ValidationContext validationContext = ((Validatable) element).validate(new HashMap());
+
+            List<LeveledException> exceptions = new ArrayList<LeveledException>();
+
+            if(element instanceof IIntegrityElement) {
+
+                if (validationContext.size() > 0) {
+                    ((IIntegrityElement) element).setIntegrity(1);
+                } else {
+                    ((IIntegrityElement) element).setIntegrity(0);
+                }
+            }
+
+        }
 
         getElementView().setChanged(true);
 

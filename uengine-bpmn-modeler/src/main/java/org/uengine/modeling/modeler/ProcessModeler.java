@@ -112,7 +112,8 @@ public class ProcessModeler extends DefaultModeler {
 //		}
 
         if (def.getProcessVariables() != null && getProcessVariablePanel() != null) {
-            this.getProcessVariablePanel().setProcessVariableList(Arrays.asList(def.getProcessVariables()));
+            this.getProcessVariablePanel().setProcessVariableList(new ArrayList<ProcessVariable>());
+            this.getProcessVariablePanel().getProcessVariableList().addAll(Arrays.asList(def.getProcessVariables()));
         }
 
         for (Activity activity : def.getChildActivities()) {

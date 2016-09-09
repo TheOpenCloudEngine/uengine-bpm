@@ -3,6 +3,7 @@ package org.uengine.modeling;
 import org.metaworks.*;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.kernel.LeveledException;
 import org.uengine.kernel.Validatable;
@@ -61,6 +62,8 @@ public class PropertySettingDialog extends ModalWindow{
             contextAwaredElement.getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 
         }
+
+        MetaworksRemoteService.autowire(element);
 
         if(elementView.getPropertyDialogHeight() != 0){
             setHeight(elementView.getPropertyDialogHeight());

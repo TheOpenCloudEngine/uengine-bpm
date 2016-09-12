@@ -22,7 +22,6 @@ import org.metaworks.inputter.ArrayObjectInput;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
 import org.uengine.kernel.face.RoleBindingFace;
-import org.uengine.kernel.face.VariableBindingFace;
 import org.uengine.modeling.ElementView;
 import org.uengine.util.UEngineUtil;
 

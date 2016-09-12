@@ -16,6 +16,7 @@ import org.uengine.modeling.LanguageSelector;
 import org.uengine.modeling.Modeler;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.mail.Session;
 import javax.xml.ws.Service;
 import java.io.File;
 import java.io.FileNotFoundException;

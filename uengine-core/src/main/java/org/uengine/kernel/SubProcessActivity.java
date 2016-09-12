@@ -15,10 +15,14 @@ import java.util.Vector;
 
 import org.metaworks.FieldDescriptor;
 import org.metaworks.Type;
+import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Range;
 import org.metaworks.inputter.ArrayObjectInput;
 import org.uengine.contexts.TextContext;
+import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
+import org.uengine.kernel.face.RoleBindingFace;
+import org.uengine.kernel.face.VariableBindingFace;
 import org.uengine.modeling.ElementView;
 import org.uengine.util.UEngineUtil;
 
@@ -46,7 +50,7 @@ public class SubProcessActivity extends DefaultActivity {
 
 	public SubProcessActivity(){
 		super();
-		setName("");
+		setName("Call");
 		setDescription("");
 		setInstanceId("<%=Instance.Name%>");
 	}
@@ -70,13 +74,14 @@ public class SubProcessActivity extends DefaultActivity {
 	}
 
 	String definitionId;
-	@Hidden
-	public String getDefinitionId() {
-		return definitionId;
-	}
-	public void setDefinitionId(String l) {
-		definitionId = l;
-	}
+		@Face(faceClassName = "org.uengine.social.SocialBPMProcessDefinitionSelector")
+		@Hidden(on=false)
+		public String getDefinitionId() {
+			return definitionId;
+		}
+		public void setDefinitionId(String l) {
+			definitionId = l;
+		}
 
 	//add ryu start
 	ProcessDefinition definitionObject;
@@ -134,22 +139,21 @@ public class SubProcessActivity extends DefaultActivity {
 	}
 
 	ParameterContext[] variableBindings;
-	@Hidden
-	public ParameterContext[] getVariableBindings() {
-		return variableBindings;
-	}
-	public void setVariableBindings(ParameterContext[] contexts) {
-		variableBindings = contexts;
-	}
+		@Face(faceClass = SubProcessParameterContextListFace.class)
+		public ParameterContext[] getVariableBindings() {
+			return variableBindings;
+		}
+		public void setVariableBindings(ParameterContext[] contexts) {
+			variableBindings = contexts;
+		}
 
 	RoleParameterContext[] roleBindings;
-	@Hidden
-	public RoleParameterContext[] getRoleBindings() {
-		return roleBindings;
-	}
-	public void setRoleBindings(RoleParameterContext[] contexts) {
-		roleBindings = contexts;
-	}
+		public RoleParameterContext[] getRoleBindings() {
+			return roleBindings;
+		}
+		public void setRoleBindings(RoleParameterContext[] contexts) {
+			roleBindings = contexts;
+		}
 
 	boolean runAndForget;
 	@Hidden

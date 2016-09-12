@@ -6,13 +6,6 @@
  */
 package org.uengine.kernel;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
 import org.metaworks.FieldDescriptor;
 import org.metaworks.Type;
 import org.metaworks.annotation.Face;
@@ -21,9 +14,10 @@ import org.metaworks.annotation.Range;
 import org.metaworks.inputter.ArrayObjectInput;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
-import org.uengine.kernel.face.RoleBindingFace;
-import org.uengine.modeling.ElementView;
 import org.uengine.util.UEngineUtil;
+
+import java.io.Serializable;
+import java.util.*;
 
 public class SubProcessActivity extends DefaultActivity {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;

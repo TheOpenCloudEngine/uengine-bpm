@@ -151,7 +151,11 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 
 
 	public void execute() throws Exception{
+		getProcessDefinition().fireEventToActivityFilters(this, "instance.beforeStart", null);
+
 		execute(""); //Activity where tracingtag="" locates the definition itself.
+
+		getProcessDefinition().fireEventToActivityFilters(this, "instance.afterStart", null);
 	}
 
 	public void execute(String tracingTag) throws Exception{

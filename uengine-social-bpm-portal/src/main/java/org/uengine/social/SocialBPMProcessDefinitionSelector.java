@@ -5,9 +5,11 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.NonEditable;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.uengine.codi.mw3.model.Popup;
 import org.uengine.kernel.face.ProcessVariableTypeSelector;
 
 public class SocialBPMProcessDefinitionSelector extends SocialBPMProcessVariableTypeSelector{
@@ -15,9 +17,13 @@ public class SocialBPMProcessDefinitionSelector extends SocialBPMProcessVariable
 
     @ServiceMethod(callByContent = true, target=ServiceMethod.TARGET_POPUP)
     @Override
-    public ModalWindow select(){
+    public void select(){
 
-        return new ModalWindow(new SocialBPMProcessDefinitionSelectorPopup(), "Select Process Definition");
+        Popup popup = new Popup(new SocialBPMProcessDefinitionSelectorPopup());
+        popup.setName("Select Process Definition");
+
+        MetaworksRemoteService.wrapReturn(popup);
+
 
     }
 

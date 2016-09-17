@@ -280,6 +280,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 
 
 	int integrity;  //range:  1:  error,   2:  warn,   0:  complete
+	@Hidden
 		public int getIntegrity() {
 			return integrity;
 		}
@@ -423,7 +424,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	}
 	
 	/**
-	 * there sould be an empty constructor for reflection
+	 * there should be an empty constructor for reflection
 	 */
 	public Activity(){
 		setRetryLimit(0);

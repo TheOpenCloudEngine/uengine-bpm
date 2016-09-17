@@ -1,7 +1,10 @@
 package org.uengine.kernel.face;
 
 import org.metaworks.Face;
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
+import org.metaworks.annotation.Payload;
+import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.component.SelectBox;
 import org.uengine.contexts.MappingTree;
 import org.uengine.kernel.Role;
@@ -19,7 +22,7 @@ public class RoleSelectorFace extends SelectBox implements Face <Role>{
 //    @AutowiredFromClient
 //    public RolePanel rolePanel;
 
-    @AutowiredFromClient
+    @AutowiredFromClient(beanPath = "elementViewList[__className=='org.uengine.kernel.Role'].(name, displayName), id")
     public Canvas canvas;
 
 
@@ -51,6 +54,9 @@ public class RoleSelectorFace extends SelectBox implements Face <Role>{
             }
             setSelectedValue(value.getName());
         }
+
+        setMetaworksContext(new MetaworksContext());
+        getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
     }
 
     @Override
@@ -58,5 +64,11 @@ public class RoleSelectorFace extends SelectBox implements Face <Role>{
         String roleName = getSelectedText();
 
         return Role.forName(roleName);
+    }
+
+    @ServiceMethod(inContextMenu = true)
+    public void loadOptions(@Payload("selected") String selected){
+
+        setValueToFace(Role.forName(selected));
     }
 }

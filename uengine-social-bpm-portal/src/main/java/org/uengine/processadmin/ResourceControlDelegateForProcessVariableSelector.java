@@ -4,6 +4,7 @@ import org.metaworks.Remover;
 import org.metaworks.ToOpener;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
+import org.uengine.codi.mw3.model.Popup;
 import org.uengine.contexts.JavaClassDefinition;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
@@ -31,10 +32,19 @@ public class ResourceControlDelegateForProcessVariableSelector implements Resour
 //
 //                }else
 
-                    socialBPMProcessVariableTypeSelector.setSelectedClassName(resource.getPath());
+
+                String className = resource.getPath();
+                int whereAppName = className.indexOf('/');
+
+                if(whereAppName > 0){
+                    className = className.substring(whereAppName + 1);
+                }
 
 
-                MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new ModalWindow()));
+                    socialBPMProcessVariableTypeSelector.setSelectedClassName(className);
+
+
+                MetaworksRemoteService.wrapReturn(new ToOpener(socialBPMProcessVariableTypeSelector), new Remover(new Popup()));
 
 
 //                MetaworksRemoteService.wrapReturn(((DefaultResource) resource).select());

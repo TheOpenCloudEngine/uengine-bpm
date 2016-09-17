@@ -14,6 +14,9 @@ import org.metaworks.annotation.Range;
 import org.metaworks.inputter.ArrayObjectInput;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
+import org.uengine.kernel.face.RoleParameterContextArrayFace;
+import org.uengine.kernel.face.RoleParameterContextListFace;
+import org.uengine.kernel.face.SubProcessParameterContextArrayFace;
 import org.uengine.util.UEngineUtil;
 
 import java.io.Serializable;
@@ -132,7 +135,7 @@ public class SubProcessActivity extends DefaultActivity {
 	}
 
 	ParameterContext[] variableBindings;
-		@Face(faceClass = SubProcessParameterContextListFace.class)
+		@Face(faceClass = SubProcessParameterContextArrayFace.class)
 		public ParameterContext[] getVariableBindings() {
 			return variableBindings;
 		}
@@ -141,12 +144,34 @@ public class SubProcessActivity extends DefaultActivity {
 		}
 
 	RoleParameterContext[] roleBindings;
+	@Face(faceClass = RoleParameterContextArrayFace.class)
 		public RoleParameterContext[] getRoleBindings() {
 			return roleBindings;
 		}
 		public void setRoleBindings(RoleParameterContext[] contexts) {
 			roleBindings = contexts;
 		}
+
+//
+//	List<ParameterContext> variableBindingList;
+//	@Face(faceClass = SubProcessParameterContextListFace.class)
+//		public List<ParameterContext> getVariableBindingList() {
+//			return variableBindingList;
+//		}
+//		public void setVariableBindingList(List<ParameterContext> variableBindingList) {
+//			this.variableBindingList = variableBindingList;
+//		}
+//
+//	List<RoleParameterContext> roleBindingList;
+//	@Face(faceClass = RoleParameterContextListFace.class)
+//		public List<RoleParameterContext> getRoleBindingList() {
+//			return roleBindingList;
+//		}
+//		public void setRoleBindingList(List<RoleParameterContext> roleBindingList) {
+//			this.roleBindingList = roleBindingList;
+//		}
+
+
 
 	boolean runAndForget;
 	@Hidden

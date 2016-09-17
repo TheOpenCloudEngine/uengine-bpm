@@ -8,6 +8,7 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.messaging.support.GenericMessage;
 import org.uengine.kernel.GlobalContext;
 import org.uengine.processmanager.ProcessTransactionContext;
+import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.*;
 import org.uengine.webservices.worklist.WorkList;
 
@@ -159,7 +160,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 	}
 
 	public void execute(String tracingTag) throws Exception{
-		Activity activity = getProcessDefinition().getActivity(tracingTag);
+		final Activity activity = getProcessDefinition().getActivity(tracingTag);
 
 		if(!"".equals(tracingTag))
 			addDebugInfo(activity);
@@ -176,8 +177,30 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 
 		try{
 			if(activity.isQueuingEnabled()){
-				QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannel", QueueChannel.class);
-				inputChannel.send(new GenericMessage<String[]>(new String[]{activity.getTracingTag(), getInstanceId()}));
+
+				getProcessTransactionContext().addTransactionListener(new TransactionListener() {
+					@Override
+					public void beforeCommit(TransactionContext tx) throws Exception {
+
+					}
+
+					@Override
+					public void beforeRollback(TransactionContext tx) throws Exception {
+
+					}
+
+					@Override
+					public void afterCommit(TransactionContext tx) throws Exception {
+						QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannel", QueueChannel.class);
+						inputChannel.send(new GenericMessage<String[]>(new String[]{activity.getTracingTag(), getInstanceId()}));
+					}
+
+					@Override
+					public void afterRollback(TransactionContext tx) throws Exception {
+
+					}
+				});
+
 			}else {
 				activity.executeActivity(this);
 			}

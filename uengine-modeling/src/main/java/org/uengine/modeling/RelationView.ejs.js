@@ -72,7 +72,12 @@ org_uengine_modeling_RelationView.prototype = {
         return unescape(this.object.label != null ? this.object.label : '');
     },
     getCanvas: function () {
-        var canvasId = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas").__objectId;
+        var canvas = mw3.getClosestObject(this.objectId, "org.uengine.modeling.Canvas");
+
+        if(!canvas) canvas = mw3.getAutowiredObject("org.uengine.modeling.Canvas");
+        if(!canvas) throw "can't find canvas!";
+
+        var canvasId = canvas.__objectId;
         var object = mw3.objects[canvasId];
         return object.canvas;
     },
@@ -81,7 +86,6 @@ org_uengine_modeling_RelationView.prototype = {
         var style = this.object.style;
         if (existElement) {
             this.element = existElement;
-            this.bindMapping();
         } else if (this.object.from && this.object.to) {
             var fromPos = this.object.from.indexOf('_TERMINAL_');
             var toPos = this.object.to.indexOf('_TERMINAL_');
@@ -177,6 +181,9 @@ org_uengine_modeling_RelationView.prototype = {
 
             mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
         }
+
+        this.bindMapping();
+
     },
 
     bindMapping: function () {

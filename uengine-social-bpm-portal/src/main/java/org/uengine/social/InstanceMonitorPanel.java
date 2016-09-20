@@ -46,7 +46,13 @@ public class InstanceMonitorPanel {
         }
 
 
-
+    ProcessInstanceExplorer processInstanceExplorer;
+        public ProcessInstanceExplorer getProcessInstanceExplorer() {
+            return processInstanceExplorer;
+        }
+        public void setProcessInstanceExplorer(ProcessInstanceExplorer processInstanceExplorer) {
+            this.processInstanceExplorer = processInstanceExplorer;
+        }
 
     ProcessModeler processModeler;
         public ProcessModeler getProcessModeler() {
@@ -78,6 +84,11 @@ public class InstanceMonitorPanel {
 
         setInstanceId(instanceId);
 
+        //install the process instance explorer first
+        setProcessInstanceExplorer(new ProcessInstanceExplorer());
+        getProcessInstanceExplorer().load(instanceId);
+
+        //install the flow chart view
         ElementViewActionDelegateForInstanceMonitoring elementViewActionDelegateForInstanceMonitoring = MetaworksRemoteService.getComponent(ElementViewActionDelegateForInstanceMonitoring.class);
         elementViewActionDelegateForInstanceMonitoring.setInstanceId(""+instanceId);
 

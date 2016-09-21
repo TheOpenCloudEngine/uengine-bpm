@@ -280,8 +280,20 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     };
 
     this.bind = function (name) {
+        try{
+
+            var events = $(this.element).data("events")[name];
+
+            for(var i in events){
+                var event = events[i];
+                if(event.namespace == this.objectId)
+                    return; //already existing event
+            }
+
+        }catch(e){}
         $(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function (event, ui) {
             $(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event.type);
+            event.stopPropagation();
         });
     };
 

@@ -2,7 +2,6 @@ package org.uengine.kernel;
 
 import org.metaworks.ContextAware;
 import org.metaworks.annotation.Children;
-import org.metaworks.annotation.Name;
 import org.metaworks.annotation.Order;
 import org.metaworks.annotation.ServiceMethod;
 
@@ -136,7 +135,7 @@ public class And extends Condition{
 		if(getConditionsVt()==null)
 			setConditionsVt(new Vector());
 
-		getConditionsVt().add(new ExpressionEvaluteCondition());
+		getConditionsVt().add(new ExpressionEvaluateCondition());
 	}
 
 	@ServiceMethod(inContextMenu=true, callByContent=true)

@@ -4,7 +4,7 @@ import org.metaworks.EventContext;
 import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.ServiceMethod;
-import org.uengine.kernel.ExpressionEvaluteCondition;
+import org.uengine.kernel.ExpressionEvaluateCondition;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.IRelation;
 import org.uengine.modeling.RelationPropertiesView;
@@ -30,7 +30,7 @@ public class SequenceFlowView extends RelationView {
 		SequenceFlow sequenceFlow = (SequenceFlow) getRelation();
 
 		if(sequenceFlow.getCondition()==null)
-			sequenceFlow.setCondition(new ExpressionEvaluteCondition());
+			sequenceFlow.setCondition(new ExpressionEvaluateCondition());
 
 		sequenceFlow.getCondition().setMetaworksContext(new MetaworksContext());
 		sequenceFlow.getCondition().getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);

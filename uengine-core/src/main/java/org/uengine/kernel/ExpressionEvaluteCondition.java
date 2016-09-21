@@ -47,6 +47,7 @@ public class ExpressionEvaluteCondition extends Condition {
 //                }
 //        );
 
+        if(!UEngineUtil.isNotEmpty(getConditionExpression())) return true;
 
         try {
             BSFManager manager = new BSFManager();

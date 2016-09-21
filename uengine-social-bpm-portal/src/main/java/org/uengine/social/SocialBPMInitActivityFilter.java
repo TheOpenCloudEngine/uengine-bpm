@@ -42,17 +42,17 @@ public class SocialBPMInitActivityFilter implements SensitiveActivityFilter, Ser
     @Override
     public void onEvent(Activity activity, ProcessInstance instance, String eventName, Object payload) throws Exception {
 
-        // mark isSim = 1 if the process is simulation process
-        if(instance instanceof EJBProcessInstance){
-            EJBProcessInstance ejbProcessInstance = (EJBProcessInstance) instance;
-
-            if(ejbProcessInstance.getProcessInstanceDAO().getMainInstId()==null && "instance.beforeStart".equals(eventName)){
-
-                if(instance.getName().startsWith("[Test]")){
-                    ejbProcessInstance.getProcessInstanceDAO().set("isSim", 1);
-                }
-            }
-        }
+        // mark isSim = 1 if the process is simulation process:  this logic has been moved to ProcessMap.java
+//        if(instance instanceof EJBProcessInstance){
+//            EJBProcessInstance ejbProcessInstance = (EJBProcessInstance) instance;
+//
+//            if(ejbProcessInstance.getProcessInstanceDAO().getMainInstId()==null && "instance.beforeStart".equals(eventName)){
+//
+//                if(instance.getName().startsWith("[Test]")){
+//                    ejbProcessInstance.getProcessInstanceDAO().set("isSim", 1);
+//                }
+//            }
+//        }
 
 
     }

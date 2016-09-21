@@ -12,7 +12,7 @@ import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.util.UEngineUtil;
 
 
-public class ExpressionEvaluteCondition extends Condition {
+public class ExpressionEvaluateCondition extends Condition {
 
     String conditionExpression;
         public String getConditionExpression() {
@@ -22,11 +22,11 @@ public class ExpressionEvaluteCondition extends Condition {
             this.conditionExpression = conditionExpression;
         }
 
-    public ExpressionEvaluteCondition(){
+    public ExpressionEvaluateCondition(){
         super();
     }
 
-    public ExpressionEvaluteCondition(String conditionExpression) {
+    public ExpressionEvaluateCondition(String conditionExpression) {
         super();
         setConditionExpression(conditionExpression);
     }
@@ -47,6 +47,7 @@ public class ExpressionEvaluteCondition extends Condition {
 //                }
 //        );
 
+        if(!UEngineUtil.isNotEmpty(getConditionExpression())) return true;
 
         try {
             BSFManager manager = new BSFManager();

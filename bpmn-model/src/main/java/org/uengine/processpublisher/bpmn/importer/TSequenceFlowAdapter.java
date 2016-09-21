@@ -1,25 +1,14 @@
 package org.uengine.processpublisher.bpmn.importer;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
-import org.omg.spec.bpmn._20100524.di.BPMNShape;
-import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.dd._20100524.dc.Point;
-import org.uengine.kernel.Activity;
-import org.uengine.kernel.ExpressionEvaluteCondition;
-import org.uengine.kernel.ProcessDefinition;
+import org.uengine.kernel.ExpressionEvaluateCondition;
 import org.uengine.kernel.bpmn.SequenceFlow;
-import org.uengine.modeling.ElementView;
 import org.uengine.modeling.RelationView;
 import org.uengine.processpublisher.Adapter;
 
-import javax.xml.namespace.QName;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.*;
 
 public class TSequenceFlowAdapter implements Adapter<TSequenceFlow, SequenceFlow> {
@@ -30,7 +19,7 @@ public class TSequenceFlowAdapter implements Adapter<TSequenceFlow, SequenceFlow
         transition.setSourceRef(((TFlowNode) src.getSourceRef()).getId());
 
         if(src.getConditionExpression() != null && src.getConditionExpression().getContent().size() > 0)
-            transition.setCondition(new ExpressionEvaluteCondition(src.getConditionExpression().getContent().get(0).toString()));
+            transition.setCondition(new ExpressionEvaluateCondition(src.getConditionExpression().getContent().get(0).toString()));
 
         Map bpmnDiagramElementMap = (Map) keyedContext.get("BPMNDiagramElementMap");
         BPMNEdge bpmnEdge = (BPMNEdge) bpmnDiagramElementMap.get(src.getId());

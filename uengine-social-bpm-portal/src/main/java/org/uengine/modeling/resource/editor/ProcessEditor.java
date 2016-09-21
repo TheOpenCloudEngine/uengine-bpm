@@ -1,10 +1,7 @@
 package org.uengine.modeling.resource.editor;
 
 import org.metaworks.dwr.MetaworksRemoteService;
-import org.uengine.codi.mw3.model.IInstance;
-import org.uengine.codi.mw3.model.Instance;
-import org.uengine.codi.mw3.model.ProcessMap;
-import org.uengine.codi.mw3.model.Session;
+import org.uengine.codi.mw3.model.*;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.modeling.modeler.ProcessModeler;
 import org.uengine.modeling.modeler.StandaloneProcessModeler;
@@ -58,6 +55,9 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
     @Override
     public Object simulator(IResource resource) {
 
+        String defId = resource.getPath().substring(resource.getPath().indexOf("/") + 1);
+
+
         Session session = MetaworksRemoteService.getComponent(Session.class);
 
 
@@ -66,17 +66,21 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
         IInstance recentSimulationInstance;
 
         try {
-            recentSimulationInstance = Instance.loadRecentSimulationInstance(userId);
-            recentSimulationInstance.next();
+            recentSimulationInstance = Instance.loadRecentSimulationInstance(userId, defId);
+            if(!recentSimulationInstance.next()){
+                recentSimulationInstance = null;
+            }
         } catch (Exception e) {
             recentSimulationInstance = null;
         }
 
         if (recentSimulationInstance != null) {
 
-
             try {
-                return (Instance.createInstanceViewDetail(recentSimulationInstance.getInstId()));
+                ContentWindow contentWindow = new ContentWindow();
+                contentWindow.setPanel(Instance.createInstanceView(recentSimulationInstance.getInstId()));
+
+                return contentWindow;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -89,7 +93,7 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
 
             ProcessMap processMap = new ProcessMap();
             processMap.setName("[Test] " + resource.getName());
-            processMap.setDefId(resource.getPath().substring(resource.getPath().indexOf("/") + 1));
+            processMap.setDefId(defId);
             MetaworksRemoteService.autowire(processMap);
 
             try {

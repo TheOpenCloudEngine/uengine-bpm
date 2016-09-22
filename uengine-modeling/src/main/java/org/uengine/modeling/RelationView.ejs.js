@@ -203,10 +203,9 @@ org_uengine_modeling_RelationView.prototype = {
     },
 
     bind: function (name) {
-
         try{
 
-            var events = $(this.element).data("events");
+            var events = $(this.element).data("events")[name];
 
             for(var i in events){
                 var event = events[i];
@@ -215,7 +214,6 @@ org_uengine_modeling_RelationView.prototype = {
             }
 
         }catch(e){}
-
         $(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function (event, ui) {
             $('#' + mw3._getObjectDivId(event.data.objectId)).trigger(event.type);
         });

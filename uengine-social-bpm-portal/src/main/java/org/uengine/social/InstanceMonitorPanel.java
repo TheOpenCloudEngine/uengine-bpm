@@ -136,7 +136,7 @@ public class InstanceMonitorPanel {
         return pm;
     }
 
-    @ServiceMethod(inContextMenu = true, target = ServiceMethod.TARGET_SELF)
+    //@ServiceMethod(inContextMenu = true, target = ServiceMethod.TARGET_SELF)
     public void refresh() throws Exception {
         ProcessManagerRemote processManagerRemote = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
         load(getInstanceId(), processManagerRemote);

@@ -80,6 +80,8 @@ public class BlockFinder {
         for(SequenceFlow sequenceFlow : activity.getIncomingSequenceFlows()) {
             Activity sourceActivity = sequenceFlow.getSourceActivity();
 
+            if(sourceActivity == null) continue;
+
             Integer visitCountForThisActivity = 0;
             if(visitCount.containsKey(sourceActivity.getTracingTag())){
                 visitCountForThisActivity = visitCount.get(sourceActivity.getTracingTag());

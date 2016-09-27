@@ -538,57 +538,59 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 										public void afterRollback(TransactionContext tx) throws Exception {
 
-											Thread faultMarker = new Thread(){
+											System.out.println();
 
-												public void run() {
-													ProcessManagerFactoryBean pmfb = new ProcessManagerFactoryBean();
-													ProcessManagerRemote pm = null;
-													ProcessInstance instanceForFaultMarking = null;
-
-													try{
-														pm = pmfb.getProcessManager();
-														instanceForFaultMarking = pm.getProcessInstance(instanceId);
-														try{
-															//String oldStatus = act.getStatus(instanceForFaultMarking);
-
-															act.fireFault(instanceForFaultMarking, finalUE);
-
-															if(isRetrying){//Activity.STATUS_RETRYING.equals(oldStatus)){
-																act.setStatus(instanceForFaultMarking, Activity.STATUS_RETRYING);
-															}
-
-														}catch(Exception e){
-															throw new RuntimeException(e);
-															//e.printStackTrace();
-														}
-														pm.applyChanges();
-													} catch (Exception e1) {
-														if(pm!=null)
-															try {
-																pm.cancelChanges();
-															} catch (RemoteException e) {
-																// TODO Auto-generated catch block
-																e.printStackTrace();
-															}
-
-													} finally{
-														try {
-															pm.remove();
-														} catch (RemoteException e2) {
-															// TODO Auto-generated catch block
-															e2.printStackTrace();
-														} catch (RemoveException e2) {
-															// TODO Auto-generated catch block
-															e2.printStackTrace();
-														}
-													}
-
-												}
-
-											};
-
-											//faultMarker.run();
-											faultMarker.start(); //run it in a different thread if you want to make sure to separate the transaction.
+//											Thread faultMarker = new Thread(){
+//
+//												public void run() {
+//													ProcessManagerFactoryBean pmfb = new ProcessManagerFactoryBean();
+//													ProcessManagerRemote pm = null;
+//													ProcessInstance instanceForFaultMarking = null;
+//
+//													try{
+//														pm = pmfb.getProcessManager();
+//														instanceForFaultMarking = pm.getProcessInstance(instanceId);
+//														try{
+//															//String oldStatus = act.getStatus(instanceForFaultMarking);
+//
+//															act.fireFault(instanceForFaultMarking, finalUE);
+//
+//															if(isRetrying){//Activity.STATUS_RETRYING.equals(oldStatus)){
+//																act.setStatus(instanceForFaultMarking, Activity.STATUS_RETRYING);
+//															}
+//
+//														}catch(Exception e){
+//															throw new RuntimeException(e);
+//															//e.printStackTrace();
+//														}
+//														pm.applyChanges();
+//													} catch (Exception e1) {
+//														if(pm!=null)
+//															try {
+//																pm.cancelChanges();
+//															} catch (RemoteException e) {
+//																// TODO Auto-generated catch block
+//																e.printStackTrace();
+//															}
+//
+//													} finally{
+//														try {
+//															pm.remove();
+//														} catch (RemoteException e2) {
+//															// TODO Auto-generated catch block
+//															e2.printStackTrace();
+//														} catch (RemoveException e2) {
+//															// TODO Auto-generated catch block
+//															e2.printStackTrace();
+//														}
+//													}
+//
+//												}
+//
+//											};
+//
+//											//faultMarker.run();
+//											faultMarker.start(); //run it in a different thread if you want to make sure to separate the transaction.
 
 										}
 

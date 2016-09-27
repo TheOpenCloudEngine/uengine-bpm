@@ -41,20 +41,25 @@ public class FlowActivity extends ComplexActivity {
 				// source
                 String source = sequenceFlow.getSourceRef();
 
-                Activity sourceActivity = getProcessDefinition().getActivity(source);
+				if(source!=null) {
+					Activity sourceActivity = getProcessDefinition().getActivity(source);
 
-				if(sourceActivity != null) {
-					sourceActivity.addOutgoingTransition(sequenceFlow);
-					sequenceFlow.setSourceActivity(sourceActivity);
+					if (sourceActivity != null) {
+						sourceActivity.addOutgoingTransition(sequenceFlow);
+						sequenceFlow.setSourceActivity(sourceActivity);
+					}
 				}
     
                 // target
                 String target = sequenceFlow.getTargetRef();
-                Activity targetActivity = getProcessDefinition().getActivity(target);
 
-				if(targetActivity!=null) {
-					targetActivity.addIncomingTransition(sequenceFlow);
-					sequenceFlow.setTargetActivity(targetActivity);
+				if(target!=null){
+					Activity targetActivity = getProcessDefinition().getActivity(target);
+
+					if(targetActivity!=null) {
+						targetActivity.addIncomingTransition(sequenceFlow);
+						sequenceFlow.setTargetActivity(targetActivity);
+					}
 				}
 			}
 		}

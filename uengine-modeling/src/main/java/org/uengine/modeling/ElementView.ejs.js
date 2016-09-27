@@ -222,6 +222,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
     this.bindMapping = function () {
         var metadata = mw3.getMetadata(this.className);
+        var contextMenus = [];
         for (var methodName in metadata.serviceMethodContextMap) {
             if (mw3.isHiddenMethodContext(this.metadata.serviceMethodContextMap[methodName], this.object))
                 continue;
@@ -276,8 +277,50 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
                 }
             }
+
+            if(methodContext.inContextMenu){
+                contextMenus[contextMenus.length] = methodContext;
+            }
         }
-    };
+
+        // implements the context menu events
+        var items = {}; var touched = false;
+        for(var i in contextMenus){
+            var contextMenuMethod = contextMenus[i];
+
+            var command = "mw3.objects[" + this.objectId + "]." + contextMenuMethod.methodName + "()"
+            console.log("command="+command);
+
+            items[command] =
+            {
+                name: contextMenuMethod.displayName ? contextMenuMethod.displayName : contextMenuMethod.methodName
+            };
+
+            touched = true;
+        }
+
+        if(touched){
+            $("#" + this.element.id).off('contextmenu');
+
+            $.contextMenu({
+                position: function (opt, x, y) {
+                    opt.$menu.css({top: y + 10, left: x + 10});
+                },
+                selector: "#" + this.element.id,
+                callback: function (key, options) {
+                    console.log("key="+key);
+                    eval(key);
+
+                },
+                items: items
+            });
+
+            console.log('touched')
+        }
+    }
+
+
+
 
     this.bind = function (name) {
         try{
@@ -291,6 +334,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             }
 
         }catch(e){}
+
         $(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function (event, ui) {
             $(document.getElementById(mw3._getObjectDivId(event.data.objectId))).trigger(event.type);
             event.stopPropagation();

@@ -836,6 +836,9 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	
 	public ValidationContext validate(Map options){
 		ValidationContext vc = new ValidationContext();
+
+		if(!UEngineUtil.isNotEmpty(getTracingTag()))
+			vc.add(getActivityLabel() + " : no tracingTag. ");
 		
 		/* 
 		 * 일단 필요가 없어 보이는 로직이라서 주석 처리함 14.2.27 김형국

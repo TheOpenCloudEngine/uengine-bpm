@@ -16,6 +16,7 @@ import org.uengine.modeling.HasThumbnail;
 import org.uengine.processmanager.ProcessManagerFactoryBean;
 import org.uengine.processmanager.ProcessManagerRemote;
 import org.uengine.processmanager.ProcessTransactionContext;
+import org.uengine.util.ActivityFor;
 import org.uengine.util.ActivityForLoop;
 import org.uengine.util.UEngineUtil;
 
@@ -1108,5 +1109,32 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 	public String getThumbnailURL() {
 		return thumbnailURL;
 	}
+
+
+	public void updateActivitySequence(){
+		ActivityFor loop = new ActivityFor() {
+			public long maxTT = 0;
+
+			@Override
+			public void logic(Activity activity) {
+				try {
+					long tt = Long.parseLong(activity.getTracingTag());
+					if (tt > maxTT) {
+						maxTT = tt;
+						setReturnValue(maxTT);
+					}
+				} catch (Exception e) {
+
+				}
+			}
+		};
+
+		loop.run(this);
+
+		if (loop.getReturnValue() != null) {
+			setActivitySequence((long) loop.getReturnValue());
+		}
+	}
+
 }
 

@@ -101,7 +101,7 @@ public class MappingTree extends Tree{
 
 		List<Role> roles = new ArrayList<Role>();
 
-
+		if(canvas!=null && canvas.getElementViewList()!=null)
 		for(ElementView elementView : canvas.getElementViewList()) {
 
 

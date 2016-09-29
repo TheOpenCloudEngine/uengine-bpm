@@ -15,6 +15,7 @@ import org.uengine.kernel.view.RoleView;
 import org.uengine.modeling.*;
 import org.uengine.modeling.modeler.palette.BPMNPalette;
 import org.uengine.util.ActivityFor;
+import org.uengine.util.UEngineUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -175,35 +176,11 @@ public class ProcessModeler extends DefaultModeler {
         this.getCanvas().setElementViewList(elementViewList);
         this.getCanvas().setRelationViewList(relationViewList);
 
-        ActivityFor loop = new ActivityFor() {
-            public int maxTT = 0;
-
-            @Override
-            public void logic(Activity activity) {
-                try {
-                    int tt = Integer.parseInt(activity.getTracingTag());
-                    if (tt > maxTT) {
-                        maxTT = tt;
-                        setReturnValue(maxTT);
-                    }
-                } catch (Exception e) {
-                }
-            }
-        };
-
-        loop.run(def);
-
-        if (loop.getReturnValue() != null) {
-            setLastTracingTag((int) loop.getReturnValue());
-        }
+        def.updateActivitySequence();
     }
 
-    protected void updateLastTracingTag(String tracingTag) {
-        int compareTracingTag = Integer.parseInt(tracingTag);
 
-        if (this.getLastTracingTag() < compareTracingTag)
-            this.setLastTracingTag(compareTracingTag);
-    }
+
 
     public IModel createModel() {
         try {
@@ -300,6 +277,8 @@ public class ProcessModeler extends DefaultModeler {
                 } catch (Exception e) {
 
                 }
+
+
             }
 
         }
@@ -431,6 +410,26 @@ public class ProcessModeler extends DefaultModeler {
         for (ElementView elementView : canvas.getElementViewList()) {
             elementView.setElement(null);
         }
+
+        final ProcessDefinition finalDef = def;
+        ActivityFor giveTracingTagIfNull = new ActivityFor() {
+
+            @Override
+            public void logic(Activity activity) {
+                //give tracingTag if null
+                if(!UEngineUtil.isNotEmpty(activity.getTracingTag())){
+                    finalDef.updateActivitySequence();
+
+                    long newTT = finalDef.getActivitySequence() + 1;
+                    activity.setTracingTag(String.valueOf(newTT));
+                    finalDef.setActivitySequence(newTT);
+                }
+
+            }
+        };
+
+        giveTracingTagIfNull.run(def);
+
 
         return def;
     }

@@ -6,7 +6,7 @@ package org.uengine.kernel;
 public abstract class InRootExecutionScope extends InParentExecutionScope{
 
     @Override
-    protected String getDesiredExecutionScope(ProcessInstance instance) {
+    protected String getDesiredExecutionScope(ProcessInstance instance, String currentExecutionScope) {
         return null;
     }
 }

@@ -234,7 +234,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 			if(!instance.isSuspended(getTracingTag())){
 				ExecutionScopeContext executionScopeContext = instance.getExecutionScopeContext();
-				instance.setExecutionScope(instance.getMainExecutionScope());
+				instance.setExecutionScope(instance.getParentExecutionScopeOf(executionScopeContext.getExecutionScope()));
 
 				executeActivity(instance);	//execute next in the parent scope context.
 

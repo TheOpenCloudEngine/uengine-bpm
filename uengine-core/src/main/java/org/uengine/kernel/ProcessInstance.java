@@ -717,5 +717,6 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 			this.activityCompletionHistory = activityCompletionHistory;
 		}
 
+	abstract public String getParentExecutionScopeOf(String executionScope);
 
 }

@@ -346,8 +346,8 @@ public class DefaultProcessInstance extends ProcessInstance{
 
 				break;
 			}else {
-
-				setExecutionScope(getMainExecutionScope());
+				if(scope!=null)
+					setExecutionScope(getParentExecutionScopeOf(scope.getExecutionScope()));
 			}
 
 		}while(scope != null); //if value is not found in the scope, finding values to the parent scopes as well.
@@ -905,6 +905,10 @@ public class DefaultProcessInstance extends ProcessInstance{
 	public String getMainExecutionScope() {
 		// TODO Auto-generated method stub
 		return mainExecutionScope;
+	}
+
+	public String getParentExecutionScopeOf(String executionScope){
+		return null; //TODO
 	}
 
 }

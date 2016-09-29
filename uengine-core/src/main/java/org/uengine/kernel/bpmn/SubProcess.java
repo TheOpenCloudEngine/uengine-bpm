@@ -773,7 +773,7 @@ public class SubProcess extends ScopeActivity{
         if(variableBindings !=null)
             for(int i=0; i<variableBindings.size(); i++){
                 ParameterContext pvpc = variableBindings.get(i);
-                if(pvpc.getVariable()==null || pvpc.getArgument()==null
+                if(pvpc.getVariable()==null /*|| pvpc.getArgument()==null*/
                         || (pvpc.getDirection()!=null && pvpc.getDirection().equals(ParameterContext.DIRECTION_OUT))
                         )
                     continue;
@@ -787,7 +787,7 @@ public class SubProcess extends ScopeActivity{
 
 
                 String currExecutionScope = instance.getExecutionScopeContext().getExecutionScope();
-                instance.setExecutionScope(instance.getMainExecutionScope());
+                instance.setExecutionScope(instance.getParentExecutionScopeOf(currExecutionScope));
 
                 ProcessVariableValue pvv = pvpc.getVariable().getMultiple(instance, "");
 
@@ -815,7 +815,7 @@ public class SubProcess extends ScopeActivity{
                 }
 
                 instance.addDebugInfo("[SubProcessActivity] transferring main process' variable: ", pvpc.getVariable());
-                instance.addDebugInfo(" to sub process' variable: ", pvpc.getArgument().getText());
+//                instance.addDebugInfo(" to sub process' variable: ", pvpc.getArgument().getText());
 
 
                 subProcessInstance.set("", pvpc.getVariable().getName(), (Serializable)val);

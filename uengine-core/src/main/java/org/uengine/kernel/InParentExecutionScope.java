@@ -9,7 +9,7 @@ public abstract class InParentExecutionScope {
 
     public Object run(ProcessInstance instance) throws Exception{
         ExecutionScopeContext executionScopeContext = instance.getExecutionScopeContext();
-        instance.setExecutionScope(getDesiredExecutionScope(instance));
+        instance.setExecutionScope(getDesiredExecutionScope(instance, executionScopeContext.getExecutionScope()));
 
         Object returnValue = logic(instance);
 
@@ -19,8 +19,8 @@ public abstract class InParentExecutionScope {
 
     }
 
-    protected String getDesiredExecutionScope(ProcessInstance instance) {
-        return instance.getMainExecutionScope();
+    protected String getDesiredExecutionScope(ProcessInstance instance, String currentExecutionScope) {
+        return instance.getParentExecutionScopeOf(currentExecutionScope);
     }
 
 

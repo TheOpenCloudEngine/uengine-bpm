@@ -18,7 +18,7 @@ public class RoleParameterContextArrayFace extends ArrayFace<RoleParameterContex
     @Order(1)
     @org.metaworks.annotation.Face(displayName="Add New")
     @ServiceMethod(callByContent=true)
-    public void add(@AutowiredFromClient Canvas canvas) {
+    public void add(@AutowiredFromClient(payload = "elementViewList[__className=='org.uengine.kernel.view.RoleView'].element.name") Canvas canvas) {
         super.add();
     }
 

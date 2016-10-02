@@ -22,7 +22,7 @@ public class RoleSelectorFace extends SelectBox implements Face <Role>{
 //    @AutowiredFromClient
 //    public RolePanel rolePanel;
 
-    @AutowiredFromClient(beanPath = "elementViewList[__className=='org.uengine.kernel.Role'].(name, displayName), id")
+    @AutowiredFromClient(payload = "elementViewList[__className=='org.uengine.kernel.view.RoleView'].element.name")
     public Canvas canvas;
 
 

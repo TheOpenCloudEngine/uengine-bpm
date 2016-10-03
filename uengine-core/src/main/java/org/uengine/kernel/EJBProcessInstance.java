@@ -233,6 +233,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			setInstanceId(instanceId);
 			boolean isArchive = getProcessInstanceDAO().getIsArchive();
 
+			setSimulation(getProcessInstanceDAO().get("isSim")==1);
+
 			if(GlobalContext.logLevelIsDebug){
 				addDebugInfo("Definition administration url",GlobalContext.WEB_CONTEXT_ROOT + "/processmanager/viewProcessFlowChart.jsp?processDefinition=" + getProcessInstanceDAO().getDefId() + "&processDefinitionVersionID=" + getProcessInstanceDAO().getDefVerId());
 				addDebugInfo("Process Designer launch url",GlobalContext.WEB_CONTEXT_ROOT + "/processmanager/ProcessDesigner.jnlp?defVerId=" + getProcessInstanceDAO().getDefVerId() + "&defId=" + getProcessInstanceDAO().getDefId());

@@ -6,7 +6,6 @@ import java.io.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.messaging.support.GenericMessage;
-import org.uengine.kernel.GlobalContext;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.*;
@@ -161,6 +160,12 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 
 	public void execute(String tracingTag) throws Exception{
 		final Activity activity = getProcessDefinition().getActivity(tracingTag);
+
+		if(isSimulation() && activity.isBreakpoint()){ //if this activity is a breakpoint, just suspend the step and don't run it.
+			activity.suspend(this);
+
+			return;
+		}
 
 		if(!"".equals(tracingTag))
 			addDebugInfo(activity);
@@ -332,7 +337,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		return (ActivityInstanceContext)forLoop.getReturnValue();
 	}
 
-	public Vector getCurrentRunningActivities() throws Exception{
+	public List<Activity> getCurrentRunningActivities() throws Exception{
 		final ProcessInstance finalThis = this;
 		final Vector runningActivities = new Vector();
 
@@ -718,5 +723,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		}
 
 	abstract public String getParentExecutionScopeOf(String executionScope);
+
+
 
 }

@@ -129,6 +129,15 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		}
 
 
+	boolean breakpoint;
+		public boolean isBreakpoint() {
+			return breakpoint;
+		}
+		public void setBreakpoint(boolean breakpoint) {
+			this.breakpoint = breakpoint;
+		}
+
+
 	TextContext name;
 		@Name
 	@Face(displayName="이름")
@@ -1060,7 +1069,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 
 		try{
 
-			if(GlobalContext.wasIsJeus){
+			if(true){
 			
 				String strInAct = GlobalContext.serialize(this, String.class);
 				Activity clonedActivity = (Activity) GlobalContext.deserialize(strInAct);

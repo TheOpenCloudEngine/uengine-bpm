@@ -1,10 +1,14 @@
 package org.uengine.social;
 
+import org.metaworks.annotation.AutowiredFromClient;
+import org.metaworks.annotation.Available;
+import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.model.InstanceTooltip;
+import org.uengine.kernel.ProcessInstance;
 
 /**
  * Created by jangjinyoung on 15. 9. 8..
@@ -37,4 +41,9 @@ public class SocialBPMInstanceTooltip extends InstanceTooltip{
         instanceMonitorPanel.load(this.getInstanceId(), processManager);
         return instanceMonitorPanel;
     }
+
+
+
+
+
 }

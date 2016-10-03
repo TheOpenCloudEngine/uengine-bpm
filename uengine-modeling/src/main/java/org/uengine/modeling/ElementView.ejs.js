@@ -300,8 +300,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
         }
 
         if(touched){
-            $("#" + this.element.id).off('contextmenu');
-
+            $.contextMenu( 'destroy', "#" + this.element.id );
             $.contextMenu({
                 position: function (opt, x, y) {
                     opt.$menu.css({top: y + 10, left: x + 10});

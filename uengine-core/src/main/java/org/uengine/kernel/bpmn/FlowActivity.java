@@ -169,15 +169,7 @@ public class FlowActivity extends ComplexActivity {
 
 	@Override
 	protected void onEvent(String command, ProcessInstance instance, Object payload) throws Exception {
-		
-//		if (getSequenceFlows().size() == 0) {
-////			System.out.println("This is conventional uengine process - 1");
-//			super.onEvent(command, instance, payload);
-//
-//			return;
-//		}
-		
-		
+
 		if (command.equals(CHILD_DONE)) {
 
 			// when we finish??
@@ -225,8 +217,10 @@ public class FlowActivity extends ComplexActivity {
 				notifyCompletionToParent(instance);
 		}else if(command.equals(CHILD_STOPPED)){
 			System.out.println(command);
-		}else{
-//			onEvent(command, instance, payload);
+		}else if(command.equals(CHILD_RESUMED)){
+			super.onEvent(command, instance, payload);
+		}else {
+			//onEvent(command, instance, payload);
 		}
 	}
 		

@@ -165,4 +165,5 @@ public interface ProcessManagerRemote extends javax.ejb.EJBObject{
 	public void importProcessDefinitionGraciously(String parentFolder, String itemId, String itemFilePath, String loggedUserGlobalCom) throws Exception;
 	public String exportProcessDefinitionForAddToMarket(String defId, String loggedUserGlobalCom) throws Exception;
 
+	public void setChanged();
 }	

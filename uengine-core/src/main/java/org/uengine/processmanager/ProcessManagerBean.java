@@ -1953,7 +1953,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 	   }
 	  
 	  
-	  public void applyChanges() throws RemoteException {
+	public void applyChanges() throws RemoteException {
 		try{
 			if(transactionContext==null) return;
 			transactionContext.commit(); //means one unit transaction
@@ -1964,6 +1964,8 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
 		}
 	}
+
+
 	
 	public void cancelChanges() throws RemoteException{
 		try{
@@ -2092,7 +2094,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 	private void delegateForRoleMapping(String instanceId, RoleMapping roleMapping) throws RemoteException{
 		try{
 			ProcessInstance instance = getInstance(instanceId);
-			Vector runningActs = instance.getCurrentRunningActivities();
+			List<Activity> runningActs = instance.getCurrentRunningActivities();
 			for(int i=0; i<runningActs.size(); i++){
 				if(runningActs.get(i) instanceof HumanActivity){
 					HumanActivity humanActivity = (HumanActivity)runningActs.get(i);
@@ -2838,6 +2840,11 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 
 	return filePath;
     }
+
+	@Override
+	public void setChanged() {
+		//do nothing.  ProcessManagerDirtyAdvice will check this.
+	}
 
 	@Override
 	public void exportProcessDefinitionbyVersionId(String defVerId) throws Exception {

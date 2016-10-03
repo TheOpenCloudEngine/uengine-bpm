@@ -4,9 +4,13 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.WebFieldDescriptor;
 import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.uengine.codi.mw3.model.InstanceViewDetail;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.ProcessVariable;
+import org.uengine.kernel.view.IInstanceMonitor;
 import org.uengine.modeling.ElementViewActionDelegate;
 import org.uengine.modeling.modeler.ProcessCanvas;
 import org.uengine.modeling.modeler.ProcessModeler;
@@ -23,7 +27,9 @@ import java.util.List;
  * Created by soo on 2015. 6. 12..
  */
 //@Face(ejsPath = "dwr/metaworks/genericfaces/CleanObjectFace.ejs")
-public class InstanceMonitorPanel {
+@Component
+@Scope("prototype")
+public class InstanceMonitorPanel extends InstanceViewDetail implements IInstanceMonitor {
 
     ElementViewActionDelegate elementViewActionDelegate;
     @Hidden
@@ -35,15 +41,6 @@ public class InstanceMonitorPanel {
             this.elementViewActionDelegate = elementViewActionDelegate;
         }
 
-    Long instanceId;
-    @Id
-        public Long getInstanceId() {
-            return instanceId;
-        }
-
-        public void setInstanceId(Long instanceId) {
-            this.instanceId = instanceId;
-        }
 
 
     ProcessInstanceExplorer processInstanceExplorer;
@@ -82,7 +79,7 @@ public class InstanceMonitorPanel {
 
     public ProcessModeler load(Long instanceId, ProcessManagerRemote processManager) throws Exception {
 
-        setInstanceId(instanceId);
+        setInstanceId(String.valueOf(instanceId));
 
         //install the process instance explorer first
         setProcessInstanceExplorer(new ProcessInstanceExplorer());
@@ -137,9 +134,9 @@ public class InstanceMonitorPanel {
     }
 
     //@ServiceMethod(inContextMenu = true, target = ServiceMethod.TARGET_SELF)
-    public void refresh() throws Exception {
+    public void load() throws Exception {
         ProcessManagerRemote processManagerRemote = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
-        load(getInstanceId(), processManagerRemote);
+        load(Long.valueOf(getInstanceId()), processManagerRemote);
     }
 
 }

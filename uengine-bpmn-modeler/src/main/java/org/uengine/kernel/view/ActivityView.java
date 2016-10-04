@@ -127,4 +127,17 @@ public class ActivityView extends ElementView {
 //			this.isBreakpoint = isBreakpoint;
 //		}
 
+
+	@ServiceMethod(inContextMenu = true)
+	public void pause() throws Exception {
+	}
+
+	@ServiceMethod(inContextMenu = true)
+	public void resume() throws Exception {
+	}
+
+	@ServiceMethod(inContextMenu = true)
+	public void stop() throws Exception {
+	}
+
 }

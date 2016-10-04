@@ -24,11 +24,7 @@ import java.util.Vector;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
-import org.metaworks.annotation.Face;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Id;
-import org.metaworks.annotation.Name;
-import org.metaworks.annotation.Order;
+import org.metaworks.annotation.*;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
@@ -130,6 +126,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 
 
 	boolean breakpoint;
+	@Group(name="Debug")
+	@Order(1000)
 		public boolean isBreakpoint() {
 			return breakpoint;
 		}
@@ -734,6 +732,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	}
 
 	public void fireResume(ProcessInstance instance) throws Exception{
+		instance.setEventOriginator(ACTIVITY_RESUMED, this);
 		onEvent(ACTIVITY_RESUMED, instance, this);
 	}
 	

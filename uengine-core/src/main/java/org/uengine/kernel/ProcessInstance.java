@@ -162,9 +162,13 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		final Activity activity = getProcessDefinition().getActivity(tracingTag);
 
 		if(isSimulation() && activity.isBreakpoint()){ //if this activity is a breakpoint, just suspend the step and don't run it.
-			activity.suspend(this);
+			
+			
+			if(activity != getEventOriginator(Activity.ACTIVITY_RESUMED)) {  // if this activity is originator of resume event.
+				activity.suspend(this);
 
-			return;
+				return;
+			}
 		}
 
 		if(!"".equals(tracingTag))
@@ -229,6 +233,28 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		if(!activity.isQueuingEnabled()) {
 			activity.afterExecute(this);
 		}
+	}
+
+	private Activity getEventOriginator(String eventName) {
+		Map<String, String> eventOriginators = (Map<String, String>) getProcessTransactionContext().getSharedContext("eventOriginators");
+
+		if(eventOriginators==null || !eventOriginators.containsKey(eventName))
+			return null;
+
+		try {
+			return getProcessDefinition().getActivity(eventOriginators.get(eventName));
+		} catch (Exception e) {
+			throw new RuntimeException("failed to get event originator: ", e);
+		}
+	}
+
+	protected void setEventOriginator(String eventName, Activity activity) {
+		Map<String, String> eventOriginators = (Map<String, String>) getProcessTransactionContext().getSharedContext("eventOriginators");
+
+		if(eventOriginators==null) eventOriginators = new HashMap<String, String>();
+
+		eventOriginators.put(eventName, activity.getTracingTag());
+		getProcessTransactionContext().setSharedContext("eventOriginators", eventOriginators);
 	}
 
 	public Map getActivityDetails(String tracingTag) throws Exception{

@@ -148,9 +148,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             shape.label = this.getLabel();
 
             if (this.object.instStatus) {
-                if ("Completed" == this.object.instStatus || "Running" == this.object.instStatus) {
+              //  if ("Completed" == this.object.instStatus || "Running" == this.object.instStatus) {
                     shape.status = this.object.instStatus;
-                }
+               // }
             }
 
             var style = this.object.style;
@@ -358,4 +358,72 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     };
 
     this.init();
+};
+
+
+OG.renderer.RaphaelRenderer.prototype.drawStatus = function (element) {
+    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
+        geometry = rElement ? rElement.node.shape.geom : null,
+        envelope, _upperLeft, _bBoxRect, _rect, _rect1,
+        _size = me._CONFIG.COLLAPSE_SIZE,
+        _hSize = _size / 2;
+
+    _rect1 = this._getREleById(rElement.id + OG.Constants.STATUS_SUFFIX);
+    if (_rect1) {
+        this._remove(_rect1);
+    }
+
+    _rect = this._getREleById(rElement.id + OG.Constants.STATUS_SUFFIX + '_IMG');
+    if (_rect) {
+        this._remove(_rect);
+    }
+
+    envelope = geometry.getBoundary();
+    _upperRight = envelope.getUpperRight();
+
+    switch(element.shape.status){
+        case "Completed":
+            _rect1 = this._PAPER.image("images/opengraph/complete.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
+            break;
+        case "Running":
+            _rect = this._PAPER.rect(envelope.getUpperLeft().x - 10, envelope.getUpperLeft().y - 10, envelope.getWidth() + 20, envelope.getHeight() + 20);
+            _rect.attr("fill", "#C9E2FC");
+            _rect.attr("stroke-width", "0.2");
+            _rect.attr("r", "10");
+            _rect.attr("fill-opacity", "1");
+            _rect.attr("stroke-dasharray", "--");
+
+            _rect1 = this._PAPER.image("images/opengraph/running.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
+            break;
+        case "Suspended":
+            _rect1 = this._PAPER.image("images/opengraph/pause.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
+            break;
+    }
+
+    if(element.shape.status == "Running"){
+        var ani1 = Raphael.animation({
+            fill:'#C9E2FC'
+        },1000);
+
+        var ani2 = Raphael.animation({
+            fill:'white'
+        },1000, startAni);
+
+        function startAni(){
+            _rect.attr({fill: 'white'}).animate(ani1);
+            _rect.attr({fill: '#C9E2FC'}).animate(ani2.delay(1000));
+        }
+        startAni();
+    }
+    this._add(_rect1, rElement.id + OG.Constants.STATUS_SUFFIX);
+    _rect1.insertAfter(rElement);
+    rElement.appendChild(_rect1);
+
+    if(_rect){
+        this._add(_rect, rElement.id + OG.Constants.STATUS_SUFFIX + '_IMG');
+        _rect.insertAfter(rElement);
+        rElement.prependChild(_rect);
+    }
+
+    return null;
 };

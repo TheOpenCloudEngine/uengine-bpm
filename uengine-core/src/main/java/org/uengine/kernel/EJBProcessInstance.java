@@ -233,7 +233,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			setInstanceId(instanceId);
 			boolean isArchive = getProcessInstanceDAO().getIsArchive();
 
-			setSimulation(getProcessInstanceDAO().get("isSim")==1);
+			//setSimulation(getProcessInstanceDAO().get("isSim")==1);
 
 			if(GlobalContext.logLevelIsDebug){
 				addDebugInfo("Definition administration url",GlobalContext.WEB_CONTEXT_ROOT + "/processmanager/viewProcessFlowChart.jsp?processDefinition=" + getProcessInstanceDAO().getDefId() + "&processDefinitionVersionID=" + getProcessInstanceDAO().getDefVerId());
@@ -1270,6 +1270,25 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 
 	}
+
+	@Override
+	public void setSimulation(boolean isSimulation) {
+		try {
+			getProcessInstanceDAO().set("isSim", 1);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public boolean isSimulation() {
+		try {
+			return getProcessInstanceDAO().get("isSim") == 1;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public void afterRollback(TransactionContext tx) throws Exception {
 		// TODO Auto-generated method stub
 

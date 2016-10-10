@@ -1284,7 +1284,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	public boolean isSimulation() {
 		try {
 			Object isSim = getProcessInstanceDAO().get("isSim");
-			return isSim!=null && isSim == 1;
+			return new Integer(1).equals(isSim);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -111,7 +111,8 @@ public class PropertySettingDialog extends ModalWindow{
         }
 
 
-    @ServiceMethod(payload={"panel", "elementView"}, target= ServiceMethodContext.TARGET_APPEND/*, validate = true*/, keyBinding = "Enter")
+    // Key Unbinding. Because protect Unwanted Action When set Properties,
+    @ServiceMethod(payload={"panel", "elementView"}, target= ServiceMethodContext.TARGET_APPEND/*, validate = true, keyBinding = "Enter"*/)
     public Object apply(){
         IElement element = (IElement)getPanel();
 

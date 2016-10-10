@@ -77,13 +77,14 @@ public class InstanceMonitorPanel extends InstanceViewDetail implements IInstanc
         setProcessModeler(processModeler);
     }
 
-    public ProcessModeler load(Long instanceId, ProcessManagerRemote processManager) throws Exception {
+    public ProcessModeler load(String instanceId, ProcessManagerRemote processManager) throws Exception {
 
-        setInstanceId(String.valueOf(instanceId));
+        setInstanceId(instanceId);
 
+        Object[] instanceIdAndESC = ProcessInstance.parseInstanceIdAndExecutionScope(instanceId);
         //install the process instance explorer first
         setProcessInstanceExplorer(new ProcessInstanceExplorer());
-        getProcessInstanceExplorer().load(instanceId);
+        getProcessInstanceExplorer().load((Long) instanceIdAndESC[0]);
 
         //install the flow chart view
         ElementViewActionDelegateForInstanceMonitoring elementViewActionDelegateForInstanceMonitoring = MetaworksRemoteService.getComponent(ElementViewActionDelegateForInstanceMonitoring.class);
@@ -91,7 +92,7 @@ public class InstanceMonitorPanel extends InstanceViewDetail implements IInstanc
 
         setElementViewActionDelegate(elementViewActionDelegateForInstanceMonitoring);
 
-        ProcessInstance processInstance = processManager.getProcessInstance(String.valueOf(instanceId));
+        ProcessInstance processInstance = processManager.getProcessInstance(instanceId);
         ProcessDefinition processDefinition = processInstance.getProcessDefinition();
 
         getProcessModeler().setModel(processDefinition, processInstance);
@@ -136,7 +137,7 @@ public class InstanceMonitorPanel extends InstanceViewDetail implements IInstanc
     //@ServiceMethod(inContextMenu = true, target = ServiceMethod.TARGET_SELF)
     public void load() throws Exception {
         ProcessManagerRemote processManagerRemote = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
-        load(Long.valueOf(getInstanceId()), processManagerRemote);
+        load(getInstanceId(), processManagerRemote);
     }
 
 }

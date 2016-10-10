@@ -16,16 +16,15 @@ import java.util.List;
 @Face(ejsPath="dwr/metaworks/genericfaces/TreeFace.ejs")
 public class ProcessInstanceExplorerNode{
 
-    Long instanceId;
-    private ExecutionScopeContext executionScope;
-
+    String instanceId;
     @Id
-        public Long getInstanceId() {
+        public String getInstanceId() {
             return instanceId;
         }
-        public void setInstanceId(Long instanceId) {
+        public void setInstanceId(String instanceId) {
             this.instanceId = instanceId;
         }
+
 
     String name;
     @Name
@@ -36,13 +35,15 @@ public class ProcessInstanceExplorerNode{
             this.name = name;
         }
 
-    Long mainInstId;
-        public Long getMainInstId() {
+    String mainInstId;
+        public String getMainInstId() {
             return mainInstId;
         }
-        public void setMainInstId(Long mainInstId) {
+
+        public void setMainInstId(String mainInstId) {
             this.mainInstId = mainInstId;
         }
+
 
 
     List<ProcessInstanceExplorerNode> childInstances;
@@ -59,15 +60,7 @@ public class ProcessInstanceExplorerNode{
     public void choose() throws Exception {
         //TODO refresh the instance view.
 
-        MetaworksRemoteService.wrapReturn(Instance.createInstanceViewDetail(getInstanceId()));
+        MetaworksRemoteService.wrapReturn(Instance.createInstanceViewDetail(instanceId));
     }
 
-
-    public void setExecutionScope(ExecutionScopeContext executionScope) {
-        this.executionScope = executionScope;
-    }
-
-    public ExecutionScopeContext getExecutionScope() {
-        return executionScope;
-    }
 }

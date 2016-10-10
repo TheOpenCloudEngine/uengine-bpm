@@ -29,7 +29,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 	transient protected ExecutionScopeContext executionScopeContext = null;
 
 	abstract public String getInstanceId();
-	abstract public void setInstanceId(String value);
+	abstract protected void setInstanceId(String value);
 
 	abstract public String getName();
 	abstract public void setName(String value);
@@ -205,7 +205,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 
 					@Override
 					public void afterCommit(TransactionContext tx) throws Exception {
-						(new ProcessExecutionThread()).queue(getInstanceId(), activity.getTracingTag());
+						(new ProcessExecutionThread()).queue(getFullInstanceId(), activity.getTracingTag());
 					}
 
 					@Override
@@ -598,6 +598,8 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 	}
 
 	public ExecutionScopeContext issueNewExecutionScope(Activity rootActivityForScope, Activity triggerActivity, String executionScopeName){
+		ExecutionScopeContext currentES = getExecutionScopeContext();
+
 		List<ExecutionScopeContext> executionScopeList = getExecutionScopeContexts();
 		int existingExecutionScopeSeq = executionScopeList.size();
 
@@ -605,6 +607,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		esc.setRootActivityInTheScope(rootActivityForScope);
 		esc.setExecutionScope(""+existingExecutionScopeSeq);
 		esc.setName(executionScopeName);
+		esc.setParent(currentES);
 		if(triggerActivity!=null)
 			esc.setTriggerActivityTracingTag(triggerActivity.getTracingTag());
 
@@ -752,8 +755,64 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 			this.activityCompletionHistory = activityCompletionHistory;
 		}
 
-	abstract public String getParentExecutionScopeOf(String executionScope);
 
 
+	public String getFullInstanceId(){
+		String instanceId = getInstanceId();
+		if(getExecutionScopeContext()!=null){
+			instanceId = instanceId + "@" + getExecutionScopeContext().getExecutionScope();
+		}
 
+		return instanceId;
+	}
+
+
+	public String getParentExecutionScopeOf(String executionScope){
+		List<ExecutionScopeContext> executionScopeContexts = getExecutionScopeContexts();
+
+		ExecutionScopeContext esc = executionScopeContexts.get(Integer.valueOf(executionScope));
+
+		return esc.getParent().getExecutionScope();
+	}
+
+	public ExecutionScopeContext getExecutionScopeContextTree() {
+		ExecutionScopeContext root = new ExecutionScopeContext();
+		List<ExecutionScopeContext> allESCs = getExecutionScopeContexts();
+
+		HashMap<String, ExecutionScopeContext> escById = new HashMap<String, ExecutionScopeContext>();
+		for (ExecutionScopeContext executionScopeContext1 : allESCs) {
+			escById.put(executionScopeContext1.getExecutionScope(), executionScopeContext1);
+		}
+
+		for (ExecutionScopeContext executionScopeContext1 : allESCs) {
+			ExecutionScopeContext parentESC = root;
+
+			if (executionScopeContext1.getParent() != null)
+				parentESC = escById.get(executionScopeContext1.getParent());
+
+			if (parentESC.getChilds() == null) {
+				parentESC.setChilds(new ArrayList<ExecutionScopeContext>());
+			}
+
+			parentESC.getChilds().add(executionScopeContext1);
+		}
+
+		return root;
+	}
+
+	public static Object[] parseInstanceIdAndExecutionScope(String fullInstanceId){
+		Long instanceId;
+		String executionScope = "";
+		if(fullInstanceId.indexOf("@") > -1) {
+			String[] instanceIdAndESC = fullInstanceId.split("@");
+			instanceId = Long.valueOf(instanceIdAndESC[0]);
+			executionScope = instanceIdAndESC[1];
+		}else{
+			instanceId = Long.valueOf(fullInstanceId);
+		}
+
+
+		return new Object[]{instanceId, executionScope};
+
+	}
 }

@@ -37,10 +37,15 @@ public class ProcessInstanceExplorer {
         instance.setInstId(rootInstanceId);
         rootInstanceId = instance.databaseMe().getRootInstId();
 
+
+        List<ProcessInstanceExplorerNode> processInstanceExplorerNodeList = new ArrayList<ProcessInstanceExplorerNode>();
+
         // load execution scopes first
         ProcessManagerRemote pm = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
         ProcessInstance processInstance = pm.getProcessInstance(String.valueOf(rootInstanceId));
+
         List<ExecutionScopeContext> executionScopeContexts = processInstance.getExecutionScopeContexts();
+
 
         for(ExecutionScopeContext executionScopeContext : executionScopeContexts){
             ProcessInstanceExplorerNode processInstanceExplorerNode = new ProcessInstanceExplorerNode();
@@ -50,24 +55,26 @@ public class ProcessInstanceExplorer {
                 Activity triggerActivity = processInstance.getProcessDefinition().getActivity(executionScopeContext.getTriggerActivityTracingTag());
                 processInstanceExplorerNode.setName("[" + triggerActivity.getName() + "]" + processInstanceExplorerNode.getName());
             }
-            processInstanceExplorerNode.setInstanceId(Long.valueOf(processInstance.getInstanceId()));
-            processInstanceExplorerNode.setExecutionScope(executionScopeContext);
+            processInstanceExplorerNode.setInstanceId(processInstance.getInstanceId() + "@" + executionScopeContext.getExecutionScope());
 
-            getRoot().getChildInstances().add(processInstanceExplorerNode);
+
+            processInstanceExplorerNode.setMainInstId(processInstance.getInstanceId() + ( executionScopeContext.getParent()!=null ? "@" + executionScopeContext.getParent() : ""));
+
+            processInstanceExplorerNodeList.add(processInstanceExplorerNode);
         }
         //
 
 
-        IInstance instances = Instance.loadForAllChildInstances(rootInstanceId);
-        List<ProcessInstanceExplorerNode> processInstanceExplorerNodeList = new ArrayList<ProcessInstanceExplorerNode>();
 
-        Map<Long,ProcessInstanceExplorerNode > processInstanceNodeByInstanceId = new HashMap<Long, ProcessInstanceExplorerNode>();
+        IInstance instances = Instance.loadForAllChildInstances(rootInstanceId);
+
+        Map<String,ProcessInstanceExplorerNode > processInstanceNodeByInstanceId = new HashMap<String, ProcessInstanceExplorerNode>();
 
         while(instances.next()){
             ProcessInstanceExplorerNode processInstanceExplorerNode = new ProcessInstanceExplorerNode();
             processInstanceExplorerNode.setName("[" + instances.getDefName() + "] " +instances.getName());
-            processInstanceExplorerNode.setInstanceId(instances.getInstId());
-            processInstanceExplorerNode.setMainInstId(instances.getMainInstId());
+            processInstanceExplorerNode.setInstanceId(String.valueOf(instances.getInstId()));
+            processInstanceExplorerNode.setMainInstId(String.valueOf(instances.getMainInstId()));
 
             processInstanceNodeByInstanceId.put(processInstanceExplorerNode.getInstanceId(), processInstanceExplorerNode);
 

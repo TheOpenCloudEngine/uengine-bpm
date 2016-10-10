@@ -209,7 +209,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		String executionScope = null;
 		if(instanceId.indexOf("@") > 0){
 			String[] instanceIdAndExecutionScope = instanceId.split("@");
-			instanceId = instanceIdAndExecutionScope[0];
+			setInstanceId(instanceIdAndExecutionScope[0]);
 
 			executionScope = instanceIdAndExecutionScope[1];
 		}

@@ -48,7 +48,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 		public String getInstanceId() {
 			return instanceId;
 		}
-		public void setInstanceId(String value) {
+		protected void setInstanceId(String value) {
 			instanceId = value;
 		}
 

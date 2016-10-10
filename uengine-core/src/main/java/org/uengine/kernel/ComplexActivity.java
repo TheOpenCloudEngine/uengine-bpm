@@ -640,7 +640,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 			fireFault(finalInstance, e);
 
-			if(!(instance_.getProcessTransactionContext().getSharedContext("faultTolerant")==true))
+			if(instance_.getProcessTransactionContext().getSharedContext("faultTolerant")==null)
 				throw e;
 		}finally{
 			if(act.isFaultTolerant()){

@@ -247,6 +247,10 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 	}
 
 	protected void onEvent(String command, ProcessInstance instance, Object payload) throws Exception {
+
+		if(instance.fireActivityEventInterceptor(this, command, instance, payload))
+			return;
+
 		
 		EventHandler[] eventHandlers = getEventHandlers();
 
@@ -281,12 +285,19 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 						return;
 					}
 				}
+
+				forwardErrorEvent(instance, payload);
 			}
 		}
 	
 		super.onEvent(command, instance, payload);
 	}
-	
+
+	private void forwardErrorEvent(ProcessInstance instance, Object payload) {
+
+
+	}
+
 	public EventHandler getEventHandler(String eventName){
 		
 		EventHandler[] eventHandlers = getEventHandlers();

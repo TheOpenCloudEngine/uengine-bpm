@@ -6,6 +6,7 @@ import org.uengine.codi.mw3.model.IInstance;
 import org.uengine.codi.mw3.model.Instance;
 import org.uengine.codi.mw3.model.InstanceView;
 import org.uengine.codi.mw3.model.InstanceViewDetail;
+import org.uengine.kernel.ExecutionScopeContext;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public class ProcessInstanceExplorerNode{
 
     Long instanceId;
+    private ExecutionScopeContext executionScope;
+
     @Id
         public Long getInstanceId() {
             return instanceId;
@@ -60,4 +63,11 @@ public class ProcessInstanceExplorerNode{
     }
 
 
+    public void setExecutionScope(ExecutionScopeContext executionScope) {
+        this.executionScope = executionScope;
+    }
+
+    public ExecutionScopeContext getExecutionScope() {
+        return executionScope;
+    }
 }

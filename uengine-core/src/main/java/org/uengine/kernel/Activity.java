@@ -512,6 +512,9 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		if(activityFilters!=null)
 		for(int i=0; i<activityFilters.length; i++)
 			activityFilters[i].beforeExecute(this, instance);
+
+		fireActivityEventListeners(instance, "beforeExecute", null);
+
 	}
 	
 	/**
@@ -528,6 +531,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		if(activityFilters!=null)
 		for(int i=0; i<activityFilters.length; i++)
 			activityFilters[i].afterComplete(this, instance);
+
+		fireActivityEventListeners(instance, "afterComplete", null);
 		
 		//add completed activity to transaction history.
 		instance.getProcessTransactionContext().addExecutedActivityInstanceContext(new ActivityInstanceContext(this, instance));
@@ -553,7 +558,10 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		if(activityFilters!=null)
 		for(int i=0; i<activityFilters.length; i++)
 			activityFilters[i].afterExecute(this, instance);
-		
+
+		fireActivityEventListeners(instance, "afterExecute", null);
+
+
 		Vector messageListeners = instance.getMessageListeners("event");
 		for(int i=0; i<messageListeners.size(); i++){
 			MessageListener messageListener = (MessageListener)getProcessDefinition().getActivity((String) messageListeners.get(i));
@@ -600,9 +608,10 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	 * 
 	 */
 	protected void onEvent(String command, ProcessInstance instance, Object payload) throws Exception{
-		
+
 		if(instance.fireActivityEventInterceptor(this, command, instance, payload)) return;
-		
+
+
 		//review: performance: need to use 'Hashtable' to locate the command or directly invocation from fire... methods.
 		if(command.equals(ACTIVITY_DONE)){
 			Activity theActivityHasBeenDone = ((Activity)payload);
@@ -657,6 +666,9 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		}
 		
 		fireEventToActivityFilters(instance, command, payload);
+		fireActivityEventListeners(instance, command, payload);
+
+
 	}
 	
 
@@ -1463,6 +1475,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 				}
 			}
 		}
+
+
 	}
 	
 	static HashMap triggerMethodMappingWithEventName; static{
@@ -1595,10 +1609,13 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 							continue;
 						}
 					}
-					activities.add(ts.getTargetActivity());
+
+					if(ts.getTargetActivity()!=null)
+						activities.add(ts.getTargetActivity());
 				}
 			}else{
-				activities.add(ts.getTargetActivity());
+				if(ts.getTargetActivity()!=null)
+					activities.add(ts.getTargetActivity());
 			}
 		}
 		if( otherwiseFlag && activities.isEmpty()){
@@ -1674,65 +1691,79 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 			this.elementView = view;
 		}
 
-
-	//transient List<ActivityEventListener> activityEventListeners;
+	transient List<ActivityEventListener> activityEventListeners;
 
 	public void addEventListener(final ActivityEventListener activityEventListener) {
-//		if(activityEventListeners == null){
-//			activityEventListeners = new ArrayList<ActivityEventListener>();
-//		}
+		if(activityEventListeners == null){
+			activityEventListeners = new ArrayList<ActivityEventListener>();
+		}
+
+		activityEventListeners.add(activityEventListener);
+
+
+//		ActivityFilter[] activityFilters = getProcessDefinition().getActivityFilters();
+//		activityFilters = (ActivityFilter[]) UEngineUtil.addArrayElement(activityFilters, new SensitiveActivityFilter() {
+//			@Override
+//			public void onEvent(Activity activity, ProcessInstance instance, String eventName, Object payload) throws Exception {
+//				if(Activity.this == activity){
+//					activityEventListener.onEvent(activity, instance, eventName, payload);
+//				}
+//			}
 //
-//		activityEventListeners.add(activityEventListener);
-
-
-		ActivityFilter[] activityFilters = getProcessDefinition().getActivityFilters();
-		activityFilters = (ActivityFilter[]) UEngineUtil.addArrayElement(activityFilters, new SensitiveActivityFilter() {
-			@Override
-			public void onEvent(Activity activity, ProcessInstance instance, String eventName, Object payload) throws Exception {
-				if(Activity.this == activity){
-					activityEventListener.onEvent(activity, instance, eventName, payload);
-				}
-			}
-
-			@Override
-			public void beforeExecute(Activity activity, ProcessInstance instance) throws Exception {
-				if(Activity.this == activity){
-					activityEventListener.beforeExecute(activity, instance);
-				}
-
-			}
-
-			@Override
-			public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
-				if(Activity.this == activity){
-					activityEventListener.afterExecute(activity, instance);
-				}
-			}
-
-			@Override
-			public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
-				if(Activity.this == activity){
-					activityEventListener.afterComplete(activity, instance);
-				}
-			}
-
-			@Override
-			public void onPropertyChange(Activity activity, ProcessInstance instance, String propertyName, Object changedValue) throws Exception {
-				if(Activity.this == activity){
-					activityEventListener.onPropertyChange(activity, instance, propertyName, changedValue);
-				}
-
-			}
-
-			@Override
-			public void onDeploy(ProcessDefinition definition) throws Exception {
-				//not implemented
-			}
-		}, ActivityFilter.class);
-
-		getProcessDefinition().setActivityFilters(activityFilters);
+//			@Override
+//			public void beforeExecute(Activity activity, ProcessInstance instance) throws Exception {
+//				if(Activity.this == activity){
+//					activityEventListener.beforeExecute(activity, instance);
+//				}
+//
+//			}
+//
+//			@Override
+//			public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
+//				if(Activity.this == activity){
+//					activityEventListener.afterExecute(activity, instance);
+//				}
+//			}
+//
+//			@Override
+//			public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
+//				if(Activity.this == activity){
+//					activityEventListener.afterComplete(activity, instance);
+//				}
+//			}
+//
+//			@Override
+//			public void onPropertyChange(Activity activity, ProcessInstance instance, String propertyName, Object changedValue) throws Exception {
+//				if(Activity.this == activity){
+//					activityEventListener.onPropertyChange(activity, instance, propertyName, changedValue);
+//				}
+//
+//			}
+//
+//			@Override
+//			public void onDeploy(ProcessDefinition definition) throws Exception {
+//				//not implemented
+//			}
+//		}, ActivityFilter.class);
+//
+//		getProcessDefinition().setActivityFilters(activityFilters);
 
 	}
 
+
+	protected void fireActivityEventListeners(ProcessInstance instance, String eventName, Object payload) throws  Exception{
+		if(activityEventListeners!=null)
+		for(ActivityEventListener activityEventListener : activityEventListeners){
+
+			if("beforeExecute".equals(eventName)){
+				activityEventListener.beforeExecute(this, instance);
+			}else if("afterExecute".equals(eventName)){
+				activityEventListener.afterExecute(this, instance);
+			}else if("afterComplete".equals(eventName)){
+				activityEventListener.afterComplete(this, instance);
+			}else
+				activityEventListener.onEvent(this, instance, eventName, payload);
+		}
+	}
 
 }

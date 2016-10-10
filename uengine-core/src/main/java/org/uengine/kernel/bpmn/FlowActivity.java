@@ -70,13 +70,14 @@ public class FlowActivity extends ComplexActivity {
 					&& (childActivity.getIncomingSequenceFlows() == null || childActivity.getIncomingSequenceFlows().size() == 0)){
 
 				final Event event = (Event)childActivity;
+
 				if(event.getAttachedToRef() != null){
-					getProcessDefinition().getActivity(event.getAttachedToRef()).addEventListener(
-							new ActivityEventListener(){
+					getProcessDefinition().getActivity(event.getAttachedToRef())
+							.addEventListener(
+							new ActivityEventListener() {
 								@Override
 								public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
 									getProcessDefinition().addMessageListener(instance, event);
-
 									queueActivity(event, instance);
 								}
 
@@ -86,9 +87,8 @@ public class FlowActivity extends ComplexActivity {
 								}
 							}
 					);
-
-
 				}
+
 			}
 		}
 
@@ -156,8 +156,16 @@ public class FlowActivity extends ComplexActivity {
 //		}else{
 			List<Activity> startActivities = getStartActivities();
 			if (startActivities!=null && startActivities.size() > 0) {
+
+				//Execute Event activity first since the first activity may occur any events.
 				for(Activity startActivity : startActivities) {
-					queueActivity(startActivity, instance);
+					if(startActivity instanceof Event)
+						queueActivity(startActivity, instance);
+				}
+
+				for(Activity startActivity : startActivities) {
+					if(!(startActivity instanceof Event))
+						queueActivity(startActivity, instance);
 				}
 			} else {
 				fireComplete(instance);  //throw new UEngineException("Can't find start activity");

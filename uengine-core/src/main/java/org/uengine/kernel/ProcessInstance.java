@@ -159,6 +159,11 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 	}
 
 	public void execute(String tracingTag) throws Exception{
+		execute( tracingTag, false);
+
+	}
+
+	public void execute(String tracingTag, boolean forceToQueue) throws Exception{
 		final Activity activity = getProcessDefinition().getActivity(tracingTag);
 
 		if(isSimulation() && activity.isBreakpoint()){ //if this activity is a breakpoint, just suspend the step and don't run it.
@@ -185,7 +190,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		setStatus(tracingTag, Activity.STATUS_RUNNING);
 
 		try{
-			if(activity.isQueuingEnabled()){
+			if(activity.isQueuingEnabled() || forceToQueue){
 
 				getProcessTransactionContext().addTransactionListener(new TransactionListener() {
 					@Override
@@ -200,8 +205,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 
 					@Override
 					public void afterCommit(TransactionContext tx) throws Exception {
-						QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannel", QueueChannel.class);
-						inputChannel.send(new GenericMessage<String[]>(new String[]{activity.getTracingTag(), getInstanceId()}));
+						(new ProcessExecutionThread()).queue(getInstanceId(), activity.getTracingTag());
 					}
 
 					@Override
@@ -579,7 +583,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		return (ProcessInstance) USE_CLASS.getConstructor(new Class[]{ProcessDefinition.class, String.class, Map.class}).newInstance(new Object[]{def, name, options});			
 	}
 
-	public ArrayList getExecutionScopeContexts(){
+	public List<ExecutionScopeContext> getExecutionScopeContexts(){
 		try {
 			setExecutionScopeContext(null); //this lets the caller exactly obtain the executionScopeContext.
 
@@ -594,7 +598,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 	}
 
 	public ExecutionScopeContext issueNewExecutionScope(Activity rootActivityForScope, Activity triggerActivity, String executionScopeName){
-		ArrayList executionScopeList = getExecutionScopeContexts();
+		List<ExecutionScopeContext> executionScopeList = getExecutionScopeContexts();
 		int existingExecutionScopeSeq = executionScopeList.size();
 
 		ExecutionScopeContext esc = new ExecutionScopeContext();
@@ -607,7 +611,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 		executionScopeList.add(esc);
 
 		try {
-			setProperty("", PVKEY_EXECUTION_SCOPES, executionScopeList);
+			setProperty("", PVKEY_EXECUTION_SCOPES, (Serializable) executionScopeList);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -724,7 +728,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 			if(eventInterceptors != null) eventInterceptors.remove(aei);
 		}
 		public boolean fireActivityEventInterceptor(Activity activity, String command, ProcessInstance instance, Object payload) throws Exception{
-	
+
 			if(eventInterceptors==null) return false;
 			
 			boolean eventHasBeenIntercepted = false;
@@ -734,7 +738,7 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 					eventHasBeenIntercepted = true;
 				}
 			}
-			
+
 			return eventHasBeenIntercepted;
 		}
 

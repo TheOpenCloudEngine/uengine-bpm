@@ -17,6 +17,9 @@ public class EventPalette extends Palette {
 		addSymbol((new TimerEventView()).createSymbol());
 		addSymbol((new ReceiveRestMessageEventActivityView()).createSymbol());
 		addSymbol((new MessageEventView()).createSymbol());
+		addSymbol((new ReceiveErrorEventView()).createSymbol());
+
+
 	}
 
 

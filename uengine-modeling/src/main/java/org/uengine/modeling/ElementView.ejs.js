@@ -368,7 +368,7 @@ OG.renderer.RaphaelRenderer.prototype.drawStatus = function (element) {
         _size = me._CONFIG.COLLAPSE_SIZE,
         _hSize = _size / 2;
 
-    _rect1 = this._getREleById(rElement.id + OG.Constants.STATUS_SUFFIX);
+    _rect1 = this._getREleById(rElement.id + OG.Constants.STATUS_SUFFIX); //shape itself
     if (_rect1) {
         this._remove(_rect1);
     }
@@ -398,6 +398,9 @@ OG.renderer.RaphaelRenderer.prototype.drawStatus = function (element) {
         case "Suspended":
             _rect1 = this._PAPER.image("images/opengraph/pause.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
             break;
+        //case "Stopped":
+        //    _rect1 = this._PAPER.image("images/opengraph/stop.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
+        //    break;
     }
 
     if(element.shape.status == "Running"){
@@ -415,9 +418,12 @@ OG.renderer.RaphaelRenderer.prototype.drawStatus = function (element) {
         }
         startAni();
     }
-    this._add(_rect1, rElement.id + OG.Constants.STATUS_SUFFIX);
-    _rect1.insertAfter(rElement);
-    rElement.appendChild(_rect1);
+
+    if(_rect1) {  // _rect1 is badge or marker shape. if null don't draw it.
+        this._add(_rect1, rElement.id + OG.Constants.STATUS_SUFFIX);
+        _rect1.insertAfter(rElement);
+        rElement.appendChild(_rect1);
+    }
 
     if(_rect){
         this._add(_rect, rElement.id + OG.Constants.STATUS_SUFFIX + '_IMG');

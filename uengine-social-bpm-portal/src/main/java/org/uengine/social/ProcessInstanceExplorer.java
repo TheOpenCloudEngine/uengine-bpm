@@ -1,7 +1,12 @@
 package org.uengine.social;
 
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.codi.mw3.model.IInstance;
 import org.uengine.codi.mw3.model.Instance;
+import org.uengine.kernel.Activity;
+import org.uengine.kernel.ExecutionScopeContext;
+import org.uengine.kernel.ProcessInstance;
+import org.uengine.processmanager.ProcessManagerRemote;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,13 +31,32 @@ public class ProcessInstanceExplorer {
     public void load(long rootInstanceId) throws Exception {
 
         //replace real rootInstanceId -- select rootInstId bpm_procinst where instid = ?rootInstanceId
+        setRoot(new ProcessInstanceExplorerNode());
 
         Instance instance = new Instance();
         instance.setInstId(rootInstanceId);
         rootInstanceId = instance.databaseMe().getRootInstId();
 
+        // load execution scopes first
+        ProcessManagerRemote pm = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
+        ProcessInstance processInstance = pm.getProcessInstance(String.valueOf(rootInstanceId));
+        List<ExecutionScopeContext> executionScopeContexts = processInstance.getExecutionScopeContexts();
 
-        setRoot(new ProcessInstanceExplorerNode());
+        for(ExecutionScopeContext executionScopeContext : executionScopeContexts){
+            ProcessInstanceExplorerNode processInstanceExplorerNode = new ProcessInstanceExplorerNode();
+            processInstanceExplorerNode.setName(executionScopeContext.getName());
+
+            if(executionScopeContext.getTriggerActivityTracingTag()!=null) {
+                Activity triggerActivity = processInstance.getProcessDefinition().getActivity(executionScopeContext.getTriggerActivityTracingTag());
+                processInstanceExplorerNode.setName("[" + triggerActivity.getName() + "]" + processInstanceExplorerNode.getName());
+            }
+            processInstanceExplorerNode.setInstanceId(Long.valueOf(processInstance.getInstanceId()));
+            processInstanceExplorerNode.setExecutionScope(executionScopeContext);
+
+            getRoot().getChildInstances().add(processInstanceExplorerNode);
+        }
+        //
+
 
         IInstance instances = Instance.loadForAllChildInstances(rootInstanceId);
         List<ProcessInstanceExplorerNode> processInstanceExplorerNodeList = new ArrayList<ProcessInstanceExplorerNode>();

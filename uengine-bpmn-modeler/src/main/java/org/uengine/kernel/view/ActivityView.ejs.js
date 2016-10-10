@@ -1,71 +1,45 @@
 var org_uengine_kernel_view_ActivityView = function(objectId, className){
-	this.objectId = objectId;
-	this.className = className;
-	this.object = mw3.objects[this.objectId];
 
-	this.tracingTag = function(){
-		var modeler = mw3.getAutowiredObject('org.uengine.modeling.Modeler');
+	org_uengine_modeling_ElementView.apply(this, new Array(objectId, className));
 
-		this.object.element.tracingTag = modeler.getFaceHelper().getTracingTag();
+	var modeler = mw3.getAutowiredObject('org.uengine.modeling.Modeler');
+	this.object.element.tracingTag = modeler.getFaceHelper().getTracingTag();
 
-		mw3.putObjectIdKeyMapping(this.object.element.__objectId, this.object.element, true);
-	}
 
-	this.initApply = function(){
-		org_uengine_modeling_ElementView.apply(this, new Array(this.objectId, this.className));
+	//draw task image
+	{
+		var me = this.canvas._RENDERER, rElement = me._getREleById(OG.Util.isElement(this.element) ? this.element.id : this.element),
+			geometry = rElement ? rElement.node.shape.geom : null,
+			envelope, _upperLeft, _bBoxRect, _rect, _rect1,
+			_size = me._CONFIG.COLLAPSE_SIZE,
+			_hSize = _size / 2;
 
-		//this.prototype = org_uengine_modeling_ElementView.prototype;
-		if (this.object.element && (this.object.element.tracingTag == null || typeof this.object.element.tracingTag == "undefined")) {
-			this.tracingTag();
+		_rect1 = me._getREleById(rElement.id + OG.Constants.TASKTYPE_SUFFIX);
+		if (_rect1) {
+			me._remove(_rect1);
 		}
+
+		envelope = geometry.getBoundary();
+		_upperLeft = envelope.getUpperLeft();
+
+		_rect1 = me._PAPER.image("resources/images/symbol/"+this.object.element.__className+".png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+
+		me._add(_rect1, rElement.id + OG.Constants.TASKTYPE_SUFFIX);
+		_rect1.insertAfter(rElement);
+		rElement.appendChild(_rect1);
 	}
-
-
-	var superScript = 'dwr/metaworks/org/uengine/modeling/ElementView.ejs.js';
-	if(!mw3.loadedScripts[superScript]){
-		mw3.importScript(superScript, function(){
-			mw3.getFaceHelper(objectId).initApply();
-		})
-	}else{
-		this.initApply();
-	}
-
-
-
-
+	//
 
 }
+extend(org_uengine_kernel_view_ActivityView, "org_uengine_modeling_ElementView");
 
 
+
+///  ------ i don't know why following exists ------
 
 OG.shape.bpmn.A_Task.prototype.drawCustomControl = function(handler, element) {
 	if (!handler || !element) return;
 
-	//alert('xxx');
-
 	handler._RENDERER.selectedElement = element;
-
-	//if (element.shape instanceof OG.shape.bpmn.A_Task) {
-    //
-	//	//찍을 좌표 구하기
-	//	//ur_x = element.shape.geom.boundary._upperLeft.x;
-	//	//ur_y = element.shape.geom.boundary._upperLeft.y;
-	//	//ur_x = element.shape.geom.boundary._width + ur_x;
-     //   //
-	//	//task = handler._RENDERER._PAPER.image("resources/images/symbol/guide_task.png", ur_x + 10, ur_y, 15, 15);
-	//	//end = handler._RENDERER._PAPER.image("resources/images/symbol/guide_end.png", ur_x + 10, ur_y + 20, 15, 15);
-    //
-	//	var popup = {
-	//		__className: "org.metaworks.widget.Popup",
-    //
-	//		panel: {
-	//			__className: "org.metaworks.widget.Label",
-	//			html: "<h3>test</h3>"
-	//		}
-    //
-	//	};
-    //
-	//	mw3.locateObject(popup);
-	//}
 
 }

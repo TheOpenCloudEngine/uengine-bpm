@@ -1,5 +1,6 @@
 package org.uengine.modeling.modeler;
 
+import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.dwr.MetaworksRemoteService;
@@ -68,15 +69,23 @@ public class ProcessModeler extends DefaultModeler {
             return;
 
 
-        if (instance == null)
+        if (instance == null) {
             setElementViewActionDelegate(new DefaultElementViewActionDelegate());
+        }else{
+            if(getMetaworksContext()==null){
+                setMetaworksContext(new MetaworksContext());
+            }
+
+            getMetaworksContext().setWhere("instance");
+
+        }
 
 
-        //why clone?
-//        ProcessDefinition def = (ProcessDefinition) GlobalContext.deserialize(GlobalContext.serialize(model, String.class), String.class);
-//        ;
-//
-        ProcessDefinition def = (ProcessDefinition) model;
+//        why clone? ---> ElementView is not found if def is reused. problem.
+        ProcessDefinition def = (ProcessDefinition) GlobalContext.deserialize(GlobalContext.serialize(model, String.class), String.class);
+        ;
+
+        //ProcessDefinition def = (ProcessDefinition) model;
         def.validate(new HashMap());
 
         final List<ElementView> elementViewList = new ArrayList<ElementView>();

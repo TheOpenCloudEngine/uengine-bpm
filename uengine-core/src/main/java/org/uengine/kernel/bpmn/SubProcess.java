@@ -354,10 +354,16 @@ public class SubProcess extends ScopeActivity{
     }
 
     protected void executeActivity(ProcessInstance instance) throws Exception {
-        if("loop".equals(getMultipleInstanceOption())){
-            executeActivity_CaseInLoop(instance);
+
+        if(getForEachVariable()!=null) { //if there's no mapped for each role setting, Multiple Instances is ignored.
+
+            if ("loop".equals(getMultipleInstanceOption())) {
+                executeActivity_CaseInLoop(instance);
+            } else {
+                executeActivity_CaseInParallel(instance);
+            }
         }else{
-            executeActivity_CaseInParallel(instance);
+            super.executeActivity(instance);
         }
     }
 
@@ -683,17 +689,20 @@ public class SubProcess extends ScopeActivity{
 
     protected void afterComplete(ProcessInstance instance) throws Exception {
 
-        //apply the values from the sub process
-        Hashtable options = new Hashtable();
-        options.put("ptc", instance.getProcessTransactionContext());
+        if(getForEachVariable()!=null) {
 
-        Vector spIds = getSubprocessIds(instance, SUBPROCESS_INST_ID);
+            //apply the values from the sub process
+            Hashtable options = new Hashtable();
+            options.put("ptc", instance.getProcessTransactionContext());
 
-        Map subProcesses = new Hashtable();
+            Vector spIds = getSubprocessIds(instance, SUBPROCESS_INST_ID);
 
-        if(!isRunAndForget()){
-            //applyVariableBindings(instance, spIds, subProcesses, options); // don't need anymore by introducing the VariablePointer.
-            applyRoleBindings(instance, spIds, subProcesses, options);
+            Map subProcesses = new Hashtable();
+
+            if (!isRunAndForget()) {
+                //applyVariableBindings(instance, spIds, subProcesses, options); // don't need anymore by introducing the VariablePointer.
+                applyRoleBindings(instance, spIds, subProcesses, options);
+            }
         }
 
         super.afterComplete(instance);

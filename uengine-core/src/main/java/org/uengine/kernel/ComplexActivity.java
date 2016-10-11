@@ -640,8 +640,13 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 			fireFault(finalInstance, e);
 
-			if(instance_.getProcessTransactionContext().getSharedContext("faultTolerant")==null)
+			if(instance_.getProcessTransactionContext().getSharedContext("faultTolerant")==null) {
+
+				(new FaultMarker()).queue(instance_.getInstanceId(), act.getTracingTag());
+
 				throw e;
+
+			}
 		}finally{
 			if(act.isFaultTolerant()){
 				onEvent(CHILD_DONE, finalInstance, act);
@@ -804,20 +809,17 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 		stop(instance, Activity.STATUS_STOPPED);
 	}
 
-	public void stop(ProcessInstance instance,String status) throws Exception {
+	public void stop(ProcessInstance instance, String status) throws Exception {
 		List<Activity> childActivities = getChildActivities();
 		for(Activity child : childActivities){
-			//			if(child instanceof ComplexActivity){
-			//				child.stop(instance);
-			//			}else{
 			if(child instanceof ComplexActivity || isStoppable(instance.getStatus(child.getTracingTag()))){
 				if(child.getParentActivity()!=null && !isStoppable(child.getParentActivity().getStatus(instance)))
 					System.out.println("Illegal status");
 
-				child.stop(instance,status);
+					child.stop(instance, status);
 			}
-			//			}
 		}
+
 		super.stop(instance,status);
 	}
 

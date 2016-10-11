@@ -54,6 +54,9 @@ public class ProcessInstanceExplorer {
 
             if(executionScopeContext.getTriggerActivityTracingTag()!=null) {
                 Activity triggerActivity = processInstance.getProcessDefinition().getActivity(executionScopeContext.getTriggerActivityTracingTag());
+
+                if(triggerActivity==null) continue; //case when the process definition is changed during simulation
+
                 processInstanceExplorerNode.setName("[" + triggerActivity.getName() + "]" + processInstanceExplorerNode.getName());
             }
             processInstanceExplorerNode.setInstanceId(processInstance.getInstanceId() + "@" + executionScopeContext.getExecutionScope());

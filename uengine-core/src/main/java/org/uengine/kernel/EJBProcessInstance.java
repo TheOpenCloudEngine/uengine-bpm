@@ -785,6 +785,9 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	public String getStatus(String scope) throws Exception{
+		if(getProcessDefinition().getActivity(scope)==null)
+			return null;
+
 		return getProcessDefinition().getActivity(scope).getStatus(this);
 	}
 
@@ -1258,7 +1261,19 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	public void stop(String status) throws Exception {
-		super.stop(status);
+
+		if(isSimulation()){
+			try {
+
+				super.stop(status);
+			}catch (Exception e){
+
+			}
+
+		}else{
+			super.stop(status);
+		}
+
 		getProcessInstanceDAO().setStatus(status);
 	}
 

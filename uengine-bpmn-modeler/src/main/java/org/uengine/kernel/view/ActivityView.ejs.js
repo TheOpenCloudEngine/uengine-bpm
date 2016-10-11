@@ -5,7 +5,6 @@ var org_uengine_kernel_view_ActivityView = function(objectId, className){
 	var modeler = mw3.getAutowiredObject('org.uengine.modeling.Modeler');
 	this.object.element.tracingTag = modeler.getFaceHelper().getTracingTag();
 
-
 	// draw markers and badges
 	{
 		var me = this.canvas._RENDERER, rElement = me._getREleById(OG.Util.isElement(this.element) ? this.element.id : this.element),
@@ -32,6 +31,7 @@ var org_uengine_kernel_view_ActivityView = function(objectId, className){
 		}
 
 		//draw validation error image
+		if(modeler.metaworksContext.where!='instance')
 		{
 			var badge_suffix = "_ValidErr";
 
@@ -56,13 +56,18 @@ var org_uengine_kernel_view_ActivityView = function(objectId, className){
 
 	}
 
-
-
+	//this.canvas.bind('redrawShape', this.element, function(){
+	//	additionalDrawing();
+	//});
 
 }
 extend(org_uengine_kernel_view_ActivityView, "org_uengine_modeling_ElementView");
 
 
+org_uengine_kernel_view_ActivityView.prototype.additionalDrawing = function(){
+
+
+}
 
 ///  ------ i don't know why following exists ------
 

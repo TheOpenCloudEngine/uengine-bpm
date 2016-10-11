@@ -1015,61 +1015,61 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		}
 
 		//try to find child execution scopes and try to create an aggregated status message
-		if(status==null){
-
-			final HashMap<String, Integer> countPerStatus = new HashMap<String, Integer>();
-
-			ExecutionScopeContext escTree = instance.getExecutionScopeContextTree(instance.getExecutionScopeContext().getExecutionScope());
-
-			if(escTree.getChilds()!=null){
-				new TreeVisitor<ExecutionScopeContext>(){
-
-					@Override
-					public List<ExecutionScopeContext> getChild(ExecutionScopeContext parent){
-						return parent.getChilds();
-					}
-
-					@Override
-					public void logic(ExecutionScopeContext elem){
-						try {
-							new InExecutionScope(instance.getExecutionScopeContext().getExecutionScope()){
-
-                                @Override
-                                public Object logic(ProcessInstance instance) throws Exception {
-
-									String status = (String)instance.getProperty(getTracingTag(), Activity.PVKEY_STATUS);
-
-									if(status!=null) {
-										int count = 0;
-
-										if(countPerStatus.containsKey(status))
-											count = countPerStatus.get(status);
-
-										countPerStatus.put(status, count + 1);
-									}
-
-									return null;
-                                }
-                            }.run(instance);
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-					}
-
-				}.run(escTree);
-
-				String aggregatedStatus = "";
-				if(countPerStatus.size()>0){
-					String sep = "";
-					for(String key : countPerStatus.keySet()){
-						aggregatedStatus += sep + key + countPerStatus.get(key);
-						sep = ", ";
-					}
-
-					return aggregatedStatus;
-				}
-			}
-		}
+//		if(status==null){
+//
+//			final HashMap<String, Integer> countPerStatus = new HashMap<String, Integer>();
+//
+//			ExecutionScopeContext escTree = instance.getExecutionScopeContextTree(instance.getExecutionScopeContext().getExecutionScope());
+//
+//			if(escTree.getChilds()!=null){
+//				new TreeVisitor<ExecutionScopeContext>(){
+//
+//					@Override
+//					public List<ExecutionScopeContext> getChild(ExecutionScopeContext parent){
+//						return parent.getChilds();
+//					}
+//
+//					@Override
+//					public void logic(ExecutionScopeContext elem){
+//						try {
+//							new InExecutionScope(instance.getExecutionScopeContext().getExecutionScope()){
+//
+//                                @Override
+//                                public Object logic(ProcessInstance instance) throws Exception {
+//
+//									String status = (String)instance.getProperty(getTracingTag(), Activity.PVKEY_STATUS);
+//
+//									if(status!=null) {
+//										int count = 0;
+//
+//										if(countPerStatus.containsKey(status))
+//											count = countPerStatus.get(status);
+//
+//										countPerStatus.put(status, count + 1);
+//									}
+//
+//									return null;
+//                                }
+//                            }.run(instance);
+//						} catch (Exception e) {
+//							throw new RuntimeException(e);
+//						}
+//					}
+//
+//				}.run(escTree);
+//
+//				String aggregatedStatus = "";
+//				if(countPerStatus.size()>0){
+//					String sep = "";
+//					for(String key : countPerStatus.keySet()){
+//						aggregatedStatus += sep + key + countPerStatus.get(key);
+//						sep = ", ";
+//					}
+//
+//					return aggregatedStatus;
+//				}
+//			}
+//		}
 		
 		if(status==null)
 			status = STATUS_READY;

@@ -38,7 +38,7 @@ public class SocialBPMInstanceTooltip extends InstanceTooltip{
 
     protected InstanceMonitorPanel createInstanceMonitorPanel() throws Exception {
         InstanceMonitorPanel instanceMonitorPanel = new InstanceMonitorPanel();
-        instanceMonitorPanel.load(this.getInstanceId(), processManager);
+        instanceMonitorPanel.load(String.valueOf(this.getInstanceId()), processManager);
         return instanceMonitorPanel;
     }
 

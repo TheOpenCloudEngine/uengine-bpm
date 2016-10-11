@@ -39,6 +39,7 @@ public class ProcessInstanceExplorer {
 
 
         List<ProcessInstanceExplorerNode> processInstanceExplorerNodeList = new ArrayList<ProcessInstanceExplorerNode>();
+        Map<String,ProcessInstanceExplorerNode > processInstanceNodeByInstanceId = new HashMap<String, ProcessInstanceExplorerNode>();
 
         // load execution scopes first
         ProcessManagerRemote pm = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
@@ -58,9 +59,11 @@ public class ProcessInstanceExplorer {
             processInstanceExplorerNode.setInstanceId(processInstance.getInstanceId() + "@" + executionScopeContext.getExecutionScope());
 
 
-            processInstanceExplorerNode.setMainInstId(processInstance.getInstanceId() + ( executionScopeContext.getParent()!=null ? "@" + executionScopeContext.getParent() : ""));
+            processInstanceExplorerNode.setMainInstId(processInstance.getInstanceId() + ( executionScopeContext.getParent()!=null ? "@" + executionScopeContext.getParent().getExecutionScope() : ""));
 
             processInstanceExplorerNodeList.add(processInstanceExplorerNode);
+
+            processInstanceNodeByInstanceId.put(processInstanceExplorerNode.getInstanceId(), processInstanceExplorerNode);
         }
         //
 
@@ -68,7 +71,6 @@ public class ProcessInstanceExplorer {
 
         IInstance instances = Instance.loadForAllChildInstances(rootInstanceId);
 
-        Map<String,ProcessInstanceExplorerNode > processInstanceNodeByInstanceId = new HashMap<String, ProcessInstanceExplorerNode>();
 
         while(instances.next()){
             ProcessInstanceExplorerNode processInstanceExplorerNode = new ProcessInstanceExplorerNode();

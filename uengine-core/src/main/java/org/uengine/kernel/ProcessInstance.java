@@ -772,23 +772,36 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 
 		ExecutionScopeContext esc = executionScopeContexts.get(Integer.valueOf(executionScope));
 
+		if(esc.getParent()==null)
+			return null;
+
 		return esc.getParent().getExecutionScope();
 	}
 
 	public ExecutionScopeContext getExecutionScopeContextTree() {
+		return getExecutionScopeContextTree(null); //return root
+	}
+
+	public ExecutionScopeContext getExecutionScopeContextTree(String rootExecutionScope) {
 		ExecutionScopeContext root = new ExecutionScopeContext();
 		List<ExecutionScopeContext> allESCs = getExecutionScopeContexts();
+
+		ExecutionScopeContext returnRoot = root;
 
 		HashMap<String, ExecutionScopeContext> escById = new HashMap<String, ExecutionScopeContext>();
 		for (ExecutionScopeContext executionScopeContext1 : allESCs) {
 			escById.put(executionScopeContext1.getExecutionScope(), executionScopeContext1);
+
+			if(rootExecutionScope!=null && rootExecutionScope.equals(executionScopeContext1.getExecutionScope())){
+				returnRoot = executionScopeContext1;
+			}
 		}
 
 		for (ExecutionScopeContext executionScopeContext1 : allESCs) {
 			ExecutionScopeContext parentESC = root;
 
 			if (executionScopeContext1.getParent() != null)
-				parentESC = escById.get(executionScopeContext1.getParent());
+				parentESC = escById.get(executionScopeContext1.getParent().getExecutionScope());
 
 			if (parentESC.getChilds() == null) {
 				parentESC.setChilds(new ArrayList<ExecutionScopeContext>());
@@ -802,11 +815,13 @@ public abstract class ProcessInstance implements java.io.Serializable, BeanPrope
 
 	public static Object[] parseInstanceIdAndExecutionScope(String fullInstanceId){
 		Long instanceId;
-		String executionScope = "";
+		String executionScope = null;
 		if(fullInstanceId.indexOf("@") > -1) {
 			String[] instanceIdAndESC = fullInstanceId.split("@");
 			instanceId = Long.valueOf(instanceIdAndESC[0]);
-			executionScope = instanceIdAndESC[1];
+
+			if(instanceIdAndESC.length > 1)
+				executionScope = instanceIdAndESC[1];
 		}else{
 			instanceId = Long.valueOf(fullInstanceId);
 		}

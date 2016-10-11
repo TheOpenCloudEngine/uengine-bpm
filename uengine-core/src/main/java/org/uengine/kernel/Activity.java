@@ -31,6 +31,7 @@ import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.IIntegrityElement;
+import org.uengine.util.TreeVisitor;
 import org.uengine.util.UEngineUtil;
 
 
@@ -78,7 +79,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	final public static String STATUS_TIMEOUT=		"Timeout";
 	final public static String STATUS_CANCELLED=	"Cancelled";
 	final public static String STATUS_ALLCOMMIT=	"AllCommit";
-	
+	final public static String STATUS_MULTIPLE=	"Multiple";
+
 	final public static String VAR_START_TIME=		"_start_time";
 	final public static String VAR_END_TIME=		"_end_time";
 	final public static String VAR_BIZ_STATUS=		"_var_biz_status";
@@ -942,6 +944,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		if( isCondition && emptyCondition ){		// 컨디션이 존재하는데 어떤 선은 컨디션이 없을때
 			vc.add(getActivityLabel() + " : all line have to include condition ");
 		}
+
 		return vc;
 	}
 	
@@ -992,7 +995,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	}
 	//
 
-	public String getStatus(ProcessInstance instance) throws Exception{
+	public String getStatus(final ProcessInstance instance) throws Exception{
 		String status = null;
 		
 		if( instance != null ){
@@ -1000,6 +1003,71 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 				status = (String)instance.getProperty(getTracingTag(), Activity.PVKEY_STATUS);
 			}catch(Exception e){
 				e.printStackTrace();
+			}
+		}
+
+		if(STATUS_READY.equals(status)){
+			ExecutionScopeContext escTree = instance.getExecutionScopeContextTree(instance.getExecutionScopeContext()!=null ? instance.getExecutionScopeContext().getExecutionScope(): null);
+
+			if(escTree.getChilds()!=null && escTree.getChilds().size() > 0){
+				status = STATUS_MULTIPLE;
+			}
+		}
+
+		//try to find child execution scopes and try to create an aggregated status message
+		if(status==null){
+
+			final HashMap<String, Integer> countPerStatus = new HashMap<String, Integer>();
+
+			ExecutionScopeContext escTree = instance.getExecutionScopeContextTree(instance.getExecutionScopeContext().getExecutionScope());
+
+			if(escTree.getChilds()!=null){
+				new TreeVisitor<ExecutionScopeContext>(){
+
+					@Override
+					public List<ExecutionScopeContext> getChild(ExecutionScopeContext parent){
+						return parent.getChilds();
+					}
+
+					@Override
+					public void logic(ExecutionScopeContext elem){
+						try {
+							new InExecutionScope(instance.getExecutionScopeContext().getExecutionScope()){
+
+                                @Override
+                                public Object logic(ProcessInstance instance) throws Exception {
+
+									String status = (String)instance.getProperty(getTracingTag(), Activity.PVKEY_STATUS);
+
+									if(status!=null) {
+										int count = 0;
+
+										if(countPerStatus.containsKey(status))
+											count = countPerStatus.get(status);
+
+										countPerStatus.put(status, count + 1);
+									}
+
+									return null;
+                                }
+                            }.run(instance);
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
+					}
+
+				}.run(escTree);
+
+				String aggregatedStatus = "";
+				if(countPerStatus.size()>0){
+					String sep = "";
+					for(String key : countPerStatus.keySet()){
+						aggregatedStatus += sep + key + countPerStatus.get(key);
+						sep = ", ";
+					}
+
+					return aggregatedStatus;
+				}
 			}
 		}
 		

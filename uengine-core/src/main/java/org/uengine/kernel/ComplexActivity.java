@@ -653,16 +653,23 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 	public ValidationContext validate(Map options){
 		ValidationContext valCtx = super.validate(options);
 		if(getChildActivities()!= null && getChildActivities().size() > 0){
-			if(getChildActivities().size()==1){
-				if(!(this instanceof ProcessDefinition || this instanceof LoopActivity)){
-					valCtx.addWarningWithCode(getActivityLabel() + " only one child activity: This complex activity is not necessary.", ERRORCODE_COMPLEX_ACTIVITY_IS_NOT_NECESSARY);
-				}
-			}
+//			if(getChildActivities().size()==1){
+//				if(!(this instanceof ProcessDefinition || this instanceof LoopActivity)){
+//					valCtx.addWarningWithCode(getActivityLabel() + " only one child activity: This complex activity is not necessary.", ERRORCODE_COMPLEX_ACTIVITY_IS_NOT_NECESSARY);
+//				}
+//			}
 
 			if(options==null || (options!=null && !options.containsKey(ValidationContext.OPTIONKEY_DISABLE_REPLICATION))){
 				List<Activity> childActivities = getChildActivities();	 			
 				for(Activity child : childActivities){
-					valCtx.addAll(child.validate(options));
+					ValidationContext vc = child.validate(options);
+					valCtx.addAll(vc);
+
+					if (vc.size() > 0) {
+						child.setIntegrity(1);
+					} else {
+						child.setIntegrity(0);
+					}
 				}
 			}
 		}else{

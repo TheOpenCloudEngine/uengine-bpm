@@ -328,8 +328,12 @@ public class DefaultProcessInstance extends ProcessInstance{
 		
 		return sourceValue;
 	}
-	
+
 	public Serializable getSourceValue(String scopeByTracingTag, String key) throws Exception{
+		return getSourceValue(scopeByTracingTag, key, false);
+	}
+
+	public Serializable getSourceValue(String scopeByTracingTag, String key, boolean isProperty) throws Exception{
 
 		ExecutionScopeContext originalScope = getExecutionScopeContext();;
 		ExecutionScopeContext scope;
@@ -339,7 +343,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 		do {
 			scope = getExecutionScopeContext();
 
-			String fullKey = createFullKey(scopeByTracingTag, key, false);
+			String fullKey = createFullKey(scopeByTracingTag, key, isProperty);
 
 			if(variables.containsKey(fullKey)){
 				value = (Serializable) variables.get(fullKey);
@@ -749,8 +753,10 @@ public class DefaultProcessInstance extends ProcessInstance{
 	}
 	
 	public Serializable getProperty(String tracingTag, String key) throws Exception {
-		String fullKey = createFullKey(tracingTag, key, true);
-		return (Serializable)variables.get(fullKey);
+//		String fullKey = createFullKey(tracingTag, key, true);
+//		return (Serializable)variables.get(fullKey);
+
+		return getSourceValue(tracingTag, key, true);
 	}
 
 
@@ -907,9 +913,9 @@ public class DefaultProcessInstance extends ProcessInstance{
 		return mainExecutionScope;
 	}
 
-	public String getParentExecutionScopeOf(String executionScope){
-		return null; //TODO
-	}
+//	public String getParentExecutionScopeOf(String executionScope){
+//		return super.getParentExecutionScopeOf(executionScope); //TODO
+//	}
 
 }
 

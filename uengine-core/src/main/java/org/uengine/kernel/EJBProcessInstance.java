@@ -209,7 +209,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		String executionScope = null;
 		if(instanceId.indexOf("@") > 0){
 			String[] instanceIdAndExecutionScope = instanceId.split("@");
-			setInstanceId(instanceIdAndExecutionScope[0]);
+			instanceId = (instanceIdAndExecutionScope[0]);
 
 			executionScope = instanceIdAndExecutionScope[1];
 		}
@@ -403,14 +403,14 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	public void setProperty(String scopeByTracingTag, String key, Serializable val) throws Exception{
 
 		//If the activity where the scopeByTracingTag is under an execution scope, the property space should be devided.
-		ExecutionScopeContext esc = getExecutionScopeContext();
-		if(esc!=null){
-			Activity activity = getProcessDefinition().getActivity(scopeByTracingTag);
-
-			if(activity == esc.getRootActivityInTheScope() || esc.getRootActivityInTheScope().isAncestorOf(activity)){
-				scopeByTracingTag = scopeByTracingTag + "." + esc.getExecutionScope();
-			}
-		}
+//		ExecutionScopeContext esc = getExecutionScopeContext();
+//		if(esc!=null){
+//			Activity activity = getProcessDefinition().getActivity(scopeByTracingTag);
+//
+//			if(activity == esc.getRootActivityInTheScope() || esc.getRootActivityInTheScope().isAncestorOf(activity)){
+//				scopeByTracingTag = scopeByTracingTag + "." + esc.getExecutionScope();
+//			}
+//		}
 
 		setImpl(scopeByTracingTag, key, val, 0, false, isCaching(), false, null, true);
 	}
@@ -665,17 +665,17 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 	public Serializable getProperty(String scopeByTracingTag, String key) throws Exception {
 		//If the activity where the scopeByTracingTag is under an execution scope, the property space should be devided.
-		ExecutionScopeContext esc = getExecutionScopeContext();
-		if(esc!=null){
-			if(scopeByTracingTag.indexOf('.')==-1){
-
-				Activity activity = getProcessDefinition().getActivity(scopeByTracingTag);
-
-				if(activity!=null && (activity == esc.getRootActivityInTheScope() || esc.getRootActivityInTheScope().isAncestorOf(activity))){
-					scopeByTracingTag = scopeByTracingTag + "." + esc.getExecutionScope();
-				}
-			}
-		}
+//		ExecutionScopeContext esc = getExecutionScopeContext();
+//		if(esc!=null){
+//			if(scopeByTracingTag.indexOf('.')==-1){
+//
+//				Activity activity = getProcessDefinition().getActivity(scopeByTracingTag);
+//
+//				if(activity!=null && (activity == esc.getRootActivityInTheScope() || esc.getRootActivityInTheScope().isAncestorOf(activity))){
+//					scopeByTracingTag = scopeByTracingTag + "." + esc.getExecutionScope();
+//				}
+//			}
+//		}
 
 		return getImpl(scopeByTracingTag, key, true);
 	}

@@ -78,7 +78,7 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
 
             try {
                 ContentWindow contentWindow = new ContentWindow();
-                contentWindow.setPanel(Instance.createInstanceView(recentSimulationInstance.getInstId()));
+                contentWindow.setPanel(Instance.createInstanceView(String.valueOf(recentSimulationInstance.getInstId())));
 
                 return contentWindow;
             } catch (Exception e) {

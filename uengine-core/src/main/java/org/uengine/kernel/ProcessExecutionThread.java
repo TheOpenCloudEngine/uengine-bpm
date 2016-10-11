@@ -84,7 +84,7 @@ public class ProcessExecutionThread {
             } catch (Exception e) {
                 e.printStackTrace();
 
-                (new FaultMarker()).queue(instance.getInstanceId(), tracingTagAndInstanceIdArr[0]);
+                //(new FaultMarker()).queue(instance.getInstanceId(), tracingTagAndInstanceIdArr[0]);
             }
  //       }
 

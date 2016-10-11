@@ -690,7 +690,6 @@ public class SubProcess extends ScopeActivity{
     protected void afterComplete(ProcessInstance instance) throws Exception {
 
         if(getForEachVariable()!=null) {
-
             //apply the values from the sub process
             Hashtable options = new Hashtable();
             options.put("ptc", instance.getProcessTransactionContext());

@@ -642,7 +642,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 			if(instance_.getProcessTransactionContext().getSharedContext("faultTolerant")==null) {
 
-				(new FaultMarker()).queue(instance_.getInstanceId(), act.getTracingTag());
+				//(new FaultMarker()).queue(instance_.getInstanceId(), act.getTracingTag());
 
 				throw e;
 

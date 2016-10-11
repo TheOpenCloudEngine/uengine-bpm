@@ -8,6 +8,7 @@ import java.util.List;
 import org.metaworks.annotation.Hidden;
 import org.uengine.kernel.*;
 import org.uengine.processmanager.ProcessTransactionContext;
+import org.uengine.util.TreeVisitor;
 
 public class FlowActivity extends ComplexActivity {
 
@@ -74,19 +75,19 @@ public class FlowActivity extends ComplexActivity {
 				if(event.getAttachedToRef() != null){
 					getProcessDefinition().getActivity(event.getAttachedToRef())
 							.addEventListener(
-							new ActivityEventListener() {
-								@Override
-								public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
-									getProcessDefinition().addMessageListener(instance, event);
-									queueActivity(event, instance);
-								}
+									new ActivityEventListener() {
+										@Override
+										public void afterExecute(Activity activity, ProcessInstance instance) throws Exception {
+											getProcessDefinition().addMessageListener(instance, event);
+											queueActivity(event, instance);
+										}
 
-								@Override
-								public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
-									getProcessDefinition().removeMessageListener(instance, event);
-								}
-							}
-					);
+										@Override
+										public void afterComplete(Activity activity, ProcessInstance instance) throws Exception {
+											getProcessDefinition().removeMessageListener(instance, event);
+										}
+									}
+							);
 				}
 
 			}
@@ -283,4 +284,43 @@ public class FlowActivity extends ComplexActivity {
 		}
 		return returnActiviy;
 	}
+
+
+	@Override
+	protected void gatherPropagatedActivitiesOf(final ProcessInstance instance, Activity child, List list) throws Exception{
+
+		final List<Activity> propagatedActivities = new ArrayList<Activity>();
+
+		new TreeVisitor<Activity>(){
+
+			@Override
+			public List<Activity> getChild(Activity parent) {
+				List<SequenceFlow> outgoings = parent.getOutgoingSequenceFlows();
+
+				List<Activity> outgoingActivities = new ArrayList<Activity>();
+
+				for(SequenceFlow sequenceFlow : outgoings){
+					outgoingActivities.add(sequenceFlow.getTargetActivity());
+				}
+
+				return outgoingActivities;
+			}
+
+			@Override
+			public void logic(Activity elem) {
+				try {
+					if(!Activity.STATUS_READY.equals(elem.getStatus(instance))) {
+                        propagatedActivities.add(elem);
+                    }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.run(child);
+
+		list.addAll(propagatedActivities);
+
+
+	}
+
 }

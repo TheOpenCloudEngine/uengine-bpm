@@ -821,7 +821,9 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		super.afterDeserialization();	
 		//TODO: tuning point : does it need to load the hashmap again?	
 		registerToProcessDefinition(false, false);
-		
+
+		//healTracingTagCollision();
+
 		//TODO: tempororaly disabled
 		/*
 		for(int i=0; i<defaultRoles.length; i++)
@@ -1134,6 +1136,25 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		if (loop.getReturnValue() != null) {
 			setActivitySequence((long) loop.getReturnValue());
 		}
+	}
+
+	protected void healTracingTagCollision(){
+		updateActivitySequence();
+
+		final Map<String, String> existTT = new HashMap<String, String>();
+
+		new ActivityFor() {
+			@Override
+			public void logic(Activity activity) {
+				if(existTT.containsKey(activity.getTracingTag())){
+					activity.setTracingTag(String.valueOf(++ activitySequence));
+					existTT.put(activity.getTracingTag(), activity.getTracingTag());
+				}
+			}
+		}.run(this);
+
+		setActivitySequence(activitySequence);
+
 	}
 
 }

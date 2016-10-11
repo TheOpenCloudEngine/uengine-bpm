@@ -335,7 +335,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 
 	public Serializable getSourceValue(String scopeByTracingTag, String key, boolean isProperty) throws Exception{
 
-		ExecutionScopeContext originalScope = getExecutionScopeContext();;
+		ExecutionScopeContext originalScope = getExecutionScopeContext();
 		ExecutionScopeContext scope;
 
 		Serializable value = null;

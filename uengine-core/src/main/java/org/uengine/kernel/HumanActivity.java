@@ -1026,8 +1026,9 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 				taskId.append(taskIds[i]);
 			}
 		}
-		
-		instance.setProperty(getTracingTag(), PVKEY_TASKID, taskId.toString());
+
+
+		instance.setProperty(getTracingTag(), PVKEY_TASKID, (taskId.length()>0 ? taskId.toString() : null));
 	}
 	
 	protected Map getTaskStatusMap(ProcessInstance instance) throws Exception{

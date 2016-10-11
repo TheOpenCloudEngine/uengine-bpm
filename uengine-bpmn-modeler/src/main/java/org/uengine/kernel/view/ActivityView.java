@@ -1,9 +1,11 @@
 package org.uengine.kernel.view;
 
 import org.metaworks.EventContext;
+import org.metaworks.Refresh;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Available;
+import org.metaworks.annotation.Payload;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Label;
@@ -138,6 +140,25 @@ public class ActivityView extends ElementView {
 
 	@ServiceMethod(inContextMenu = true)
 	public void stop() throws Exception {
+	}
+
+	@ServiceMethod(inContextMenu = true, target = ServiceMethod.TARGET_POPUP)
+	public void backToHere( @AutowiredFromClient(payload="instanceId") IInstanceMonitor instanceMonitor, @Payload("element")Activity element) throws Exception {
+		String instanceId = instanceMonitor.getInstanceId();
+
+		ProcessManagerRemote pm = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
+		ProcessInstance instance = pm.getProcessInstance(instanceId);
+
+		instance.getProcessDefinition().getActivity(element.getTracingTag()).compensateToThis(instance);
+
+		pm.applyChanges();
+
+
+		IInstanceMonitor newInstanceMonitor = MetaworksRemoteService.getComponent(IInstanceMonitor.class);
+		instanceMonitor.setInstanceId(instanceId);
+		instanceMonitor.load();
+
+		MetaworksRemoteService.wrapReturn(new Refresh(instanceMonitor));
 	}
 
 }

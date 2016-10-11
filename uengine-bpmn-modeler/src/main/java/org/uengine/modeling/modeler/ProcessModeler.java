@@ -89,76 +89,9 @@ public class ProcessModeler extends DefaultModeler {
         def.validate(new HashMap());
 
         final List<ElementView> elementViewList = new ArrayList<ElementView>();
-        List<RelationView> relationViewList = new ArrayList<RelationView>();
+        final List<RelationView> relationViewList = new ArrayList<RelationView>();
 
-        /**
-         * on Load ProcessDefinition
-         * if Acitivity is SubProcesss, get ChildActvities and adding to elementViewList
-         */
-        ActivityFor addingElemenViewLoop = new ActivityFor() {
 
-            @Override
-            public void logic(Activity activity) {
-                ElementView elementView = activity.getElementView();
-
-                activity.setElementView(null); //prevent cyclic reference
-
-                if (elementView == null) {
-                    System.err.println("ElementView is not found for activity [" + activity + "]");
-                    //TODO: should be generated if elementView is not valid
-                    return;
-                }
-
-                if (instance != null) {
-                    try {
-                        elementView.setInstStatus(instance.getStatus(activity.getTracingTag()));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                elementView.setElement(activity);
-                elementViewList.add(elementView);
-            }
-        };
-
-//		if(def.getRoles()!=null && getRolePanel()!=null) {
-//			this.getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
-//		}
-
-        if (def.getProcessVariables() != null && getProcessVariablePanel() != null) {
-            this.getProcessVariablePanel().setProcessVariableList(new ArrayList<ProcessVariable>());
-            this.getProcessVariablePanel().getProcessVariableList().addAll(Arrays.asList(def.getProcessVariables()));
-        }
-
-        for (Activity activity : def.getChildActivities()) {
-            addingElemenViewLoop.run(activity);
-            if (activity instanceof SubProcess) {
-                ArrayList<SequenceFlow> sequenceFlowList = ((SubProcess) activity).getSequenceFlows();
-                for (IRelation relation : sequenceFlowList) {
-                    SequenceFlow sequenceFlow = (SequenceFlow) relation;
-                    SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
-                    sequenceFlow.setRelationView(null);
-
-                    if (sequenceFlowView != null) {
-                        sequenceFlowView.setRelation(sequenceFlow);
-                        relationViewList.add(sequenceFlowView);
-                    }
-                }
-            }
-        }
-
-        for (IRelation relation : def.getSequenceFlows()) {
-            SequenceFlow sequenceFlow = (SequenceFlow) relation;
-            SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
-            sequenceFlow.setRelationView(null);
-            if (sequenceFlowView == null) {
-                //TODO: view should be generated if null
-                continue;
-            }
-            sequenceFlowView.setRelation(sequenceFlow);
-            relationViewList.add(sequenceFlowView);
-        }
 
         if (def.getRoles() != null) {
             for (Role role : def.getRoles()) {
@@ -186,6 +119,71 @@ public class ProcessModeler extends DefaultModeler {
                 }
             }
         }
+
+
+        /**
+         * on Load ProcessDefinition
+         * if Acitivity is SubProcesss, get ChildActvities and adding to elementViewList
+         */
+        ActivityFor addingElemenViewLoop = new ActivityFor() {
+
+            @Override
+            public void logic(Activity activity) {
+
+
+                if (activity instanceof FlowActivity) {
+                    ArrayList<SequenceFlow> sequenceFlowList = ((FlowActivity) activity).getSequenceFlows();
+                    for (IRelation relation : sequenceFlowList) {
+                        SequenceFlow sequenceFlow = (SequenceFlow) relation;
+                        SequenceFlowView sequenceFlowView = (SequenceFlowView) sequenceFlow.getRelationView();
+                        sequenceFlow.setRelationView(null);
+
+                        if (sequenceFlowView != null) {
+                            sequenceFlowView.setRelation(sequenceFlow);
+                            relationViewList.add(sequenceFlowView);
+                        }
+                    }
+                }
+
+
+                ElementView elementView = activity.getElementView();
+
+                activity.setElementView(null); //prevent cyclic reference
+
+                if (elementView == null) {
+                    System.err.println("ElementView is not found for activity [" + activity + "]");
+                    //TODO: should be generated if elementView is not valid
+                    return;
+                }
+
+                if (instance != null) {
+                    try {
+                        elementView.setInstStatus(instance.getStatus(activity.getTracingTag()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                elementView.setElement(activity);
+
+                if(!(activity instanceof ProcessDefinition))
+                    elementViewList.add(elementView);
+
+
+            }
+        };
+
+//		if(def.getRoles()!=null && getRolePanel()!=null) {
+//			this.getRolePanel().setRoleList(Arrays.asList(def.getRoles()));
+//		}
+
+        if (def.getProcessVariables() != null && getProcessVariablePanel() != null) {
+            this.getProcessVariablePanel().setProcessVariableList(new ArrayList<ProcessVariable>());
+            this.getProcessVariablePanel().getProcessVariableList().addAll(Arrays.asList(def.getProcessVariables()));
+        }
+
+       addingElemenViewLoop.run(def);
+
 
         this.getCanvas().setElementViewList(elementViewList);
         this.getCanvas().setRelationViewList(relationViewList);

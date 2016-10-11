@@ -402,11 +402,11 @@ OG.renderer.RaphaelRenderer.prototype.drawStatus = function (element) {
             _rect1 = this._PAPER.image("images/opengraph/parallel.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
             break;
         case "Failed":
-            _rect1 = this._PAPER.image("images/opengraph/fail.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
+            _rect1 = this._PAPER.image("images/opengraph/fault.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
             break;
-        //case "Stopped":
-        //    _rect1 = this._PAPER.image("images/opengraph/stop.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
-        //    break;
+        case "Stopped":
+            _rect1 = this._PAPER.image("images/opengraph/stop.png", _upperRight.x - 25, _upperRight.y  + 5, 20, 20);
+            break;
     }
 
     if(element.shape.status == "Running"){

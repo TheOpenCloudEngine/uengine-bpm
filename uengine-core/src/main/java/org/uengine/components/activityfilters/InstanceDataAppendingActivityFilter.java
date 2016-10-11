@@ -77,7 +77,7 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 				
 				
 			}catch(Exception e){
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		

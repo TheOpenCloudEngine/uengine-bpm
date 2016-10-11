@@ -123,19 +123,15 @@ public class PropertySettingDialog extends ModalWindow{
         getElementView().setElement(element);
 
         if(element instanceof Validatable){
-            ValidationContext validationContext = ((Validatable) element).validate(new HashMap());
-
-            List<LeveledException> exceptions = new ArrayList<LeveledException>();
+            ValidationContext vc = ((Validatable) element).validate(new HashMap());
 
             if(element instanceof IIntegrityElement) {
-
-                if (validationContext.size() > 0) {
-                    ((IIntegrityElement) element).setIntegrity(1);
+                if (vc.size() > 0) {
+                    ((IIntegrityElement)element).setIntegrity(1);
                 } else {
-                    ((IIntegrityElement) element).setIntegrity(0);
+                    ((IIntegrityElement)element).setIntegrity(0);
                 }
             }
-
         }
 
         getElementView().setChanged(true);

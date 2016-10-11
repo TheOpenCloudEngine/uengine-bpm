@@ -72,8 +72,13 @@ public class ProcessModeler extends DefaultModeler {
             setElementViewActionDelegate(new DefaultElementViewActionDelegate());
 
 
-        ProcessDefinition def = (ProcessDefinition) GlobalContext.deserialize(GlobalContext.serialize(model, String.class), String.class);
-        ;
+        //why clone?
+//        ProcessDefinition def = (ProcessDefinition) GlobalContext.deserialize(GlobalContext.serialize(model, String.class), String.class);
+//        ;
+//
+        ProcessDefinition def = (ProcessDefinition) model;
+        def.validate(new HashMap());
+
         final List<ElementView> elementViewList = new ArrayList<ElementView>();
         List<RelationView> relationViewList = new ArrayList<RelationView>();
 

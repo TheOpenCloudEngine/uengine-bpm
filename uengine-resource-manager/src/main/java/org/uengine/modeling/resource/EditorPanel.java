@@ -191,7 +191,7 @@ public class EditorPanel implements ContextAware {
 		}
 	}
 
-	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT)
+	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT, target=ServiceMethod.TARGET_POPUP)
 	@Order(2)
 	public ModalWindow saveAs() throws Exception {
 		EditorPanelPopup editorPanelPopup = getComponent(EditorPanelPopup.class);

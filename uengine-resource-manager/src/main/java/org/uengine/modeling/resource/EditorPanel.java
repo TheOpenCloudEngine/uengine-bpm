@@ -330,7 +330,7 @@ public class EditorPanel implements ContextAware {
 		if(getEditor() instanceof Simulatable) {
 			ModalWindow runner = new ModalWindow();
 
-			runner.setWidth(1000);
+			runner.setWidth(3000);
 			runner.setTitle("Simulation");
 
 			IResource resource = new DefaultResource();

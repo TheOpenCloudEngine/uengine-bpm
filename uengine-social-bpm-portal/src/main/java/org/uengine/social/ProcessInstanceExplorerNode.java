@@ -1,5 +1,6 @@
 package org.uengine.social;
 
+import org.metaworks.Refresh;
 import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.codi.mw3.model.IInstance;
@@ -60,7 +61,28 @@ public class ProcessInstanceExplorerNode{
     public void choose() throws Exception {
         //TODO refresh the instance view.
 
-        MetaworksRemoteService.wrapReturn(Instance.createInstanceViewDetail(instanceId));
+
+        if(getInstanceId().indexOf("@") == -1) { //means this instance is a separated sub process instance by CallActivity
+            ProcessInstanceExplorer uncollapsedProcessInstanceExplorer = new ProcessInstanceExplorer();
+            uncollapsedProcessInstanceExplorer.load(Long.valueOf(getInstanceId()), false);
+
+
+            InstanceMonitorPanel instanceMonitorPanel = new InstanceMonitorPanel();
+            instanceMonitorPanel.setInstanceId(getInstanceId());
+            instanceMonitorPanel.load();
+            instanceMonitorPanel.setProcessInstanceExplorer(uncollapsedProcessInstanceExplorer);
+
+            MetaworksRemoteService.wrapReturn(instanceMonitorPanel);
+
+        }else{
+
+            InstanceMonitorPanel instanceMonitorPanel = new InstanceMonitorPanel();
+            instanceMonitorPanel.setInstanceId(getInstanceId());
+            instanceMonitorPanel.load();
+
+            MetaworksRemoteService.wrapReturn(instanceMonitorPanel);
+
+        }
     }
 
 }

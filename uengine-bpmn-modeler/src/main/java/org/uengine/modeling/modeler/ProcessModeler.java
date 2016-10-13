@@ -3,6 +3,7 @@ package org.uengine.modeling.modeler;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredToClient;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.Id;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.*;
@@ -58,6 +59,16 @@ public class ProcessModeler extends DefaultModeler {
         }
         this.setPalette(bpmnPalette);
     }
+
+    String definitionId;
+    @Id
+        public String getDefinitionId() {
+            return definitionId;
+        }
+        public void setDefinitionId(String definitionId) {
+            this.definitionId = definitionId;
+        }
+
 
     @Override
     public void setModel(IModel model) throws Exception {

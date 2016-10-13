@@ -29,21 +29,29 @@ public class ProcessInstanceExplorer {
 
 
     public void load(long rootInstanceId) throws Exception {
+        load(rootInstanceId, true);
+    }
+
+    public void load(long instanceId, boolean fromRootProcessInstance) throws Exception {
 
         //replace real rootInstanceId -- select rootInstId bpm_procinst where instid = ?rootInstanceId
         setRoot(new ProcessInstanceExplorerNode());
 
+        long rootInstanceId = instanceId;
+
+        //if(fromRootProcessInstance) {
         Instance instance = new Instance();
         instance.setInstId(rootInstanceId);
         rootInstanceId = instance.databaseMe().getRootInstId();
-
+        //}
 
         List<ProcessInstanceExplorerNode> processInstanceExplorerNodeList = new ArrayList<ProcessInstanceExplorerNode>();
         Map<String,ProcessInstanceExplorerNode > processInstanceNodeByInstanceId = new HashMap<String, ProcessInstanceExplorerNode>();
 
         // load execution scopes first
         ProcessManagerRemote pm = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
-        ProcessInstance processInstance = pm.getProcessInstance(String.valueOf(rootInstanceId));
+        ProcessInstance processInstance = pm.getProcessInstance(String.valueOf(
+                fromRootProcessInstance ? rootInstanceId : instanceId));
 
         List<ExecutionScopeContext> executionScopeContexts = processInstance.getExecutionScopeContexts();
 
@@ -77,9 +85,15 @@ public class ProcessInstanceExplorer {
 
         while(instances.next()){
             ProcessInstanceExplorerNode processInstanceExplorerNode = new ProcessInstanceExplorerNode();
-            processInstanceExplorerNode.setName("[" + instances.getDefName() + "] " +instances.getName());
+            processInstanceExplorerNode.setName("[" + instances.getDefName() + "] " + instances.getName());
             processInstanceExplorerNode.setInstanceId(String.valueOf(instances.getInstId()));
-            processInstanceExplorerNode.setMainInstId(String.valueOf(instances.getMainInstId()));
+
+            String mainExecutionScope = instances.getMainExecScope();
+
+            if(mainExecutionScope==null)
+                processInstanceExplorerNode.setMainInstId(String.valueOf(instances.getMainInstId()));
+            else
+                processInstanceExplorerNode.setMainInstId(rootInstanceId + "@" + mainExecutionScope);
 
             processInstanceNodeByInstanceId.put(processInstanceExplorerNode.getInstanceId(), processInstanceExplorerNode);
 
@@ -92,6 +106,9 @@ public class ProcessInstanceExplorer {
 
         for(ProcessInstanceExplorerNode processInstanceExplorerNode : processInstanceExplorerNodeList){
             ProcessInstanceExplorerNode mainProcess = processInstanceNodeByInstanceId.get(processInstanceExplorerNode.getMainInstId());
+
+            if(mainProcess==null) continue;
+
             if(mainProcess.getChildInstances()==null){
                 mainProcess.setChildInstances(new ArrayList<ProcessInstanceExplorerNode>());
             }
@@ -99,6 +116,13 @@ public class ProcessInstanceExplorer {
         }
 
 
+        if(!fromRootProcessInstance){
+            setRoot(processInstanceNodeByInstanceId.get(""+instanceId));
+
+            //ProcessInstanceExplorerNode uncollapsing = processInstanceNodeByInstanceId.get("" + instanceId);
+
+
+        }
 
     }
 

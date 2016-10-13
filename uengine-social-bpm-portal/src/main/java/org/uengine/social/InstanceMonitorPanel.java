@@ -7,6 +7,7 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.model.InstanceViewDetail;
+import org.uengine.kernel.AbstractProcessInstance;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.ProcessVariable;
@@ -81,7 +82,7 @@ public class InstanceMonitorPanel extends InstanceViewDetail implements IInstanc
 
         setInstanceId(instanceId);
 
-        Object[] instanceIdAndESC = ProcessInstance.parseInstanceIdAndExecutionScope(instanceId);
+        Object[] instanceIdAndESC = AbstractProcessInstance.parseInstanceIdAndExecutionScope(instanceId);
         //install the process instance explorer first
         setProcessInstanceExplorer(new ProcessInstanceExplorer());
         getProcessInstanceExplorer().load((Long) instanceIdAndESC[0]);

@@ -180,8 +180,8 @@ public class ScriptActivity extends DefaultActivity {
 		// scriptAct.setScript("instance.get(\"\", \"a\");");
 
 		scriptProcTest.setChildActivities(new Activity[]{scriptAct});
-				
-		ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
+
+		AbstractProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 		ComplexActivity.USE_JMS = false;
 		ComplexActivity.USE_THREAD = false;
 		

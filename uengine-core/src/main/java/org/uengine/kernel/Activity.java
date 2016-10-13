@@ -1408,7 +1408,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 				Hashtable options = new Hashtable();
 				options.put("ptc", instance.getProcessTransactionContext());
 				
-				ProcessInstance returningInstance = ProcessInstance.create().getInstance(returningInstanceId, options);
+				ProcessInstance returningInstance = AbstractProcessInstance.create().getInstance(returningInstanceId, options);
 				ProcessDefinition returningDefinition = returningInstance.getProcessDefinition();
 				SubProcessActivity returningActivity = (SubProcessActivity)returningDefinition.getActivity(returningTracingTag);
 

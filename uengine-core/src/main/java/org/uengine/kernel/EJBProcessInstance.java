@@ -220,9 +220,11 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			ProcessInstance instance = ptc.getProcessInstanceInTransaction(instanceId);
 			if(instance!=null) {
 
-				instance.setExecutionScope(executionScope);
+				if(instance.getExecutionScopeContext()!=null && !instance.getExecutionScopeContext().getExecutionScope().equals(executionScope)){
+					return ExecutionScopedProcessInstance.newInstance(instance, executionScope);
+				}else
+					return instance;
 
-				return instance;
 			}
 		}
 
@@ -791,7 +793,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		return getProcessDefinition().getActivity(scope).getStatus(this);
 	}
 
-	protected void setStatus(String scope, String status) throws Exception{
+	public void setStatus(String scope, String status) throws Exception{
 		super.setStatus(scope, status);
 
 		ProcessInstanceDAO piDAO = null;
@@ -1064,7 +1066,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 				String spInstanceId = (String)spInstanceIds.get(0);
 
 
-				findingProcessInstance = ProcessInstance.create().getInstance(spInstanceId);
+				findingProcessInstance = AbstractProcessInstance.create().getInstance(spInstanceId);
 				definition = findingProcessInstance.getProcessDefinition();
 			}
 

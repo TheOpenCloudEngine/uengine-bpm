@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import org.uengine.kernel.DefaultProcessInstance;
-import org.uengine.kernel.GlobalContext;
-import org.uengine.kernel.ProcessInstance;
-import org.uengine.kernel.RoleMapping;
+import org.uengine.kernel.*;
 import org.uengine.processdesigner.mapper.Transformer;
 
 public class BeanValueTransformer extends Transformer{
@@ -143,8 +140,8 @@ public class BeanValueTransformer extends Transformer{
 		BeanValueTransformer bvt = new BeanValueTransformer();
 		bvt.setClassName("org.uengine.kernel.RoleMapping");
 		bvt.getArgumentSourceMap().put("in", "rolemapping");
-		
-		ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
+
+		AbstractProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 		
 		ProcessInstance pi = DefaultProcessInstance.create();
 		pi.set("", "rolemapping", rm);

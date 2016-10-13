@@ -14,7 +14,7 @@ import java.util.*;
  * @author Jinyoung Jang
  */
 
-public class DefaultProcessInstance extends ProcessInstance{
+public class DefaultProcessInstance extends AbstractProcessInstance{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	public final static String ROOT_PROCESS = "_rootProcess";
 	public final static String RETURNING_PROCESS = "_returningProcess";
@@ -48,7 +48,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 		public String getInstanceId() {
 			return instanceId;
 		}
-		protected void setInstanceId(String value) {
+		public void setInstanceId(String value) {
 			instanceId = value;
 		}
 
@@ -153,7 +153,7 @@ public class DefaultProcessInstance extends ProcessInstance{
 	}	
 	
 	//instead of direct invoking these methods, we recommend use 'fireComplete' or 'fireFault' methods
-	protected void setStatus(String scope, String status) throws Exception{
+	public void setStatus(String scope, String status) throws Exception{
 		setProperty(scope, Activity.PVKEY_STATUS, status);
 
 //		statusRepository.put(getInstanceId()+":"+scope, status);

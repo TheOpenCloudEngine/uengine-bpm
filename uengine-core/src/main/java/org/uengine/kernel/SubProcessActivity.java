@@ -712,7 +712,7 @@ public class SubProcessActivity extends DefaultActivity {
 				for(int indexOfSP=0; indexOfSP<spIds.size(); indexOfSP++){
 					String subProcessId = (String)spIds.elementAt(indexOfSP);
 					if(!subProcesses.containsKey(subProcessId)){
-						ProcessInstance sp = ProcessInstance.create().getInstance(subProcessId, options);
+						ProcessInstance sp = AbstractProcessInstance.create().getInstance(subProcessId, options);
 						subProcesses.put(subProcessId, sp);
 					}
 					ProcessInstance subProcessInstance = (ProcessInstance)subProcesses.get(subProcessId);
@@ -751,7 +751,7 @@ public class SubProcessActivity extends DefaultActivity {
 		for(int indexOfSP=0; indexOfSP<spIds.size(); indexOfSP++){
 			String subProcessId = (String)spIds.elementAt(indexOfSP);
 
-			ProcessInstance sp = ProcessInstance.create().getInstance(subProcessId, options);
+			ProcessInstance sp = AbstractProcessInstance.create().getInstance(subProcessId, options);
 			subProcesses.add(sp);
 		}
 

@@ -297,6 +297,15 @@ public class ProcessModeler extends DefaultModeler {
 
         for (ElementView elementView : canvas.getElementViewList()) {
 
+            //bounds wrong positioned elements
+            if(elementView.getY() < 0){
+                elementView.setY(0);
+            }
+            if(elementView.getX() < 0){
+                elementView.setX(0);
+            }
+            //end
+
             if (elementView.getElement() instanceof Role) {
 
                 Role[] roles = null;

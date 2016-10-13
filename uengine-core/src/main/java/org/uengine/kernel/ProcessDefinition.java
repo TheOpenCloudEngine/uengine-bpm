@@ -545,7 +545,7 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 	}
 	
 	public ProcessInstance createInstance(String name, Map options) throws Exception{		
-		ProcessInstance activityInstance = ProcessInstance.create(this, name, options);
+		ProcessInstance activityInstance = AbstractProcessInstance.create(this, name, options);
 		//activityInstance.setProcessDefinition(this);
 		//activityInstance.create();
 				
@@ -801,7 +801,7 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 			Hashtable options = new Hashtable();
 			options.put("ptc", instance.getProcessTransactionContext());
 			
-			ProcessInstance returningInstance = ProcessInstance.create().getInstance(returningProcess, options);
+			ProcessInstance returningInstance = AbstractProcessInstance.create().getInstance(returningProcess, options);
 			ProcessDefinition returningDefinition = returningInstance.getProcessDefinition();
 							
 			SubProcessActivity returningActivity = (SubProcessActivity)returningDefinition.getActivity(returningTracingTag);

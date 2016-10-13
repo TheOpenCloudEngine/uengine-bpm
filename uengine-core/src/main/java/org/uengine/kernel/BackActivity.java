@@ -70,7 +70,7 @@ public class BackActivity extends DefaultActivity{
 		
 		HashMap options = new HashMap();
 		options.put("ptc", instance.getProcessTransactionContext());
-		ProcessInstance targetProcessInstance = ProcessInstance.create().getInstance(actualTargetInstanceId, options);
+		ProcessInstance targetProcessInstance = AbstractProcessInstance.create().getInstance(actualTargetInstanceId, options);
 		ProcessDefinition targetProcessDefinition = targetProcessInstance.getProcessDefinition();
 		Activity targetActivity = targetProcessDefinition.getActivity(actaulTargetTracingTag);
 		/*java.util.List compensatedActivityList = */targetActivity.compensateToThis(targetProcessInstance);

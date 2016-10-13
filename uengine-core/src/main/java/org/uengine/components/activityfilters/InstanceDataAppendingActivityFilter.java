@@ -32,52 +32,52 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 				rm.fill(instance);
 				if(rm == null) return;
 				if(
-						instance.isNew() 
+						instance.isNew()
 						&& instance.getProcessDefinition().getInitiatorHumanActivityReference(instance.getProcessTransactionContext()).getActivity().equals(activity)
-				){	
+				){
 					((EJBProcessInstance) instance).getProcessInstanceDAO().set("initEp", rm.getEndpoint());
 					((EJBProcessInstance) instance).getProcessInstanceDAO().set("initRSNM", rm.getResourceName());
 					((EJBProcessInstance) instance).getProcessInstanceDAO().set("INITCOMCD", rm.getCompanyId());
-					
+
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("prevCurrEp", rm.getEndpoint());
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("prevCurrRSNM", rm.getResourceName());
-					
+
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currEp", "");
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currRSNM", "");
 					//((EJBProcessInstance)instance).getProcessInstanceDAO().set("lastCmnt", "");
-					
-					
+
+
 				} else {
 					StringBuffer endpoint = new StringBuffer();
 					StringBuffer resourceName = new StringBuffer();
 					do {
 						if (endpoint.length() > 0) endpoint.append(";");
 						endpoint.append(rm.getEndpoint());
-						
+
 						if (resourceName.length() > 0) resourceName.append(";");
 						resourceName.append(rm.getResourceName());
 					} while (rm.next());
-					
+
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("prevCurrEp", ((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().get("currEp"));
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("prevCurrRSNM", ((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().get("currRSNM"));
-					
+
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currEp", endpoint.toString());
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currRSNM", resourceName.toString());
 					((EJBProcessInstance)instance).getProcessInstanceDAO().set("lastCmnt", activity.getName());
-					
-					//for root instance replication: 
+
+					//for root instance replication:
 					((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().set("currEp", endpoint.toString());
 					((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().set("currRSNM", resourceName.toString());
 					((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().set("lastCmnt", activity.getName());
-					
-					
+
+
 					//((EJBProcessInstance)instance).getProcessInstanceDAO().set("currACT", activity.getName().getText());
 				}
 
-				
-				
+
+
 			}catch(Exception e){
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 		
@@ -101,37 +101,37 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 			
 //			if(activity instanceof FormActivity){
 //				FormActivity formActivity = (FormActivity)activity;
-//				
+//
 //				ProcessVariable formVariable = formActivity.getVariableForHtmlFormContext();
 //				HtmlFormContext formContext = (HtmlFormContext) formVariable.get(instance, "");
-//				
+//
 //				String htmlPath = formContext.getHtmlPath();
 //				File file = new File(htmlPath);
-//				
+//
 //				BufferedReader f_in = new BufferedReader(new InputStreamReader(new FileInputStream(file), GlobalContext.ENCODING));
 //				StringBuffer buf = new StringBuffer();
-//				
+//
 //				while(true) {
 //					String line = f_in.readLine();
 //					if(line == null) break;
 //					String changeStr = line.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "").trim();
-//					if(changeStr.length() == 0) continue;					
-//					buf.append(changeStr + "/...");					
+//					if(changeStr.length() == 0) continue;
+//					buf.append(changeStr + "/...");
 //				}
 //				f_in.close();
-//				
+//
 //				abstraction = buf.toString().trim();
 //				abstraction = abstraction.substring(abstraction.length() - 980 > 0 ? abstraction.length() - 980 : 0);
-//				
+//
 //				//TODO:
 //				abstraction = "";
-//				//String abstraction = formContext.getValueMap().toString();	
-//				//abstraction = abstraction.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "");         
-//				
+//				//String abstraction = formContext.getValueMap().toString();
+//				//abstraction = abstraction.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "");
+//
 //			} else if(("pingProcess".equals(alias) || "replyProcess".equals(alias)) && activity instanceof HumanActivity){
 //				abstraction = (String) instance.get("message");
 //			}
-//			
+//
 //			if(abstraction!=null){
 //				WorkListDAO wlDAO = (WorkListDAO) instance.getProcessTransactionContext().findSynchronizedDAO("BPM_WORKLIST", "TASKID", ((HumanActivity)activity).getTaskIds(instance)[0], WorkListDAO.class);
 //				wlDAO.set("abstract", abstraction);

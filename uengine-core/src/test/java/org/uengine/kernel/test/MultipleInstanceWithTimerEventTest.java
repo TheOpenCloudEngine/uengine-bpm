@@ -124,7 +124,7 @@ public class MultipleInstanceWithTimerEventTest extends UEngineTest{
 
         processDefinition.afterDeserialization();
 
-        ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
+        AbstractProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
     }
 

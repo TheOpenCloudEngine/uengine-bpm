@@ -42,26 +42,7 @@ import javax.naming.NamingException;
 import org.uengine.contexts.TextContext;
 //import org.uengine.formmanager.trans.Html2FormView;
 //import org.uengine.formmanager.trans.Html2Write;
-import org.uengine.kernel.Activity;
-import org.uengine.kernel.ActivityInstanceContext;
-import org.uengine.kernel.ActivityReference;
-import org.uengine.kernel.ComplexActivity;
-import org.uengine.kernel.DefaultProcessInstance;
-import org.uengine.kernel.EventHandler;
-import org.uengine.kernel.EventMessagePayload;
-import org.uengine.kernel.GlobalContext;
-import org.uengine.kernel.HumanActivity;
-import org.uengine.kernel.KeyedParameter;
-import org.uengine.kernel.ProcessDefinition;
-import org.uengine.kernel.ProcessDefinitionFactory;
-import org.uengine.kernel.ProcessInstance;
-import org.uengine.kernel.ProcessVariable;
-import org.uengine.kernel.ProcessVariableValue;
-import org.uengine.kernel.ResultPayload;
-import org.uengine.kernel.Role;
-import org.uengine.kernel.RoleMapping;
-import org.uengine.kernel.SubProcessActivity;
-import org.uengine.kernel.UEngineException;
+import org.uengine.kernel.*;
 import org.uengine.persistence.dao.UniqueKeyGenerator;
 import org.uengine.persistence.processdefinition.ProcessDefinitionDAO;
 import org.uengine.persistence.processdefinition.ProcessDefinitionDAOType;
@@ -247,12 +228,12 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 			if(transactionContext.getTemporaryInstance()!=null)
 				return transactionContext.getTemporaryInstance();
 			
-			ProcessInstance temporaryInstance = ProcessInstance.create().getInstance(instId, options);
+			ProcessInstance temporaryInstance = AbstractProcessInstance.create().getInstance(instId, options);
 			transactionContext.setTemporaryInstance(temporaryInstance);
 			return temporaryInstance;
 		}
 		
-		ProcessInstance instance = ProcessInstance.create().getInstance(instId, options);
+		ProcessInstance instance = AbstractProcessInstance.create().getInstance(instId, options);
 
 		return instance;
 	}
@@ -1571,7 +1552,12 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 	}
 	
 	public ProcessInstance getProcessInstance(String instanceId) throws RemoteException{
-		return getProcessInstance(instanceId, null);
+
+		Object[] instanceIdAndExecutionScope = AbstractProcessInstance.parseInstanceIdAndExecutionScope(instanceId);
+		Long longInstId = (Long)instanceIdAndExecutionScope[0];
+		instanceId = longInstId != null ? longInstId.toString() : null;
+
+		return getProcessInstance(instanceId, (String)instanceIdAndExecutionScope[1]);
 	}
 
 	public ProcessInstance getProcessInstance(String instanceId, String executionScope) throws RemoteException{

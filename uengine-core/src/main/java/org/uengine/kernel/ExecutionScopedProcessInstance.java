@@ -16,7 +16,15 @@ public class ExecutionScopedProcessInstance implements InvocationHandler{
     }
 
     ProcessInstance originalProcessInstance;
+        public ProcessInstance getOriginalProcessInstance() {
+            return originalProcessInstance;
+        }
+
     String executionScope;
+        public String getExecutionScope() {
+            return executionScope;
+        }
+
 
     protected ExecutionScopedProcessInstance(ProcessInstance processInstance, String executionScope){
         originalProcessInstance = processInstance;
@@ -29,7 +37,12 @@ public class ExecutionScopedProcessInstance implements InvocationHandler{
 
         originalProcessInstance.setExecutionScope(executionScope);
 
-        Object returnVal = method.invoke(originalProcessInstance, args);
+        Object returnVal;
+        if("getLocalInstance".equals(method.getName())){
+            returnVal = originalProcessInstance;
+        }else{
+            returnVal = method.invoke(originalProcessInstance, args);
+        }
 
         originalProcessInstance.setExecutionScope(originalExecutionScope);
 

@@ -852,4 +852,9 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 		return new Object[]{instanceId, executionScope};
 
 	}
+
+	@Override
+	public ProcessInstance getLocalInstance() {
+		return this;
+	}
 }

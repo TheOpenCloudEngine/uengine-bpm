@@ -31,19 +31,23 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 				RoleMapping rm = ((HumanActivity)activity).getRole().getMapping(instance);
 				rm.fill(instance);
 				if(rm == null) return;
+
+
+				EJBProcessInstance ejbProcessInstance = (EJBProcessInstance) instance.getLocalInstance();
+
 				if(
 						instance.isNew()
 						&& instance.getProcessDefinition().getInitiatorHumanActivityReference(instance.getProcessTransactionContext()).getActivity().equals(activity)
 				){
-					((EJBProcessInstance) instance).getProcessInstanceDAO().set("initEp", rm.getEndpoint());
-					((EJBProcessInstance) instance).getProcessInstanceDAO().set("initRSNM", rm.getResourceName());
-					((EJBProcessInstance) instance).getProcessInstanceDAO().set("INITCOMCD", rm.getCompanyId());
+					ejbProcessInstance.getProcessInstanceDAO().set("initEp", rm.getEndpoint());
+					ejbProcessInstance.getProcessInstanceDAO().set("initRSNM", rm.getResourceName());
+					ejbProcessInstance.getProcessInstanceDAO().set("INITCOMCD", rm.getCompanyId());
 
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("prevCurrEp", rm.getEndpoint());
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("prevCurrRSNM", rm.getResourceName());
+					ejbProcessInstance.getProcessInstanceDAO().set("prevCurrEp", rm.getEndpoint());
+					ejbProcessInstance.getProcessInstanceDAO().set("prevCurrRSNM", rm.getResourceName());
 
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currEp", "");
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currRSNM", "");
+					ejbProcessInstance.getProcessInstanceDAO().set("currEp", "");
+					ejbProcessInstance.getProcessInstanceDAO().set("currRSNM", "");
 					//((EJBProcessInstance)instance).getProcessInstanceDAO().set("lastCmnt", "");
 
 
@@ -58,17 +62,18 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 						resourceName.append(rm.getResourceName());
 					} while (rm.next());
 
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("prevCurrEp", ((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().get("currEp"));
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("prevCurrRSNM", ((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().get("currRSNM"));
+					EJBProcessInstance rootProcessInstance = (EJBProcessInstance) instance.getRootProcessInstance().getLocalInstance();
+					ejbProcessInstance.getProcessInstanceDAO().set("prevCurrEp", rootProcessInstance.getProcessInstanceDAO().get("currEp"));
+					ejbProcessInstance.getProcessInstanceDAO().set("prevCurrRSNM", rootProcessInstance.getProcessInstanceDAO().get("currRSNM"));
 
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currEp", endpoint.toString());
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currRSNM", resourceName.toString());
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("lastCmnt", activity.getName());
+					ejbProcessInstance.getProcessInstanceDAO().set("currEp", endpoint.toString());
+					ejbProcessInstance.getProcessInstanceDAO().set("currRSNM", resourceName.toString());
+					ejbProcessInstance.getProcessInstanceDAO().set("lastCmnt", activity.getName());
 
 					//for root instance replication:
-					((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().set("currEp", endpoint.toString());
-					((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().set("currRSNM", resourceName.toString());
-					((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().set("lastCmnt", activity.getName());
+					rootProcessInstance.getProcessInstanceDAO().set("currEp", endpoint.toString());
+					rootProcessInstance.getProcessInstanceDAO().set("currRSNM", resourceName.toString());
+					rootProcessInstance.getProcessInstanceDAO().set("lastCmnt", activity.getName());
 
 
 					//((EJBProcessInstance)instance).getProcessInstanceDAO().set("currACT", activity.getName().getText());
@@ -152,6 +157,7 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 	public void onPropertyChange(Activity activity, ProcessInstance instance, String propertyName, Object changedValue) throws Exception {
 	
 		if(activity instanceof HumanActivity && "saveEndpoint".equals(propertyName)){
+			EJBProcessInstance ejbProcessInstance = (EJBProcessInstance) instance.getLocalInstance();
 			try{
 				RoleMapping rm = ((HumanActivity)activity).getRole().getMapping(instance);
 				rm.fill(instance);
@@ -160,12 +166,12 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 						instance.isNew() 
 						&& instance.getProcessDefinition().getInitiatorHumanActivityReference(instance.getProcessTransactionContext()).getActivity().equals(activity)
 				){	
-					((EJBProcessInstance) instance).getProcessInstanceDAO().set("initEp", rm.getEndpoint());
-					((EJBProcessInstance) instance).getProcessInstanceDAO().set("initRSNM", rm.getResourceName());
-					((EJBProcessInstance) instance).getProcessInstanceDAO().set("INITCOMCD", rm.getCompanyId());
+					ejbProcessInstance.getProcessInstanceDAO().set("initEp", rm.getEndpoint());
+					ejbProcessInstance.getProcessInstanceDAO().set("initRSNM", rm.getResourceName());
+					ejbProcessInstance.getProcessInstanceDAO().set("INITCOMCD", rm.getCompanyId());
 					
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currEp", rm.getEndpoint());
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currRSNM", rm.getResourceName());
+					ejbProcessInstance.getProcessInstanceDAO().set("currEp", rm.getEndpoint());
+					ejbProcessInstance.getProcessInstanceDAO().set("currRSNM", rm.getResourceName());
 				} else {
 					StringBuffer endpoint = new StringBuffer();
 					StringBuffer resourceName = new StringBuffer();
@@ -176,8 +182,8 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 						if (resourceName.length() > 0) resourceName.append(";");
 						resourceName.append(rm.getResourceName());
 					} while (rm.next());
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currEp", endpoint.toString());
-					((EJBProcessInstance)instance).getProcessInstanceDAO().set("currRSNM", resourceName.toString());
+					ejbProcessInstance.getProcessInstanceDAO().set("currEp", endpoint.toString());
+					ejbProcessInstance.getProcessInstanceDAO().set("currRSNM", resourceName.toString());
 					//((EJBProcessInstance)instance).getProcessInstanceDAO().set("currACT", activity.getName().getText());
 				}
 			}catch(Exception e){
@@ -185,15 +191,16 @@ public class InstanceDataAppendingActivityFilter implements ActivityFilter, Seri
 			}
 			
 			if ( instance.isNew() && instance.isSubProcess() && !instance.getInstanceId().equals(instance.getRootProcessInstanceId())) {
-				String initEp = (String) ((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().get("initEp");
-				String initRSNM = (String) ((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().get("initRSNM");
-				String initComcode = (String) ((EJBProcessInstance)instance.getRootProcessInstance()).getProcessInstanceDAO().get("INITCOMCD");
-				((EJBProcessInstance) instance).getProcessInstanceDAO().set("initEp", initEp);
-				((EJBProcessInstance) instance).getProcessInstanceDAO().set("initRSNM", initRSNM);
-				((EJBProcessInstance) instance).getProcessInstanceDAO().set("INITCOMCD", initComcode);
+				EJBProcessInstance rootProcessInstance = (EJBProcessInstance) instance.getRootProcessInstance().getLocalInstance();
+				String initEp = (String) rootProcessInstance.getProcessInstanceDAO().get("initEp");
+				String initRSNM = (String) rootProcessInstance.getProcessInstanceDAO().get("initRSNM");
+				String initComcode = (String) rootProcessInstance.getProcessInstanceDAO().get("INITCOMCD");
+				ejbProcessInstance.getProcessInstanceDAO().set("initEp", initEp);
+				ejbProcessInstance.getProcessInstanceDAO().set("initRSNM", initRSNM);
+				ejbProcessInstance.getProcessInstanceDAO().set("INITCOMCD", initComcode);
 				
-				((EJBProcessInstance)instance).getProcessInstanceDAO().set("currEp",initEp);
-				((EJBProcessInstance)instance).getProcessInstanceDAO().set("currRSNM", initRSNM);
+				ejbProcessInstance.getProcessInstanceDAO().set("currEp",initEp);
+				ejbProcessInstance.getProcessInstanceDAO().set("currRSNM", initRSNM);
 			}
 		}
 	}

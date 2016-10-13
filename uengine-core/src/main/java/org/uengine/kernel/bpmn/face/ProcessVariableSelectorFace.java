@@ -4,6 +4,7 @@ import org.metaworks.Face;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.component.SelectBox;
 import org.uengine.kernel.ProcessVariable;
+import org.uengine.util.UEngineUtil;
 
 import java.util.ArrayList;
 
@@ -18,9 +19,12 @@ public class ProcessVariableSelectorFace extends SelectBox implements Face<Proce
         if(processVariablePanel!=null && processVariablePanel.getProcessVariableList() !=null){
             ArrayList<String> options = new ArrayList<String>();
 
+            options.add("");
+
             for(ProcessVariable processVariable : processVariablePanel.getProcessVariableList()){
                 options.add(processVariable.getName());
             }
+
             setOptionNames(options);
             setOptionValues(options);
         }
@@ -28,6 +32,7 @@ public class ProcessVariableSelectorFace extends SelectBox implements Face<Proce
         if(value!=null){
             if(getOptionNames()==null || getOptionNames().size() == 0){
                 ArrayList<String> options = new ArrayList<String>();
+                options.add("");
                 options.add(value.getName());
                 setOptionNames(options);
                 setOptionValues(options);
@@ -41,6 +46,9 @@ public class ProcessVariableSelectorFace extends SelectBox implements Face<Proce
     public ProcessVariable createValueFromFace() {
         String variableName = getSelectedText();
 
-        return ProcessVariable.forName(variableName);
+        if(UEngineUtil.isNotEmpty(variableName))
+            return ProcessVariable.forName(variableName);
+        else
+            return null;
     }
 }

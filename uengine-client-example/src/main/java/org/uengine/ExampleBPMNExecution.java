@@ -9,8 +9,7 @@ public class ExampleBPMNExecution {
 
     public static void main(String[] args) throws Exception {
 
-        // when project build... this is error : USE_CLASS
-        //ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
+        ProcessInstance.USE_CLASS = DefaultProcessInstance.class;
 
         ProcessDefinition processDefinition = BPMNUtil.importAdapt(Thread.currentThread().getContextClassLoader().getResourceAsStream("org/uengine/sample.bpmn")); //new File("/java/autoinsurance.bpmn"));
         processDefinition.afterDeserialization();

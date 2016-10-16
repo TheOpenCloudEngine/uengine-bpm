@@ -80,6 +80,7 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
                 ContentWindow contentWindow = new ContentWindow();
                 InstanceView instanceView = Instance.createInstanceView(String.valueOf(recentSimulationInstance.getInstId()));
                 instanceView.setInstanceNameChanger(null); // in simulation, don't show the instance name changer.
+                instanceView.setFollowers(null);
 
                 contentWindow.setPanel(instanceView);
 

@@ -235,25 +235,33 @@ public class VersionManager implements ContextAware{
     }
 
     public static String withoutVersionPath(String appName, String resourcePath) {
+        int whereAfterVersionFolder = getWhereAfterVersionPath(appName, resourcePath);
+
+        return resourcePath.substring(whereAfterVersionFolder + 1, resourcePath.length());
+    }
+
+
+    private static int getWhereAfterVersionPath(String appName, String resourcePath){
         String prefix = appName + "/../" + appName + VERSION_DIR;
         int wherePrefix = resourcePath.indexOf(prefix);
 
-        if(wherePrefix == 0){
+        if(wherePrefix == 0) {
             resourcePath = resourcePath.substring(prefix.length() + 1, resourcePath.length());
-            int whereAfterVersionFolder = resourcePath.indexOf("/");
-
-            resourcePath = resourcePath.substring(whereAfterVersionFolder + 1, resourcePath.length());
-        }else {
+            return resourcePath.indexOf("/");
+        }else{
 
             prefix = appName + "/";
             wherePrefix = resourcePath.indexOf(prefix);
 
-            if (wherePrefix == 0) {
-
-                resourcePath = resourcePath.substring(prefix.length());
-            }
+            if(wherePrefix == 0)
+                return appName.length();
+            else
+                return -1;
         }
+    }
 
-        return resourcePath;
+    public static String getVersionPath(String appName, String resourcePath) {
+        int whereAfterVersionPath = getWhereAfterVersionPath(appName, resourcePath);
+        return resourcePath.substring(0, whereAfterVersionPath);
     }
 }

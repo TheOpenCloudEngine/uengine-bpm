@@ -118,6 +118,15 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 		}
 
 
+	boolean global;
+		public boolean isGlobal() {
+			return global;
+		}
+		public void setGlobal(boolean global) {
+			this.global = global;
+		}
+
+
 	private String typeClassName;
 	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector", displayName = "$Type")
 		public String getTypeClassName() {
@@ -269,6 +278,14 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 	}
 
 	public void set(ProcessInstance instance, String scope, String key, Serializable value) throws Exception{
+
+		if(isGlobal()){
+			if(!instance.isRoot()) { //void recursive
+				instance.getRootProcessInstance().set(scope, getName(), value);
+				return;
+			}
+		}
+
 		if(isDatabaseSynchronized()){
 			if(getDatabaseSynchronizationOption().set(instance, scope, value));
 				return;
@@ -290,7 +307,14 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		instance.set(scope, getName(), value);
 	}
 	
-	public Serializable get(ProcessInstance instance, String scope, String key) throws Exception{		
+	public Serializable get(ProcessInstance instance, String scope, String key) throws Exception{
+
+		if(isGlobal()){
+			if(!instance.isRoot()) //void recursive
+				return instance.getRootProcessInstance().get(scope, getName());
+		}
+
+
 		if(isDatabaseSynchronized()){
 			Serializable value = getDatabaseSynchronizationOption().get(instance, scope);
 			
@@ -313,6 +337,11 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 
 		if(getName()==null)
 			throw new IllegalArgumentException("Process variable name is empty. fail to get process variable value.");
+
+		if(isGlobal()){
+			if(!instance.isRoot()) //void recursive
+				return getMultiple(instance.getRootProcessInstance(), scope, key);
+		}
 
 		if(isDatabaseSynchronized()){
 			
@@ -446,8 +475,8 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 //		}
 //	}
 		
-	public boolean shouldAccessValueInSpecializedWay(){
-		return isDatabaseSynchronized();
+	public boolean shouldAccessValueInSpecializedWay(ProcessInstance instance){
+		return (isGlobal() && !instance.isRoot()) || isDatabaseSynchronized();
 	}
 		
 	public Object clone(){

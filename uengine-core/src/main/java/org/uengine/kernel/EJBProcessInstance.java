@@ -402,6 +402,30 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		getProcessDefinition().firePropertyChangeEventToActivityFilters(this, "variable", pvv);
 	}
 
+	@Override
+	public void set(String scopeByTracingTag, ProcessVariableValue pvv) throws Exception {
+
+		if(getProcessDefinition()!=null) {
+			ProcessVariable pv = getProcessDefinition().getProcessVariable(pvv.getName());
+			String key = pv.getName();
+			Serializable val = pvv;
+
+			if (pv == null)
+				throw new UEngineException("[ProcessInstance.set] Process [" + getProcessDefinition() + "] tries to set value for an UNDECLARED PROCESS VARIABLE [" + key + "]. Check whether the spell is correct.");
+
+			addDebugInfo(" --- [Set Variable] --------------------\n  * name : " + key + "\n  * value : " + (GlobalContext.logLevelIsDebug ? "\n" + GlobalContext.serialize(val, String.class) : val + "'"));
+			addDebugInfo(" ---------------------------------------");
+
+			if (pv != null && pv.shouldAccessValueInSpecializedWay(this)) {
+				pv.set(this, scopeByTracingTag, pvv);
+				return;
+			}
+		}
+
+
+		super.set(scopeByTracingTag, pvv);
+	}
+
 	public void setProperty(String scopeByTracingTag, String key, Serializable val) throws Exception{
 
 		//If the activity where the scopeByTracingTag is under an execution scope, the property space should be devided.
@@ -444,7 +468,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			addDebugInfo(" --- [Set Variable] --------------------\n  * name : "+pv.getName()+"\n  * value : " + (GlobalContext.logLevelIsDebug ? "\n"+GlobalContext.serialize(val, String.class) : val +"'"));
 			addDebugInfo(" ---------------------------------------");
 
-			if(pv!=null && pv.shouldAccessValueInSpecializedWay()){
+			if(pv!=null && pv.shouldAccessValueInSpecializedWay(this)){
 				pv.set(this, scopeByTracingTag, val);
 				return;
 			}
@@ -696,7 +720,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 			if(getProcessDefinition()!=null){
 				ProcessVariable pv = getProcessDefinition().getProcessVariable(firstPart);
-				if(pv!=null && pv.shouldAccessValueInSpecializedWay()){
+				if(pv!=null && pv.shouldAccessValueInSpecializedWay(this)){
 					return pv.get(this, scopeByTracingTag);
 				}
 			}
@@ -760,17 +784,18 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		}
 
 		if(isCaching()){
-			if(!processVariablesAreCached && !variables.containsKey(createFullKey(scopeByTracingTag, key, false))){
-				try{
-					if(!isNew){
-						variables.putAll(getAll()); // there may be some extra values 
-					}
-
-					processVariablesAreCached = true;
-				}catch(Exception e){
-					throw new UEngineException("Error when caching process instance data: "+e.getMessage(), e);
-				}
-			}
+//			if(!processVariablesAreCached && !variables.containsKey(createFullKey(scopeByTracingTag, key, false))){
+//				try{
+//					if(!isNew){
+//						variables.putAll(getAll()); // there may be some extra values
+//					}
+//
+//					processVariablesAreCached = true;
+//				}catch(Exception e){
+//					throw new UEngineException("Error when caching process instance data: "+e.getMessage(), e);
+//				}
+//			}
+			beginCaching(scopeByTracingTag, key, false);
 
 			return super.getMultiple(scopeByTracingTag, key);
 		}

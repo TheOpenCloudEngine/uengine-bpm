@@ -857,4 +857,9 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 	public ProcessInstance getLocalInstance() {
 		return this;
 	}
+
+	@Override
+	public boolean isRoot() {
+		return getInstanceId().equals(getRootProcessInstanceId());
+	}
 }

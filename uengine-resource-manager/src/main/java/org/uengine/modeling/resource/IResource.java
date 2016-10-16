@@ -110,4 +110,5 @@ public interface IResource extends ContextAware, Comparable<IResource>{
 	void reopen() throws Exception;
 
 
+	public Object load() throws Exception;
 }

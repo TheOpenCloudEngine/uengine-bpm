@@ -207,13 +207,17 @@ public class DefaultResource implements IResource {
 			editorPanel.setNew(true);
 
 		} else{
-			editor.setEditingObject(resourceManager.getObject(this));
+			editor.setEditingObject(load());
 		}
 
 		editorPanel.setEditor(editor);
 		wrapReturn(new Refresh(editorPanel));
 
 		return editorPanel;
+	}
+
+	public Object load() throws Exception {
+		return resourceManager.getObject(this);
 	}
 
 	@Override

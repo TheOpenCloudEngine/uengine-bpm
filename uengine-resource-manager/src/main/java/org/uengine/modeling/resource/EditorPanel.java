@@ -152,7 +152,7 @@ public class EditorPanel implements ContextAware {
 
 		IEditor editor = getEditor().getClass().newInstance();
 
-		editor.setEditingObject(resourceManager.getStorage().getObject(defaultResource));
+		editor.setEditingObject(defaultResource.load());
 
 		this.setEditor(editor);
 

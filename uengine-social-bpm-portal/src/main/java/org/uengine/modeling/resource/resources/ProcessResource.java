@@ -13,12 +13,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.CodiProcessDefinitionFactory;
 import org.uengine.codi.mw3.model.Session;
-import org.uengine.kernel.ProcessDefinition;
-import org.uengine.kernel.ProcessDefinitionFactory;
+import org.uengine.kernel.*;
 import org.uengine.modeling.HasThumbnail;
 import org.uengine.modeling.Modeler;
 import org.uengine.modeling.resource.*;
 import org.uengine.modeling.resource.editor.ProcessEditor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.metaworks.dwr.MetaworksRemoteService.autowire;
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
@@ -43,12 +45,116 @@ public class ProcessResource extends DefaultResource {
 
     @Override
     public void save(Object editingObject) throws Exception {
-        ProcessDefinition processDefinition = (ProcessDefinition) editingObject;
-        processDefinition.setName(getDisplayName());
+        ProcessDefinition definition = (ProcessDefinition) editingObject;
+        definition.setName(getDisplayName());
+
+        separateGlobalDefinition(definition);
+
 
         super.save(editingObject);
 
         definitionFactory.removeFromCache(getPath().substring(CodiProcessDefinitionFactory.codiProcessDefinitionFolder.length() + 1));
+    }
+
+    @Override
+    public Object load() throws Exception {
+        Object processDef = super.load();
+
+        mergeGlobalDefinition((ProcessDefinition) processDef);
+
+        return processDef;
+    }
+
+    private void mergeGlobalDefinition(ProcessDefinition definition) throws Exception {
+
+        if(definition.isGlobal())
+            return; // void recursive
+
+        String globalDefinitionPath = getGlobalDefinitionPath();
+        if(globalDefinitionPath==null)
+            return; // ignore when no global def path;
+
+        ProcessResource globalProcessResource = new ProcessResource();
+        globalProcessResource.setPath(globalDefinitionPath);
+
+        MetaworksRemoteService.autowire(globalProcessResource);
+
+        if(resourceManager.getStorage().exists(globalProcessResource)){
+            ProcessDefinition globalDef = (ProcessDefinition) globalProcessResource.load();
+
+            List<ProcessVariable> variables = new ArrayList<ProcessVariable>();
+            for(ProcessVariable processVariable : globalDef.getProcessVariables()){
+                variables.add(processVariable);
+            }
+
+            for(ProcessVariable processVariable : definition.getProcessVariables()){
+                if(!processVariable.isGlobal())
+                    variables.add(processVariable);
+            }
+
+            ProcessVariable[] arrVariables = new ProcessVariable[variables.size()];
+            arrVariables = variables.toArray(arrVariables);
+
+            definition.setProcessVariables(arrVariables);
+        }
+    }
+
+    private void separateGlobalDefinition(ProcessDefinition definition) {
+
+        if(definition.isGlobal()) return; //void recursive call
+
+        String globalDefinitionPath = getGlobalDefinitionPath();
+        if(globalDefinitionPath==null)
+            return; //if there's no global path, ignore it.
+
+        ProcessDefinition globalDefinition = new ProcessDefinition();
+        globalDefinition.setGlobal(true);
+
+        //extracts global process variables from the definition
+        List<ProcessVariable> globalProcessVariables = new ArrayList<ProcessVariable>();
+        List<ProcessVariable> localProcessVariables = new ArrayList<ProcessVariable>();
+        if(definition.getProcessVariables()!=null){
+
+            for(ProcessVariable processVariable : definition.getProcessVariables()){
+                if(processVariable!=null && processVariable.isGlobal()) {
+                    if(!globalProcessVariables.contains(processVariable))
+                        globalProcessVariables.add(processVariable);
+                }else{
+                    localProcessVariables.add(processVariable);
+                }
+            }
+
+        }
+
+        if(globalProcessVariables!=null && globalProcessVariables.size() > 0){
+//            ProcessVariable[] arrayLocalVariables = new ProcessVariable[locallProcessVariables.size()];
+//            definition.setProcessVariables(locallProcessVariables.toArray(arrayLocalVariables));
+
+            ProcessVariable[] arrayGlobalVariables = new ProcessVariable[globalProcessVariables.size()];
+            globalDefinition.setProcessVariables(globalProcessVariables.toArray(arrayGlobalVariables));
+
+            ProcessResource globalProcessResource = new ProcessResource();
+
+            globalProcessResource.setPath(globalDefinitionPath);
+            try {
+                MetaworksRemoteService.autowire(globalProcessResource);
+                globalProcessResource.save(globalDefinition);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to save global process definition [" + globalProcessResource.getPath() + "]" , e);
+            }
+
+
+        }
+
+    }
+
+    private String getGlobalDefinitionPath(){
+        String logicalPathOnly = VersionManager.withoutVersionPath("codi", getPath());
+        if(logicalPathOnly.indexOf("/") == -1) return null;
+
+        String[] pathElements = logicalPathOnly.split("/");
+
+        return VersionManager.getVersionPath("codi", getPath()) + "/" + pathElements[0] + "/global.process";
     }
 
     @ServiceMethod(target=ServiceMethodContext.TARGET_APPEND, inContextMenu = true, callByContent = true)

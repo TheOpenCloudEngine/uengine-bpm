@@ -224,4 +224,6 @@ public interface ProcessInstance extends BeanPropertyResolver{
     public ExecutionScopeContext getExecutionScopeContextTree(String rootExecutionScope);
 
     public ProcessInstance getLocalInstance();
+
+    public boolean isRoot();
 }

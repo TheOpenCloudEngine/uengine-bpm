@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Hidden;
 import org.uengine.modeling.resource.Describable;
 import org.uengine.modeling.HasThumbnail;
 import org.uengine.processmanager.ProcessManagerFactoryBean;
@@ -131,7 +132,17 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 			newSDs[sds.length] = sd;
 			setServiceDefinitions(newSDs);			
 		}
-		
+
+	boolean isGlobal;
+	@Hidden
+		public boolean isGlobal() {
+			return isGlobal;
+		}
+		public void setGlobal(boolean isGlobal) {
+			this.isGlobal = isGlobal;
+		}
+
+
 	String defaultFlowchartViewType = "swimlane";
 		public String getDefaultFlowchartViewType() {
 			return defaultFlowchartViewType;

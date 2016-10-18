@@ -195,7 +195,7 @@ public class VersionManager implements ContextAware{
         return productionInfoXML;
     }
 
-    public static String getProductionResourcePath(String appName, String resourcePath){
+    public String getProductionResourcePath(String appName, String resourcePath){
 
         resourcePath = withoutVersionPath(appName, resourcePath);
 

@@ -139,17 +139,14 @@ public class ProcessAdminContainerResource extends ContainerResource {
     }
 
 
-//    @ServiceMethod(callByContent=true, eventBinding=EventContext.EVENT_DBLCLICK)
-//    public void open(@AutowiredFromClient EditorPanel editorPanel) throws Exception {
-//        IResource defaultResource = DefaultResource.createResource(editorPanel.getResourcePath());
-//        autowire(defaultResource);
-//        defaultResource.move(this);
-//
-//        editorPanel.setEditor(null);
-//
-//        ResourceNavigator resourceNavigator = getComponent(ResourceNavigator.class);
-//        resourceNavigator.load();
-//
-//        wrapReturn(editorPanel,new Remover(new ModalWindow()),new Refresh(resourceNavigator));
-//    }
+    @ServiceMethod(target = ServiceMethod.TARGET_POPUP, payload = "rootPath", inContextMenu = true)
+    public VersionManager versionManager() throws Exception {
+        VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+        //MetaworksRemoteService.autowire(versionManager);
+        versionManager.load(this);
+
+        MetaworksRemoteService.wrapReturn(new ModalWindow(versionManager, 400, 1000, "Version Manager"));
+
+        return versionManager;
+    }
 }

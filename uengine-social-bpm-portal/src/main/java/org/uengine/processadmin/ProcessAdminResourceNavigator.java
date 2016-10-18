@@ -2,7 +2,10 @@ package org.uengine.processadmin;
 
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredToClient;
+import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ModalWindow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -70,16 +73,11 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
 
 	ResourceControlDelegate processAdminResourceControlDelegate;
 
-//    ResourceControlDelegate processAdminResourceControlDelegate;
-//    @AutowiredToClient
-//        public ResourceControlDelegate getProcessAdminResourceControlDelegate() {
-//            return processAdminResourceControlDelegate;
-//        }
-//
-//        public void setProcessAdminResourceControlDelegate(ResourceControlDelegate processAdminResourceControlDelegate) {
-//            this.processAdminResourceControlDelegate = processAdminResourceControlDelegate;
-//        }
-//
-
+    //disabled
+    @ServiceMethod
+    @Hidden
+    public VersionManager versionManager() throws Exception {
+        return null;
+    }
 
 }

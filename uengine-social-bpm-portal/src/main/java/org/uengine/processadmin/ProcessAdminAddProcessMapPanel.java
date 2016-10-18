@@ -4,6 +4,7 @@ import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Label;
 import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.context.annotation.Scope;
@@ -60,7 +61,8 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 		setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator(){
 			@Override
 			protected String getAppName() {
-				return (super.getAppName() + "/" + VersionManager.getProductionResourcePath(super.getAppName(), ""));
+				VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+				return (super.getAppName() + "/" + versionManager.getProductionResourcePath(super.getAppName(), ""));
 			}
 		});
 		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());

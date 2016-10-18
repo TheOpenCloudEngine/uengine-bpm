@@ -49,7 +49,7 @@ public class EditorPanelPopup implements ContextAware{
 
     @Face(displayName = "OK")
     @ServiceMethod(callByContent = true)
-    public void saveAs(@AutowiredFromClient EditorPanel editorPanel, @AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+    public void saveAs(@AutowiredFromClient EditorPanel editorPanel, @AutowiredFromClient(payload = "rootPath") ResourceNavigator resourceNavigator) throws Exception {
         DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(editorPanel.getResourcePath());
         autowire(defaultResource);
 
@@ -57,7 +57,11 @@ public class EditorPanelPopup implements ContextAware{
                 "/" + saveAsFileName + "." + defaultResource.getType();
         defaultResource.copy(desPath);
 
+        //if(resourceNavigator!=null)
         resourceNavigator.load();
+//        else{
+//
+//        }
 
         wrapReturn(resourceNavigator, new Remover(new ModalWindow()));
     }

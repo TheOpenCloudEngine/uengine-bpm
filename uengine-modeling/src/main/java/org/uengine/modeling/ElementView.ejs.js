@@ -147,6 +147,10 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             var shape = eval('new ' + this.object.shapeId);
             shape.label = this.getLabel();
 
+            if(shape.TaskType == 'None'){
+                shape.TaskType = 'AUTO';
+            }
+
             if (this.object.instStatus) {
               //  if ("Completed" == this.object.instStatus || "Running" == this.object.instStatus) {
                     shape.status = this.object.instStatus;

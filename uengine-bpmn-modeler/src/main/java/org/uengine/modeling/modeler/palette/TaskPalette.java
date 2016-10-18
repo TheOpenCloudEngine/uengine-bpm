@@ -1,5 +1,6 @@
 package org.uengine.modeling.modeler.palette;
 
+import org.uengine.kernel.ScriptActivity;
 import org.uengine.kernel.bpmn.CallActivity;
 import org.uengine.kernel.bpmn.view.PoolView;
 import org.uengine.kernel.bpmn.view.SubProcessView;
@@ -22,6 +23,7 @@ public class TaskPalette extends Palette {
 		addSymbol((new SubProcessView()).createSymbol());
 
 		addSymbol((new CallActivity()).createView().createSymbol());
+		addSymbol((new ScriptActivity()).createView().createSymbol());
 	}
 
 	public TaskPalette(String type) {

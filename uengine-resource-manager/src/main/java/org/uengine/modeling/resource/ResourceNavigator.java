@@ -61,8 +61,8 @@ public class ResourceNavigator {
 
     @ServiceMethod(target = ServiceMethod.TARGET_POPUP, payload = "rootPath", inContextMenu = true)
     public VersionManager versionManager() throws Exception {
-        VersionManager versionManager = new VersionManager();
-        MetaworksRemoteService.autowire(versionManager);
+        VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+        //MetaworksRemoteService.autowire(versionManager);
         versionManager.load(this);
 
         MetaworksRemoteService.wrapReturn(new ModalWindow(versionManager, 400, 1000, "Version Manager"));

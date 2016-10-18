@@ -5,6 +5,8 @@ var org_uengine_kernel_view_ActivityView = function(objectId, className){
 	var modeler = mw3.getAutowiredObject('org.uengine.modeling.Modeler');
 	this.object.element.tracingTag = modeler.getFaceHelper().getTracingTag();
 
+	this.element.__className = className;
+
 	// draw markers and badges
 	{
 		var me = this.canvas._RENDERER, rElement = me._getREleById(OG.Util.isElement(this.element) ? this.element.id : this.element),
@@ -13,22 +15,22 @@ var org_uengine_kernel_view_ActivityView = function(objectId, className){
 			_size = me._CONFIG.COLLAPSE_SIZE,
 			_hSize = _size / 2;
 
-		//draw task image
-		{
-			_rect1 = me._getREleById(rElement.id + OG.Constants.TASKTYPE_SUFFIX);
-			if (_rect1) {
-				me._remove(_rect1);
-			}
-
-			envelope = geometry.getBoundary();
-			_upperLeft = envelope.getUpperLeft();
-
-			_rect1 = me._PAPER.image("resources/images/symbol/" + this.object.element.__className + ".png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
-
-			me._add(_rect1, rElement.id + OG.Constants.TASKTYPE_SUFFIX);
-			_rect1.insertAfter(rElement);
-			rElement.appendChild(_rect1);
-		}
+		////draw task image
+		//{
+		//	_rect1 = me._getREleById(rElement.id + OG.Constants.TASKTYPE_SUFFIX);
+		//	if (_rect1) {
+		//		me._remove(_rect1);
+		//	}
+        //
+		//	envelope = geometry.getBoundary();
+		//	_upperLeft = envelope.getUpperLeft();
+        //
+		//	_rect1 = me._PAPER.image("resources/images/symbol/" + this.object.element.__className + ".png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+        //
+		//	me._add(_rect1, rElement.id + OG.Constants.TASKTYPE_SUFFIX);
+		//	_rect1.insertAfter(rElement);
+		//	rElement.appendChild(_rect1);
+		//}
 
 		//draw validation error image
 		if(modeler.metaworksContext.where!='instance')
@@ -77,3 +79,29 @@ OG.shape.bpmn.A_Task.prototype.drawCustomControl = function(handler, element) {
 	handler._RENDERER.selectedElement = element;
 
 }
+
+OG.renderer.RaphaelRenderer.prototype.drawTaskType = function (element) {
+
+	var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
+		geometry = rElement ? rElement.node.shape.geom : null,
+		envelope, _upperLeft, _bBoxRect, _rect, _rect1,
+		_size = me._CONFIG.COLLAPSE_SIZE,
+		_hSize = _size / 2;
+
+	_rect1 = this._getREleById(rElement.id + OG.Constants.TASKTYPE_SUFFIX);
+	if (_rect1) {
+		this._remove(_rect1);
+	}
+
+	envelope = geometry.getBoundary();
+	_upperLeft = envelope.getUpperLeft();
+
+
+	_rect1 = this._PAPER.image("resources/images/symbol/" + element.__className + ".png", _upperLeft.x + 5, _upperLeft.y + 5, 20, 20);
+
+	this._add(_rect1, rElement.id + OG.Constants.TASKTYPE_SUFFIX);
+	_rect1.insertAfter(rElement);
+	rElement.appendChild(_rect1);
+
+	return null;
+};

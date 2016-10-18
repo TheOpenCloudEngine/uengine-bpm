@@ -407,6 +407,10 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		if(getProcessDefinition()!=null) {
 			ProcessVariable pv = getProcessDefinition().getProcessVariable(pvv.getName());
+
+			if(pv==null)
+				throw new Exception("There's no ProcessVariable [" + pvv.getName() + "] is defined.");
+
 			String key = pv.getName();
 			Serializable val = pvv;
 

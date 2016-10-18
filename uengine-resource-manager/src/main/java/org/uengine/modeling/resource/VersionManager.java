@@ -51,13 +51,16 @@ public class VersionManager implements ContextAware{
     @Autowired
     public ResourceManager resourceManager;
 
-
     public void load(ResourceNavigator resourceNavigator) throws Exception {
+        load(resourceNavigator.getRoot());
+    }
+
+    public void load(IContainer containerResource) throws Exception {
 
         setMetaworksContext(new MetaworksContext());
         getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
 
-        String rootPath = resourceNavigator.getRoot().getPath();
+        String rootPath = containerResource.getPath();
         setRootPath(rootPath);
 
         String versionPath = versionDirectoryOf();
@@ -192,7 +195,7 @@ public class VersionManager implements ContextAware{
         return productionInfoXML;
     }
 
-    public static String getProductionResourcePath(String appName, String resourcePath){
+    public String getProductionResourcePath(String appName, String resourcePath){
 
         resourcePath = withoutVersionPath(appName, resourcePath);
 

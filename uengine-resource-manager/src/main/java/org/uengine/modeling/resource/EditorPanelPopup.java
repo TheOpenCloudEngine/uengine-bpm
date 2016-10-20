@@ -9,6 +9,8 @@ import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
+import org.uengine.modeling.HasThumbnail;
+import org.uengine.modeling.Modeler;
 
 import java.io.File;
 
@@ -53,9 +55,37 @@ public class EditorPanelPopup implements ContextAware{
         DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(editorPanel.getResourcePath());
         autowire(defaultResource);
 
-        String desPath = defaultResource.getPath().substring(0, defaultResource.getPath().lastIndexOf("/")) +
+        String newResourcePath = defaultResource.getPath().substring(0, defaultResource.getPath().lastIndexOf("/")) +
                 "/" + saveAsFileName + "." + defaultResource.getType();
-        defaultResource.copy(desPath);
+        String newResourceName = saveAsFileName + defaultResource.getType();
+
+        // 기존 프로세스를 변경후에 saveAs를 한다면 기존에 있는 데피니션은 놔두고
+        // 이후에 변경된 프로세스를 저장하고
+        // 화면에 saveAs된 프로세스을 보여줘야 한다.
+
+        // 화면에서 넘어온 정보를 통해 새로 saveAs할 경로를 갖는 DefaultResource를 생성한다.
+        DefaultResource newDefaultResource = (DefaultResource) DefaultResource.createResource(newResourcePath);
+        autowire(newDefaultResource);
+        autowire(editorPanel.getEditor());
+
+        Object editedObject = editorPanel.getEditor().createEditedObject();
+
+        if(editedObject instanceof HasThumbnail && editorPanel.getEditor() instanceof Modeler){
+            Modeler modeler = (Modeler) editorPanel.getEditor();
+            if(modeler.getCanvas().getThumbnailURL()!=null ){
+                ((HasThumbnail)editedObject).setThumbnailURL(modeler.getCanvas().getThumbnailURL());
+            }
+        }
+
+        // save
+        newDefaultResource.save(editedObject);
+
+        // AutowiredFromClient로 넘오온 editorPanel에 saveAs된 DefaultResource를 담는다.
+        IEditor editor = editorPanel.getEditor().getClass().newInstance();
+        editor.setEditingObject(newDefaultResource.load());
+        editorPanel.setEditor(editor);
+        editorPanel.setResourceName(saveAsFileName);
+        editorPanel.setResourcePath(newResourcePath);
 
         //if(resourceNavigator!=null)
         resourceNavigator.load();
@@ -63,7 +93,8 @@ public class EditorPanelPopup implements ContextAware{
 //
 //        }
 
-        wrapReturn(resourceNavigator, new Remover(new ModalWindow()));
+        // 기존에서 editorPanel도 함께 넘겨서 화면에 적용한다.
+        wrapReturn(resourceNavigator, editorPanel, new Remover(new ModalWindow()));
     }
 
     @Face(displayName = "Cancel")

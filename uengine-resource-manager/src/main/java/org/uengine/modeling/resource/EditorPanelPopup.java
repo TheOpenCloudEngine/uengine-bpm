@@ -1,9 +1,6 @@
 package org.uengine.modeling.resource;
 
-import org.metaworks.ContextAware;
-import org.metaworks.MetaworksContext;
-import org.metaworks.MetaworksFile;
-import org.metaworks.Remover;
+import org.metaworks.*;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Face;
@@ -94,7 +91,7 @@ public class EditorPanelPopup implements ContextAware{
 //        }
 
         // 기존에서 editorPanel도 함께 넘겨서 화면에 적용한다.
-        wrapReturn(resourceNavigator, editorPanel, new Remover(new ModalWindow()));
+        wrapReturn(resourceNavigator, new Refresh(editorPanel), new Remover(new ModalWindow()));
     }
 
     @Face(displayName = "Cancel")

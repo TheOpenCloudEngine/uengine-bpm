@@ -59,7 +59,6 @@ public class EditorPanelPopup implements ContextAware{
         // 기존 프로세스를 변경후에 saveAs를 한다면 기존에 있는 데피니션은 놔두고
         // 이후에 변경된 프로세스를 저장하고
         // 화면에 saveAs된 프로세스을 보여줘야 한다.
-
         // 화면에서 넘어온 정보를 통해 새로 saveAs할 경로를 갖는 DefaultResource를 생성한다.
         DefaultResource newDefaultResource = (DefaultResource) DefaultResource.createResource(newResourcePath);
         autowire(newDefaultResource);
@@ -73,7 +72,6 @@ public class EditorPanelPopup implements ContextAware{
                 ((HasThumbnail)editedObject).setThumbnailURL(modeler.getCanvas().getThumbnailURL());
             }
         }
-
         // save
         newDefaultResource.save(editedObject);
 
@@ -84,11 +82,7 @@ public class EditorPanelPopup implements ContextAware{
         editorPanel.setResourceName(saveAsFileName);
         editorPanel.setResourcePath(newResourcePath);
 
-        //if(resourceNavigator!=null)
         resourceNavigator.load();
-//        else{
-//
-//        }
 
         // 기존에서 editorPanel도 함께 넘겨서 화면에 적용한다.
         wrapReturn(resourceNavigator, new Refresh(editorPanel), new Remover(new ModalWindow()));

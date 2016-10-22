@@ -456,8 +456,12 @@ public class ProcessModeler extends DefaultModeler {
             if (parentActivity == null)
                 parentActivity = def;
 
-            parentActivity.addSequenceFlow(sequenceFlow);
+            if(sequenceFlow.getTargetRef()==null
+                    || sequenceFlow.getSourceRef()==null
+                    || sequenceFlow.getTargetRef().equals(sequenceFlow.getSourceRef()))
+                continue;//ignores corrupt sequence flow
 
+            parentActivity.addSequenceFlow(sequenceFlow);
         }
 
         for (ElementView elementView : canvas.getElementViewList()) {

@@ -6,6 +6,8 @@ import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.ModalWindow;
+import org.uengine.modeling.HasThumbnail;
+import org.uengine.modeling.Modeler;
 
 import java.io.File;
 
@@ -48,13 +50,17 @@ public class EditorPanelPopup implements ContextAware{
     @ServiceMethod(callByContent = true)
     public void saveAs(@AutowiredFromClient EditorPanel editorPanel, @AutowiredFromClient(payload = "rootPath") ResourceNavigator resourceNavigator) throws Exception {
 
-        editorPanel.setResourcePath(editorPanel.getResourcePath() + getSaveAsFileName());
+        DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(editorPanel.getResourcePath());
+        autowire(editorPanel);
+        String newResourcePath = defaultResource.getPath().substring(0, defaultResource.getPath().lastIndexOf("/")) +
+                "/" + saveAsFileName + "." + defaultResource.getType();
 
+        editorPanel.setResourceName(saveAsFileName);
+        editorPanel.setResourcePath(newResourcePath); // change the file name.. need to be correct.
         editorPanel.save();
-
         resourceNavigator.load();
-
-        wrapReturn(new Refresh(editorPanel), resourceNavigator, new Remover(new ModalWindow()));
+        // 기존에서 editorPanel도 함께 넘겨서 화면에 적용한다.
+        wrapReturn(resourceNavigator, new Refresh(editorPanel), new Remover(new ModalWindow()));
     }
 
     @Face(displayName = "Cancel")

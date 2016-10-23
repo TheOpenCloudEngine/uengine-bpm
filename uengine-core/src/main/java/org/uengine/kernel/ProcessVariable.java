@@ -386,12 +386,6 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 	
 	public void afterDeserialization() {
 
-		if(getDefaultValue()!=null && getDefaultValue() instanceof NeedArrangementToSerialize){
-			((NeedArrangementToSerialize)getDefaultValue()).afterDeserialization();
-		}
-
-		setName(getName());
-
 		try {
 			if (UEngineUtil.isNotEmpty(getTypeClassName())) {
 
@@ -404,6 +398,13 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		}catch (ClassNotFoundException e){
 			e.printStackTrace();
 		}
+
+		if(getDefaultValue()!=null && getDefaultValue() instanceof NeedArrangementToSerialize){
+			((NeedArrangementToSerialize)getDefaultValue()).afterDeserialization();
+		}
+
+		setName(getName());
+
 	}
 
 	public void beforeSerialization() {

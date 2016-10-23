@@ -375,6 +375,8 @@ public class SubProcess extends ScopeActivity{
 
         currForEachVariableIdx++;
 
+        setCurrForEachVariableIdx(instance, currForEachVariableIdx);
+
         ProcessVariableValue pvv = getForEachVariable().getMultiple(instance, "");
 
         if(currForEachVariableIdx >= pvv.size()){
@@ -394,7 +396,6 @@ public class SubProcess extends ScopeActivity{
 
         instance.setExecutionScopeContext(oldEsc);
 
-        setCurrForEachVariableIdx(instance, currForEachVariableIdx);
     }
 
     private void executeActivity_CaseInParallel(ProcessInstance instance) throws Exception {

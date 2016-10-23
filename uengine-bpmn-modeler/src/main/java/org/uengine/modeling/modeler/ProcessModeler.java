@@ -200,7 +200,20 @@ public class ProcessModeler extends DefaultModeler {
         this.getCanvas().setRelationViewList(relationViewList);
 
         def.updateActivitySequence();
+
+        {//setting properties
+            setGlobal(def.isGlobal());
+
+        }
     }
+
+    boolean global;
+        public boolean isGlobal() {
+            return global;
+        }
+        public void setGlobal(boolean global) {
+            this.global = global;
+        }
 
 
 
@@ -264,6 +277,10 @@ public class ProcessModeler extends DefaultModeler {
 
     public ProcessDefinition makeProcessDefinitionFromCanvas(Canvas canvas) throws Exception {
         ProcessDefinition def = createEmptyProcessDefinition();
+
+        {//set the properties first.
+            def.setGlobal(isGlobal());
+        }
 
         HashMap<String, String> tracingTags = new HashMap<String, String>();
 
@@ -455,6 +472,12 @@ public class ProcessModeler extends DefaultModeler {
 
             if (parentActivity == null)
                 parentActivity = def;
+
+
+            if(sequenceFlow.getTargetRef()==null
+                    || sequenceFlow.getSourceRef()==null
+                    || sequenceFlow.getTargetRef().equals(sequenceFlow.getSourceRef()))
+                    continue;//ignores corrupt sequence flow
 
             parentActivity.addSequenceFlow(sequenceFlow);
 

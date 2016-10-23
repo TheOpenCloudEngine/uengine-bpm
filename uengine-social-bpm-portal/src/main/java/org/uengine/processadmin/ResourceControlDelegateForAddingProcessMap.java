@@ -35,7 +35,10 @@ public class ResourceControlDelegateForAddingProcessMap implements ResourceContr
 
             autowire(processMap);
 
-            String mapId = String.valueOf((processMap.session.getCompany().getComCode() + "." + VersionManager.withoutVersionPath("codi", resource.getPath())).hashCode());
+            VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+            versionManager.setAppName("codi");
+
+            String mapId = String.valueOf((processMap.session.getCompany().getComCode() + "." + versionManager.getLogicalPath(resource.getPath())).hashCode());
 
             processMap.setMapId(mapId);
             processMap.setDefId(resource.getPath());

@@ -3,6 +3,8 @@ package org.uengine.modeling.resource;
 import org.metaworks.MetaworksContext;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.*;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ModalWindow;
 
 import java.util.*;
 
@@ -228,8 +230,18 @@ public class ContainerResource extends DefaultResource implements IContainer {
 	}
 
 	@ServiceMethod(target = ServiceMethod.TARGET_POPUP, inContextMenu = true)
-	public VersionManager versionManager(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
-		return resourceNavigator.versionManager();
+	public VersionManager versionManager() throws Exception {
+
+		String[] paths = getPath().split("/");
+		String appName = paths[0];
+		String moduleName = paths.length > 1 ? paths[1] : null;
+
+		VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+		versionManager.load(appName, moduleName);
+
+		MetaworksRemoteService.wrapReturn(new ModalWindow(versionManager));
+
+		return versionManager;
 	}
 
 

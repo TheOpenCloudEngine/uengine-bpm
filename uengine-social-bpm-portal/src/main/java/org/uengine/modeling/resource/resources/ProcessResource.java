@@ -149,12 +149,19 @@ public class ProcessResource extends DefaultResource {
     }
 
     private String getGlobalDefinitionPath(){
-        String logicalPathOnly = VersionManager.withoutVersionPath("codi", getPath());
-        if(logicalPathOnly.indexOf("/") == -1) return null;
 
-        String[] pathElements = logicalPathOnly.split("/");
+        VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
 
-        return VersionManager.getVersionPath("codi", getPath()) + "/" + pathElements[0] + "/global.process";
+        versionManager.setAppName("codi");
+        String logicalPath = versionManager.getLogicalPath(getPath());
+
+        if(versionManager.getModuleName()==null) return null;
+
+        logicalPath = versionManager.getModuleName() + "/" + logicalPath;
+
+        String physicalPart = getPath().substring(0, getPath().length() - logicalPath.length());
+
+        return physicalPart + versionManager.getModuleName() + "/global.process";
     }
 
     @ServiceMethod(target=ServiceMethodContext.TARGET_APPEND, inContextMenu = true, callByContent = true)

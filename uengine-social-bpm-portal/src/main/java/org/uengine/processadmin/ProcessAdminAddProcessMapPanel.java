@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.model.IProcessMap;
 import org.uengine.codi.mw3.model.ProcessMapList;
 import org.uengine.codi.mw3.model.Session;
-import org.uengine.modeling.resource.DefaultResource;
-import org.uengine.modeling.resource.IResource;
-import org.uengine.modeling.resource.VersionManager;
+import org.uengine.modeling.resource.*;
 import org.uengine.modeling.resource.resources.ClassResource;
 import org.uengine.modeling.resource.resources.UrlappResource;
 
@@ -58,14 +56,41 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 
 	public void load() {
 
-		setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator(){
-			@Override
-			protected String getAppName() {
-				VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
-				return (super.getAppName() + "/" + versionManager.getProductionResourcePath(super.getAppName(), ""));
-			}
-		});
+		setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator()
+
+//										 {
+//			@Override
+//			protected String getAppName() { //returns current production version root
+//				VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+//				versionManager.setAppName(super.getAppName());
+//				return (super.getAppName() + "/" + versionManager.getProductionResourcePath(""));
+//			}
+//		}
+
+		);
+
 		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
+
+		VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+		versionManager.setAppName("codi");
+
+		for(IResource module : getProcessAdminResourceNavigator().getRoot().getChildren()){
+			if(module instanceof ContainerResource){
+				versionManager.setModuleName(module.getName());
+
+				String originalModuleName = module.getName();
+
+				module.setPath(versionManager.getProductionResourcePath("codi/" + module.getName()));
+				((ContainerResource) module).setDisplayName(originalModuleName);
+				try {
+					MetaworksRemoteService.autowire(module);
+					((ContainerResource) module).refresh();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
 
 		getProcessAdminResourceNavigator().getRoot().filtResources(ClassResource.class);
 		getProcessAdminResourceNavigator().getRoot().filtResources(UrlappResource.class);

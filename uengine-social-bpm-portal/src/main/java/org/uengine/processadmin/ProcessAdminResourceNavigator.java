@@ -58,6 +58,7 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
             MetaworksRemoteService.autowire(getRoot());
 
             ((ContainerResource) getRoot()).refresh();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

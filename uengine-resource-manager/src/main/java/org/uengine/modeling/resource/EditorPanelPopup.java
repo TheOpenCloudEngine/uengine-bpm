@@ -1,9 +1,6 @@
 package org.uengine.modeling.resource;
 
-import org.metaworks.ContextAware;
-import org.metaworks.MetaworksContext;
-import org.metaworks.MetaworksFile;
-import org.metaworks.Remover;
+import org.metaworks.*;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Face;
@@ -50,20 +47,14 @@ public class EditorPanelPopup implements ContextAware{
     @Face(displayName = "OK")
     @ServiceMethod(callByContent = true)
     public void saveAs(@AutowiredFromClient EditorPanel editorPanel, @AutowiredFromClient(payload = "rootPath") ResourceNavigator resourceNavigator) throws Exception {
-        DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(editorPanel.getResourcePath());
-        autowire(defaultResource);
 
-        String desPath = defaultResource.getPath().substring(0, defaultResource.getPath().lastIndexOf("/")) +
-                "/" + saveAsFileName + "." + defaultResource.getType();
-        defaultResource.copy(desPath);
+        editorPanel.setResourcePath(editorPanel.getResourcePath() + getSaveAsFileName());
 
-        //if(resourceNavigator!=null)
+        editorPanel.save();
+
         resourceNavigator.load();
-//        else{
-//
-//        }
 
-        wrapReturn(resourceNavigator, new Remover(new ModalWindow()));
+        wrapReturn(new Refresh(editorPanel), resourceNavigator, new Remover(new ModalWindow()));
     }
 
     @Face(displayName = "Cancel")

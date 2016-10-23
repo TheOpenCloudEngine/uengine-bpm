@@ -139,14 +139,16 @@ public class ProcessAdminContainerResource extends ContainerResource {
     }
 
 
-    @ServiceMethod(target = ServiceMethod.TARGET_POPUP, payload = "rootPath", inContextMenu = true)
-    public VersionManager versionManager() throws Exception {
-        VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
-        //MetaworksRemoteService.autowire(versionManager);
-        versionManager.load(this);
-
-        MetaworksRemoteService.wrapReturn(new ModalWindow(versionManager, 400, 1000, "Version Manager"));
-
-        return versionManager;
-    }
+//    @ServiceMethod(target = ServiceMethod.TARGET_POPUP, payload = "rootPath", inContextMenu = true)
+//    public VersionManager versionManager() throws Exception {
+//        VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+//        //MetaworksRemoteService.autowire(versionManager);
+//        versionManager.setAppName("codi");
+//
+//        versionManager.load(this);
+//
+//        MetaworksRemoteService.wrapReturn(new ModalWindow(versionManager, 400, 1000, "Version Manager"));
+//
+//        return versionManager;
+//    }
 }

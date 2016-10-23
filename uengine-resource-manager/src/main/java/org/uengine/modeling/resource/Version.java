@@ -45,17 +45,14 @@ public class Version implements Serializable{
     @ServiceMethod(callByContent = true, target = ServiceMethod.TARGET_SELF)
     public void makeAsProduction(@AutowiredFromClient VersionManager versionManager) throws Exception {
 
-        DefaultResource productionInfoXML = versionManager.getProductionVersionInfo();
+        versionManager.makeProductionVersion(this);
 
-        ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
-
-        resourceManager.getStorage().save(productionInfoXML, this);
         setProduction(true);
     }
 
-    public String getVersionDirectory(VersionManager versionManager) {
-        return versionManager.versionDirectoryOf(this);
-    }
+//    public String getVersionDirectory(VersionManager versionManager) {
+//        return versionManager.versionDirectoryOf(this, null);
+//    }
 
     public void setProduction(boolean production) {
         this.production = production;

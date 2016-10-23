@@ -135,7 +135,7 @@ public class InstanceMonitorPanel extends InstanceViewDetail implements IInstanc
         return pm;
     }
 
-    //@ServiceMethod(inContextMenu = true, target = ServiceMethod.TARGET_SELF)
+    @ServiceMethod(/*inContextMenu = true, */target = ServiceMethod.TARGET_SELF)
     public void load() throws Exception {
         ProcessManagerRemote processManagerRemote = MetaworksRemoteService.getComponent(ProcessManagerRemote.class);
         load(getInstanceId(), processManagerRemote);

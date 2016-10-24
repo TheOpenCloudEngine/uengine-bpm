@@ -3,8 +3,10 @@ package org.uengine.kernel.face;
 import org.metaworks.Face;
 import org.metaworks.MetaworksContext;
 import org.metaworks.WebFieldDescriptor;
+import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Range;
 import org.metaworks.annotation.ServiceMethod;
+import org.uengine.kernel.ProcessVariable;
 import org.uengine.uml.model.Attribute;
 import org.uengine.uml.model.ClassDefinition;
 import org.uengine.uml.model.ObjectInstance;
@@ -26,8 +28,8 @@ public class GenericValueFace implements Face{
         }
 
 
-    @ServiceMethod(eventBinding = "change", bindingFor = "type", callByContent = true)
-    public void changeType(){
+    @ServiceMethod(eventBinding = "change", bindingFor = "type", callByContent = true, inContextMenu = true)
+    public void changeType(@AutowiredFromClient(payload = "typeClassName") ProcessVariable processVariable){
 
         setValue(new ObjectInstance());
 
@@ -37,8 +39,9 @@ public class GenericValueFace implements Face{
         //create default value for the type
         if(getValue()==null){
             //TODO: implement this in other ways
-           // AttributeInstance instance = createInstance();
-           // setValueObject(instance.getValue());
+
+            ObjectInstance instance = new ObjectInstance();
+            setValue(instance);
         }else{
             //some conversions between value
         }

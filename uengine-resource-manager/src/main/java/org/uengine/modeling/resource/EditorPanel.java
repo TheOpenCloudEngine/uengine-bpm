@@ -140,9 +140,10 @@ public class EditorPanel implements ContextAware {
 
 		String appName = getResourcePath().substring(0, getResourcePath().indexOf("/"));
 
-		ResourceNavigator resourceNavigator = new ResourceNavigator();
-		resourceNavigator.setRoot(new ContainerResource());
-		resourceNavigator.getRoot().setPath(appName);
+		//we need to find which navigator is for the exact root
+		ResourceNavigator resourceNavigator = refreshNavigator(appName);
+
+
 		MetaworksRemoteService.wrapReturn(resourceNavigator);
 		resourceNavigator.load();
 
@@ -160,6 +161,22 @@ public class EditorPanel implements ContextAware {
 
 
 		wrapReturn(resourceNavigator,this);
+	}
+
+	protected ResourceNavigator refreshNavigator(String appName) {
+		ResourceNavigator resourceNavigator = new ResourceNavigator();
+		resourceNavigator.setRoot(new ContainerResource());
+		resourceNavigator.getRoot().setPath(appName);
+		resourceNavigator.setRootPath(appName);
+
+		return resourceNavigator;
+	}
+
+	protected ResourceNavigator refreshNavigator() {
+
+		String appName = getResourcePath().substring(0, getResourcePath().indexOf("/"));
+
+		return refreshNavigator(appName);
 	}
 
 	private void saveRecentList(IResource defaultResource) throws Exception{
@@ -204,7 +221,7 @@ public class EditorPanel implements ContextAware {
 
 	@ServiceMethod(callByContent = true)
 	@Order(3)
-	public void rename(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+	public void rename() throws Exception {
 		if(WHEN_RENAME.equals(getMetaworksContext().getWhen())){
 			IResource defaultResource = DefaultResource.createResource(getResourcePath());
 			autowire(defaultResource);
@@ -215,9 +232,7 @@ public class EditorPanel implements ContextAware {
 
 			getMetaworksContext().setWhen(metaworksContext.WHEN_EDIT);
 
-			resourceNavigator.load();
-
-			wrapReturn(resourceNavigator,this);
+			wrapReturn(refreshNavigator(),this);
 		}else{
 			getMetaworksContext().setWhen(WHEN_RENAME);
 		}
@@ -291,16 +306,14 @@ public class EditorPanel implements ContextAware {
 
 	@ServiceMethod(callByContent = true, when = MetaworksContext.WHEN_EDIT, needToConfirm = true)
 	@Order(7)
-	public void delete(@AutowiredFromClient ResourceNavigator resourceNavigator) throws Exception {
+	public void delete() throws Exception {
 		DefaultResource defaultResource = (DefaultResource) DefaultResource.createResource(getResourcePath());
 		autowire(defaultResource);
 		defaultResource.delete();
 
 		this.setEditor(null);
 
-		resourceNavigator.load();
-
-		wrapReturn(resourceNavigator,this);
+		wrapReturn(refreshNavigator(),this);
 	}
 
 	protected void filterResource(IContainer container){

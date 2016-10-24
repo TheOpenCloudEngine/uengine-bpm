@@ -95,6 +95,7 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 		}
 
 	boolean isCollapsed;
+	@Hidden
 		public boolean isCollapsed() {
 			return isCollapsed;
 		}

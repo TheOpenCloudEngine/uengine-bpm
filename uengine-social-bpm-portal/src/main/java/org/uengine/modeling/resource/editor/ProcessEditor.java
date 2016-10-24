@@ -55,7 +55,7 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
     @Override
     public Object simulator(IResource resource) {
 
-        String defId = resource.getPath().substring(resource.getPath().indexOf("/") + 1);
+        String defId = resource.getPath();//.substring(resource.getPath().indexOf("/") + 1);
 
 
         Session session = MetaworksRemoteService.getComponent(Session.class);

@@ -232,17 +232,17 @@ public class SimpleVersionManager implements VersionManager{
     }
 
     public String getProductionResourcePath(String resourcePath){
+        String original = resourcePath;
 
         resourcePath = getLogicalPath(resourcePath);
 
 //        detectModuleName(resourcePath);
 
-        String original = resourcePath;
 
 
         Boolean isDevelopmentTime = (Boolean) TransactionContext.getThreadLocalInstance().getSharedContext("isDevelopmentTime");
         if(isDevelopmentTime!=null && isDevelopmentTime)
-            return resourcePath;
+            return original;
 
         Version productionVersion = getProductionVersion();
 

@@ -32,7 +32,7 @@ public class ResourceNavigator {
         }
         public void setRoot(IContainer root) {
             this.root = root;
-            setRootPath(root.getPath());
+//            setRootPath(root.getPath());
         }
 
     String rootPath;

@@ -36,6 +36,8 @@ public class ProcessAdminResourceNavigator extends ResourceNavigator {
 
         setRoot(processAdminContainerResource);
         getRoot().setPath(getAppName());
+        setRootPath(getAppName());
+
         getRoot().setMetaworksContext(new MetaworksContext());
 
         ((DefaultResource)getRoot()).setDisplayName("root");

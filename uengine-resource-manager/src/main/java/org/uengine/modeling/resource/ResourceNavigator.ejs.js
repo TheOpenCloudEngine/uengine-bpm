@@ -6,5 +6,5 @@ var org_uengine_modeling_resource_ResourceNavigator = function(objectId, classNa
 	this.objectDiv = $('#' + this.objectDivId);
 	
 	this.objectDiv.css({'height':'100%'});
-	this.objectDiv.parent().css({'height':'100%'});
+	//this.objectDiv.parent().css({'height':'100%'});
 }

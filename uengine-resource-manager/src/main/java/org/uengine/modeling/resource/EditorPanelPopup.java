@@ -58,9 +58,9 @@ public class EditorPanelPopup implements ContextAware{
         editorPanel.setResourceName(saveAsFileName);
         editorPanel.setResourcePath(newResourcePath); // change the file name.. need to be correct.
         editorPanel.save();
-        resourceNavigator.load();
+        ResourceNavigator resourceNavigator1 = editorPanel.refreshNavigator();
         // 기존에서 editorPanel도 함께 넘겨서 화면에 적용한다.
-        wrapReturn(resourceNavigator, new Refresh(editorPanel), new Remover(new ModalWindow()));
+        wrapReturn(resourceNavigator1, editorPanel, new Remover(new ModalWindow()));
     }
 
     @Face(displayName = "Cancel")

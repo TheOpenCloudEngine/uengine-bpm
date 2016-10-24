@@ -111,8 +111,9 @@ public class GlobalContext{
 	
 	private static ResourceBundle messages = null;
 	private static Hashtable webMessageBundles = new Hashtable();
+	public static boolean multiTenant = "true".equals(GlobalContext.getPropertyString("multi-tenant", "true"));
 
-	
+
 	protected GlobalContext(){}
 
 /*	public static Serializer getSerializer(String mechanism){

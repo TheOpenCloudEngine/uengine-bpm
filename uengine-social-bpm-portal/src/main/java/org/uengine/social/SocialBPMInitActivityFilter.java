@@ -26,7 +26,7 @@ public class SocialBPMInitActivityFilter implements SensitiveActivityFilter, Ser
     public void beforeExecute(Activity activity, ProcessInstance instance)
             throws Exception {
 
-        if(TenantContext.getThreadLocalInstance()==null || TenantContext.getThreadLocalInstance().getTenantId()==null){
+        if(GlobalContext.multiTenant && (TenantContext.getThreadLocalInstance()==null || TenantContext.getThreadLocalInstance().getTenantId()==null)){
             new TenantContext(""+ ((EJBProcessInstance)instance).getProcessInstanceDAO().get("InitComCd"));
         }
     }

@@ -166,7 +166,7 @@ public class ProcessResource extends DefaultResource {
 
     @ServiceMethod(target=ServiceMethodContext.TARGET_APPEND, inContextMenu = true, callByContent = true)
     public void openInNewWindow(){
-        MetaworksRemoteService.wrapReturn(new ToBlank("resource-editor.html?resourcePath=" + getPath() + "&accessToken=" + session.getEmployee().getEmail()));
+        MetaworksRemoteService.wrapReturn(new ToBlank("resource-editor.jsp?resourcePath=" + getPath() + "&accessToken=" + session.getEmployee().getEmail()));
     }
 
     @ServiceMethod(callByContent = true, target = ServiceMethod.TARGET_POPUP, inContextMenu = true)

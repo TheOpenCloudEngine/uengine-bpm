@@ -1,6 +1,8 @@
 package org.uengine.modeling.resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.directwebremoting.Browser;
+import org.directwebremoting.ScriptSessions;
 import org.directwebremoting.io.FileTransfer;
 import org.metaworks.*;
 import org.metaworks.annotation.*;
@@ -187,6 +189,11 @@ public class DefaultResource implements IResource {
 	public void reopen() throws Exception {
 		_newAndOpen(false);
 	}
+
+//	@ServiceMethod(target=ServiceMethod.TARGET_POPUP, inContextMenu = true)
+//	public void openAsNewWindow() throws Exception{
+//		MetaworksRemoteService.wrapReturn(new NewBrowserWindow("/"));
+//	}
 
 	public EditorPanel _newAndOpen(boolean isNew) throws Exception {
 		EditorPanel editorPanel = getComponent(EditorPanel.class);

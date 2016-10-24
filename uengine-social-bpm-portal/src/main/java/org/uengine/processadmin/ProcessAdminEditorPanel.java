@@ -16,6 +16,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.StartCodi;
 import org.uengine.codi.mw3.model.*;
+import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.modeling.resource.*;
@@ -70,7 +71,8 @@ public class ProcessAdminEditorPanel extends EditorPanel{
 			session.setEmployee(findEmp);
 			session.fillSession();
 
-			new TenantContext(session.getEmployee().getGlobalCom());
+			if(GlobalContext.multiTenant)
+				new TenantContext(session.getEmployee().getGlobalCom());
 		}
 
 		DefaultResource defaultResource = new DefaultResource();

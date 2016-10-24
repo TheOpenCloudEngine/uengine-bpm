@@ -16,6 +16,9 @@ public class Workbench {
 	public Workbench(ResourceNavigator resourceNavigator) {
 		this.resourceNavigator = resourceNavigator;
 		this.editorPanel = getComponent(EditorPanel.class);
+
+		//setEditorPanelTab(new EditorPanelTab());
+
 		setClipboard(new Clipboard());
 	}
 
@@ -28,6 +31,15 @@ public class Workbench {
 		public void setResourceNavigator(ResourceNavigator resourceNavigator) {
 			this.resourceNavigator = resourceNavigator;
 		}
+
+
+//	EditorPanelTab editorPanelTab;
+//		public EditorPanelTab getEditorPanelTab() {
+//			return editorPanelTab;
+//		}
+//		public void setEditorPanelTab(EditorPanelTab editorPanelTab) {
+//			this.editorPanelTab = editorPanelTab;
+//		}
 
 
 	private EditorPanel editorPanel;

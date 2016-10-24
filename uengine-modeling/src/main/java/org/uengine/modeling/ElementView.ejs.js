@@ -346,7 +346,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
     this.destroy = function () {
         if ($(this.element).attr('droppable'))
-            $(this.element).droppable("destroy");
+            try{$(this.element).droppable("destroy");}catch(e){}
 
         $(this.element).unbind('.' + this.objectId);
     };

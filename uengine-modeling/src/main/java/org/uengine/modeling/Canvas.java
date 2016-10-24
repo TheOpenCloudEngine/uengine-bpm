@@ -155,4 +155,17 @@ public class Canvas {
     public void setNavigator(boolean navigator) {
         this.navigator = navigator;
     }
+
+    /**
+     * 캔버스가 도형의 추가/수정/삭제/프로퍼티 설정 이 발생되었을 때 변경 여부를 알려주는 프로퍼티
+     */
+    private boolean isChanged = false;
+
+    public boolean getIsChanged() {
+        return isChanged;
+    }
+
+    public void setIsChanged(boolean isChanged) {
+        this.isChanged = isChanged;
+    }
 }

@@ -228,10 +228,10 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 	Object defaultValue = null;
 	@Order(4)
-	//@Hidden
-	@Face(faceClass= GenericValueFace.class)
+	@Hidden
+	//@Face(faceClass= GenericValueFace.class)
 		public Object getDefaultValue() {
-			if((getType()==ComplexType.class || getType()==null) && (defaultValue instanceof String))
+			if((getType()==ComplexType.class) && (defaultValue instanceof String))
 				return null;
 
 			return defaultValue;
@@ -239,7 +239,16 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 		public void setDefaultValue(Object object) {
 			defaultValue = object;
 		}
-		
+
+	String defaultValueInString;
+		public String getDefaultValueInString() {
+			return defaultValueInString;
+		}
+		public void setDefaultValueInString(String defaultValueInString) {
+			this.defaultValueInString = defaultValueInString;
+		}
+
+
 	boolean isVolatile;
 	@Hidden
 		public boolean isVolatile() {
@@ -386,10 +395,14 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 	
 	public void afterDeserialization() {
 
+//		if(getDefaultValue()==null && getDefaultValueInString()!=null){
+//			setDefaultValue(getDefaultValueInString());
+//		}
+
 		try {
 			if (UEngineUtil.isNotEmpty(getTypeClassName())) {
 
-				if(getTypeClassName().indexOf(".") > 0){
+				if(getTypeClassName().indexOf("/") > 0){
 					setType(ComplexType.class);
 				}else {
 					setType(Thread.currentThread().getContextClassLoader().loadClass(getTypeClassName()));
@@ -503,6 +516,9 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		Serializable processVariableValue = null;
 
 		Class variableType = getType();
+
+		if(getDefaultValue()!=null)
+			return (Serializable) getDefaultValue();
 
 		if ((variableType == ComplexType.class || variableType == null) && typeClassName!=null){
 			if(typeClassName.indexOf("/") > 0) {

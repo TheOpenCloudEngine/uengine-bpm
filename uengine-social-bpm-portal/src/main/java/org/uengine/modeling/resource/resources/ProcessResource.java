@@ -53,7 +53,7 @@ public class ProcessResource extends DefaultResource {
 
         super.save(editingObject);
 
-        definitionFactory.removeFromCache(getPath().substring(CodiProcessDefinitionFactory.codiProcessDefinitionFolder.length() + 1));
+        definitionFactory.removeFromCache(getPath());
     }
 
     @Override

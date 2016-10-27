@@ -808,6 +808,10 @@ public class SubProcessActivity extends DefaultActivity {
 		options.put(DefaultProcessInstance.RETURNING_PROCESS, instance.getInstanceId());
 		options.put(DefaultProcessInstance.RETURNING_TRACINGTAG, getTracingTag());
 
+		if(instance.isSimulation()){
+			options.put(DefaultProcessInstance.SIMULATIONPROCESS, true);
+		}
+
 		if(instance.getExecutionScopeContext() != null)
 			options.put(DefaultProcessInstance.RETURNING_EXECSCOPE, instance.getExecutionScopeContext().getExecutionScope());
 		options.put(DefaultProcessInstance.DONT_RETURN, Boolean.valueOf(isRunAndForget()));

@@ -986,7 +986,8 @@ public class SubProcess extends ScopeActivity{
     @Override
     public void fireComplete(ProcessInstance instance) throws Exception {
 
-        if(instance.getExecutionScopeContext()==null) throw new IllegalStateException("Completing SubProcess should be done in any SubProcess executionScope.");
+        if(instance.getExecutionScopeContext()==null)
+            throw new IllegalStateException("Completing SubProcess should be done in any SubProcess executionScope.");
 
         boolean completable = onSubProcessReturn(instance, instance.getExecutionScopeContext().getExecutionScope());
 

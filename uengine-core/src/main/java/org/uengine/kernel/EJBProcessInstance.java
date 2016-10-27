@@ -160,6 +160,10 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			processInstanceDAO.setRootInstId(instanceId);
 		}
 
+		if(options.containsKey(DefaultProcessInstance.SIMULATIONPROCESS)){
+			setSimulation(true);
+		}
+
 		processInstanceDAO.setDefVerId(procDef.getId());
 		processInstanceDAO.setDefId(procDef.getBelongingDefinitionId());
 

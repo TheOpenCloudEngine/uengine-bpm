@@ -33,6 +33,14 @@ public class ExecutionScopedProcessInstance implements InvocationHandler{
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        //setExecutionScope means this proxy should be changed to keep the context.
+        if("setExecutionScope".equals(method.getName())){
+            executionScope = (String) args[0];
+
+            return null;
+        }
+
         String originalExecutionScope = originalProcessInstance.getExecutionScopeContext()!=null ? originalProcessInstance.getExecutionScopeContext().getExecutionScope() : null;
 
         originalProcessInstance.setExecutionScope(executionScope);

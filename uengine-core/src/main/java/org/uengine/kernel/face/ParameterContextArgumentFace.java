@@ -59,7 +59,7 @@ public class ParameterContextArgumentFace extends SelectBox implements Face<Text
         if(activity instanceof SubProcessActivity){
             SubProcessActivity subProcessActivity = (SubProcessActivity) activity;
 
-            String subProcessDefinitionId = subProcessActivity.getDefinitionId();
+            String subProcessDefinitionId = "codi/" + subProcessActivity.getDefinitionId();
 
             if(subProcessDefinitionId==null) return;
 

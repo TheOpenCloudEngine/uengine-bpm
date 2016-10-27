@@ -567,6 +567,7 @@ public class SubProcessActivity extends DefaultActivity {
 			spIds.add(subProcessInstance.getInstanceId());
 
 			Map subProcesses = new Hashtable();
+
 			subProcesses.put(subProcessInstance.getInstanceId(), subProcessInstance);
 
 			applyVariableBindings(instance, spIds, subProcesses, optionsForVariableMapping);    
@@ -777,7 +778,7 @@ public class SubProcessActivity extends DefaultActivity {
     realDefinitionId = pm.getProcessDefinitionProductionVersionByAlias(realDefinitionId);
 		 */  
 		if(!UEngineUtil.isNotEmpty(realDefinitionId)){
-			realDefinitionId = getDefinitionId();
+			realDefinitionId = "codi/" + getDefinitionId();
 		}
 
 		return ProcessDefinition.getDefinitionVersionId(instance, realDefinitionId, getVersionSelectOption(), getProcessDefinition());
@@ -828,7 +829,7 @@ public class SubProcessActivity extends DefaultActivity {
    	     String versionId = getDefinitionVersionId(realDefinitionId, instance);
    	     subProcessInstance = instance.getProcessTransactionContext().getProcessDefinition(versionId).createInstance(subProcessInstanceName, options);
 			 */ 
-			realDefinitionId = getDefinitionId();
+			realDefinitionId = "codi/" + getDefinitionId();
 			subProcessInstance = instance.getProcessTransactionContext().getProcessDefinition(realDefinitionId).createInstance(subProcessInstanceName, options);
 		}
 

@@ -161,7 +161,7 @@ public class ProcessResource extends DefaultResource {
 
         String physicalPart = getPath().substring(0, getPath().length() - logicalPath.length());
 
-        return physicalPart + versionManager.getModuleName() + "/global.process";
+        return physicalPart + versionManager.getModuleName() + "/" + GlobalContext.GLOBAL_PROCESS_PATH;
     }
 
     @ServiceMethod(target=ServiceMethodContext.TARGET_APPEND, inContextMenu = true, callByContent = true)

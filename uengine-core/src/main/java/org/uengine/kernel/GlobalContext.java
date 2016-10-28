@@ -68,6 +68,7 @@ public class GlobalContext{
 	public final static String ENCODING = "UTF-8";
 	public final static String DATABASE_ENCODING = "UTF-8";
 	public final static int DATABASE_MAXSTRLENGTH = 1300;
+	public static final String GLOBAL_PROCESS_PATH = GlobalContext.getPropertyString("global.process.name", "_global.process");
 	public static String WEB_CONTEXT_ROOT = GlobalContext.getPropertyString("web.context.root", "/uengine-web");
 	
 	public final static boolean useEJB = "true".equals(GlobalContext.getPropertyString("use.ejb", "false"));

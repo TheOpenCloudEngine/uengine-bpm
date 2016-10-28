@@ -323,6 +323,7 @@ public class ProcessModeler extends DefaultModeler {
 
         }
 
+        //add roles and pools firstly
         for (ElementView elementView : canvas.getElementViewList()) {
 
             //bounds wrong positioned elements
@@ -338,7 +339,7 @@ public class ProcessModeler extends DefaultModeler {
 
                 Role[] roles = null;
                 Role role = (Role) elementView.getElement();
-                elementView.setElement(null);
+                //elementView.setElement(null);
                 role.setElementView(elementView);
                 role.setName(elementView.getLabel());
                 preventDuplicateRoleNames(role, def.getRoles());
@@ -361,7 +362,7 @@ public class ProcessModeler extends DefaultModeler {
             } else if (elementView.getElement() instanceof Pool) {
 
                 Pool pool = (Pool) elementView.getElement();
-                elementView.setElement(null);
+                //elementView.setElement(null);
                 pool.setElementView(elementView);
                 pool.setName(elementView.getLabel());
                 pool.setDescription(elementView.getLabel());
@@ -376,7 +377,13 @@ public class ProcessModeler extends DefaultModeler {
                 def.addPool(pool);
                 //def.addRole(role);
 
-            } else if (elementView.getElement() instanceof Activity) {
+            }
+        }
+
+        //add activities later
+        for (ElementView elementView : canvas.getElementViewList()) {
+
+           if (elementView.getElement() instanceof Activity) {
                 Activity activity = (Activity) elementView.getElement();
                 activity.setName(elementView.getLabel());
                 activity.setElementView(elementView);

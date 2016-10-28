@@ -1006,7 +1006,15 @@ public class SubProcess extends ScopeActivity{
 
 
             }else{
-                super.fireComplete(instance);
+                new InParentExecutionScope(){
+
+                    @Override
+                    public Object logic(ProcessInstance instance) throws Exception {
+                        SubProcess.super.fireComplete(instance);
+
+                        return null;
+                    }
+                }.run(instance);
             }
         }
 

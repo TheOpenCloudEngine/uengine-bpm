@@ -3,9 +3,6 @@ package org.uengine.kernel;
 import java.util.*;
 import java.io.*;
 
-import org.metaworks.dwr.MetaworksRemoteService;
-import org.springframework.integration.channel.QueueChannel;
-import org.springframework.messaging.support.GenericMessage;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.*;
@@ -193,6 +190,9 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 			if(activity.isQueuingEnabled() || forceToQueue){
 
 				getProcessTransactionContext().addTransactionListener(new TransactionListener() {
+
+					String instanceIdAndExecutionScopeThatTime = getFullInstanceId(); //since that time, the executionscope is different than the transaction listener is triggered.
+
 					@Override
 					public void beforeCommit(TransactionContext tx) throws Exception {
 
@@ -205,7 +205,7 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 
 					@Override
 					public void afterCommit(TransactionContext tx) throws Exception {
-						(new ProcessExecutionThread()).queue(getFullInstanceId(), activity.getTracingTag());
+						(new ProcessExecutionThread()).queue(instanceIdAndExecutionScopeThatTime, activity.getTracingTag());
 					}
 
 					@Override

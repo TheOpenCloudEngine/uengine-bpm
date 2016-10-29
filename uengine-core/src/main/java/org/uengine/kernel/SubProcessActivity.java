@@ -11,12 +11,14 @@ import org.metaworks.Type;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Range;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.inputter.ArrayObjectInput;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
 import org.uengine.kernel.face.RoleParameterContextArrayFace;
 import org.uengine.kernel.face.RoleParameterContextListFace;
 import org.uengine.kernel.face.SubProcessParameterContextArrayFace;
+import org.uengine.modeling.resource.VersionManager;
 import org.uengine.util.UEngineUtil;
 
 import java.io.Serializable;
@@ -33,14 +35,12 @@ public class SubProcessActivity extends DefaultActivity {
 	public static void metaworksCallback_changeMetadata(Type type){
 		FieldDescriptor fd;
 
-		try {
-			fd = type.getFieldDescriptor("VariableBindings");
-			fd.setInputter(new ArrayObjectInput(SubProcessParameterContext.class));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		type.removeFieldDescriptor("DefinitionObject");
+//		try {
+//			fd = type.getFieldDescriptor("VariableBindings");
+//			fd.setInputter(new ArrayObjectInput(SubProcessParameterContext.class));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 	}
 
@@ -79,27 +79,6 @@ public class SubProcessActivity extends DefaultActivity {
 			definitionId = l;
 		}
 
-	//add ryu start
-	ProcessDefinition definitionObject;
-	@Hidden
-	public ProcessDefinition getDefinitionObject() {
-		return definitionObject;
-	}
-
-	public void setDefinitionObject(ProcessDefinition definition) {
-		this.definitionObject = definition;
-	}
-
-	/*  String dynamicDefinitionId;
-    public String getDynamicDefinitionId()
-    {
-      return dynamicDefinitionId;
-    }
-    public void setDynamicDefinitionId(String dynamicDefinitionId)
-    {
-      this.dynamicDefinitionId = dynamicDefinitionId;
-    }
-	 */
 	ProcessVariable dynamicDefinitionIdPV;
 	@Hidden
 	public ProcessVariable getDynamicDefinitionIdPV() {
@@ -820,21 +799,19 @@ public class SubProcessActivity extends DefaultActivity {
 		options.put("ptc", instance.getProcessTransactionContext());
 
 		ProcessInstance subProcessInstance =null;
-		if(getDefinitionObject() != null)
-			subProcessInstance = getDefinitionObject().createInstance(subProcessInstanceName, options);
-		else{
-			/*
-   	      * 2013/05/06 cjw
-   	      * mw3 base sub process error modify 
-   	     String versionId = getDefinitionVersionId(realDefinitionId, instance);
-   	     subProcessInstance = instance.getProcessTransactionContext().getProcessDefinition(versionId).createInstance(subProcessInstanceName, options);
-			 */ 
-			realDefinitionId = "codi/" + getDefinitionId();
-			subProcessInstance = instance.getProcessTransactionContext().getProcessDefinition(realDefinitionId).createInstance(subProcessInstanceName, options);
-		}
 
-		//    ProcessInstance subProcessInstance 
-		//      = instance.getProcessTransactionContext().getProcessDefinition(versionId).createInstance(subProcessInstanceName, options);
+		realDefinitionId = "codi/" + getDefinitionId();
+
+		// replace with production version of the Sub process.
+//		if(!instance.isSimulation()){
+//
+//			VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+//			versionManager.setAppName("codi");
+//
+//			realDefinitionId = versionManager.getProductionResourcePath(realDefinitionId);
+//		}
+
+		subProcessInstance = instance.getProcessTransactionContext().getProcessDefinition(realDefinitionId).createInstance(subProcessInstanceName, options);
 
 		if(isConnectedMultipleSubProcesses)
 			return subProcessInstance;

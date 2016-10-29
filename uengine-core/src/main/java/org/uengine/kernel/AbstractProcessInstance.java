@@ -860,6 +860,6 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 
 	@Override
 	public boolean isRoot() {
-		return getInstanceId().equals(getRootProcessInstanceId());
+		return getMainProcessInstanceId()==null;
 	}
 }

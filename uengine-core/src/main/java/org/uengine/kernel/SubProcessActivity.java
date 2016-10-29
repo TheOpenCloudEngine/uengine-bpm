@@ -802,14 +802,14 @@ public class SubProcessActivity extends DefaultActivity {
 
 		realDefinitionId = "codi/" + getDefinitionId();
 
-		// replace with production version of the Sub process.
-//		if(!instance.isSimulation()){
-//
-//			VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
-//			versionManager.setAppName("codi");
-//
-//			realDefinitionId = versionManager.getProductionResourcePath(realDefinitionId);
-//		}
+		//replace with production version of the Sub process.
+		if(!instance.isSimulation()){
+
+			VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+			versionManager.setAppName("codi");
+
+			realDefinitionId = versionManager.getProductionResourcePath(realDefinitionId);
+		}
 
 		subProcessInstance = instance.getProcessTransactionContext().getProcessDefinition(realDefinitionId).createInstance(subProcessInstanceName, options);
 

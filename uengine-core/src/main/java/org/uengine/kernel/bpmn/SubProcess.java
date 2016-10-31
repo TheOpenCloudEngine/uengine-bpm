@@ -986,6 +986,12 @@ public class SubProcess extends ScopeActivity{
     @Override
     public void fireComplete(ProcessInstance instance) throws Exception {
 
+        if(getForEachVariable()==null){
+            super.fireComplete(instance);
+
+            return;
+        }
+
         if(instance.getExecutionScopeContext()==null)
             throw new IllegalStateException("Completing SubProcess should be done in any SubProcess executionScope.");
 

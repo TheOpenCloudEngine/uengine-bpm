@@ -554,6 +554,11 @@ public class SubProcessActivity extends DefaultActivity {
 
 		}else{
 			Vector completedSPIds = getSubprocessIds(instance, SUBPROCESS_INST_ID_COMPLETED);
+
+			if(completedSPIds.contains(subProcessInstance.getInstanceId())){
+				return; //TODO: check why the token comes here more than twice.
+			}
+
 			completedSPIds.add(subProcessInstance.getInstanceId());
 			setSubprocessIds(instance, completedSPIds, SUBPROCESS_INST_ID_COMPLETED);
 

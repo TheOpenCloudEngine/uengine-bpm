@@ -9,10 +9,12 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.uengine.processmanager.ProcessManagerRemote;
+import org.uengine.util.UEngineUtil;
 
 import javax.ejb.RemoveException;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 
 /**
@@ -74,7 +76,7 @@ public class ProcessExecutionThread {
 
                 Activity act = instance.getProcessDefinition().getActivity(tracingTagAndInstanceIdArr[0]);
 
-                logic(instance, act);
+                logic(instance, act, tracingTagAndInstanceIdArr);
 
                 pm.applyChanges();
 
@@ -84,7 +86,7 @@ public class ProcessExecutionThread {
             } catch (Exception e) {
                 e.printStackTrace();
 
-                //(new FaultMarker()).queue(instance.getInstanceId(), tracingTagAndInstanceIdArr[0]);
+                (new FaultMarker()).queue(instance.getInstanceId(), tracingTagAndInstanceIdArr[0], 0, new String[]{e.getMessage()});
             }
  //       }
 
@@ -92,19 +94,38 @@ public class ProcessExecutionThread {
 
     }
 
-    protected void logic(ProcessInstance instance, Activity act) throws Exception {
+    protected void logic(ProcessInstance instance, Activity act, String[] parameters) throws Exception {
         act.executeActivity(instance);
         act.afterExecute(instance);
     }
 
 
-    public void queue(String instanceId, String tracingTag){
+    public void queue(String instanceId, String tracingTag, int retryingCount, String[] additionalParameters){
 
         QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannelFor" + getClass().getSimpleName(), QueueChannel.class);
-        inputChannel.send(new GenericMessage<String[]>(new String[]{tracingTag, instanceId}));
+
+        String[] newArray;
+        if(additionalParameters!=null && additionalParameters.length>0){
+            newArray = additionalParameters;
+        }else{
+            newArray = new String[]{};
+        }
 
 
+        newArray = (String[]) UEngineUtil.addArrayElementAtFirst(newArray, ""+retryingCount);
+        newArray = (String[]) UEngineUtil.addArrayElementAtFirst(newArray, instanceId);
+        newArray = (String[]) UEngineUtil.addArrayElementAtFirst(newArray, tracingTag);
+
+        inputChannel.send(new GenericMessage<String[]>(newArray));
     }
+
+
+    public void queue(String instanceId, String tracingTag){
+
+       queue(instanceId, tracingTag, 0, null);
+    }
+
+
 
 
 }

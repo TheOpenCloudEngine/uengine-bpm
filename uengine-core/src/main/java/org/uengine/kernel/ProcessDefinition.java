@@ -792,9 +792,30 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 	protected void onEvent(String command, ProcessInstance instance, Object payload) throws Exception{
 		if(command.equals(ACTIVITY_DONE) || command.equals(ACTIVITY_SKIPPED)){
 			returnToMainProcess(instance, command.equals(ACTIVITY_SKIPPED));
+		}else if(command.equals(CHILD_FAULT)){
+			reportFaultToMainProcess(instance, (FaultContext) payload);
 		}
 		
 		super.onEvent(command, instance, payload);
+	}
+
+	protected void reportFaultToMainProcess(ProcessInstance instance, FaultContext e) throws Exception {
+		//if this process is subprocess, notify that it is completed to the main process.
+		String parentProcess = (String) instance.getMainProcessInstanceId();
+		if (parentProcess != null && !parentProcess.equals("null")) {
+
+			String returningTracingTag = (String) instance.getMainActivityTracingTag();
+
+			Hashtable options = new Hashtable();
+			options.put("ptc", instance.getProcessTransactionContext());
+
+			ProcessInstance parentInstance = AbstractProcessInstance.create().getInstance(parentProcess, options);
+			ProcessDefinition parentDefinition = parentInstance.getProcessDefinition();
+
+			Activity callActivity = parentDefinition.getActivity(returningTracingTag);
+
+			callActivity.fireFault(parentInstance, e);
+		}
 	}
 
 	public void returnToMainProcess(ProcessInstance instance) throws Exception{

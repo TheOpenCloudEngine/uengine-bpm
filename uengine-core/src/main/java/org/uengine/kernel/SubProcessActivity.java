@@ -296,6 +296,7 @@ public class SubProcessActivity extends DefaultActivity {
 		setSubprocessIds(instance, spInstIds, SUBPROCESS_INST_ID);
 		setSubprocessIds(instance, spInstLabels, SUBPROCESS_INST_LABELS);
 	}
+
 	public void refreshMultipleInstance(ProcessInstance instance)throws Exception{
 		Hashtable unInitiatedRoleMappings = getUnInitiatedRoleMappings(instance);
 		Hashtable deletedRoleMappings = getDeletedRoleMappings(instance);

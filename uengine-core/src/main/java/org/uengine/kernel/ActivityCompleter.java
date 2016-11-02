@@ -6,7 +6,7 @@ package org.uengine.kernel;
 public class ActivityCompleter extends ProcessExecutionThread{
 
     @Override
-    protected void logic(ProcessInstance instance, Activity act) throws Exception {
+    protected void logic(ProcessInstance instance, Activity act, String[] parameters) throws Exception {
         act.fireComplete(instance);
     }
 }

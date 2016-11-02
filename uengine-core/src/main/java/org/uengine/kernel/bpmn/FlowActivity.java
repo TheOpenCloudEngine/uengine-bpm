@@ -213,7 +213,11 @@ public class FlowActivity extends ComplexActivity {
 			}
 
 			for (int i = 0; i < possibleNextActivities.size(); i++) {
-				queueActivity(possibleNextActivities.get(i), instance);
+				Activity activity = possibleNextActivities.get(i);
+
+				// if there are no gateway but if it look like a join, apply inclusive gateway.
+				if(activity.getIncomingSequenceFlows().size() == 1 || !Gateway.hasTokenInPreviousActivities(instance, activity))
+					queueActivity(activity, instance);
 			}
 
 		}else if(command.equals(ACTIVITY_DONE)){

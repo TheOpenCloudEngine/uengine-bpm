@@ -73,8 +73,8 @@ public class Gateway extends Activity {
 		return !hasTokenInPreviousActivities(instance, this);	
 	}
 	
-	protected boolean hasTokenInPreviousActivities(ProcessInstance instance, Activity activity) throws Exception {
-		List<Activity> blockMembers = BlockFinder.getBlockMembers(this);
+	public static boolean hasTokenInPreviousActivities(ProcessInstance instance, Activity activity) throws Exception {
+		List<Activity> blockMembers = BlockFinder.getBlockMembers(activity);
 
 		//debug here under condition 'getTracingTag().equals("a7")'
 		if(blockMembers.size() > 1) {

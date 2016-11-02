@@ -4,10 +4,13 @@ import org.metaworks.Refresh;
 import org.metaworks.ServiceMethodContext;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Clipboard;
+import org.metaworks.widget.ToBlank;
 import org.uengine.kernel.SubProcessActivity;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.Symbol;
+import org.uengine.security.ISession;
 
 
 public class SubProcessActivityView extends DefaultActivityView{
@@ -38,21 +41,11 @@ public class SubProcessActivityView extends DefaultActivityView{
 		return new Object[]{new Refresh(this, true, true)};
 	}
 	
-	@ServiceMethod(callByContent=true, eventBinding="inclusionclick", target=ServiceMethodContext.TARGET_POPUP)
-	public Object open(){
-		
-		/*SubProcessActivity subProcessActivity = (SubProcessActivity)getRealActivity();
-		String id = subProcessActivity.getDefinitionId();
-		ModalWindow modal = null;
-		if("".equals(id)){
-			
-		}else{
-			IncludedSubProcessPanel frontAndRearProcessPanel = new IncludedSubProcessPanel(editorInfo.getResource(), id, this);;
-			modal = new ModalWindow(frontAndRearProcessPanel, 500, 500, "");
-			
-		}
-		return modal;*/
-		return null;
-	}
+//	@ServiceMethod(callByContent=true, inContextMenu = true, target=ServiceMethodContext.TARGET_APPEND)
+//	public void open(@AutowiredFromClient ISession session){
+//		SubProcessActivity subProcessActivity = (SubProcessActivity) getElement();
+//
+//		MetaworksRemoteService.wrapReturn(new ToBlank("resource-editor.jsp?resourcePath=codi/" + subProcessActivity.getDefinitionId() + "&accessToken=" + session.getEndpoint()));
+//	}
 	
 }

@@ -350,23 +350,31 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		setCaching(false);
 
 		if(modifiedRoleMappings!=null){
-			RoleMappingDAOType rmDAOFacade = RoleMappingDAOType.getInstance(ptc);
 
-			if(modifiedRoleMappings.size() > 0)
-				rmDAOFacade.removeRoleMappings(getInstanceId(), modifiedRoleMappings.keySet().iterator());
 
-			RoleMappingDAO roleMappingDAO = rmDAOFacade.createDAOForInsertRoleMappingBatch();
+			if(fileBasedPersistence){
+				// if the variables is serialized file based, role mapping also be serialized as well.
 
-			for(Iterator iterator = modifiedRoleMappings.keySet().iterator(); iterator.hasNext();){
-				String roleName = (String)iterator.next();
-				RoleMapping rm = (RoleMapping)cachedRoleMappings.get(roleName);
+			}else {
 
-//(new Exception("[EJBProcessInstance:putRoleMappingImpl] instanceId = " + instanceId + "; RoleName = " + roleName)).printStackTrace();
+				RoleMappingDAOType rmDAOFacade = RoleMappingDAOType.getInstance(ptc);
 
-				putRoleMappingImpl(roleName, rm, true, roleMappingDAO);
+				if (modifiedRoleMappings.size() > 0)
+					rmDAOFacade.removeRoleMappings(getInstanceId(), modifiedRoleMappings.keySet().iterator());
+
+				RoleMappingDAO roleMappingDAO = rmDAOFacade.createDAOForInsertRoleMappingBatch();
+
+				for (Iterator iterator = modifiedRoleMappings.keySet().iterator(); iterator.hasNext(); ) {
+					String roleName = (String) iterator.next();
+					RoleMapping rm = (RoleMapping) cachedRoleMappings.get(roleName);
+
+					//(new Exception("[EJBProcessInstance:putRoleMappingImpl] instanceId = " + instanceId + "; RoleName = " + roleName)).printStackTrace();
+
+					putRoleMappingImpl(roleName, rm, true, roleMappingDAO);
+				}
+
+				roleMappingDAO.updateBatch();
 			}
-
-			roleMappingDAO.updateBatch();
 		}
 		//setCaching(true);
 
@@ -647,16 +655,18 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 						addDebugInfo("");
 
-						Role[] roles = getProcessDefinition().getRoles();
-						if(roles!=null)
-							for(int i=0; i<roles.length; i++){
-								Role role = roles[i];
-								RoleMapping rm = getRoleMapping(role.getName());
-								String dataInStr = (String)GlobalContext.serialize(rm, String.class);
+						if(!fileBasedPersistence) {
+							Role[] roles = getProcessDefinition().getRoles();
+							if (roles != null)
+								for (int i = 0; i < roles.length; i++) {
+									Role role = roles[i];
+									RoleMapping rm = getRoleMapping(role.getName());
+									String dataInStr = (String) GlobalContext.serialize(rm, String.class);
 
-								addDebugInfo("Initial RoleMapping '" + role.getName() + "'", dataInStr);
-							}
+									addDebugInfo("Initial RoleMapping '" + role.getName() + "'", dataInStr);
+								}
 
+						}
 
 
 					}else
@@ -1135,6 +1145,11 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 
 	public RoleMapping getRoleMapping(String roleName) throws Exception{
+
+		if(fileBasedPersistence){
+			return super.getRoleMapping(roleName);
+		}
+
 		if(isCaching() && cachedRoleMappings!=null && cachedRoleMappings.containsKey(roleName)){
 			return (RoleMapping)((RoleMapping)cachedRoleMappings.get(roleName)).clone();
 		}
@@ -1188,6 +1203,13 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	public void putRoleMappingImpl(String roleName, RoleMapping roleMapping, boolean isBatch, RoleMappingDAO roleMappingDAO) throws Exception{
 //		addDebugInfo("   --- [Set Role] --------------------\n    * name : "+roleName+"\n    * value : " + (GlobalContext.logLevelIsDebug ? GlobalContext.serialize(roleMapping, String.class) : roleMapping.getEndpoint() +"'"));
 //		addDebugInfo("   -----------------------------------");
+
+		if(fileBasedPersistence){
+			super.putRoleMapping(roleName, roleMapping);
+
+			return;
+		}
+
 
 		if(isCaching()){
 			if(modifiedRoleMappings == null)

@@ -88,7 +88,7 @@ public class ProcessResource extends DefaultResource {
             }
 
             for(ProcessVariable processVariable : definition.getProcessVariables()){
-                if(!processVariable.isGlobal())
+                if(!processVariable.isGlobal() /*&& !variables.contains(processVariable)*/)
                     variables.add(processVariable);
             }
 
@@ -117,18 +117,30 @@ public class ProcessResource extends DefaultResource {
 
             for(ProcessVariable processVariable : definition.getProcessVariables()){
                 if(processVariable!=null && processVariable.isGlobal()) {
-                    if(!globalProcessVariables.contains(processVariable))
-                        globalProcessVariables.add(processVariable);
-                }else{
+                    //refresh the process variable setting if newly inserted.
+                    if(globalProcessVariables.contains(processVariable))
+                        globalProcessVariables.remove(processVariable);
+
+                    globalProcessVariables.add(processVariable);
+                }
+
+
+                if(processVariable.isGlobal() || (!processVariable.isGlobal() && !globalProcessVariables.contains(processVariable))) {
+                    if (localProcessVariables.contains(processVariable))
+                        localProcessVariables.remove(processVariable);
+
                     localProcessVariables.add(processVariable);
                 }
+
             }
 
         }
 
         if(globalProcessVariables!=null && globalProcessVariables.size() > 0){
-//            ProcessVariable[] arrayLocalVariables = new ProcessVariable[locallProcessVariables.size()];
-//            definition.setProcessVariables(locallProcessVariables.toArray(arrayLocalVariables));
+
+            //Save the local variables as it listed not removing the global ones if comment following two lines.
+            ProcessVariable[] arrayLocalVariables = new ProcessVariable[localProcessVariables.size()];
+            definition.setProcessVariables(localProcessVariables.toArray(arrayLocalVariables));
 
             ProcessVariable[] arrayGlobalVariables = new ProcessVariable[globalProcessVariables.size()];
             globalDefinition.setProcessVariables(globalProcessVariables.toArray(arrayGlobalVariables));
@@ -142,8 +154,6 @@ public class ProcessResource extends DefaultResource {
             } catch (Exception e) {
                 throw new RuntimeException("Failed to save global process definition [" + globalProcessResource.getPath() + "]" , e);
             }
-
-
         }
 
     }

@@ -1159,6 +1159,7 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 	public void beforeSerialization() {
 
 		//replace the variable by real ones.
+		if(getVariableBindings()!=null)
 		for(ParameterContext parameterContext : getVariableBindings()){
 			ProcessVariable processVariable = getProcessDefinition().getProcessVariable(parameterContext.getVariable().getName());
 
@@ -1167,8 +1168,11 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 			}
 		}
 
-		ProcessVariable forEachVariable = getProcessDefinition().getProcessVariable(getForEachVariable().getName());
-		setForEachVariable(forEachVariable);
+		if(getForEachVariable()!=null){
+			ProcessVariable forEachVariable = getProcessDefinition().getProcessVariable(getForEachVariable().getName());
+			setForEachVariable(forEachVariable);
+
+		}
 		//end
 
 	}

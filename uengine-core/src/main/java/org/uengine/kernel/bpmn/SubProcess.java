@@ -1031,16 +1031,20 @@ public class SubProcess extends ScopeActivity{
         super.beforeSerialization();
 
         //replace the variable by real ones.
-        for(ParameterContext parameterContext : getVariableBindings()){
-            ProcessVariable processVariable = getProcessDefinition().getProcessVariable(parameterContext.getVariable().getName());
+        if(getVariableBindings()!=null)
+            for(ParameterContext parameterContext : getVariableBindings()){
+                ProcessVariable processVariable = getProcessDefinition().getProcessVariable(parameterContext.getVariable().getName());
 
-            if(processVariable!=null){
-                parameterContext.setVariable(processVariable);
+                if(processVariable!=null){
+                    parameterContext.setVariable(processVariable);
+                }
             }
-        }
 
-        ProcessVariable forEachVariable = getProcessDefinition().getProcessVariable(getForEachVariable().getName());
-        setForEachVariable(forEachVariable);
+        if(getForEachVariable()!=null){
+            ProcessVariable forEachVariable = getProcessDefinition().getProcessVariable(getForEachVariable().getName());
+            setForEachVariable(forEachVariable);
+
+        }
         //end
 
     }

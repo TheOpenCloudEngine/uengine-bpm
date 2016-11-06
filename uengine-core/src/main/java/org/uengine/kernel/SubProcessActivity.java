@@ -24,7 +24,7 @@ import org.uengine.util.UEngineUtil;
 import java.io.Serializable;
 import java.util.*;
 
-public class SubProcessActivity extends DefaultActivity {
+public class SubProcessActivity extends DefaultActivity implements NeedArrangementToSerialize{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	protected final static String SUBPROCESS_INST_ID="instanceIdOfSubProcess"; 
@@ -1152,6 +1152,30 @@ public class SubProcessActivity extends DefaultActivity {
 
 		setSubprocessIds(instance, currSubProcessIds, SUBPROCESS_INST_ID);
 		setSubprocessIds(instance, currSubProcessLabels, SUBPROCESS_INST_LABELS);
+	}
+
+
+	@Override
+	public void beforeSerialization() {
+
+		//replace the variable by real ones.
+		for(ParameterContext parameterContext : getVariableBindings()){
+			ProcessVariable processVariable = getProcessDefinition().getProcessVariable(parameterContext.getVariable().getName());
+
+			if(processVariable!=null){
+				parameterContext.setVariable(processVariable);
+			}
+		}
+
+		ProcessVariable forEachVariable = getProcessDefinition().getProcessVariable(getForEachVariable().getName());
+		setForEachVariable(forEachVariable);
+		//end
+
+	}
+
+	@Override
+	public void afterDeserialization() {
+
 	}
 
 

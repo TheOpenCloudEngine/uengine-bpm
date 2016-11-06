@@ -2,7 +2,7 @@ var org_uengine_kernel_view_ActivityView = function(objectId, className){
 
 	org_uengine_modeling_ElementView.apply(this, new Array(objectId, className));
 
-	var modeler = mw3.getAutowiredObject('org.uengine.modeling.Modeler');
+	var modeler = mw3.getClosestObject(objectId, 'org.uengine.modeling.Modeler');
 	this.object.element.tracingTag = modeler.getFaceHelper().getTracingTag();
 
 	this.element.__className = className;

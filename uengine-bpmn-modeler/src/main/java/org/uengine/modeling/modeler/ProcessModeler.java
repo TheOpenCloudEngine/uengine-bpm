@@ -217,6 +217,8 @@ public class ProcessModeler extends DefaultModeler {
                 relationView.setTo("inst_" + relationView.getTo());
             }
 
+            getCanvas().setModelerType("inst_" + getCanvas().getModelerType());
+
         }
     }
 

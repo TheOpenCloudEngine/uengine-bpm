@@ -205,6 +205,19 @@ public class ProcessModeler extends DefaultModeler {
             setGlobal(def.isGlobal());
 
         }
+
+        //TODO:  someday must be changed to metaworks can designate multiple canvas instances.
+        if(instance!=null){
+            for(ElementView elementView : elementViewList){
+                elementView.setId("inst_" + elementView.getId());
+            }
+            for(RelationView relationView : relationViewList){
+                relationView.setId("inst_" + relationView.getId());
+                relationView.setFrom("inst_" + relationView.getFrom());
+                relationView.setTo("inst_" + relationView.getTo());
+            }
+
+        }
     }
 
     boolean global;

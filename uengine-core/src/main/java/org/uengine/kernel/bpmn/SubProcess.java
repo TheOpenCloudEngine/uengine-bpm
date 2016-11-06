@@ -1026,6 +1026,25 @@ public class SubProcess extends ScopeActivity{
 
     }
 
+    @Override
+    public void beforeSerialization() {
+        super.beforeSerialization();
+
+        //replace the variable by real ones.
+        for(ParameterContext parameterContext : getVariableBindings()){
+            ProcessVariable processVariable = getProcessDefinition().getProcessVariable(parameterContext.getVariable().getName());
+
+            if(processVariable!=null){
+                parameterContext.setVariable(processVariable);
+            }
+        }
+
+        ProcessVariable forEachVariable = getProcessDefinition().getProcessVariable(getForEachVariable().getName());
+        setForEachVariable(forEachVariable);
+        //end
+
+    }
+
     public void setMultipleInstanceOption(String multipleInstanceOption) {
         this.multipleInstanceOption = multipleInstanceOption;
     }

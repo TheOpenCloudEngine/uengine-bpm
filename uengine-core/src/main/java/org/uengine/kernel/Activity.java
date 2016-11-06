@@ -28,6 +28,7 @@ import org.metaworks.annotation.*;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
+import org.uengine.kernel.bpmn.SubProcess;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.IIntegrityElement;
@@ -1010,7 +1011,15 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 			ExecutionScopeContext escTree = instance.getExecutionScopeContextTree(instance.getExecutionScopeContext()!=null ? instance.getExecutionScopeContext().getExecutionScope(): null);
 
 			if(escTree.getChilds()!=null && escTree.getChilds().size() > 0){
-				status = STATUS_MULTIPLE;
+
+				//if(getParentActivity() instanceof SubProcess){
+
+				/// TODO: this is temporal. it is not exact logic.
+				if(STATUS_COMPLETED.equals(getParentActivity().getStatus(instance))){
+					status = STATUS_COMPLETED;
+				}else {
+					status = STATUS_MULTIPLE;
+				}
 			}
 		}
 

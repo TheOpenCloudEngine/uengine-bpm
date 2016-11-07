@@ -2,6 +2,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     this.objectId = objectId;
     this.className = className;
     this.object = mw3.objects[this.objectId];
+    this.__className = this.object.element.__className;
     this.objectDivId = mw3._getObjectDivId(this.objectId);
     this.objectDiv = $(document.getElementById(this.objectDivId));
     if (!this.object) return true;
@@ -69,7 +70,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             return;
         }
 
-        //ë¶€ëª¨ê°€ ìº”ë²„ìŠ¤ì— ì•„ì§ ê·¸ë ¤ì§€ì§€ ì•Šì•˜ì„ ê²½ìš° ì˜ˆì•½ì„ ê±¸ì–´ë†“ëŠ”ë‹¤.
+        //ºÎ¸ğ°¡ Äµ¹ö½º¿¡ ¾ÆÁ÷ ±×·ÁÁöÁö ¾Ê¾ÒÀ» °æ¿ì ¿¹¾àÀ» °É¾î³õ´Â´Ù.
         if (!parentElement) {
             if (!this.canvas.groupReservations[parentId]) {
                 this.canvas.groupReservations[parentId] = [];
@@ -79,7 +80,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             }
         }
 
-        //ìì‹ ì—ê²Œ ì˜ˆì•½ì´ ê±¸ë ¤ìˆëŠ”ê²ƒì´ ìˆë‹¤ë©´ ê·¸ë£¹ì„ ë§ºëŠ”ë‹¤.
+        //ÀÚ½Å¿¡°Ô ¿¹¾àÀÌ °É·ÁÀÖ´Â°ÍÀÌ ÀÖ´Ù¸é ±×·ìÀ» ¸Î´Â´Ù.
         var reservations = this.canvas.groupReservations[elementId];
         if (!reservations) {
             return;
@@ -95,6 +96,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     };
 
     this.init = function () {
+
+        //2¹øÀ» Å½.
+
         this.canvas = this.getCanvas();
         this.renderer = this.getRenderer();
         this.element = null;
@@ -106,8 +110,8 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             throw new Error("No shape Id is set for " + this.object);
 
 
-        //concern ë³„ ìƒ‰ìƒ ì ìš©ì„ ìœ„í•´ by soo
-        //ì´ ë¶€ë¶„ê³¼
+        //concern º° »ö»ó Àû¿ëÀ» À§ÇØ by soo
+        //ÀÌ ºÎºĞ°ú
         var concern, concernColor, lineColor;
         if (this.object && this.object.element && this.object.element.concern != null) {
             concern = this.object.element.concern;
@@ -133,8 +137,8 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             this.element = existElement;
             this.isNew = false;
 
-            //concern ë³„ color ì ìš© by soo
-            //ì´ ë¶€ë¶„
+            //concern º° color Àû¿ë by soo
+            //ÀÌ ºÎºĞ
             if (concern != null)
                 this.canvas._RENDERER.setShapeStyle(this.element, {
                     "fill": concernColor,
@@ -152,16 +156,16 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             }
 
             if (this.object.instStatus) {
-              //  if ("Completed" == this.object.instStatus || "Running" == this.object.instStatus) {
-                    shape.status = this.object.instStatus;
-               // }
+                //  if ("Completed" == this.object.instStatus || "Running" == this.object.instStatus) {
+                shape.status = this.object.instStatus;
+                // }
             }
 
             var style = this.object.style;
             var boundary;
 
-            //concern ë³„ color ì ìš© by soo
-            //ì´ ë¶€ë¶„ì„ ì¶”ê°€í•˜ì‹œë©´ ë  ê²ƒ ê°™ìŠµë‹ˆë‹¤.
+            //concern º° color Àû¿ë by soo
+            //ÀÌ ºÎºĞÀ» Ãß°¡ÇÏ½Ã¸é µÉ °Í °°½À´Ï´Ù.
             if (style == "null" && concern != null) {
                 style = new OG.geometry.Style({
                     fill: concernColor,
@@ -171,13 +175,18 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             }
 
             var preventDrop = this.byDrop ? false : true;
+
+            //3¹ø. ½ÇÁ¦ÀûÀ¸·Î Äµ¹ö½º¿¡ ±×¸².
             this.element = this.canvas.drawShape([this.object.x, this.object.y],
                 shape,
                 [parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
                 OG.JSON.decode(unescape(style)),
                 this.object.id,
                 this.object.parent,
-                preventDrop);
+                preventDrop,
+                this.__className);
+
+            //5¹ø. ±×¸®´Â°Ô ¿Ï·áµÇ¾úÀ½.
 
             this.setParent(this.element.id, this.object.parent);
             if (this.renderer.isLane(this.element)) {
@@ -192,7 +201,6 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
             mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
         }
-
 
         if (this.object.toEdge) {
             $(this.element).attr('_toedge', this.object.toEdge);
@@ -212,7 +220,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
         $(this.element).trigger('loaded.' + this.element.id);
 
-        //ìº”ë²„ìŠ¤ê°€ ë¦¬ëª¨íŠ¸ ëª¨ë“œì´ê³  í”„ë¡œí¼í‹° ë³€ê²½ìœ¼ë¡œ ì¸í•´ ìƒˆë¡œ ê·¸ë ¤ì§„ ì—˜ë¦¬ë¨¼íŠ¸ì¼ê²½ìš° ë¸Œë¡œë“œìºìŠ¤íŠ¸ ìˆ˜í–‰
+        //Äµ¹ö½º°¡ ¸®¸ğÆ® ¸ğµåÀÌ°í ÇÁ·ÎÆÛÆ¼ º¯°æÀ¸·Î ÀÎÇØ »õ·Î ±×·ÁÁø ¿¤¸®¸ÕÆ®ÀÏ°æ¿ì ºê·ÎµåÄ³½ºÆ® ¼öÇà
         if (this.canvas.getRemotable()) {
             if (this.object.changed) {
                 OG.RemoteHandler.broadCastCanvas(this.canvas, function (canvas) {
@@ -345,8 +353,12 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     };
 
     this.destroy = function () {
-        if ($(this.element).attr('droppable'))
-            try{$(this.element).droppable("destroy");}catch(e){}
+        if ($(this.element).attr('droppable')) {
+            try {
+                $(this.element).droppable("destroy");
+            } catch(e){}
+
+        }
 
         $(this.element).unbind('.' + this.objectId);
     };

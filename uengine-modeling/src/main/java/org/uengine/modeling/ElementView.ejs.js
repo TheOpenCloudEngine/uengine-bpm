@@ -2,6 +2,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     this.objectId = objectId;
     this.className = className;
     this.object = mw3.objects[this.objectId];
+    this.__className = this.object.element.__className;
     this.objectDivId = mw3._getObjectDivId(this.objectId);
     this.objectDiv = $(document.getElementById(this.objectDivId));
     if (!this.object) return true;
@@ -95,6 +96,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     };
 
     this.init = function () {
+
+        //2번을 탐.
+
         this.canvas = this.getCanvas();
         this.renderer = this.getRenderer();
         this.element = null;
@@ -152,9 +156,9 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             }
 
             if (this.object.instStatus) {
-              //  if ("Completed" == this.object.instStatus || "Running" == this.object.instStatus) {
-                    shape.status = this.object.instStatus;
-               // }
+                //  if ("Completed" == this.object.instStatus || "Running" == this.object.instStatus) {
+                shape.status = this.object.instStatus;
+                // }
             }
 
             var style = this.object.style;
@@ -171,13 +175,18 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             }
 
             var preventDrop = this.byDrop ? false : true;
+
+            //3번. 실제적으로 캔버스에 그림.
             this.element = this.canvas.drawShape([this.object.x, this.object.y],
                 shape,
                 [parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
                 OG.JSON.decode(unescape(style)),
                 this.object.id,
                 this.object.parent,
-                preventDrop);
+                preventDrop,
+                this.__className);
+
+            //5번. 그리는게 완료되었음.
 
             this.setParent(this.element.id, this.object.parent);
             if (this.renderer.isLane(this.element)) {
@@ -192,7 +201,6 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
             mw3.putObjectIdKeyMapping(this.objectId, this.object, true);
         }
-
 
         if (this.object.toEdge) {
             $(this.element).attr('_toedge', this.object.toEdge);
@@ -345,8 +353,12 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     };
 
     this.destroy = function () {
-        if ($(this.element).attr('droppable'))
-            try{$(this.element).droppable("destroy");}catch(e){}
+        if ($(this.element).attr('droppable')) {
+            try {
+                $(this.element).droppable("destroy");
+            } catch(e){}
+
+        }
 
         $(this.element).unbind('.' + this.objectId);
     };

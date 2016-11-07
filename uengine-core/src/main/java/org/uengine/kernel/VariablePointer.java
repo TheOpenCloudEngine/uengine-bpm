@@ -30,7 +30,7 @@ public class VariablePointer implements Serializable{
 
     public Serializable getValue(ProcessInstance instance) throws Exception {
 
-        return (Serializable) new InRootExecutionScope(){
+        return (Serializable) new InParentExecutionScope(){
 
             @Override
             public Object logic(ProcessInstance instance) throws Exception {

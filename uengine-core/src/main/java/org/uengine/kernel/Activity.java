@@ -514,6 +514,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		ActivityFilter[] activityFilters = getProcessDefinition().getActivityFilters();
 		if(activityFilters!=null)
 		for(int i=0; i<activityFilters.length; i++)
+			if(activityFilters[i]!=null)
 			activityFilters[i].beforeExecute(this, instance);
 
 		fireActivityEventListeners(instance, "beforeExecute", null);
@@ -533,6 +534,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		ActivityFilter[] activityFilters = getProcessDefinition().getActivityFilters();
 		if(activityFilters!=null)
 		for(int i=0; i<activityFilters.length; i++)
+			if(activityFilters[i]!=null)
 			activityFilters[i].afterComplete(this, instance);
 
 		fireActivityEventListeners(instance, "afterComplete", null);
@@ -560,6 +562,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		ActivityFilter[] activityFilters = getProcessDefinition().getActivityFilters();
 		if(activityFilters!=null)
 		for(int i=0; i<activityFilters.length; i++)
+			if(activityFilters[i]!=null)
 			activityFilters[i].afterExecute(this, instance);
 
 		fireActivityEventListeners(instance, "afterExecute", null);
@@ -1522,7 +1525,8 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		ActivityFilter[] activityFilters = getProcessDefinition().getActivityFilters();
 		if(activityFilters!=null)
 		for(int i=0; i<activityFilters.length; i++)
-			activityFilters[i].onPropertyChange(this, instance, propertyName, changedValue);
+			if(activityFilters[i]!=null)
+				activityFilters[i].onPropertyChange(this, instance, propertyName, changedValue);
 	}
 	
 	protected void fireEventToActivityFilters(ProcessInstance instance, String eventName, Object payload) throws Exception{

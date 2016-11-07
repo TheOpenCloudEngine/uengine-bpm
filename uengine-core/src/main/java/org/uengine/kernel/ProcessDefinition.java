@@ -849,6 +849,7 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		
 //			EventHandler[] eventHandlers = super.getEventHandlers();    //anyhow now there's no process definition having its event handlers since the process designer isn't allowed to add event handlers.
 
+		setActivityFilters(null);
 
 		super.afterDeserialization();	
 		//TODO: tuning point : does it need to load the hashmap again?	
@@ -914,6 +915,8 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		
 			registerToProcessDefinition(true, false);
 		}
+
+		setActivityFilters(null);
 	}
 	
 

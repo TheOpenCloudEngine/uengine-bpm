@@ -82,6 +82,8 @@ org_uengine_modeling_Canvas.prototype = {
             });
 
         }
+        this.canvas._CONFIG.GUIDE_CONTROL_LINE_NUM = 1;
+        this.canvas._CONFIG.FOCUS_CANVAS_ONSELECT = false;
         this.canvas.setCurrentCanvas(this.canvas);
         mw3.canvas = this.canvas;
         var canvas = this.canvas;

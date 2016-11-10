@@ -12,8 +12,7 @@ public class FaultMarker extends ProcessExecutionThread{
         if(act!=null && parameters.length > 3){
             Exception e = new Exception(parameters[3]);
 
-            if(act!=null)
-                act.fireFault(instance, e);
+            act.fireFault(instance, e);
         }
     }
 }

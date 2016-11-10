@@ -1,3 +1,5 @@
+var org_uengine_modeling_ElementView_disable_clonning = false;
+
 var org_uengine_modeling_ElementView = function (objectId, className) {
     this.objectId = objectId;
     this.className = className;
@@ -70,7 +72,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             return;
         }
 
-        //ë¶?ëª¨ê? ìº”ë²„?Š¤?— ?•„ì§? ê·¸ë ¤ì§?ì§? ?•Š?•˜?„ ê²½ìš° ?˜ˆ?•½?„ ê±¸ì–´?†“?Š”?‹¤.
+        //ï¿½?ëª¨ï¿½? ìº”ë²„?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ê·¸ë ¤ï¿½?ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê²½ìš° ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê±¸ì–´?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½.
         if (!parentElement) {
             if (!this.canvas.groupReservations[parentId]) {
                 this.canvas.groupReservations[parentId] = [];
@@ -80,7 +82,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             }
         }
 
-        //??‹ ?—ê²? ?˜ˆ?•½?´ ê±¸ë ¤?ˆ?Š”ê²ƒì´ ?ˆ?‹¤ë©? ê·¸ë£¹?„ ë§ºëŠ”?‹¤.
+        //?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê±¸ë ¤?ï¿½ï¿½?ï¿½ï¿½ê²ƒì´ ?ï¿½ï¿½?ï¿½ï¿½ï¿½? ê·¸ë£¹?ï¿½ï¿½ ë§ºëŠ”?ï¿½ï¿½.
         var reservations = this.canvas.groupReservations[elementId];
         if (!reservations) {
             return;
@@ -97,7 +99,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
     this.init = function () {
 
-        //2ë²ˆì„ ?ƒ.
+        //2ë²ˆì„ ?ï¿½ï¿½.
 
         this.canvas = this.getCanvas();
         this.renderer = this.getRenderer();
@@ -110,8 +112,8 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             throw new Error("No shape Id is set for " + this.object);
 
 
-        //concern ë³? ?ƒ‰?ƒ ? ?š©?„ ?œ„?•´ by soo
-        //?´ ë¶?ë¶„ê³¼
+        //concern ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ by soo
+        //?ï¿½ï¿½ ï¿½?ë¶„ê³¼
         var concern, concernColor, lineColor;
         if (this.object && this.object.element && this.object.element.concern != null) {
             concern = this.object.element.concern;
@@ -137,8 +139,8 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             this.element = existElement;
             this.isNew = false;
 
-            //concern ë³? color ? ?š© by soo
-            //?´ ë¶?ë¶?
+            //concern ï¿½? color ?ï¿½ï¿½?ï¿½ï¿½ by soo
+            //?ï¿½ï¿½ ï¿½?ï¿½?
             if (concern != null)
                 this.canvas._RENDERER.setShapeStyle(this.element, {
                     "fill": concernColor,
@@ -168,8 +170,8 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
             var style = this.object.style;
             var boundary;
 
-            //concern ë³? color ? ?š© by soo
-            //?´ ë¶?ë¶„ì„ ì¶”ê??•˜?‹œë©? ?  ê²? ê°™ìŠµ?‹ˆ?‹¤.
+            //concern ï¿½? color ?ï¿½ï¿½?ï¿½ï¿½ by soo
+            //?ï¿½ï¿½ ï¿½?ë¶„ì„ ì¶”ï¿½??ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ ï¿½? ê°™ìŠµ?ï¿½ï¿½?ï¿½ï¿½.
             if (style == "null" && concern != null) {
                 style = new OG.geometry.Style({
                     fill: concernColor,
@@ -180,7 +182,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
             var preventDrop = this.byDrop ? false : true;
 
-            //3ë²?. ?‹¤? œ? ?œ¼ë¡? ìº”ë²„?Š¤?— ê·¸ë¦¼.
+            //3ï¿½?. ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ìº”ë²„?ï¿½ï¿½?ï¿½ï¿½ ê·¸ë¦¼.
             this.element = this.canvas.drawShape([this.object.x, this.object.y],
                 shape,
                 [parseInt(this.object.width, 10), parseInt(this.object.height, 10)],
@@ -190,7 +192,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
                 preventDrop,
                 this.__className);
 
-            //5ë²?. ê·¸ë¦¬?Š”ê²? ?™„ë£Œë˜?—ˆ?Œ.
+            //5ï¿½?. ê·¸ë¦¬?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ë£Œë˜?ï¿½ï¿½?ï¿½ï¿½.
 
             this.setParent(this.element.id, this.object.parent);
             if (this.renderer.isLane(this.element)) {
@@ -224,7 +226,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
         $(this.element).trigger('loaded.' + this.element.id);
 
-        //ìº”ë²„?Š¤ê°? ë¦¬ëª¨?Š¸ ëª¨ë“œ?´ê³? ?”„ë¡œí¼?‹° ë³?ê²½ìœ¼ë¡? ?¸?•´ ?ƒˆë¡? ê·¸ë ¤ì§? ?—˜ë¦¬ë¨¼?Š¸?¼ê²½ìš° ë¸Œë¡œ?“œìºìŠ¤?Š¸ ?ˆ˜?–‰
+        //ìº”ë²„?ï¿½ï¿½ï¿½? ë¦¬ëª¨?ï¿½ï¿½ ëª¨ë“œ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ë¡œí¼?ï¿½ï¿½ ï¿½?ê²½ìœ¼ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ê·¸ë ¤ï¿½? ?ï¿½ï¿½ë¦¬ë¨¼?ï¿½ï¿½?ï¿½ï¿½ê²½ìš° ë¸Œë¡œ?ï¿½ï¿½ìºìŠ¤?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½
         if (this.canvas.getRemotable()) {
             if (this.object.changed) {
                 OG.RemoteHandler.broadCastCanvas(this.canvas, function (canvas) {

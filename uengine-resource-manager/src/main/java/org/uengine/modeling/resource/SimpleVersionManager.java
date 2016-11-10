@@ -10,10 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by jjy on 2016. 10. 20..
@@ -147,6 +144,7 @@ public class SimpleVersionManager implements VersionManager{
         Version lastVersion = getLastVersion();
 
         lastVersion.setMinor(lastVersion.getMinor() + 1);
+        lastVersion.setDate(Calendar.getInstance());
         versionUp(lastVersion);
 
     }
@@ -157,8 +155,28 @@ public class SimpleVersionManager implements VersionManager{
         Version lastVersion = getLastVersion();
 
         lastVersion.setMajor(lastVersion.getMajor() + 1);
+        lastVersion.setDate(Calendar.getInstance());
         versionUp(lastVersion);
 
+    }
+
+    @ServiceMethod(callByContent = true, target=ServiceMethod.TARGET_SELF)
+    public void restore(Version version) throws Exception {
+        IContainer dev = new ContainerResource();
+        dev.setPath(getRootPath());
+
+        IContainer versionDirectory = new ContainerResource();
+        versionDirectory.setPath(versionDirectoryOf(version));
+
+        Version prodVersion = getProductionVersion();
+
+        majorVersionUp(); // version up for restore later for this version.
+
+        resourceManager.getStorage().delete(dev);
+        resourceManager.getStorage().copy(versionDirectory, dev.getPath());
+        prodVersion.makeAsProduction(this);
+
+        MetaworksRemoteService.wrapReturn(new Label("<div class='alert alert-success' role='alert'>Version has been restored.</div>"));
     }
 
     private Version getLastVersion() {

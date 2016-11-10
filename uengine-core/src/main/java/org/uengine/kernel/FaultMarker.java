@@ -9,7 +9,7 @@ public class FaultMarker extends ProcessExecutionThread{
     protected void logic(ProcessInstance instance, Activity act, String[] parameters) throws Exception {
        // act.setStatus(instance, Activity.STATUS_FAULT);
 
-        if(parameters.length > 3){
+        if(act!=null && parameters.length > 3){
             Exception e = new Exception(parameters[3]);
 
             act.fireFault(instance, e);

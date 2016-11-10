@@ -41,4 +41,8 @@ public interface VersionManager extends ContextAware{
 
     String getModuleName();
 
+    public void minorVersionUp() throws Exception;
+    public void majorVersionUp() throws Exception;
+
+    void restore(Version version) throws Exception;
 }

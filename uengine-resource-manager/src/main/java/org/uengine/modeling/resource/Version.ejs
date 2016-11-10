@@ -1,7 +1,9 @@
 <h3>
     <%=value.major%>.<%=value.minor%>
+    <%if(value.date){%><%=fields.date.here()%><%}%>
     <% if(value.production){%>(Production)<%}%>
 </h3>
 
 <%=methods.makeAsProduction.here()%>
+<%=methods.restore.here()%>
 <hr>

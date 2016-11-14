@@ -232,8 +232,8 @@ public class FlowActivity extends ComplexActivity {
 			System.out.println(command);
 		}else if(command.equals(CHILD_RESUMED)){
 			super.onEvent(command, instance, payload);
-		}else {
-			//onEvent(command, instance, payload);
+		}else if(command.equals(CHILD_FAULT) || command.equals(ACTIVITY_FAULT)){
+			super.onEvent(command, instance, payload);
 		}
 	}
 		

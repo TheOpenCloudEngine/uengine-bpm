@@ -794,6 +794,9 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 			returnToMainProcess(instance, command.equals(ACTIVITY_SKIPPED));
 		}else if(command.equals(CHILD_FAULT)){
 			reportFaultToMainProcess(instance, (FaultContext) payload);
+
+			if(!isFaultTolerant())
+				stop(instance); // stop the process instance there
 		}
 		
 		super.onEvent(command, instance, payload);

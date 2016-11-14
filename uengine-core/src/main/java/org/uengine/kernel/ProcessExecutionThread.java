@@ -95,6 +95,11 @@ public class ProcessExecutionThread {
     }
 
     protected void logic(ProcessInstance instance, Activity act, String[] parameters) throws Exception {
+        if(!instance.getRootProcessInstance().isRunning(""))
+            return; // skip if the instance is stopped or completed
+        if(!instance.isRunning(""))
+            return; // skip if the instance is stopped or completed
+
         act.executeActivity(instance);
         act.afterExecute(instance);
     }

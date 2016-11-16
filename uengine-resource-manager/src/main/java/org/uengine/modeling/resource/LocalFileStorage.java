@@ -11,6 +11,7 @@ import static java.nio.file.StandardCopyOption.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,14 @@ public class LocalFileStorage implements Storage{
             this.localBasePath = localBasePath;
         }
 
+
+    boolean doNotOverwrite;
+        public boolean isDoNotOverwrite() {
+            return doNotOverwrite;
+        }
+        public void setDoNotOverwrite(boolean doNotOverwrite) {
+            this.doNotOverwrite = doNotOverwrite;
+        }
 
 
     @Override
@@ -56,7 +65,11 @@ public class LocalFileStorage implements Storage{
             FileUtils.copyDirectory(getFile(src), destinationFile);
         }else{
             destinationFile.getParentFile().mkdirs();
-            Files.copy(getFile(src).toPath(), destinationFile.toPath());
+
+            if(isDoNotOverwrite())
+                Files.copy(getFile(src).toPath(), destinationFile.toPath());
+            else
+                Files.copy(getFile(src).toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
 
     }

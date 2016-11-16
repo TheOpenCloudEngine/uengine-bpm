@@ -199,6 +199,20 @@ public class SubProcess extends ScopeActivity{
         return boundRoleMappings;
     }
 
+    @Override
+    public void stop(ProcessInstance instance, String status) throws Exception {
+        if(getForEachVariable()==null) {
+            super.stop(instance, status);
+            return;
+        }
+
+        Vector subprocessInstanceList = getSubProcesses(instance);
+        for(int i=0; i < subprocessInstanceList.size();i++){
+            ProcessInstance thePI = ((ProcessInstance)subprocessInstanceList.elementAt(i));
+            super.stop(thePI, status);
+        }
+    }
+
     private void stopSubProcessInstance(ProcessInstance instance,Hashtable deletedRoleMappings) throws Exception{
         String boundRoleName = null;
         for(int i=0; i<getRoleBindings().length; i++){
@@ -470,7 +484,7 @@ public class SubProcess extends ScopeActivity{
 
         }else if(getForEachVariable()!=null){
 
-            instance.addDebugInfo("[SubProcessActivity] Splitting multiple instances with Variable: ", getForEachVariable());
+            instance.addDebugInfo("[SubProcessActivity] Splitting multiple instances by Variable: ", getForEachVariable());
 
             ProcessVariableValue pvv = getForEachVariable().getMultiple(instance, "");
             instance.addDebugInfo("  values are: ", pvv);

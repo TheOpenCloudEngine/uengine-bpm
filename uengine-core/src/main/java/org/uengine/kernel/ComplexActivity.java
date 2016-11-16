@@ -812,11 +812,14 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 	public void stop(ProcessInstance instance, String status) throws Exception {
 		List<Activity> childActivities = getChildActivities();
 		for(Activity child : childActivities){
-			if(child instanceof ComplexActivity || isStoppable(instance.getStatus(child.getTracingTag()))){
+			if(isStoppable(instance.getStatus(child.getTracingTag()))){
 				if(child.getParentActivity()!=null && !isStoppable(child.getParentActivity().getStatus(instance)))
 					System.out.println("Illegal status");
 
+				if(child instanceof ComplexActivity)
 					child.stop(instance, status);
+				else
+					child.stop(instance);
 			}
 		}
 

@@ -983,7 +983,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		return !(status.equals(Activity.STATUS_SKIPPED) || status.equals(Activity.STATUS_READY) || status.equals(Activity.STATUS_CANCELLED) || status.equals(Activity.STATUS_COMPLETED));
 	}
 	public static boolean isStoppable(String status){
-		return !(status.equals(Activity.STATUS_READY) || status.equals(Activity.STATUS_CANCELLED) || status.equals(Activity.STATUS_COMPLETED) || status.equals(Activity.STATUS_TIMEOUT)|| status.equals(Activity.STATUS_FAULT));
+		return !(status.equals(Activity.STATUS_READY) || status.equals(Activity.STATUS_CANCELLED) || status.equals(Activity.STATUS_COMPLETED) || status.equals(Activity.STATUS_TIMEOUT));
 	}
 	public static boolean isCompensatable(String status){
 		return !(status.equals(Activity.STATUS_SKIPPED) || status.equals(Activity.STATUS_READY) || status.equals(Activity.STATUS_CANCELLED) || status.equals(Activity.STATUS_COMPLETED));
@@ -1018,10 +1018,11 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 				//if(getParentActivity() instanceof SubProcess){
 
 				/// TODO: this is temporal. it is not exact logic.
-				if(STATUS_COMPLETED.equals(getParentActivity().getStatus(instance))){
-					status = STATUS_COMPLETED;
-				}else {
+				String parentStatus = getParentActivity().getStatus(instance);
+				if(STATUS_RUNNING.equals(parentStatus)){
 					status = STATUS_MULTIPLE;
+				}else {
+					status = parentStatus;
 				}
 			}
 		}

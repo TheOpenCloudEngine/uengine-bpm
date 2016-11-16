@@ -224,7 +224,8 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			ProcessInstance instance = ptc.getProcessInstanceInTransaction(instanceId);
 			if(instance!=null) {
 
-				if(instance.getExecutionScopeContext()!=null && !instance.getExecutionScopeContext().getExecutionScope().equals(executionScope)){
+				if((instance.getExecutionScopeContext()==null && executionScope!=null)
+						|| (instance.getExecutionScopeContext()!=null && !instance.getExecutionScopeContext().getExecutionScope().equals(executionScope))){
 					return ExecutionScopedProcessInstance.newInstance(instance, executionScope); //TODO: proxy must be cached also
 				}else
 					return instance;

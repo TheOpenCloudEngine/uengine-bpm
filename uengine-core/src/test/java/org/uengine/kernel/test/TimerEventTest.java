@@ -50,7 +50,7 @@ public class TimerEventTest extends UEngineTest{
         });
 
 
-        for(int i=1; i<20; i++) {
+        for(int i=1; i<11; i++) {
             Activity a1 = new DefaultActivity();
 
             if(i == 1){
@@ -129,17 +129,11 @@ public class TimerEventTest extends UEngineTest{
         {
             SequenceFlow t1 = new SequenceFlow();
             t1.setSourceRef("a7");
-            t1.setTargetRef("a11");
+            t1.setTargetRef("a8");
 
             processDefinition.addSequenceFlow(t1);
         }
-        {
-            SequenceFlow t1 = new SequenceFlow();
-            t1.setSourceRef("a11");
-            t1.setTargetRef("a12");
 
-            processDefinition.addSequenceFlow(t1);
-        }
 
         processDefinition.afterDeserialization();
 
@@ -172,7 +166,7 @@ public class TimerEventTest extends UEngineTest{
         }, instance);
 
 
-        Thread.sleep(timeInterval); //after 20+ seconds later, the scond timer event must be triggered.
+        Thread.sleep(timeInterval); //after 20+ seconds later, the second timer event must be triggered.
 
         assertExecutionPathEquals("Triggering Event Second Occurance", new String[]{
                 "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4"
@@ -181,7 +175,7 @@ public class TimerEventTest extends UEngineTest{
 
         instance.getProcessDefinition().fireMessage("receive", instance, null);
         assertExecutionPathEquals("Running After Event", new String[]{
-                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a11", "a12"
+                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a8"
         }, instance);
 
 
@@ -190,7 +184,7 @@ public class TimerEventTest extends UEngineTest{
 
         instance.getProcessDefinition().fireMessage("event", instance, "a5");
         assertExecutionPathEquals("Timer must be Expired", new String[]{
-                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a11", "a12",
+                "a10", "a9", "a5", "a6", "a4", "a5", "a6", "a4", "a1", "a2", "a3", "a7", "a8",
         }, instance);
 
 

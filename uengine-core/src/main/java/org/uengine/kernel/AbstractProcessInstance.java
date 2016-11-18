@@ -3,6 +3,9 @@ package org.uengine.kernel;
 import java.util.*;
 import java.io.*;
 
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.*;
@@ -16,6 +19,7 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	public final String PVKEY_EXECUTION_SCOPES = "_executionScopes";
 
+	static Logger logger = Logger.getLogger(AbstractProcessInstance.class);
 
 	//warning: this visibility (public) may occur undesired operation by other components.
 	//	   if a rigorously secured environment is required, change the visibility. e.g. private.
@@ -683,7 +687,11 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 	public abstract void copyTo(ProcessInstance instance) throws Exception;
 	
 	public void addDebugInfo(Object message){
-		getProcessTransactionContext().addDebugInfo(message+"\n");
+		//getProcessTransactionContext().addDebugInfo(message+"\n");
+
+		SimpleLayout layout = new SimpleLayout();
+		FileAppender appender = new FileAppender();
+		logger.addAppender(appender);
 	}
 	
 	public void addDebugInfo(String entry, Object message){
@@ -709,31 +717,31 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 			} catch (Exception e) {
 			}*/
 		
-		try {
-			if (GlobalContext.logLevelIsDebug) {
-				PrintStream ps = null;
-				try {
-					File f = new File(GlobalContext.FILE_SYSTEM_PATH + "/log/" + getInstanceId() + "/");
-					f.mkdirs();
-					
-					ps = new PrintStream(
-							new FileOutputStream(GlobalContext.FILE_SYSTEM_PATH + "/log/" /*+ UEngineUtil.getCalendarDir() + "/" */+ getInstanceId() + "/" + activity.getTracingTag() + ".log.xml")
-					);
-					ps.print(getProcessTransactionContext().getDebugInfo());
-
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} finally {
-					if (ps != null) {
-						try {
-							ps.close();
-						} catch (Exception e) {
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-		}
+//		try {
+//			if (GlobalContext.logLevelIsDebug) {
+//				PrintStream ps = null;
+//				try {
+//					File f = new File(GlobalContext.FILE_SYSTEM_PATH + "/log/" + getInstanceId() + "/");
+//					f.mkdirs();
+//
+//					ps = new PrintStream(
+//							new FileOutputStream(GlobalContext.FILE_SYSTEM_PATH + "/log/" /*+ UEngineUtil.getCalendarDir() + "/" */+ getInstanceId() + "/" + activity.getTracingTag() + ".log.xml")
+//					);
+//					ps.print(getProcessTransactionContext().getDebugInfo());
+//
+//				} catch (FileNotFoundException e) {
+//					e.printStackTrace();
+//				} finally {
+//					if (ps != null) {
+//						try {
+//							ps.close();
+//						} catch (Exception e) {
+//						}
+//					}
+//				}
+//			}
+//		} catch (Exception e) {
+//		}
 
 	}	
 	

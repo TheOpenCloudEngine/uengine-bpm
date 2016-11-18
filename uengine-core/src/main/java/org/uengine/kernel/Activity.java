@@ -759,7 +759,10 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	}
 	
 	public void stop(ProcessInstance instance) throws Exception{
-		stop(instance, Activity.STATUS_STOPPED);
+		String currentStatus = getStatus(instance);
+
+		if(!STATUS_FAULT.equals(currentStatus))
+			stop(instance, Activity.STATUS_STOPPED);
 	}
 	
 	public void stop(ProcessInstance instance,String status) throws Exception{

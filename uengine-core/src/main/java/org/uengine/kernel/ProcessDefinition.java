@@ -793,10 +793,10 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		if(command.equals(ACTIVITY_DONE) || command.equals(ACTIVITY_SKIPPED)){
 			returnToMainProcess(instance, command.equals(ACTIVITY_SKIPPED));
 		}else if(command.equals(CHILD_FAULT)){
-			reportFaultToMainProcess(instance, (FaultContext) payload);
-
 			if(!isFaultTolerant())
 				stop(instance); // stop the process instance there
+
+			reportFaultToMainProcess(instance, (FaultContext) payload);
 		}
 		
 		super.onEvent(command, instance, payload);

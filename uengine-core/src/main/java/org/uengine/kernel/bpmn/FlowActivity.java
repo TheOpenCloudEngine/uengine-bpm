@@ -114,10 +114,10 @@ public class FlowActivity extends ComplexActivity {
 			child = (Activity) it.next();
 			if (child.getIncomingSequenceFlows().size() == 0) {
 
-				////// TODO: why does following implementation try to ignore event activities as a start activity?
-//				if( child instanceof Event && child instanceof MessageListener ){
-//					continue;
-//				}
+				if(child instanceof Event && ((Event) child).getAttachedToRef()!=null){
+					continue;
+				}
+
 				startActivities.add(child);
 			}
 		}
@@ -158,7 +158,7 @@ public class FlowActivity extends ComplexActivity {
 			List<Activity> startActivities = getStartActivities();
 			if (startActivities!=null && startActivities.size() > 0) {
 
-				//Execute Event activity first since the first activity may occur any events.
+				//Execute Event activity first than the regular activities since the first activity may occur any events.
 				for(Activity startActivity : startActivities) {
 					if(startActivity instanceof Event)
 						queueActivity(startActivity, instance);

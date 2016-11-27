@@ -1401,8 +1401,10 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 	public ProcessDefinition getProcessDefinition(String processDefinition) throws RemoteException{
 		log("getProcessDefinition", new Object[]{processDefinition});
 		try{
-			ProcessDefinition copy = (ProcessDefinition)getDefinition(processDefinition).clone();			 
-			return copy;		
+			return (ProcessDefinition)getDefinition(processDefinition).clone();
+
+//			ProcessDefinition copy = (ProcessDefinition)getDefinition(processDefinition).clone();
+//			return copy;
 		}catch(Exception e){
 			e.printStackTrace();
 			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);

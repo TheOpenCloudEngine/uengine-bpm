@@ -53,7 +53,11 @@ public class ProcessEditor extends ProcessModeler implements IEditor<ProcessDefi
 
 
     @Override
-    public Object simulator(IResource resource) {
+    public Object simulator(IResource resource){
+        return simulator_(resource);
+    }
+
+    protected static Object simulator_(IResource resource) {
 
         String defId = resource.getPath();//.substring(resource.getPath().indexOf("/") + 1);
 

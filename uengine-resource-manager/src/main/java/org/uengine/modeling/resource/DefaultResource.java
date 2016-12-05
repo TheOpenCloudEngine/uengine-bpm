@@ -11,6 +11,7 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Download;
 import org.metaworks.widget.ToBlank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.uengine.modeling.IModel;
 
 import javax.persistence.Id;
 import java.io.File;
@@ -224,7 +225,12 @@ public class DefaultResource implements IResource {
 	}
 
 	public Object load() throws Exception {
-		return resourceManager.getObject(this);
+		Object object = resourceManager.getObject(this);
+
+		if(object instanceof IModel)
+			((IModel)object).setId(getPath());
+
+		return object;
 	}
 
 	@Override

@@ -61,7 +61,8 @@ public class ProcessResource extends DefaultResource {
     public Object load() throws Exception {
         Object processDef = super.load();
 
-        mergeGlobalDefinition((ProcessDefinition) processDef);
+        final ProcessDefinition processDef1 = (ProcessDefinition) processDef;
+        mergeGlobalDefinition(processDef1);
 
         return processDef;
     }

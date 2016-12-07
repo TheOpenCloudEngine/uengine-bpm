@@ -27,8 +27,11 @@ org_uengine_modeling_Canvas.prototype = {
 
         try {
             this.object = mw3.getObjectFromUI(this.objectId);
-            var svg = document.querySelector("svg");
+            var svg = this.canvas._RENDERER.getRootElement();//document.querySelector("svg");
             var svgData = new XMLSerializer().serializeToString(svg);
+
+
+
             var srcURL = "data:image/svg+xml;utf-8," + svgData;
 
             this.object.thumbnailURL = srcURL;

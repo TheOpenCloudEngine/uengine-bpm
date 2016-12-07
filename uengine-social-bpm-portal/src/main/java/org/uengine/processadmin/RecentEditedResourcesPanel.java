@@ -27,18 +27,18 @@ public class RecentEditedResourcesPanel extends EditorPanel {
 
 
             setRecentPreviewers(new ArrayList<ResourcePreviewer>());
-//            for(String recentItemPath : getRecentList()){
-//
-//                //String recentItemPath = getRecentList().get(i);
-//
-//                DefaultResource defaultResource = new DefaultResource(recentItemPath);
-//                ResourcePreviewer previewer = new ResourcePreviewer(defaultResource);
-//
-//                getRecentPreviewers().add(previewer);
-//            }
+            for(String recentItemPath : getRecentList()){
+
+                //String recentItemPath = getRecentList().get(i);
+
+                DefaultResource defaultResource = new DefaultResource(recentItemPath);
+                ResourcePreviewer previewer = new ResourcePreviewer(defaultResource);
+
+                getRecentPreviewers().add(previewer);
+            }
 
 
-//        }catch (FileNotFoundException e){
+        }catch (FileNotFoundException e){
 
             //ignore
         }catch (Exception e){

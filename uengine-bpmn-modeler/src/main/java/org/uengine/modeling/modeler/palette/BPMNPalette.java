@@ -31,6 +31,7 @@ public class BPMNPalette extends CompositePalette {
 //		this.getSymbolList().add((new ReceiveRestMessageEventActivityView()).createSymbol());
 
 		CompositePalette bpmnPaletteWindow = new PaletteWindow();
+		bpmnPaletteWindow.setName("BPMN");
 
 		Palette taskPallet = new TaskPalette();
 		Palette eventPallet = new EventPalette();

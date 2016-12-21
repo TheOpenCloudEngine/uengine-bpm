@@ -121,7 +121,8 @@ public class HumanActivity extends ReceiveActivity{
 		}
 		public void setAllowAnonymous(boolean isAllowAnonymous) {
 			this.isAllowAnonymous = isAllowAnonymous;
-		}		
+		}
+
 	String id;
 		@Hidden
 		public String getId() {
@@ -172,8 +173,8 @@ public class HumanActivity extends ReceiveActivity{
 	public Calendar getDueDate(ProcessInstance instance) throws Exception{
 		Calendar dueDate = (Calendar)instance.getProperty(getTracingTag(), PVKEY_DUEDATE);
 		
-			return dueDate;
-		}
+		return dueDate;
+	}
 	
 	public void setDueDate(ProcessInstance instance, Calendar dueDate, boolean updateWorkList) throws Exception{
 		setDueDate(instance, dueDate, updateWorkList, true);

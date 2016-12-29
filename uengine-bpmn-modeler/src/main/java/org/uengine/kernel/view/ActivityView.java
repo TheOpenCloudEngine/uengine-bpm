@@ -43,7 +43,11 @@ public class ActivityView extends ElementView {
 	public Symbol createSymbol() {
 		Symbol symbol = new Symbol();
 
-		symbol.setElementClassName(UEngineUtil.getDomainClassName(getClass(), "view"));
+		if(getElement()==null)
+			symbol.setElementClassName(UEngineUtil.getDomainClassName(getClass(), "view"));
+		else{
+			symbol.setElementClassName(getElement().getClass().getName());
+		}
 
 		try {
 			Activity activityInstance = (Activity) Class.forName(symbol.getElementClassName()).newInstance();

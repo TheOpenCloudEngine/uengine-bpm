@@ -92,6 +92,7 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 	private String thumbnailURL;
 
 	public Activity getActivity(String tracingTag){
+			if("".equals(tracingTag)) return this;
 			
 			if(wholeChildActivities == null){
 				registerToProcessDefinition(false, false);

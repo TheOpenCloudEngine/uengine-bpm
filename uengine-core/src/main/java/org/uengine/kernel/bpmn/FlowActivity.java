@@ -46,8 +46,12 @@ public class FlowActivity extends ComplexActivity {
 					Activity sourceActivity = getProcessDefinition().getActivity(source);
 
 					if (sourceActivity != null) {
-						sourceActivity.addOutgoingTransition(sequenceFlow);
-						sequenceFlow.setSourceActivity(sourceActivity);
+						if(!sourceActivity.getOutgoingSequenceFlows().contains(sequenceFlow)){
+							sourceActivity.addOutgoingTransition(sequenceFlow);
+							sequenceFlow.setSourceActivity(sourceActivity);
+						}else{
+							System.out.println("duplicated SequenceFlow in FlowActivity " + getName());
+						}
 					}
 				}
     
@@ -58,8 +62,12 @@ public class FlowActivity extends ComplexActivity {
 					Activity targetActivity = getProcessDefinition().getActivity(target);
 
 					if(targetActivity!=null) {
-						targetActivity.addIncomingTransition(sequenceFlow);
-						sequenceFlow.setTargetActivity(targetActivity);
+						if(!targetActivity.getIncomingSequenceFlows().contains(sequenceFlow)){
+							targetActivity.addIncomingTransition(sequenceFlow);
+							sequenceFlow.setTargetActivity(targetActivity);
+						}else{
+							System.out.println("duplicated SequenceFlow in FlowActivity " + getName());
+						}
 					}
 				}
 			}

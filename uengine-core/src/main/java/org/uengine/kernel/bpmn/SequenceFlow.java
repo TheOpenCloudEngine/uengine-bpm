@@ -154,6 +154,20 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		}
 		return activityList;
 	}
-	
 
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof SequenceFlow){
+			SequenceFlow comparee = (SequenceFlow) obj;
+
+			try {
+				if (comparee.getTargetRef().equals(getTargetRef()) && comparee.getSourceRef().equals(getSourceRef()))
+					return true;
+			}catch (Exception e){
+				return false;
+			}
+		}
+
+		return false;
+	}
 }

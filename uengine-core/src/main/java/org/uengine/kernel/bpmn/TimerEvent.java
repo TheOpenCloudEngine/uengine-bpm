@@ -2,10 +2,7 @@ package org.uengine.kernel.bpmn;
 
 
 import org.metaworks.dwr.MetaworksRemoteService;
-import org.quartz.CronTrigger;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.uengine.kernel.ProcessInstance;
 
@@ -13,6 +10,7 @@ import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.JobKey.jobKey;
 import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.utils.Key.DEFAULT_GROUP;
 
 
 public class TimerEvent extends Event{
@@ -41,6 +39,17 @@ public class TimerEvent extends Event{
 
         Scheduler sched = schedulerFactoryBean.getScheduler();
 		String jobId = createJobId(instance);
+
+		try {
+			JobKey jobKey = new JobKey(jobId, SCHEDULER_GROUP_ID);
+			JobDetail jobDetail = sched.getJobDetail(jobKey);
+
+			//if there already exising job, delete it first.
+			if(jobDetail!=null)
+				unschedule(instance);
+		}catch (Exception e){
+
+		}
 
 		JobDetail job = newJob(TimerEventJob.class)
                 .withIdentity(jobId, SCHEDULER_GROUP_ID)

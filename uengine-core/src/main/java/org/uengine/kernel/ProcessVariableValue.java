@@ -152,7 +152,7 @@ public class ProcessVariableValue implements java.io.Serializable, Cloneable{
 	}
 	
 	public String toString() {
-		if (size() > 1) {
+		//if (size() > 1) {
 			int currentCursor = getCursor();
 
 			beforeFirst();
@@ -167,9 +167,9 @@ public class ProcessVariableValue implements java.io.Serializable, Cloneable{
 			setCursor(currentCursor);
 
 			return names.toString();
-		} else {
-			return String.valueOf(getValue());
-		}
+//		} else {
+//			return String.valueOf(getValue());
+//		}
 	}
 
 

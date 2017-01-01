@@ -21,40 +21,75 @@ public class VariablePointer implements Serializable{
         public int getIndex() {
             return index;
         }
-
         public void setIndex(int index) {
             this.index = index;
+        }
+
+
+    String executionScope;
+        public String getExecutionScope() {
+            return executionScope;
+        }
+        public void setExecutionScope(String executionScope) {
+            this.executionScope = executionScope;
         }
 
 
 
     public Serializable getValue(ProcessInstance instance) throws Exception {
 
-        return (Serializable) new InParentExecutionScope(){
+  //      if(getExecutionScope()!=null){
 
-            @Override
-            public Object logic(ProcessInstance instance) throws Exception {
-                return instance.getAt("", getKey(), getIndex());
-            }
+            return (Serializable) new InExecutionScope(getExecutionScope()){
 
-        }.run(instance);
+                @Override
+                public Object logic(ProcessInstance instance) throws Exception {
+                    return instance.getAt("", getKey(), getIndex());
+                }
+
+            }.run(instance);
+
+//        }else{
+//            return (Serializable) new InParentExecutionScope(){
+//
+//                @Override
+//                public Object logic(ProcessInstance instance) throws Exception {
+//                    return instance.getAt("", getKey(), getIndex());
+//                }
+//
+//            }.run(instance);
+//        }
 
         //return instance.getAt("", getKey(), getIndex());
     }
 
     public void setValue(ProcessInstance instance, final Serializable value) throws Exception {
+   //     if(getExecutionScope()!=null) {
+            new InExecutionScope(getExecutionScope()){
 
-        new InParentExecutionScope(){
+                @Override
+                public Object logic(ProcessInstance instance) throws Exception {
 
-            @Override
-            public Object logic(ProcessInstance instance) throws Exception {
+                    instance.setAt("", getKey(), getIndex(), value);
 
-                instance.setAt("", getKey(), getIndex(), value);
+                    return null;
 
-                return null;
-
-            }
-        }.run(instance);
+                }
+            }.run(instance);
+//        }else{
+//
+//            new InParentExecutionScope(){
+//
+//                @Override
+//                public Object logic(ProcessInstance instance) throws Exception {
+//
+//                    instance.setAt("", getKey(), getIndex(), value);
+//
+//                    return null;
+//
+//                }
+//            }.run(instance);
+//        }
 
     }
 

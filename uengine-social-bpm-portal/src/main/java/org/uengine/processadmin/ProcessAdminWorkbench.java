@@ -1,6 +1,9 @@
 package org.uengine.processadmin;
 
+import org.metaworks.ServiceMethodContext;
+import org.metaworks.annotation.Available;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dao.TransactionContext;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -8,6 +11,7 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.Workbench;
 
 
@@ -24,6 +28,12 @@ public class ProcessAdminWorkbench extends Workbench {
     public ProcessAdminWorkbench() {
         super(new ProcessAdminResourceNavigator());
 
+        String defaultLoadingResourcePath = (String) TransactionContext.getThreadLocalInstance().getSharedContext(ProcessAdminStarter.DEFAULT_LOADING_RESOURCE_PATH);
+
+        if(defaultLoadingResourcePath!=null) {
+            setDefaultLoadingResource(defaultLoadingResourcePath);
+        }
+
         try {
             setEditorPanel(new RecentEditedResourcesPanel(getResourceNavigator()));
         } catch (Exception e) {
@@ -31,6 +41,21 @@ public class ProcessAdminWorkbench extends Workbench {
         }
     }
 
+    String defaultLoadingResource;
+        public String getDefaultLoadingResource() {
+            return defaultLoadingResource;
+        }
+        public void setDefaultLoadingResource(String defaultLoadingResource) {
+            this.defaultLoadingResource = defaultLoadingResource;
+        }
+
+    @ServiceMethod(onLoad = true, target= ServiceMethodContext.TARGET_POPUP, payload = "defaultLoadingResource")
+    @Available(condition = "defaultLoadingResource != null && defaultLoadingResource!='none'")
+    public void loadDefaultResource() throws Exception {
+        DefaultResource defaultLoadingResource = (DefaultResource) DefaultResource.createResource(getDefaultLoadingResource());
+
+        defaultLoadingResource._newAndOpen(false);
+    }
 
 //    @Autowired
 //    public StdSchedulerFactory schedulerFactoryBean;

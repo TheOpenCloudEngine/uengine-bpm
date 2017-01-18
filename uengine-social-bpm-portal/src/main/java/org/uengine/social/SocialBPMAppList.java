@@ -7,10 +7,14 @@ import org.metaworks.ServiceMethodContext;
 import org.metaworks.ToEvent;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.ServiceMethod;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.metaworks.widget.ToBlank;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.marketplace.Marketplace;
 import org.uengine.codi.mw3.model.AllAppList;
+import org.uengine.codi.mw3.model.EmployeeWithCRUD;
+import org.uengine.util.Base64Util;
 
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
@@ -24,7 +28,8 @@ public class SocialBPMAppList extends AllAppList{
         ProcessAdminApplication application = new ProcessAdminApplication();
         topPanel.setTopCenterTitle("Practice Composer");
 
-        wrapReturn(new Refresh(application), new Refresh(topPanel), new ToEvent(ServiceMethodContext.TARGET_SELF, EventContext.EVENT_CLOSE));
+        //wrapReturn(new Refresh(application), new Refresh(topPanel), new ToEvent(ServiceMethodContext.TARGET_SELF, EventContext.EVENT_CLOSE));
+        MetaworksRemoteService.wrapReturn(new ToBlank("resource-editor.jsp?resourcePath=" + Base64Util.encode("none".getBytes("UTF-8")) + "&accessToken=" + ((EmployeeWithCRUD)session.getEmployee()).databaseMe().getAuthKey() +"&userId=" + session.getEmployee().getEmpCode()));
     }
 
 

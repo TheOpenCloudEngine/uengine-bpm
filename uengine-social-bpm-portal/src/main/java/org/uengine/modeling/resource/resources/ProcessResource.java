@@ -12,13 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.CodiProcessDefinitionFactory;
+import org.uengine.codi.mw3.model.EmployeeWithCRUD;
 import org.uengine.codi.mw3.model.Session;
 import org.uengine.kernel.*;
 import org.uengine.modeling.HasThumbnail;
 import org.uengine.modeling.Modeler;
 import org.uengine.modeling.resource.*;
 import org.uengine.modeling.resource.editor.ProcessEditor;
+import org.uengine.util.Base64Util;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -177,8 +180,8 @@ public class ProcessResource extends DefaultResource {
     }
 
     @ServiceMethod(target=ServiceMethodContext.TARGET_APPEND, inContextMenu = true, callByContent = true)
-    public void openInNewWindow(){
-        MetaworksRemoteService.wrapReturn(new ToBlank("resource-editor.jsp?resourcePath=" + URLEncoder.encode(getPath()) + "&accessToken=" + session.getEmployee().getEmail()));
+    public void openInNewWindow() throws Exception {
+        MetaworksRemoteService.wrapReturn(new ToBlank("resource-editor.jsp?resourcePath=" + Base64Util.encode(getPath().getBytes("UTF-8")) + "&accessToken=" + ((EmployeeWithCRUD)session.getEmployee()).databaseMe().getAuthKey() +"&userId=" + session.getEmployee().getEmpCode()));
     }
 
     @ServiceMethod(callByContent = true, target = ServiceMethod.TARGET_POPUP, inContextMenu = true)

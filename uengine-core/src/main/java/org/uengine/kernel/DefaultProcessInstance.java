@@ -583,9 +583,13 @@ public class DefaultProcessInstance extends AbstractProcessInstance{
 	}
 
 	String mainProcessInstanceId;
-	public String getMainProcessInstanceId(){
-		return mainProcessInstanceId;
-	}
+		public String getMainProcessInstanceId(){
+			return mainProcessInstanceId;
+		}
+		public void setMainProcessInstanceId(String mainProcessInstanceId) {
+			this.mainProcessInstanceId = mainProcessInstanceId;
+		}
+
 
 	String mainActivityTracingTag;
 	public String getMainActivityTracingTag(){

@@ -298,6 +298,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		//TODO Checking for dirty field is needed
 		procInsDAO.update();
 
+
 		setCaching(true);
 		if(modifiedKeyMap!=null){
 
@@ -378,6 +379,9 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			}
 		}
 		//setCaching(true);
+
+		isNew = (false);
+
 
 	}
 
@@ -1074,6 +1078,14 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		}catch(Exception e){
 			return null;
+		}
+	}
+
+	public void setMainProcessInstanceId(String mainInstId) {
+		try{
+			getProcessInstanceDAO().setMainInstId(new Long(mainInstId));
+		}catch(Exception e){
+			throw new RuntimeException(e);
 		}
 	}
 

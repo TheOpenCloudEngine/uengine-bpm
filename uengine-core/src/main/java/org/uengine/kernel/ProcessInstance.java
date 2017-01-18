@@ -68,6 +68,8 @@ public interface ProcessInstance extends BeanPropertyResolver{
     abstract public boolean isSimulation() throws Exception;
 
     abstract public String getMainProcessInstanceId();
+    abstract public void setMainProcessInstanceId(String mainProcessInstanceId);
+
     abstract public String getMainActivityTracingTag();
     abstract public String getMainExecutionScope();
 
@@ -226,4 +228,5 @@ public interface ProcessInstance extends BeanPropertyResolver{
     public ProcessInstance getLocalInstance();
 
     public boolean isRoot();
+
 }

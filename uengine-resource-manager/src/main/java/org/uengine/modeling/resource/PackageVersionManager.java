@@ -43,7 +43,7 @@ public class PackageVersionManager extends SimpleVersionManager{
 
                 String logicalPath = "";
                 if(parts.length > 2){
-                    for(int i=0; i<parts.length; i++){ //join the path elements without the version
+                    for(int i=0; i<parts.length; i++){ //join the path elements without the version and module name
                         if(i!=1)
                             logicalPath = logicalPath + (i>0 ? "/":"") + parts[i];
                     }
@@ -65,7 +65,7 @@ public class PackageVersionManager extends SimpleVersionManager{
                         setModuleName(parts[0]);
                     }
 
-                    for(int i=2; i<parts.length; i++){ //join the path elements without the version
+                    for(int i=2; i<parts.length; i++){ //join the path elements without the version and module name
                         logicalPath = logicalPath + sep + parts[i];
                         sep = "/";
                     }
@@ -94,7 +94,7 @@ public class PackageVersionManager extends SimpleVersionManager{
                         setModuleName(parts[0]);
                     }
 
-                    for(int i=1; i<parts.length; i++){ //join the path elements without the version
+                    for(int i=1; i<parts.length; i++){ //join the path elements without the version and module name
                         logicalPath = logicalPath + sep + parts[i];
                         sep = "/";
                     }
@@ -102,10 +102,19 @@ public class PackageVersionManager extends SimpleVersionManager{
                     return logicalPath;
                 }
 
-                return withoutPrefixPath;
+                if(getModuleName()!=null) return ""; //return without module name
+
+                return withoutPrefixPath; // in case of default module (no module resource)
             }
         }
 
         return super.getLogicalPath(resourcePath);
+    }
+
+    @Override
+    public void load(String appName, String moduleName) throws Exception {
+        if(moduleName==null) throw new Exception("Select a folder(module) for version management");
+
+        super.load(appName, moduleName);
     }
 }

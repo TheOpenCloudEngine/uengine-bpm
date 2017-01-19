@@ -58,14 +58,15 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 
 		setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator()
 
+				//Following logic has been changed to the below [RWP]:
 //										 {
-//			@Override
-//			protected String getAppName() { //returns current production version root
-//				VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
-//				versionManager.setAppName(super.getAppName());
-//				return (super.getAppName() + "/" + versionManager.getProductionResourcePath(""));
+//				@Override
+//				protected String getAppName() { //returns current production version root
+//					VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+//					versionManager.setAppName(super.getAppName());
+//					return (super.getAppName() + "/" + versionManager.getProductionResourcePath(""));
+//				}
 //			}
-//		}
 
 		);
 
@@ -74,6 +75,7 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 		VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
 		versionManager.setAppName("codi");
 
+		// RWP:  replace with the production
 		for(IResource module : getProcessAdminResourceNavigator().getRoot().getChildren()){
 			if(module instanceof ContainerResource){
 				versionManager.setModuleName(module.getName());
@@ -135,9 +137,9 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 			this.jiraTenant = jiraTenant;
 		}
 
-	@ServiceMethod(callByContent = true)
-	public void loadJira() {
-		new TenantContext(this.getJiraTenant());
-		this.load();
-	}
+//	@ServiceMethod(callByContent = true)
+//	public void loadJira() {
+//		new TenantContext(this.getJiraTenant());
+//		this.load();
+//	}
 }

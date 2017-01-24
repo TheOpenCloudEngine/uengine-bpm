@@ -90,7 +90,7 @@
     <!-- metaworks3 engine -->
     <script type="text/javascript" src="dwr/metaworks/scripts/metaworks.js"></script>
 
-    <script type="text/javascript" src="lib/opengraph/OpenGraph-0.1-SNAPSHOT.js"></script>
+    <script type="text/javascript" src="lib/opengraph/OpenGraph-0.1.2-SNAPSHOT.js"></script>
 
     <!-- init -->
     <link rel="stylesheet" type="text/css" href="style/tree.css" />
@@ -288,6 +288,8 @@
             }
         }
 
+        var request = new Request();
+
         $(document).ready(function() {
             document.body.addEventListener("DOMNodeInserted", function (ev) {
                 //console.log('DOMNodeInserted');
@@ -295,8 +297,6 @@
             });
 
             $.fn.cycle.defaults.autoSelector = '.slideshow';
-
-            var request = new Request();
 
             if (navigator.appVersion.indexOf("Win")!=-1){
                 /*$('body').css('font-family', "'맑은 고딕', Malgun gothic, Arial");*/

@@ -3789,7 +3789,7 @@ window.Raphael.svg && function (R) {
         markers = {
             block: "M5,0 0,2.5 5,5z",
             open_block: "M5,0 0,2.5 5,5z",
-            classic: "M5,0 0,2.5 5,5 3.5,3 3.5,2z",
+            classic: "M5,0 0,2.5 5,5",
             diamond: "M2.5,0 5,2.5 2.5,5 0,2.5z",
             open_diamond: "M2.5,0 5,2.5 2.5,5 0,2.5z",
             open: "M6,1 1,3.5 6,6",
@@ -3979,7 +3979,15 @@ window.Raphael.svg && function (R) {
                     stroke: attrs.stroke,
 					'stroke-dasharray': 0
                 };
-            } else if(type == 'open_block' || type == 'open_diamond' || type == 'open_oval') {
+            } else if(type == 'classic'){
+		    	refX = dx = w / 2;
+		        attr = {
+                    fill: "none",
+                    'fill-opacity' : 1,
+                    stroke: attrs.stroke,
+					'stroke-dasharray': 0
+                };
+			} else if(type == 'open_block' || type == 'open_diamond' || type == 'open_oval') {
 				refX = dx = w / 2;
 				attr = {
 					fill: 'white',
@@ -10786,269 +10794,7 @@ OG.shape.bpmn.A_Task.prototype.createTerminal = function(){
     ];
 };
 
-//TODO: 커스텀 컨트롤.. 구현 방식을 바꿔둬야 함 ( 함수 => 객체 )
-OG.shape.bpmn.A_Task.prototype.drawCustomControl = function(handler, element){
-	if(!handler || !element) return;
 
-	var ur_x, ur_y
-		,task, end
-		,group
-		,rElement = handler._RENDERER._getREleById(OG.Util.isElement(element) ? element.id : element)
-		
-	
-	// remove all custom control
-	$(handler._RENDERER.getRootElement()).find("[_type=CUSTOM_CONTROL]").each(function(n, selectedItem){
-		selectedItem.remove();
-	});
-	
-	if(element.shape instanceof OG.shape.bpmn.A_Task){
-		
-		//찍을 좌표 구하기
-		ur_x = element.shape.geom.boundary._upperLeft.x;
-		ur_y = element.shape.geom.boundary._upperLeft.y;
-		ur_x = element.shape.geom.boundary._width + ur_x;
-	
-		task = handler._RENDERER._PAPER.image("resources/images/symbol/guide_task.png", ur_x + 10, ur_y, 15, 15);
-		end = handler._RENDERER._PAPER.image("resources/images/symbol/guide_end.png", ur_x + 10, ur_y + 20, 15, 15);
-		task.attr({
-			cursor : "pointer"
-		});
-		end.attr({
-			cursor : "pointer"
-		});
-
-		task.setTooltip('task - Click or Drag');
-		end.setTooltip('end event - Click or Drag');
-		
-		group = handler._RENDERER._PAPER.group();
-		$(group.node).attr("_type","CUSTOM_CONTROL");
-		
-		group.appendChild(task);
-		group.appendChild(end);
-		
-		group.insertAfter(rElement);
-		
-		/********************************************
-			이벤트 설정 시작
-		********************************************/
-		$(task.node).draggable({
-			start: function (event) {
-				event.stopPropagation();
-				var eventOffset = handler._getOffset(event), guide;
-
-				// 선택되지 않은 Shape 을 drag 시 다른 모든 Shape 은 deselect 처리
-				if (handler._RENDERER.getElementById(element.id + OG.Constants.GUIDE_SUFFIX.GUIDE) === null) {
-					$(handler._RENDERER.getRootElement()).find("[_type=" + OG.Constants.NODE_TYPE.SHAPE + "][_selected=true]").each(function (index, item) {
-						if (OG.Util.isElement(item) && item.id) {
-							handler._RENDERER.removeGuide(item);
-						}
-					});
-					handler._RENDERER.removeTerminal(element);
-				}
-				$(handler._RENDERER.getRootElement()).data("bBoxArray", handler._getMoveTargets());
-				handler._RENDERER.removeRubberBand(handler._RENDERER.getRootElement());
-				handler._RENDERER.removeAllTerminal();
-			},
-			drag : function (event) {
-				event.stopPropagation();
-				var eventOffset = handler._getOffset(event),
-				bBoxArray = $(handler._RENDERER.getRootElement()).data("bBoxArray"),
-				dx = handler._grid(eventOffset.x - element.shape.geom.getBoundary().getCentroid().x, 'move'),
-				dy = handler._grid(eventOffset.y - element.shape.geom.getBoundary().getCentroid().y, 'move');
-
-				// Canvas 영역을 벗어나서 드래그되는 경우 Canvas 확장
-				handler._autoExtend(eventOffset.x, eventOffset.y, element);
-				$(task).css({"position": "", "left": "", "top": ""});
-				$.each(bBoxArray, function (k, item) {
-					handler._RENDERER.setAttr(item.box, {transform: "t" + dx + "," + dy});
-				});
-				handler._RENDERER.removeAllTerminal();
-			},
-			stop : function (event) {
-				event.stopPropagation();
-				var eventOffset = handler._getOffset(event)
-					//, shape, newElement
-					, boundary = element.shape.geom.getBoundary()
-					, bBoxArray = $(handler._RENDERER.getRootElement()).data("bBoxArray")
-					, boundary, clonedElement, clonedShape;
-				
-				//FIXME : element _shape_id로 부터 객체를 얻어오도록 하는데 이것을 
-				// 완벽한 객체 교환을 하도록 해야함... 보류 중..
-				clonedShape = element.shape.clone();
-				$(clonedShape).attr('auto_draw','yes');
-				
-				clonedElement = 
-					handler._RENDERER.drawShape(
-						[handler._grid(eventOffset.x, 'move'), handler._grid(eventOffset.y, 'move')]
-						, clonedShape
-						, [boundary.getWidth(), boundary.getHeight()]
-						, element.shapeStyle
-					);
-
-				// enable event
-				handler.setClickSelectable(clonedElement, handler._isSelectable(clonedElement.shape));
-				handler.setMovable(clonedElement, handler._isMovable(clonedElement.shape));
-				if (handler._CONFIG.GROUP_DROPABLE && clonedElement.shape.GROUP_DROPABLE) {
-					handler.enableDragAndDropGroup(clonedElement);
-				}
-				if (handler._CONFIG.GROUP_COLLAPSIBLE && clonedElement.shape.GROUP_COLLAPSIBLE) {
-					handler.enableCollapse(clonedElement);
-				}
-				if (handler._isConnectable(clonedElement.shape)) {
-					handler.enableConnect(clonedElement);
-				}
-				if (handler._isLabelEditable(clonedElement.shape)) {
-					handler.enableEditLabel(clonedElement);
-				}
-				
-				handler._RENDERER._CANVAS.connect(element, clonedElement);
-				handler.selectShape(clonedElement);
-				
-				$.each(bBoxArray, function (k, item) {
-					handler._RENDERER.remove(item.box);
-				});
-				$(handler._RENDERER.getRootElement()).removeData("bBoxArray");
-			}
-		});
-		$(task.node).bind({
-			click : function (event) {
-				event.stopPropagation();
-				var eventOffset = handler._getOffset(event)
-					//, shape, newElement
-					, boundary = element.shape.geom.getBoundary()
-					, clonedElement, clonedShape;
-				
-				//FIXME : element _shape_id로 부터 객체를 얻어오도록 하는데 이것을 
-				// 완벽한 객체 교환을 하도록 해야함... 보류 중..
-				clonedShape = element.shape.clone();
-				$(clonedShape).attr('auto_draw','yes');
-				
-				clonedElement = 
-					handler._RENDERER.drawShape(
-						[boundary.getCentroid().x + boundary.getWidth() + 50, boundary.getCentroid().y]
-						, clonedShape
-						, [boundary.getWidth(), boundary.getHeight()]
-						, element.shapeStyle
-					);
-
-				// enable event
-				handler.setClickSelectable(clonedElement, handler._isSelectable(clonedElement.shape));
-				handler.setMovable(clonedElement, handler._isMovable(clonedElement.shape));
-				if (handler._CONFIG.GROUP_DROPABLE && clonedElement.shape.GROUP_DROPABLE) {
-					handler.enableDragAndDropGroup(clonedElement);
-				}
-				if (handler._CONFIG.GROUP_COLLAPSIBLE && clonedElement.shape.GROUP_COLLAPSIBLE) {
-					handler.enableCollapse(clonedElement);
-				}
-				if (handler._isConnectable(clonedElement.shape)) {
-					handler.enableConnect(clonedElement);
-				}
-				if (handler._isLabelEditable(clonedElement.shape)) {
-					handler.enableEditLabel(clonedElement);
-				}
-				
-				handler._RENDERER._CANVAS.connect(element, clonedElement);
-				handler.selectShape(clonedElement);
-			
-				/*
-				var newElement, shape
-				//shape = new OG.shape.bpmn.A_Task(),
-				envelope = element.shape.geom.getBoundary();
-				
-				var shape_id = $(element).attr("_shape_id");
-				var evalObject = eval(shape_id);
-				shape = new evalObject();
-				
-				$(shape).attr('auto_draw', 'yes');
-				newElement = handler._RENDERER._CANVAS.drawShape([envelope.getCentroid().x + 100, envelope.getCentroid().y], shape, [70, 50]);
-				handler._RENDERER._CANVAS.connect(element, newElement);
-				handler.selectShape(newElement);
-				*/
-			},
-			mousedown : function (event) {
-				event.stopPropagation();
-			}
-		});
-		$(end.node).draggable({
-			start: function (event) {
-				var eventOffset = handler._getOffset(event), guide;
-
-				// 선택되지 않은 Shape 을 drag 시 다른 모든 Shape 은 deselect 처리
-				if (handler._RENDERER.getElementById(element.id + OG.Constants.GUIDE_SUFFIX.GUIDE) === null) {
-					$(handler._RENDERER.getRootElement()).find("[_type=" + OG.Constants.NODE_TYPE.SHAPE + "][_selected=true]").each(function (index, item) {
-						if (OG.Util.isElement(item) && item.id) {
-							handler._RENDERER.removeGuide(item);
-						}
-					});
-					handler._RENDERER.removeAllTerminal();
-				}
-
-				$(handler._RENDERER.getRootElement()).data("bBoxArray", handler._getMoveTargets());
-				handler._RENDERER.removeRubberBand(handler._RENDERER.getRootElement());
-				handler._RENDERER.removeAllTerminal();
-			},
-			drag : function (event) {
-				var eventOffset = handler._getOffset(event),
-				start = $(this).data("start"),
-				bBoxArray = $(handler._RENDERER.getRootElement()).data("bBoxArray"),
-				dx = handler._grid(eventOffset.x - element.shape.geom.getBoundary().getCentroid().x, 'move'),
-				dy = handler._grid(eventOffset.y - element.shape.geom.getBoundary().getCentroid().y, 'move');
-
-			// Canvas 영역을 벗어나서 드래그되는 경우 Canvas 확장
-				handler._autoExtend(eventOffset.x, eventOffset.y);
-
-				$(this).css({"position": "", "left": "", "top": ""});
-				$.each(bBoxArray, function (k, item) {
-					handler._RENDERER.setAttr(item.box, {transform: "t" + dx + "," + dy});
-				});
-				handler._RENDERER.removeAllTerminal();
-			},
-			stop : function (event) {
-				var eventOffset = handler._getOffset(event), shape, newElement,
-				bBoxArray = $(handler._RENDERER.getRootElement()).data("bBoxArray");
-				shape = new OG.shape.bpmn.E_End();
-				$(shape).attr('auto_draw', 'yes');
-				newElement = handler._RENDERER._CANVAS.drawShape([eventOffset.x, eventOffset.y], shape, [30, 30]);
-				handler._RENDERER._CANVAS.connect(element, newElement);
-				$.each(bBoxArray, function (k, item) {
-					handler._RENDERER.remove(item.box);
-				});
-				$(handler._RENDERER.getRootElement()).removeData("bBoxArray");
-				handler.selectShape(newElement);
-			}
-		});
-		$(end.node).bind({
-			mouseover: function (event) {
-
-			},
-			click : function (event) {
-				var newElement,
-				shape = new OG.shape.bpmn.E_End(),
-				envelope = element.shape.geom.getBoundary();
-				$(shape).attr('auto_draw', 'yes');
-				newElement = handler._RENDERER._CANVAS.drawShape([envelope.getUpperRight().x + 50, envelope.getCentroid().y], shape, [30, 30]);
-				handler._RENDERER._CANVAS.connect(element, newElement);
-			},
-			mouseout : function (event) {
-
-			}
-		});
-		/********************************************
-			이벤트 설정 종료
-		********************************************/
-		
-		//FIXME 삭제
-		$(group).bind({
-			remove: function(event){
-				element.shape.geom["custom_control"] = undefined;
-				handler._RENDERER._remove(group);
-			}
-		});
-		
-		// addto element
-		element.shape.geom["custom_control"] = group;
-	}
-};
 
 /**
  * BPMN : Alpha Event Shape
@@ -11095,7 +10841,7 @@ OG.shape.essencia.Alpha.prototype.createShape = function () {
 	
 	this.geom.style = new OG.geometry.Style({
 		'r' : 20,
-		'label-position': 'center',
+		'label-position': '40%',
         'stroke-width' : 2.5
 	});
 
@@ -11380,7 +11126,10 @@ OG.shape.essencia.Practice.prototype.createShape = function () {
 	
 	this.geom.style = new OG.geometry.Style({
 		'label-position': 'middle',
-        'stroke-width' : 2.5
+        'stroke-width' : 2.5,
+        'fill': '#9b59b6',
+        'stroke': '#8e44ad',
+        'fill-opacity': "1"
 	});
 
 	return this.geom;
@@ -12381,11 +12130,6 @@ OG.shape.bpmn.G_Gateway.prototype.createShape = function () {
 		[50, 0]
 	]);
 
-    this.geom.style = new OG.geometry.Style({
-        'label-position': 'bottom'
-    });
-
-
 	return this.geom;
 };
 /**
@@ -12566,10 +12310,6 @@ OG.shape.bpmn.G_Inclusive.prototype.createShape = function () {
 
 	this.geom = new OG.geometry.GeometryCollection(geomCollection);
 
-    this.geom.style = new OG.geometry.Style({
-        "label-position": 'bottom'
-    });
-
 	return this.geom;
 };
 /**
@@ -12627,10 +12367,6 @@ OG.shape.bpmn.G_Parallel.prototype.createShape = function () {
 	geomCollection.push(geom3);
 
 	this.geom = new OG.geometry.GeometryCollection(geomCollection);
-
-    this.geom.style = new OG.geometry.Style({
-        "label-position": 'bottom'
-    });
 
 	return this.geom;
 };
@@ -13717,11 +13453,6 @@ OG.shape.bpmn.E_Intermediate_Escalation.prototype.createShape = function () {
 		[50, 50]
 	]);
 
-    geom1.style = new OG.geometry.Style({
-        fill : "black",
-        "fill-opacity" : 1
-    });
-
 	geomCollection.push(new OG.geometry.Circle([50, 50], 50));
 	geomCollection.push(new OG.geometry.Circle([50, 50], 40));
 	geomCollection.push(geom1);
@@ -13729,7 +13460,7 @@ OG.shape.bpmn.E_Intermediate_Escalation.prototype.createShape = function () {
 	this.geom = new OG.geometry.GeometryCollection(geomCollection);
 	this.geom.style = new OG.geometry.Style({
 		'label-position': 'bottom',
-        "stroke" : "black",
+       // "stroke" : "#969149",
 		"stroke-width" : 1.5,
 		fill : "white",
 		"fill-opacity" : 1
@@ -14067,17 +13798,19 @@ OG.shape.bpmn.E_Start_Message.prototype.createShape = function () {
 	});
 
 	geom2 = new OG.geometry.PolyLine([
-		[20, 40],
-		[50, 60],
-		[80, 40]
+		[20, 25],
+		[50, 45],
+		[80, 25],
+		[20, 25]
 	]);
 	
 	geom3 = new OG.geometry.PolyLine([
-		[20, 30],
+		[20, 35],
 		[20, 70],
 		[80, 70],
-		[80, 30],
-		[20, 30]
+		[80, 35],
+		[50, 55],
+		[20, 35]
 	]);
 
 	geomCollection.push(geom1);
@@ -14423,6 +14156,7 @@ OG.shape.bpmn.M_Group.prototype.createShape = function () {
 
 	this.geom = new OG.geometry.Rectangle([0, 0], 100, 100);
 	this.geom.style = new OG.geometry.Style({
+		//'stroke-dasharray': '- ',
 		"r"               : 6,
 		fill : 'none',
 		"vertical-align": "top",
@@ -18550,7 +18284,7 @@ OG.renderer.RaphaelRenderer.prototype.connect = function (from, to, edge, style,
 		}else if(fromShape.attributes._shape_id.value == "OG.shape.bpmn.A_HumanTask" || toShape.attributes._shape_id.value == "OG.shape.bpmn.A_HumanTask"){
 			_style["edge-type"] = "plain";
 			_style["arrow-start"] = "none";
-			_style["arrow-end"] = "classic-wide-long";
+			_style["arrow-end"] = "block-wide-long";
 		}
 		
 		beforeEvent = jQuery.Event("beforeConnectShape", {edge: edge, fromShape: fromShape, toShape: toShape});
@@ -18748,140 +18482,223 @@ OG.renderer.RaphaelRenderer.prototype.drawDropOverGuide = function (element) {
  */
 OG.renderer.RaphaelRenderer.prototype.drawGuide = function (element) {
 
-	// element selected
-	$(element).data("status","element_selected");
-	
-	var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
-		geometry = rElement ? rElement.node.shape.geom : null,
-		envelope,
-		group, guide,
-		_bBoxRect,
-		_upperLeft, _upperRight, _lowerLeft, _lowerRight, _leftCenter, _upperCenter, _rightCenter, _lowerCenter,
-		_ulRect, _urRect, _llRect, _lrRect, _lcRect, _ucRect, _rcRect, _lwcRect, task, end,
-		_size = me._CONFIG.GUIDE_RECT_SIZE, _hSize = OG.Util.round(_size / 2);
+    // element selected
+    $(element).data("status","element_selected");
 
-	if (rElement && geometry) {
-		// Edge 인 경우 따로 처리
-		if ($(element).attr("_shape") === OG.Constants.SHAPE_TYPE.EDGE) {
-			return this.drawEdgeGuide(element);
-		} else {
-			envelope = geometry.getBoundary();
-			_upperLeft = envelope.getUpperLeft();
-			_upperRight = envelope.getUpperRight();
-			_lowerLeft = envelope.getLowerLeft();
-			_lowerRight = envelope.getLowerRight();
-			_leftCenter = envelope.getLeftCenter();
-			_upperCenter = envelope.getUpperCenter();
-			_rightCenter = envelope.getRightCenter();
-			_lowerCenter = envelope.getLowerCenter();
+    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
+        geometry = rElement ? rElement.node.shape.geom : null,
+        envelope,
+        group, guide,
+        _bBoxRect,
+        _upperLeft, _upperRight, _lowerLeft, _lowerRight, _leftCenter, _upperCenter, _rightCenter, _lowerCenter,
+        _ulRect, _urRect, _llRect, _lrRect, _lcRect, _ucRect, _rcRect, _lwcRect, task, end,
+        _size = me._CONFIG.GUIDE_RECT_SIZE, _hSize = OG.Util.round(_size / 2);
 
-			if (this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.GUIDE)) {
-				// 가이드가 이미 존재하는 경우에는 bBox 만 삭제후 새로 draw
-				// bBox remove -> redraw
-				this._remove(this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.BBOX));
-				_bBoxRect = this._PAPER.rect(_upperLeft.x, _upperLeft.y, envelope.getWidth(), envelope.getHeight());
-				_bBoxRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_BBOX);
-				this._add(_bBoxRect, rElement.id + OG.Constants.GUIDE_SUFFIX.BBOX);
-				_bBoxRect.insertBefore(rElement);
+    if (rElement && geometry) {
+        // Edge 인 경우 따로 처리
+        if ($(element).attr("_shape") === OG.Constants.SHAPE_TYPE.EDGE) {
+            return this.drawEdgeGuide(element);
+        } else {
+            envelope = geometry.getBoundary();
+            _upperLeft = envelope.getUpperLeft();
+            _upperRight = envelope.getUpperRight();
+            _lowerLeft = envelope.getLowerLeft();
+            _lowerRight = envelope.getLowerRight();
+            _leftCenter = envelope.getLeftCenter();
+            _upperCenter = envelope.getUpperCenter();
+            _rightCenter = envelope.getRightCenter();
+            _lowerCenter = envelope.getLowerCenter();
 
-				_ulRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.UL);
-				_urRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.UR);
-				_llRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LL);
-				_lrRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LR);
-				_lcRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LC);
-				_ucRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.UC);
-				_rcRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.RC);
-				_lwcRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LWC);
+            if (this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.GUIDE)) {
+                // 가이드가 이미 존재하는 경우에는 bBox 만 삭제후 새로 draw
+                // bBox remove -> redraw
+                this._remove(this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.BBOX));
+                _bBoxRect = this._PAPER.rect(_upperLeft.x, _upperLeft.y, envelope.getWidth(), envelope.getHeight());
+                _bBoxRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_BBOX);
+                this._add(_bBoxRect, rElement.id + OG.Constants.GUIDE_SUFFIX.BBOX);
+                _bBoxRect.insertBefore(rElement);
 
-				_ulRect.attr({x: _upperLeft.x - _hSize, y: _upperLeft.y - _hSize});
-				_urRect.attr({x: _upperRight.x - _hSize, y: _upperRight.y - _hSize});
-				_llRect.attr({x: _lowerLeft.x - _hSize, y: _lowerLeft.y - _hSize});
-				_lrRect.attr({x: _lowerRight.x - _hSize, y: _lowerRight.y - _hSize});
-				_lcRect.attr({x: _leftCenter.x - _hSize, y: _leftCenter.y - _hSize});
-				_ucRect.attr({x: _upperCenter.x - _hSize, y: _upperCenter.y - _hSize});
-				_rcRect.attr({x: _rightCenter.x - _hSize, y: _rightCenter.y - _hSize});
-				_lwcRect.attr({x: _lowerCenter.x - _hSize, y: _lowerCenter.y - _hSize});
+                _ulRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.UL);
+                _urRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.UR);
+                _llRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LL);
+                _lrRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LR);
+                _lcRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LC);
+                _ucRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.UC);
+                _rcRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.RC);
+                _lwcRect = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.LWC);
 
-				return null;
+                _ulRect.attr({x: _upperLeft.x - _hSize, y: _upperLeft.y - _hSize});
+                _urRect.attr({x: _upperRight.x - _hSize, y: _upperRight.y - _hSize});
+                _llRect.attr({x: _lowerLeft.x - _hSize, y: _lowerLeft.y - _hSize});
+                _lrRect.attr({x: _lowerRight.x - _hSize, y: _lowerRight.y - _hSize});
+                _lcRect.attr({x: _leftCenter.x - _hSize, y: _leftCenter.y - _hSize});
+                _ucRect.attr({x: _upperCenter.x - _hSize, y: _upperCenter.y - _hSize});
+                _rcRect.attr({x: _rightCenter.x - _hSize, y: _rightCenter.y - _hSize});
+                _lwcRect.attr({x: _lowerCenter.x - _hSize, y: _lowerCenter.y - _hSize});
+
+                return null;
+            }
+
+            // group
+            group = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.GUIDE);
+            if (group) {
+                this._remove(group);
+                this._remove(this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.BBOX));
+            }
+            group = this._PAPER.group();
+
+            // guide line 랜더링
+            _bBoxRect = this._PAPER.rect(_upperLeft.x, _upperLeft.y, envelope.getWidth(), envelope.getHeight());
+            _ulRect = this._PAPER.rect(_upperLeft.x - _hSize, _upperLeft.y - _hSize, _size, _size);
+            _urRect = this._PAPER.rect(_upperRight.x - _hSize, _upperRight.y - _hSize, _size, _size);
+            _llRect = this._PAPER.rect(_lowerLeft.x - _hSize, _lowerLeft.y - _hSize, _size, _size);
+            _lrRect = this._PAPER.rect(_lowerRight.x - _hSize, _lowerRight.y - _hSize, _size, _size);
+            _lcRect = this._PAPER.rect(_leftCenter.x - _hSize, _leftCenter.y - _hSize, _size, _size);
+            _ucRect = this._PAPER.rect(_upperCenter.x - _hSize, _upperCenter.y - _hSize, _size, _size);
+            _rcRect = this._PAPER.rect(_rightCenter.x - _hSize, _rightCenter.y - _hSize, _size, _size);
+            _lwcRect = this._PAPER.rect(_lowerCenter.x - _hSize, _lowerCenter.y - _hSize, _size, _size);
+
+            _bBoxRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_BBOX);
+            _ulRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_UL);
+            _urRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_UR);
+            _llRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LL);
+            _lrRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LR);
+            _lcRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LC);
+            _ucRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_UC);
+            _rcRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_RC);
+            _lwcRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LWC);
+
+            // add to Group
+            group.appendChild(_ulRect);
+            group.appendChild(_urRect);
+            group.appendChild(_llRect);
+            group.appendChild(_lrRect);
+            group.appendChild(_lcRect);
+            group.appendChild(_ucRect);
+            group.appendChild(_rcRect);
+            group.appendChild(_lwcRect);
+
+
+            this._add(group, rElement.id + OG.Constants.GUIDE_SUFFIX.GUIDE);
+            this._add(_bBoxRect, rElement.id + OG.Constants.GUIDE_SUFFIX.BBOX);
+            this._add(_ulRect, rElement.id + OG.Constants.GUIDE_SUFFIX.UL);
+            this._add(_urRect, rElement.id + OG.Constants.GUIDE_SUFFIX.UR);
+            this._add(_llRect, rElement.id + OG.Constants.GUIDE_SUFFIX.LL);
+            this._add(_lrRect, rElement.id + OG.Constants.GUIDE_SUFFIX.LR);
+            this._add(_lcRect, rElement.id + OG.Constants.GUIDE_SUFFIX.LC);
+            this._add(_ucRect, rElement.id + OG.Constants.GUIDE_SUFFIX.UC);
+            this._add(_rcRect, rElement.id + OG.Constants.GUIDE_SUFFIX.RC);
+            this._add(_lwcRect, rElement.id + OG.Constants.GUIDE_SUFFIX.LWC);
+
+            guide = {
+                bBox : _bBoxRect.node,
+                group: group.node,
+                ul   : _ulRect.node,
+                ur   : _urRect.node,
+                ll   : _llRect.node,
+                lr   : _lrRect.node,
+                lc   : _lcRect.node,
+                uc   : _ucRect.node,
+                rc   : _rcRect.node,
+                lwc  : _lwcRect.node
+            };
+
+            // layer 위치 조정
+            _bBoxRect.insertBefore(rElement);
+            group.insertAfter(rElement);
+
+            // selected 속성값 설정
+            $(rElement.node).attr("_selected", "true");
+
+            return guide;
+        }
+    }
+
+    return null;
+};
+
+/**
+ * ID에 해당하는 Element 의 Stick 용 가이드를 드로잉한다.
+ *
+ * @param {Element,String} element Element 또는 ID
+ * @return {Object}
+ * @override
+ */
+OG.renderer.RaphaelRenderer.prototype.drawStickGuide = function (element, toBeStuck, vertical) {
+
+    // element selected
+    $(element).data("status","element_selected");
+
+    var me = this, rElement = this._getREleById(OG.Util.isElement(element) ? element.id : element),
+        geometry = rElement ? rElement.node.shape.geom : null,
+        envelope,
+        group, guide,
+        _bBoxRect,
+        _upperLeft, _upperRight, _lowerLeft, _lowerRight, _leftCenter, _upperCenter, _rightCenter, _lowerCenter,
+        _ulRect, _urRect, _llRect, _lrRect, _lcRect, _ucRect, _rcRect, _lwcRect, task, end,
+        _size = me._CONFIG.GUIDE_RECT_SIZE, _hSize = OG.Util.round(_size / 2);
+
+    if (rElement && geometry) {
+        // Edge 인 경우 따로 처리
+        if ($(element).attr("_shape") === OG.Constants.SHAPE_TYPE.EDGE) {
+            return this.drawEdgeGuide(element);
+        } else {
+            envelope = geometry.getBoundary();
+            _upperLeft = envelope.getUpperLeft();
+            _upperRight = envelope.getUpperRight();
+            _lowerLeft = envelope.getLowerLeft();
+            _lowerRight = envelope.getLowerRight();
+            _leftCenter = envelope.getLeftCenter();
+            _upperCenter = envelope.getUpperCenter();
+            _rightCenter = envelope.getRightCenter();
+            _lowerCenter = envelope.getLowerCenter();
+
+
+			this.removeStickGuide(vertical);
+
+
+            var path;
+
+            if(vertical){
+              path = this._PAPER.path("M" + _upperCenter.x + ",0L" + _upperCenter.x + ",10000");
+            }else{
+              path = this._PAPER.path("M0," + _leftCenter.y + "L10000," + _leftCenter.y);  
+            }
+
+            path.attr ("stroke-width", "2");
+            path.attr ("stroke", "#FFCC50");
+			//path.attr ("stroke-dasharray", '--');
+
+            
+            if(vertical)
+	            this._stickGuideX = path;
+	        else
+	            this._stickGuideY = path;
+	        
+
+            return null;
+        }
+    }
+
+    return null;
+};
+
+OG.renderer.RaphaelRenderer.prototype.removeStickGuide = function (vertical) {
+
+	if(vertical){
+			if(this._stickGuideX){
+				this._remove(this._stickGuideX);
+				this._stickGuideX = null;
 			}
-
-			// group
-			group = this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.GUIDE);
-			if (group) {
-				this._remove(group);
-				this._remove(this._getREleById(rElement.id + OG.Constants.GUIDE_SUFFIX.BBOX));
+	}else{
+			if(this._stickGuideY){
+				this._remove(this._stickGuideY);
+				this._stickGuideY = null;
 			}
-			group = this._PAPER.group();
-
-			// guide line 랜더링
-			_bBoxRect = this._PAPER.rect(_upperLeft.x, _upperLeft.y, envelope.getWidth(), envelope.getHeight());
-			_ulRect = this._PAPER.rect(_upperLeft.x - _hSize, _upperLeft.y - _hSize, _size, _size);
-			_urRect = this._PAPER.rect(_upperRight.x - _hSize, _upperRight.y - _hSize, _size, _size);
-			_llRect = this._PAPER.rect(_lowerLeft.x - _hSize, _lowerLeft.y - _hSize, _size, _size);
-			_lrRect = this._PAPER.rect(_lowerRight.x - _hSize, _lowerRight.y - _hSize, _size, _size);
-			_lcRect = this._PAPER.rect(_leftCenter.x - _hSize, _leftCenter.y - _hSize, _size, _size);
-			_ucRect = this._PAPER.rect(_upperCenter.x - _hSize, _upperCenter.y - _hSize, _size, _size);
-			_rcRect = this._PAPER.rect(_rightCenter.x - _hSize, _rightCenter.y - _hSize, _size, _size);
-			_lwcRect = this._PAPER.rect(_lowerCenter.x - _hSize, _lowerCenter.y - _hSize, _size, _size);
-
-			_bBoxRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_BBOX);
-			_ulRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_UL);
-			_urRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_UR);
-			_llRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LL);
-			_lrRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LR);
-			_lcRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LC);
-			_ucRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_UC);
-			_rcRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_RC);
-			_lwcRect.attr(me._CONFIG.DEFAULT_STYLE.GUIDE_LWC);
-
-			// add to Group
-			group.appendChild(_ulRect);
-			group.appendChild(_urRect);
-			group.appendChild(_llRect);
-			group.appendChild(_lrRect);
-			group.appendChild(_lcRect);
-			group.appendChild(_ucRect);
-			group.appendChild(_rcRect);
-			group.appendChild(_lwcRect);
-
-
-			this._add(group, rElement.id + OG.Constants.GUIDE_SUFFIX.GUIDE);
-			this._add(_bBoxRect, rElement.id + OG.Constants.GUIDE_SUFFIX.BBOX);
-			this._add(_ulRect, rElement.id + OG.Constants.GUIDE_SUFFIX.UL);
-			this._add(_urRect, rElement.id + OG.Constants.GUIDE_SUFFIX.UR);
-			this._add(_llRect, rElement.id + OG.Constants.GUIDE_SUFFIX.LL);
-			this._add(_lrRect, rElement.id + OG.Constants.GUIDE_SUFFIX.LR);
-			this._add(_lcRect, rElement.id + OG.Constants.GUIDE_SUFFIX.LC);
-			this._add(_ucRect, rElement.id + OG.Constants.GUIDE_SUFFIX.UC);
-			this._add(_rcRect, rElement.id + OG.Constants.GUIDE_SUFFIX.RC);
-			this._add(_lwcRect, rElement.id + OG.Constants.GUIDE_SUFFIX.LWC);
-
-			guide = {
-				bBox : _bBoxRect.node,
-				group: group.node,
-				ul   : _ulRect.node,
-				ur   : _urRect.node,
-				ll   : _llRect.node,
-				lr   : _lrRect.node,
-				lc   : _lcRect.node,
-				uc   : _ucRect.node,
-				rc   : _rcRect.node,
-				lwc  : _lwcRect.node
-			};
-
-			// layer 위치 조정
-			_bBoxRect.insertBefore(rElement);
-			group.insertAfter(rElement);
-
-			// selected 속성값 설정
-			$(rElement.node).attr("_selected", "true");
-
-			return guide;
-		}
 	}
 
-	return null;
-};
+}
+
 
 /**
  * ID에 해당하는 Element 의 Move & Resize 용 가이드를 제거한다.
@@ -18900,6 +18717,10 @@ OG.renderer.RaphaelRenderer.prototype.removeGuide = function (element) {
 	rElement.node.removeAttribute("_selected");
 	this._remove(guide);
 	this._remove(bBox);
+	
+	this.removeStickGuide(true);
+	this.removeStickGuide(false);
+	
 };
 
 /**
@@ -21244,83 +21065,148 @@ OG.handler.EventHandler.prototype = {
     },
 
 	//FIXME Utilize
-	checkAutoAttach: function(element, bBoxArray, dx, dy, start, offset, event){
-		var me = this
-			,bBox, i, n
-			,bBoxX, bBoxY, bBoxW, bBoxH, bBoxPoints, filteredIndex = []
-			,gEleX, gEleY, gEleW, gEleH, gEleXW, gEleYH
-			,groupBoundary, targetElement;
-		
-		if(bBoxArray.length == 1 
-			&& element.shape instanceof OG.shape.bpmn.Event)
-		{
-			bBox = bBoxArray[0].box;
-			targetElement = $(event.srcElement).parent("g")[0];
-			
-			if(targetElement && (targetElement.shape instanceof OG.shape.bpmn.ScopeActivity)){
+    checkAutoAttach: function(element, bBoxArray, dx, dy, start, offset, event){
+        var me = this
+            ,bBox, i, n
+            ,bBoxX, bBoxY, bBoxW, bBoxH, bBoxPoints, filteredIndex = []
+            ,gEleX, gEleY, gEleW, gEleH, gEleXW, gEleYH
+            ,groupBoundary, targetElement;
 
-				bBox = $(bBox);
-				bBoxX = parseInt(bBox.attr("x")) + dx;
-				bBoxY = parseInt(bBox.attr("y")) + dy;
-				bBoxW = parseInt(bBox.attr("width"));
-				bBoxH = parseInt(bBox.attr("height"));
-				
-				bBoxPoints = [
-								 {"x":bBoxX,"y":bBoxY}				/*top left*/
-								,{"x":bBoxX,"y":bBoxY+bBoxH} 		/*bottom left*/
-								,{"x":bBoxX+bBoxW,"y":bBoxY+bBoxH}	/*bottom right*/
-								,{"x":bBoxX+bBoxW,"y":bBoxY}		/*top right*/
-							];	
-				
-				groupBoundary = targetElement.shape.geom.getBoundary();
-				gEleX = groupBoundary.getUpperLeft()["x"];
-				gEleY = groupBoundary.getUpperLeft()["y"];
-				gEleW = groupBoundary.getWidth();
-				gEleH = groupBoundary.getHeight();
-				gEleXW = gEleX + gEleW;
-				gEleYH = gEleY + gEleH;
-				
-				for(i=0,n=bBoxPoints.length; i<n; i++){
-					if( ((gEleX < bBoxPoints[i]["x"]) && (gEleXW > bBoxPoints[i]["x"]))
-						&& ((gEleY < bBoxPoints[i]["y"]) && (gEleYH > bBoxPoints[i]["y"])) ){
-						filteredIndex.push((i+1)+"");
-					}
-				}
-				
-				if(filteredIndex.length > 0){
-					
-					if(filteredIndex.length > 1){
-						//tow points
-						
-						// move x
-						if(filteredIndex.indexOf("1") > -1 && filteredIndex.indexOf("2") > -1){
-							dx = me._grid(gEleXW - (bBoxW / 2) - start.x + offset["x"], 'move');
-						}else if(filteredIndex.indexOf("3") > -1 && filteredIndex.indexOf("4") > -1){
-							dx = me._grid(gEleX - (bBoxW / 2) - start.x + offset["x"], 'move');
-						}
-						// move y
-						else if(filteredIndex.indexOf("1") > -1 && filteredIndex.indexOf("4") > -1){
-							dy = me._grid(gEleYH - (bBoxH / 2) - start.y + offset["y"], 'move');
-						}else if(filteredIndex.indexOf("2") > -1 && filteredIndex.indexOf("3") > -1){
-							dy = me._grid(gEleY - (bBoxH / 2) - start.y + offset["y"], 'move');
-						}
-					
-					}else{
-						//single point
-						//모서리 처리가 필요하다면...
-					}
-					
-					// move x, y
-				}
+        if(bBoxArray.length == 1){
+            bBox = bBoxArray[0].box;
+            targetElement = $(event.srcElement).parent("g")[0];
 
+            bBox = $(bBox);
+            bBoxX = parseInt(bBox.attr("x")) + dx;
+            bBoxY = parseInt(bBox.attr("y")) + dy;
+            bBoxW = parseInt(bBox.attr("width"));
+            bBoxH = parseInt(bBox.attr("height"));
+
+//             bBoxPoints = [
+//                 {"x":bBoxX,"y":bBoxY}				/*top left*/
+//                 ,{"x":bBoxX,"y":bBoxY+bBoxH} 		/*bottom left*/
+//                 ,{"x":bBoxX+bBoxW,"y":bBoxY+bBoxH}	/*bottom right*/
+//                 ,{"x":bBoxX+bBoxW,"y":bBoxY}		/*top right*/
+//             ];
+
+            var bBoxCenter = {"x" : bBoxX + bBoxW / 2, "y" : bBoxY + bBoxH / 2};
+
+            var neverStickX = true, neverStickY = true;
+
+            for(var i in me._RENDERER._ROOT_GROUP[0].childNodes){
+                var stickElement = me._RENDERER._ROOT_GROUP[0].childNodes[i];
+
+                if(stickElement==element || !stickElement || !stickElement.shape) continue;
+
+
+                groupBoundary = stickElement.shape.geom.getBoundary();
+                gEleX = groupBoundary.getUpperLeft()["x"];
+                gEleY = groupBoundary.getUpperLeft()["y"];
+                gEleW = groupBoundary.getWidth();
+                gEleH = groupBoundary.getHeight();
+                gEleXW = gEleX + gEleW;
+                gEleYH = gEleY + gEleH;
+
+                var centerX = gEleX + gEleW / 2;
+                var centerY = gEleY + gEleH / 2;
+
+                
+                var diffX = Math.abs(centerX - bBoxCenter["x"]);
+                var diffY = Math.abs(centerY - bBoxCenter["y"]);
+
+
+                if(diffX < 5){
+					me._RENDERER.drawStickGuide(stickElement, element, true);
+
+					
+                    dx = me._grid(centerX - bBoxW / 2 - start.x + offset["x"], 'move');
+                    
+                    neverStickX = false;
+                 }
+                    
+                 if(diffY < 5){
+                     me._RENDERER.drawStickGuide(stickElement, element, false);
+
+                     dy = me._grid(centerY - bBoxH / 2 - start.y + offset["y"], 'move');
+                     
+                    neverStickY = false;
+                 }
+
+
+            }
+
+            if(neverStickX){
+            	me._RENDERER.removeStickGuide(true);
 			}
-		} // end if
-		
-		return { "dx":dx, "dy":dy
-				,"attatched": (filteredIndex.length > 0)
-				,"targetId": $(targetElement).attr("id") };
-	},
-	
+
+            if(neverStickY){
+            	me._RENDERER.removeStickGuide(false);
+			}
+
+
+//             if(targetElement && (targetElement.shape instanceof OG.shape.bpmn.ScopeActivity)){
+
+//                 bBox = $(bBox);
+//                 bBoxX = parseInt(bBox.attr("x")) + dx;
+//                 bBoxY = parseInt(bBox.attr("y")) + dy;
+//                 bBoxW = parseInt(bBox.attr("width"));
+//                 bBoxH = parseInt(bBox.attr("height"));
+
+//                 bBoxPoints = [
+//                     {"x":bBoxX,"y":bBoxY}				/*top left*/
+//                     ,{"x":bBoxX,"y":bBoxY+bBoxH} 		/*bottom left*/
+//                     ,{"x":bBoxX+bBoxW,"y":bBoxY+bBoxH}	/*bottom right*/
+//                     ,{"x":bBoxX+bBoxW,"y":bBoxY}		/*top right*/
+//                 ];
+
+//                 groupBoundary = targetElement.shape.geom.getBoundary();
+//                 gEleX = groupBoundary.getUpperLeft()["x"];
+//                 gEleY = groupBoundary.getUpperLeft()["y"];
+//                 gEleW = groupBoundary.getWidth();
+//                 gEleH = groupBoundary.getHeight();
+//                 gEleXW = gEleX + gEleW;
+//                 gEleYH = gEleY + gEleH;
+
+//                 for(i=0,n=bBoxPoints.length; i<n; i++){
+//                     if( ((gEleX < bBoxPoints[i]["x"]) && (gEleXW > bBoxPoints[i]["x"]))
+//                         && ((gEleY < bBoxPoints[i]["y"]) && (gEleYH > bBoxPoints[i]["y"])) ){
+//                         filteredIndex.push((i+1)+"");
+//                     }
+//                 }
+
+//                 if(filteredIndex.length > 0){
+
+//                     if(filteredIndex.length > 1){
+//                         //tow points
+
+//                         // move x
+//                         if(filteredIndex.indexOf("1") > -1 && filteredIndex.indexOf("2") > -1){
+//                             dx = me._grid(gEleXW - (bBoxW / 2) - start.x + offset["x"], 'move');
+//                         }else if(filteredIndex.indexOf("3") > -1 && filteredIndex.indexOf("4") > -1){
+//                             dx = me._grid(gEleX - (bBoxW / 2) - start.x + offset["x"], 'move');
+//                         }
+//                         // move y
+//                         else if(filteredIndex.indexOf("1") > -1 && filteredIndex.indexOf("4") > -1){
+//                             dy = me._grid(gEleYH - (bBoxH / 2) - start.y + offset["y"], 'move');
+//                         }else if(filteredIndex.indexOf("2") > -1 && filteredIndex.indexOf("3") > -1){
+//                             dy = me._grid(gEleY - (bBoxH / 2) - start.y + offset["y"], 'move');
+//                         }
+
+//                     }else{
+//                         //single point
+//                         //모서리 처리가 필요하다면...
+//                     }
+
+//                     // move x, y
+//                 }
+
+ //           }
+        } // end if
+
+        return { "dx":dx, "dy":dy
+            ,"attatched": (filteredIndex.length > 0)
+            ,"targetId": $(targetElement).attr("id") };
+    },
 	/**
 	 * Shape 엘리먼트의 이동 가능여부를 설정한다.
 	 *
@@ -21489,8 +21375,15 @@ OG.handler.EventHandler.prototype = {
 
 					// group target 이 있는 경우 grouping 처리
 					if (groupTarget && OG.Util.isElement(groupTarget)) {
-						// grouping
-						//me._RENDERER.addToGroup(groupTarget, eleArray);
+						if(groupTarget.shape instanceof OG.shape.bpmn.A_Task){
+                            // grouping
+                            for(i=0; i<eleArray.length; i++){
+                                if(eleArray[i].shape instanceof OG.shape.bpmn.E_Start_Timer) {
+                                    groupTarget.appendChild(eleArray[i]);
+                                }
+                            }
+                            //me._RENDERER.addToGroup(groupTarget, eleArray);
+                        }
 						var i, elements=[], count=0, totalHeight=0, right=0, lower=0, titleSize;
 						
 						if(groupTarget.shape.geom.style.map['title-size'])
@@ -25701,12 +25594,12 @@ OG.graph.Canvas = function (container, containerSize, backgroundColor, backgroun
 			TEXT          : { stroke: "none", "text-anchor": "middle" },
 			HTML          : { "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },
 			IMAGE         : { "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },
-			EDGE          : { stroke: "black", fill: "none", "fill-opacity": 0, "stroke-width": 1.5, "stroke-opacity": 1, "edge-type": "plain", "edge-direction": "c c", "arrow-start": "none", "arrow-end": "block-wide-long", "stroke-dasharray": "", "label-position": "center", "stroke-linejoin" : "round" ,cursor: "pointer"},
+			EDGE          : { stroke: "black", fill: "none", "fill-opacity": 0, "stroke-width": 1.5, "stroke-opacity": 1, "edge-type": "plain", "edge-direction": "c c", "arrow-start": "diamond", "arrow-end": "none", "stroke-dasharray": "", "label-position": "center", "stroke-linejoin" : "round" ,cursor: "pointer"},
 			EDGE_SHADOW   : { stroke: "#00FF00", fill: "none", "fill-opacity": 0, "stroke-width": 1, "stroke-opacity": 1, "arrow-start": "none", "arrow-end": "none", "stroke-dasharray": "- ", "edge-type": "plain" ,cursor: "pointer"},
 			EDGE_HIDDEN   : { stroke: "white", fill: "none", "fill-opacity": 0, "stroke-width": 10, "stroke-opacity": 0, cursor: "pointer"},
 			GROUP         : { stroke: "black", fill: "none", "fill-opacity": 0, "label-position": "bottom", "text-anchor": "middle", "vertical-align": "top" },
 			GROUP_HIDDEN  : { stroke: "black", fill: "white", "fill-opacity" :0 , "stroke-opacity": 0 , cursor: "move" },
-			GROUP_SHADOW  : { stroke: "white", fill: "none", "fill-opacity": 0, "stroke-width": 25, "stroke-opacity": 0, cursor: "pointer"},
+			GROUP_SHADOW  : { stroke: "white", fill: "none", "fill-opacity": 0, "stroke-width": 15, "stroke-opacity": 0, cursor: "pointer"},
 			GROUP_SHADOW_MAPPER  : { stroke: "white", fill: "none", "fill-opacity": 0, "stroke-width": 1, "stroke-opacity": 0, cursor: "pointer"},
 			GUIDE_BBOX    : { stroke: "#00FF00", fill: "white", "fill-opacity" :0, "stroke-dasharray": "- ", "shape-rendering": "crispEdges" , cursor: "move"},
 			GUIDE_UL      : { stroke: "#03689a", fill: "#03689a", "fill-opacity" :0.5, cursor: "nwse-resize", "shape-rendering": "crispEdges" },
@@ -25786,8 +25679,6 @@ OG.graph.Canvas.prototype = {
 			this._CONFIG.GROUP_COLLAPSIBLE = config.collapsible === undefined ? this._CONFIG.GROUP_COLLAPSIBLE : config.collapsible;
 			this._CONFIG.ENABLE_HOTKEY = config.enableHotKey === undefined ? this._CONFIG.ENABLE_HOTKEY : config.enableHotKey;
 			this._CONFIG.ENABLE_CONTEXTMENU = config.enableContextMenu === undefined ? this._CONFIG.ENABLE_CONTEXTMENU : config.enableContextMenu;
-            this._CONFIG.DRAG_GRIDABLE = config.dragGridable === undefined ? this._CONFIG.DRAG_GRIDABLE : config.dragGridable;
-
 
 //            this._CONFIG.SELECTABLE = false;
 //			this._CONFIG.DRAG_SELECTABLE = false;

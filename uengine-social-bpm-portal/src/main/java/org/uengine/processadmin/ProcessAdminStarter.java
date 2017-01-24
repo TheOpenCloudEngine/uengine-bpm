@@ -25,18 +25,20 @@ public class ProcessAdminStarter extends StartCodi{
     @Override
     @ServiceMethod(payload={"key","lastVisitPage", "lastVisitValue", "ssoService", "defaultLoadingResourcePath"}, target= ServiceMethodContext.TARGET_APPEND)
     public Object load() throws Exception {
-        if(getDefaultLoadingResourcePath()!=null){
-            TransactionContext.getThreadLocalInstance().setSharedContext(DEFAULT_LOADING_RESOURCE_PATH, getDefaultLoadingResourcePath());
-        }
+        setDefaultLoadingResourcePathToTransactionContext();
 
         return super.load();
     }
 
-    @Override
-    public Object[] login() throws Exception {
-        if(getDefaultLoadingResourcePath()!=null){
+    private void setDefaultLoadingResourcePathToTransactionContext() {
+        if(getDefaultLoadingResourcePath()!=null){//&& !"NONE".equalsIgnoreCase(getDefaultLoadingResourcePath())){
             TransactionContext.getThreadLocalInstance().setSharedContext(DEFAULT_LOADING_RESOURCE_PATH, getDefaultLoadingResourcePath());
         }
+    }
+
+    @Override
+    public Object[] login() throws Exception {
+        setDefaultLoadingResourcePathToTransactionContext();
 
         return super.login();
     }

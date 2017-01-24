@@ -30,7 +30,7 @@ public class ProcessAdminWorkbench extends Workbench {
 
         String defaultLoadingResourcePath = (String) TransactionContext.getThreadLocalInstance().getSharedContext(ProcessAdminStarter.DEFAULT_LOADING_RESOURCE_PATH);
 
-        if(defaultLoadingResourcePath!=null) {
+        if(defaultLoadingResourcePath!=null && !"none".equalsIgnoreCase(defaultLoadingResourcePath)) {
             setDefaultLoadingResource(defaultLoadingResourcePath);
         }
 

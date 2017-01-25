@@ -13,6 +13,19 @@ import org.uengine.util.TreeVisitor;
 public class FlowActivity extends ComplexActivity {
 
 	public static final String UN_COMPLETED_BRANCHES = "unCompletedBranches";
+
+	@Override
+	public void beforeSerialization() {
+		super.beforeSerialization();
+
+		if(sequenceFlows !=null)
+		for(SequenceFlow sequenceFlow : getSequenceFlows()){
+			sequenceFlow.beforeSerialization();
+		}
+	}
+
+
+
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	public ArrayList<SequenceFlow> sequenceFlows;
@@ -70,6 +83,8 @@ public class FlowActivity extends ComplexActivity {
 						}
 					}
 				}
+
+				sequenceFlow.afterDeserialization();
 			}
 		}
 

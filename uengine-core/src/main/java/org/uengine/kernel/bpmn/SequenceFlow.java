@@ -1,5 +1,6 @@
 package org.uengine.kernel.bpmn;
 
+import org.metaworks.annotation.Available;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Id;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SequenceFlow extends Relation implements java.io.Serializable {
+public class SequenceFlow extends Relation implements java.io.Serializable, NeedArrangementToSerialize {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	private String sourceRef;
@@ -46,6 +47,7 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		
 	Condition condition;
     //@Face(faceClass=ConditionFace.class)
+	@Available(condition = "!otherwise")
 		public Condition getCondition() {
 			return condition;
 		}
@@ -53,7 +55,16 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 			this.condition = condition;
 		}
 
-    @Hidden
+	boolean otherwise;
+		public boolean isOtherwise() {
+			return otherwise;
+		}
+		public void setOtherwise(boolean otherwise) {
+			this.otherwise = otherwise;
+		}
+
+
+	@Hidden
 	public Activity getSourceActivity(){
 		return (Activity)this.getSourceElement();
 	}
@@ -169,5 +180,17 @@ public class SequenceFlow extends Relation implements java.io.Serializable {
 		}
 
 		return false;
+	}
+
+	@Override
+	public void beforeSerialization() {
+		if(isOtherwise()){
+			setCondition(new Otherwise());
+		}
+	}
+
+	@Override
+	public void afterDeserialization() {
+
 	}
 }

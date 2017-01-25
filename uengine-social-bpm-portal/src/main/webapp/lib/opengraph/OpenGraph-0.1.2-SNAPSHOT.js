@@ -25867,7 +25867,7 @@ OG.handler.EventHandler.prototype = {
                     return;
                 }
                 if (frontElement.id !== element.id) {
-                    event.stopImmediatePropagation();
+                    //event.stopImmediatePropagation(); // this stops external event installations too.
                     return;
                 }
 

@@ -27,6 +27,8 @@ import org.uengine.kernel.bpmn.face.RolePanel;
 import org.uengine.kernel.face.GenericValueFace;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.ResourceManager;
+import org.uengine.modeling.resource.Version;
+import org.uengine.modeling.resource.VersionManager;
 import org.uengine.uml.model.ClassDefinition;
 import org.uengine.util.UEngineUtil;
 
@@ -517,8 +519,8 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 
 		Class variableType = getType();
 
-		if(getDefaultValue()!=null)
-			return (Serializable) getDefaultValue();
+//		if(getDefaultValue()!=null)
+//			return (Serializable) getDefaultValue();
 
 		if ((variableType == ComplexType.class || variableType == null) && typeClassName!=null){
 			if(typeClassName.indexOf("/") > 0) {
@@ -528,8 +530,12 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 				ClassDefinition classDefinition = null;
 				try {
 
+					VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+					versionManager.setAppName("codi");
+					String resourcePath = versionManager.getProductionResourcePath(getTypeClassName());
+
 					///// Need to be cached.
-					classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(getTypeClassName()));
+					classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(resourcePath));
 
 					processVariableValue = classDefinition.createObjectInstance();
 				} catch (Exception e) {

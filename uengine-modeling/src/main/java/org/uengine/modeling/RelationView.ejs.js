@@ -214,6 +214,7 @@ org_uengine_modeling_RelationView.prototype = {
             }
 
         }catch(e){}
+
         $(this.element).bind(name + '.' + this.objectId, {objectId: this.objectId}, function (event, ui) {
             $('#' + mw3._getObjectDivId(event.data.objectId)).trigger(event.type);
         });

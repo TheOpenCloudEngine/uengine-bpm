@@ -165,9 +165,19 @@ public class EditorPanel implements ContextAware {
 
 	protected ResourceNavigator refreshNavigator(String appName) {
 		ResourceNavigator resourceNavigator = new ResourceNavigator();
+
+		MetaworksRemoteService.autowire(resourceNavigator);
+
 		resourceNavigator.setRoot(new ContainerResource());
 		resourceNavigator.getRoot().setPath(appName);
 		resourceNavigator.setRootPath(appName);
+
+		MetaworksRemoteService.autowire(resourceNavigator.getRoot());
+		try {
+			((ContainerResource)resourceNavigator.getRoot()).refresh();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return resourceNavigator;
 	}

@@ -315,7 +315,7 @@ public class SimpleVersionManager implements VersionManager{
             String prefixCandidate = getAppName() + "/";
 
             if (resourcePath.startsWith(prefixCandidate)) {
-                return resourcePath.substring(prefixCandidate.length()-1);
+                return resourcePath.substring(prefixCandidate.length());
             }
         }
 

@@ -1,5 +1,6 @@
 package org.uengine.modeling;
 
+import org.metaworks.MetaworksContext;
 import org.metaworks.Refresh;
 import org.metaworks.Remover;
 import org.metaworks.ServiceMethodContext;
@@ -24,6 +25,8 @@ public class RelationPropertiesView extends ModalWindow {
     public RelationPropertiesView(RelationView relationView) {
         this.setRelationView(relationView);
         setPanel(this.getRelationView().getRelation());
+        setMetaworksContext(new MetaworksContext());
+        getMetaworksContext().setWhen(MetaworksContext.WHEN_EDIT);
     }
 
     @ServiceMethod(callByContent = true, target= ServiceMethodContext.TARGET_APPEND)

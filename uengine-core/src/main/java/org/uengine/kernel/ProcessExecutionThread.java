@@ -4,6 +4,7 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.integration.channel.ExecutorChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class ProcessExecutionThread {
             Thread.sleep(5000);
 
             // forward the message
-            QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannelFor" + getClass().getSimpleName(), QueueChannel.class);
+            ExecutorChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannelFor" + getClass().getSimpleName(), ExecutorChannel.class);
 
             int count = 0;
 
@@ -107,7 +108,7 @@ public class ProcessExecutionThread {
 
     public void queue(String instanceId, String tracingTag, int retryingCount, String[] additionalParameters){
 
-        QueueChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannelFor" + getClass().getSimpleName(), QueueChannel.class);
+        ExecutorChannel inputChannel = MetaworksRemoteService.getInstance().getBeanFactory().getBean("inputChannelFor" + getClass().getSimpleName(), ExecutorChannel.class);
 
         String[] newArray;
         if(additionalParameters!=null && additionalParameters.length>0){

@@ -1,6 +1,7 @@
 package org.uengine.kernel;
 
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -76,6 +77,15 @@ public class ProcessExecutionThread {
             try {
 
                 Activity act = instance.getProcessDefinition().getActivity(tracingTagAndInstanceIdArr[0]);
+
+                //set the tenant id
+                if(instance.getRootProcessInstance().getLocalInstance() instanceof EJBProcessInstance) {
+                    EJBProcessInstance ejbProcessInstance = (EJBProcessInstance) instance.getRootProcessInstance().getLocalInstance();
+                    String initCompanyCode = (String)ejbProcessInstance.getProcessInstanceDAO().getInitComCd();
+                    if (initCompanyCode != null) {
+                        new TenantContext(initCompanyCode);
+                    }
+                }
 
                 logic(instance, act, tracingTagAndInstanceIdArr);
 

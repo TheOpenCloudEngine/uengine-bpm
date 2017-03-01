@@ -117,4 +117,7 @@ public interface ProcessInstanceRepositoryLocal extends javax.ejb.EJBLocalObject
 	
 	public Number getStrategyId();
 	public void setStrategyId(Number strategyId);
+
+	public String getInitComCd();
+	public void setInitComCd(String initComCd);
 }

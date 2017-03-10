@@ -726,9 +726,14 @@ public class DefaultProcessInstance extends AbstractProcessInstance{
 			indexedProcessVariableMap.putProcessVariable(0, sourceValue);
 		}
 
-		indexedProcessVariableMap.putProcessVariable(index, val);
+		sourceValue = (indexedProcessVariableMap.getProcessVariableAt(index));
+		if(sourceValue instanceof VariablePointer){
+			((VariablePointer) sourceValue).setValue(this, val);
+		}else {
 
-		setSourceValue(scopeByTracingTag, key, indexedProcessVariableMap);
+			indexedProcessVariableMap.putProcessVariable(index, val);
+			setSourceValue(scopeByTracingTag, key, indexedProcessVariableMap);
+		}
 	}
 
 	@Override

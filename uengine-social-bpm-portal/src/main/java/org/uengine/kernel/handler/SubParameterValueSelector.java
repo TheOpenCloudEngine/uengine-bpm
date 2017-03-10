@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by jangjinyoung on 2016. 12. 29..
  */
-public class SubParamaterValueSelector{
+public class SubParameterValueSelector {
 
     SortableListGroup valueSelector;
         public SortableListGroup getValueSelector() {

@@ -4,7 +4,12 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
     this.objectId = objectId;
     this.className = className;
     this.object = mw3.objects[this.objectId];
-    this.__className = this.object.element.__className;
+
+    //if(!this.object.element) {throw new Error("No element data for ElementView.");}
+
+    if(this.object.element)
+        this.__className = this.object.element.__className;
+
     this.objectDivId = mw3._getObjectDivId(this.objectId);
     this.objectDiv = $(document.getElementById(this.objectDivId));
     if (!this.object) return true;

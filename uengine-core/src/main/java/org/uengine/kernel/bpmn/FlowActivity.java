@@ -204,6 +204,12 @@ public class FlowActivity extends ComplexActivity {
 
 		if (command.equals(CHILD_DONE)) {
 
+			//if adhoc instance, don't continue to execute process
+			Boolean adhoc = (Boolean) instance.getProperty("","__adhoc");
+			if(adhoc!=null && adhoc) return;
+			//end
+
+
 			// when we finish??
 			// boolean stillRunning = false;
 			Activity currentActivity = (Activity) payload;

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by jangjinyoung on 2016. 12. 29..
  */
-public class SubParamaterValueSelector{
+public class SubParameterValueSelector {
 
     SortableListGroup valueSelector;
         public SortableListGroup getValueSelector() {
@@ -103,7 +103,7 @@ public class SubParamaterValueSelector{
         final ProcessVariable processVariable = processInstance.getProcessDefinition().getProcessVariable(variableName);
 
 
-        SortableList subValueSortableList = getValueSelector().getSortableLists().get(0);
+        SortableList subValueSortableList = getValueSelector().getSortableLists().get(1); //the selected values must be the sub process values
 
         if(subValueSortableList!=null && subValueSortableList.getElements()!=null && subValueSortableList.getElements().size() > 0) {
 

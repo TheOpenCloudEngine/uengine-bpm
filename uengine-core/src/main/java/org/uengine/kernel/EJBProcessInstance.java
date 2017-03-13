@@ -828,10 +828,14 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 	public Map getAll(String scope) throws Exception {
 
-		if(fileBasedPersistence)
-			return getAllFile();
-		else
-			return getProcessVariableDAOFacade().getAll(getInstanceId());
+		beginCaching("", "", false);
+
+		return variables;
+
+//		if(fileBasedPersistence)
+//			return getAllFile();
+//		else
+//			return getProcessVariableDAOFacade().getAll(getInstanceId());
 	}
 
 	public String getStatus(String scope) throws Exception{

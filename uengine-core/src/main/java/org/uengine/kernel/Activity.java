@@ -1013,6 +1013,11 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 			}
 		}
 
+
+		if(status==null)
+			status = STATUS_READY;
+
+
 		if(STATUS_READY.equals(status)){
 			ExecutionScopeContext escTree = instance.getExecutionScopeContextTree(instance.getExecutionScopeContext()!=null ? instance.getExecutionScopeContext().getExecutionScope(): null);
 
@@ -1087,8 +1092,6 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 //			}
 //		}
 		
-		if(status==null)
-			status = STATUS_READY;
 
 		return status;
 	}

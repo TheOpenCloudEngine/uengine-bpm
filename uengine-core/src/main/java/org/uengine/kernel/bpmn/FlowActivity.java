@@ -141,6 +141,9 @@ public class FlowActivity extends ComplexActivity {
 					continue;
 				}
 
+				if(!getProcessDefinition().isRunAllStartableActivities() && !(child instanceof StartEvent))
+					continue;
+
 				startActivities.add(child);
 			}
 		}

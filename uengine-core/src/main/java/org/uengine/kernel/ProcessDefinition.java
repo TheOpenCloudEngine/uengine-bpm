@@ -144,6 +144,15 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 		}
 
 
+	boolean runAllStartableActivities;
+		public boolean isRunAllStartableActivities() {
+			return runAllStartableActivities;
+		}
+		public void setRunAllStartableActivities(boolean runAllStartableActivities) {
+			this.runAllStartableActivities = runAllStartableActivities;
+		}
+
+
 	String defaultFlowchartViewType = "swimlane";
 		public String getDefaultFlowchartViewType() {
 			return defaultFlowchartViewType;

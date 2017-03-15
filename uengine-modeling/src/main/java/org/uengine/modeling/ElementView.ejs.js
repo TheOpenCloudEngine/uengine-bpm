@@ -46,7 +46,7 @@ var org_uengine_modeling_ElementView = function (objectId, className) {
 
 
     this.getLabel = function () {
-        if (this.object.element && this.object.element.name)
+        if (!this.object.label && this.object.element && this.object.element.name)
             this.object.label = this.object.element.name;
         //mw3.getObjectNameValue(this.object.element, true);
 

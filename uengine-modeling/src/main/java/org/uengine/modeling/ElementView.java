@@ -8,7 +8,7 @@ import org.metaworks.*;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.ServiceMethod;
-import org.metaworks.widget.ModalWindow;
+import org.metaworks.dao.TransactionContext;
 
 /**
  * @author jyj
@@ -267,6 +267,8 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
 
     @ServiceMethod(callByContent = true, eventBinding = EventContext.EVENT_DBLCLICK, target = ServiceMethodContext.TARGET_POPUP)
     public Object showProperty() throws Exception {
+
+        TransactionContext.getThreadLocalInstance().setMW3FaceOptionEnabled(true);
 
         if(elementViewActionDelegate!=null){
             elementViewActionDelegate.onDoubleClick(this);

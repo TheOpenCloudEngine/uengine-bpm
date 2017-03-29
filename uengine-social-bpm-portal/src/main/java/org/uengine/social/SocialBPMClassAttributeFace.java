@@ -12,7 +12,7 @@ import org.uengine.uml.model.face.AttributeTypeSelector;
  * Created by jangjinyoung on 15. 9. 4..
  */
 @Component
-@Scope("prototype")
+@Scope("request")
 public class SocialBPMClassAttributeFace extends AttributeTypeSelector {
 
     ProcessAdminResourceNavigator processAdminResourceNavigator;
@@ -35,6 +35,7 @@ public class SocialBPMClassAttributeFace extends AttributeTypeSelector {
         getOptionNames().add("Long Text");
         getOptionValues().add(WebEditor.class.getName());
 
+       // if(getProcessAdminResourceNavigator()==null)
         setProcessAdminResourceNavigator(new ProcessAdminResourceNavigator());
     }
 

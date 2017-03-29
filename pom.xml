@@ -23,6 +23,7 @@
 	  <module>bpmn-model</module>
 	  <module>uengine-client-example</module>
 	  <module>uengine-social-bpm-portal</module>
+ 	  <module>uengine-persistence-couchbase</module>
   </modules>
 
 
@@ -50,6 +51,18 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+
 
 	</repositories>
 

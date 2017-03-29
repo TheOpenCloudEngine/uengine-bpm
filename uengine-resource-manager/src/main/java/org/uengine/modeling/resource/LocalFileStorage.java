@@ -19,25 +19,7 @@ import java.util.List;
  * Created by jangjinyoung on 15. 7. 12..
  */
 @Component
-public class LocalFileStorage implements Storage{
-
-    String localBasePath;
-        public String getLocalBasePath() {
-            return localBasePath;
-        }
-        public void setLocalBasePath(String localBasePath) {
-            this.localBasePath = localBasePath;
-        }
-
-
-    boolean doNotOverwrite;
-        public boolean isDoNotOverwrite() {
-            return doNotOverwrite;
-        }
-        public void setDoNotOverwrite(boolean doNotOverwrite) {
-            this.doNotOverwrite = doNotOverwrite;
-        }
-
+public class LocalFileStorage extends AbstractStorage{
 
     @Override
     public void delete(IResource fileResource) throws IOException {
@@ -167,15 +149,6 @@ public class LocalFileStorage implements Storage{
                 + fileResource.getPath());
     }
 
-    private String getTenantBasePath() {
-        String tenantId = TenantContext.getThreadLocalInstance().getTenantId();
-
-        if(tenantId==null){
-            tenantId = "default";
-        }
-
-        return getLocalBasePath() + "/" + tenantId + "/";
-    }
 
     @Override
     public void move(IResource src, IContainer container) throws IOException {

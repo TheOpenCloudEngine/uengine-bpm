@@ -11,7 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.contexts.ComplexType;
+import org.uengine.modeling.resource.DefaultResource;
+import org.uengine.modeling.resource.IResource;
+import org.uengine.modeling.resource.ResourceManager;
 import org.uengine.persistence.dao.UniqueKeyGenerator;
 import org.uengine.persistence.processinstance.ProcessInstanceDAO;
 import org.uengine.persistence.processinstance.ProcessInstanceDAOType;
@@ -51,10 +55,10 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	Map cachedRoleMappings;
 	//
 
+	private boolean fileBasedPersistence = GlobalContext.getPropertyString("persistence.file-based", "true").equals("true");
+
 	//for caching
 	boolean caching;
-	private boolean fileBasedPersistence = GlobalContext.getPropertyString("persistence.file-based", "false").equals("true");
-
 	public boolean isCaching() {
 		return caching;
 	}
@@ -303,7 +307,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		if(modifiedKeyMap!=null){
 
 			if(fileBasedPersistence) {
-				setProcessVariablesFile(getVariables());
+				setProcessVariablesToFile(getVariables());
 			}else {
 				/*DB based.*/
 
@@ -544,7 +548,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		if(fileBasedPersistence) {
 			if(!isBatch)
-				setProcessVariablesFile(createFullKey(scopeByTracingTag, key, isProperty), val);
+				setProcessVariablesToFile(createFullKey(scopeByTracingTag, key, isProperty), val);
 		}else {
 
 
@@ -622,22 +626,11 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 					//20130815 var filePath save
 
 					if(fileBasedPersistence){ //file based variable persistence is disabled for concurrent variable data change.
-						Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
-						Calendar cal = Calendar.getInstance();
-						cal.setTime(starteddate);
-						String calendarDirectory = cal.get(Calendar.YEAR)
-								+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
-								+ cal.get(Calendar.DAY_OF_MONTH);
 
-						String filePath =GlobalContext.FILE_SYSTEM_PATH + (GlobalContext.FILE_SYSTEM_PATH.endsWith("/") ? "" : "/") + calendarDirectory +"/vars_" + getInstanceId() + ".json";
+						Map fileVariables = getAllFromFile();
+						fileVariables.putAll(variables);
 
-
-						File varFile = new File(filePath);
-						if (varFile.exists()) {
-							Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
-							fileVariables.putAll(variables);
-							variables = fileVariables;
-						}
+						variables = fileVariables;
 
 					} else {
 
@@ -761,7 +754,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			}
 
 			if(sourceValue==null)
-				sourceValue = getFile(scopeByTracingTag, key, firstPart, isProperty);
+				sourceValue = getFromFile(scopeByTracingTag, key, firstPart, isProperty);
 
 			if(sourceValue == null){
 				ProcessDefinition pd = getProcessDefinition();
@@ -833,7 +826,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		return variables;
 
 //		if(fileBasedPersistence)
-//			return getAllFile();
+//			return getAllFromFile();
 //		else
 //			return getProcessVariableDAOFacade().getAll(getInstanceId());
 	}
@@ -1392,29 +1385,17 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		}
 	}
 
-	private void setProcessVariablesFile (Map modifiedVariables) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(starteddate);
-		String calendarDirectory = cal.get(Calendar.YEAR)
-				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
-				+ cal.get(Calendar.DAY_OF_MONTH);
-		String filePath = GlobalContext.FILE_SYSTEM_PATH + (GlobalContext.FILE_SYSTEM_PATH.endsWith("/") ? "" : "/")  + calendarDirectory ;
+	private void setProcessVariablesToFile(Map modifiedVariables) throws FileNotFoundException, Exception {
+		String filePath = getSaveFilePath();
 
-		File newFile = new File(filePath);
-		File dir = newFile.getParentFile();
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-		if (!newFile.exists()) {
-			newFile.mkdirs();
-		}
+		ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
-		File varFile = new File(filePath +"/vars_"+getInstanceId() + ".json");
+		IResource resource = new DefaultResource(filePath);
+
 		Map procVars = null;
 
-		if ( varFile.exists() ) {
-			procVars = (Map) GlobalContext.deserialize(new FileInputStream(varFile), Object.class);
+		if ( resourceManager.exists(resource) ) {
+			procVars = (Map) resourceManager.getObject(resource);
 		} else {
 			DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
 			procVars = shotProcessInstance.variables;
@@ -1422,135 +1403,91 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 		procVars.putAll(modifiedVariables);
 
-		GlobalContext.serialize(procVars,new FileOutputStream(filePath +"/vars_"+getInstanceId() + ".json"), Object.class);
+		resourceManager.save(resource, procVars);
+
 	}
 
-	private void setProcessVariablesFile (String key, Serializable val) throws FileNotFoundException, Exception {
+	private void setProcessVariablesToFile(String key, Serializable val) throws FileNotFoundException, Exception {
+		Map change = new HashMap();
+		change.put(key, val);
+		setProcessVariablesToFile(change);
+	}
+
+	private String getSaveFilePath() throws Exception {
 		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(starteddate);
 		String calendarDirectory = cal.get(Calendar.YEAR)
 				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
 				+ cal.get(Calendar.DAY_OF_MONTH);
-		String filePath = GlobalContext.FILE_SYSTEM_PATH + (GlobalContext.FILE_SYSTEM_PATH.endsWith("/") ? "" : "/")  + calendarDirectory ;
+		String folder =  GlobalContext.FILE_SYSTEM_PATH + (GlobalContext.FILE_SYSTEM_PATH.endsWith("/") ? "" : "/")  + calendarDirectory;
 
-		File newFile = new File(filePath);
-		File dir = newFile.getParentFile();
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-		if (!newFile.exists()) {
-			newFile.mkdirs();
-		}
-
-		File varFile = new File(filePath +"/vars_"+getInstanceId() + ".json");
-		Map procVars = null;
-
-		if ( varFile.exists() ) {
-			procVars = (Map) GlobalContext.deserialize(new FileInputStream(varFile), Object.class);
-		} else {
-			DefaultProcessInstance shotProcessInstance = getProcessVariableDAOFacade().getAllVariablesAsDefaultProcessInstance(getInstanceId());
-			procVars = shotProcessInstance.variables;
-		}
-
-		if(val != null){
-			procVars.put(key, val);
-		}
-
-		GlobalContext.serialize(procVars,new FileOutputStream(filePath +"/vars_"+getInstanceId() + ".json"), Object.class);
+		return folder +"/vars_"+getInstanceId() + ".json";
 	}
 
-	private Map getAllFile() throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(starteddate);
-		String calendarDirectory = cal.get(Calendar.YEAR)
-				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
-				+ cal.get(Calendar.DAY_OF_MONTH);
-		String filePath = GlobalContext.FILE_SYSTEM_PATH + calendarDirectory ;
+	private Map getAllFromFile() throws FileNotFoundException, Exception {
+		ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
-		File varFile = new File(filePath +"/vars_"+getInstanceId() + ".json");
-		Map procVars = null;
+		IResource resource = new DefaultResource(getSaveFilePath());
 
-		if (varFile.exists()) {
-			return (Map) GlobalContext.deserialize(new FileInputStream(varFile), Object.class);
+		if ( resourceManager.exists(resource) ) {
+			return (Map) resourceManager.getObject(resource);
+		}else{
+			return new HashMap(); // return empty one
 		}
-		else
-			return getProcessVariableDAOFacade().getAll(getInstanceId());
 	}
 
 	private ProcessVariableValue getMultipeFromFile(String scopeByTracingTag, String key) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(starteddate);
-		String calendarDirectory = cal.get(Calendar.YEAR)
-				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
-				+ cal.get(Calendar.DAY_OF_MONTH);
+		Map fileVariables = getAllFromFile();
 
-		String filePath =GlobalContext.FILE_SYSTEM_PATH +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
-		File varFile = new File(filePath);
-		if (varFile.exists()) {
-			Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
+		Object originalValue = fileVariables.get(createFullKey(scopeByTracingTag, key, false));
 
-			Object originalValue = fileVariables.get(createFullKey(scopeByTracingTag, key, false));
+		if(originalValue instanceof IndexedProcessVariableMap) {
+			IndexedProcessVariableMap ipvm = (IndexedProcessVariableMap) originalValue;
 
-			if(originalValue instanceof IndexedProcessVariableMap) {
-				IndexedProcessVariableMap ipvm = (IndexedProcessVariableMap) originalValue;
+			if (ipvm != null) {
 
-				if (ipvm != null) {
-
-					int maxIndex = ipvm.getMaxIndex();
-					ProcessVariableValue pvv = new ProcessVariableValue();
-					for (int i = 0; i < maxIndex + 1; i++) {
-						Serializable value = ipvm.getProcessVariableAt(i);
-						pvv.setValue(value);
-						pvv.moveToAdd();
-					}
-					pvv.beforeFirst();
-					if (pvv.size() == 0 || (pvv.size() == 1 && pvv.getValue() == null)) {
-						try {
-							Serializable value = (Serializable) getProcessDefinition().getProcessVariable(key).getDefaultValue();
-							pvv.setValue(value);
-
-							return pvv;
-						} catch (Exception e) {
-						}
-					}
-
-					return pvv;
-				} else {
-					//				ProcessVariableValue pvv = new ProcessVariableValue();
-					//				pvv.setName(key);
-
-					return null;
-				}
-			}else{
-
+				int maxIndex = ipvm.getMaxIndex();
 				ProcessVariableValue pvv = new ProcessVariableValue();
-				pvv.setValue(originalValue);
+				for (int i = 0; i < maxIndex + 1; i++) {
+					Serializable value = ipvm.getProcessVariableAt(i);
+					pvv.setValue(value);
+					pvv.moveToAdd();
+				}
+				pvv.beforeFirst();
+				if (pvv.size() == 0 || (pvv.size() == 1 && pvv.getValue() == null)) {
+					try {
+						Serializable value = (Serializable) getProcessDefinition().getProcessVariable(key).getDefaultValue();
+						pvv.setValue(value);
+
+						return pvv;
+					} catch (Exception e) {
+					}
+				}
 
 				return pvv;
+			} else {
+				//				ProcessVariableValue pvv = new ProcessVariableValue();
+				//				pvv.setName(key);
+
+				return null;
 			}
+		}else{
+
+			ProcessVariableValue pvv = new ProcessVariableValue();
+			pvv.setValue(originalValue);
+
+			return pvv;
 		}
 
-		return getProcessVariableDAOFacade().getAsProcessVariableValue(getInstanceId(), scopeByTracingTag, key);
 	}
-	private Serializable getFile(String scopeByTracingTag, String key, String firstPart, boolean isProperty) throws FileNotFoundException, Exception {
-		Date starteddate = (Date)getProcessInstanceDAO().get("STARTEDDATE");
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(starteddate);
-		String calendarDirectory = cal.get(Calendar.YEAR)
-				+ "/" + (cal.get(Calendar.MONTH) + 1) + "/"
-				+ cal.get(Calendar.DAY_OF_MONTH);
 
-		String filePath =GlobalContext.FILE_SYSTEM_PATH +"/"+ calendarDirectory +"/vars_" + getInstanceId() + ".json";
-		File varFile = new File(filePath);
+
+	private Serializable getFromFile(String scopeByTracingTag, String key, String firstPart, boolean isProperty) throws FileNotFoundException, Exception {
+
 		Serializable sourceValue;
-		if (varFile.exists()) {
-			Map fileVariables = (Map) GlobalContext.deserialize(new FileInputStream(filePath), Object.class);
-			sourceValue = (Serializable)fileVariables.get(createFullKey(scopeByTracingTag, key, isProperty));
-		} else
-			sourceValue = getProcessVariableDAOFacade().get(getInstanceId(), scopeByTracingTag, firstPart);
+		Map fileVariables = getAllFromFile();
+		sourceValue = (Serializable)fileVariables.get(createFullKey(scopeByTracingTag, key, isProperty));
 
 		return sourceValue;
 	}

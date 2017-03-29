@@ -28,7 +28,7 @@ public class LocalFileStorageTest {
 
         localFileStorage = new LocalFileStorage();
         localFileStorage.setDoNotOverwrite(false);
-        localFileStorage.setLocalBasePath("./target/resource_framework_test_disposable");
+        localFileStorage.setBasePath("./target/resource_framework_test_disposable");
 
         resourceManager = new ResourceManager();
         resourceManager.setStorage(localFileStorage);

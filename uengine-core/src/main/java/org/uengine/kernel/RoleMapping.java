@@ -1,5 +1,7 @@
 package org.uengine.kernel;
 
+import org.metaworks.annotation.Hidden;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
@@ -414,6 +416,7 @@ public class RoleMapping implements java.io.Serializable, Cloneable, CommandVari
     	
 
 // for serialization by XMLEncoder/Decoder. don't use it directly.
+	@Hidden //to prevent a recursive face rendering at the client. - https://github.com/TheOpenCloudEngine/essencia/issues/34
 	public ArrayList getMultipleMappings() {
 		if(isSingle) return null;
 		return multipleMappings;

@@ -193,19 +193,10 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 		try{
 			if(activity.isQueuingEnabled() || forceToQueue){
 
+				//trigger the next activity step after finishing the transaction (afterCommit)
 				getProcessTransactionContext().addTransactionListener(new TransactionListener() {
 
 					String instanceIdAndExecutionScopeThatTime = getFullInstanceId(); //since that time, the executionscope is different than the transaction listener is triggered.
-
-					@Override
-					public void beforeCommit(TransactionContext tx) throws Exception {
-
-					}
-
-					@Override
-					public void beforeRollback(TransactionContext tx) throws Exception {
-
-					}
 
 					@Override
 					public void afterCommit(TransactionContext tx) throws Exception {
@@ -213,9 +204,11 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 					}
 
 					@Override
-					public void afterRollback(TransactionContext tx) throws Exception {
-
-					}
+					public void beforeCommit(TransactionContext tx) throws Exception {}
+					@Override
+					public void beforeRollback(TransactionContext tx) throws Exception {}
+					@Override
+					public void afterRollback(TransactionContext tx) throws Exception {}
 				});
 
 			}else {

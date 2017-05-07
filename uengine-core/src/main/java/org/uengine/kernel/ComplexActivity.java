@@ -385,271 +385,37 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 
 	//end
 
-	protected void queueActivity(final Activity act, ProcessInstance instance_) throws Exception{
-		//review: instance.setStatus() is moved to instance.execute() because it should be located in the same thread of instance.execute()
-		//	Because sometimes the instance.fireComplete() is invoked during the status is being set, that causes some inconsistence states.  
-		//		instance.setStatus(act.getTracingTag(), STATUS_RUNNING);
-
-		//		if(act.isBackwardActivity()) return; //ban to execute backward activities anyhow.
-
-		final ProcessInstance finalInstance = instance_;
-
-		//get defaults
-		boolean use_jms = USE_JMS;
-		boolean use_thread = USE_THREAD;
-
-		//override 1
-		String queuingMechanism = getProcessDefinition().getQueuingMechanism(finalInstance);
-		if(queuingMechanism!=null){
-			if(queuingMechanism.equals(ProcessDefinition.QUEUINGMECH_JMS)){
-				use_jms = true;
-			}else if(queuingMechanism.equals(ProcessDefinition.QUEUINGMECH_SYNC)){
-				use_jms = false;
-				use_thread = false;
-			}
-		}
-
-		//Temporal
-		act.setQueuingEnabled(false);
-
-		//override 2
-		if(act.isQueuingEnabled()){
-			use_jms = true;
-		}
-
-		if(!GlobalContext.useEJB && use_jms){
-			use_jms = false;
-			use_thread = true;
-		}
+	protected void queueActivity(final Activity act, ProcessInstance instance) throws Exception{
 
 		try{
-			if(use_jms){
-				WorkProcessorBean.queueActivity(act, finalInstance);
+			final String instanceId = instance.getInstanceId();
 
-				/*}else if (use_thread){
-				new Thread(){
-					public void run(){
-						try{
-							finalInstance.execute(act.getTracingTag());
-						}catch(Exception e){
-							e.printStackTrace();
-							try {
-								fireFault(finalInstance, e);
-							} catch (Exception e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						}
-					}
-				}.start();*/
-			}else{
-				final String instanceId = finalInstance.getInstanceId();
+			long timeInMillis_start = System.currentTimeMillis();
 
-				final Thread runner = new Thread(){
-
-					public void run() {
-						boolean success = false;
-						int maxRetry = (act.isQueuingEnabled() ? act.getRetryLimit() : 1);
-						for(int retCnt = -1; !success && retCnt < maxRetry; retCnt ++){
-							if(retCnt > 0)
-								try {
-									sleep(act.getRetryDelay() * 1000);
-								} catch (InterruptedException e5) {
-									e5.printStackTrace();
-								}
-
-							final boolean isRetrying = (retCnt > 0 && retCnt < maxRetry-1);
-
-							//to separate the transactions
-
-							ProcessManagerFactoryBean pmfb = new ProcessManagerFactoryBean();
-							ProcessManagerRemote pm = null;
-							ProcessInstance instance = null;
-
-							try{
-
-//								if(act.isQueuingEnabled()){
-//									pm = pmfb.getProcessManager();
-//									instance = pm.getProcessInstance(instanceId);
-//								}else{
-									instance = finalInstance;
-//								}
-
-								long timeInMillis_start = System.currentTimeMillis();
-
-								System.out.println("- [uEngine] Start Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ")");
+			System.out.println("- [uEngine] Start Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ")");
 
 
-								instance.execute(act.getTracingTag());
+			instance.execute(act.getTracingTag());
 
-								long elapsedTime = (System.currentTimeMillis() - timeInMillis_start);
+			long elapsedTime = (System.currentTimeMillis() - timeInMillis_start);
 
-								PrintStream logWriter = (elapsedTime < ERROR_LEVEL_TIMEINMS ? System.out : System.err);
+			PrintStream logWriter = (elapsedTime < ERROR_LEVEL_TIMEINMS ? System.out : System.err);
 
-								logWriter.println("- [uEngine] End Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ") - Elapsed Time : " + elapsedTime);
+			logWriter.println("- [uEngine] End Executing Activity: " + act.getName() + " (" + act.getTracingTag() + ") - Elapsed Time : " + elapsedTime);
 
-								if(pm!=null)
-									pm.applyChanges();
-
-								success = true;
-
-							}catch(Exception e){
-
-								UEngineException ue = null;
-								if(!(e instanceof UEngineException)){
-									ByteArrayOutputStream bao = new ByteArrayOutputStream();
-									e.printStackTrace(new PrintStream(bao));
-									try{
-										ue = new UEngineException("uEngine Exception: " + e + "("+e.getMessage()+")", e);
-										ue.setDetails(bao.toString());
-									}catch(Exception e3){
-										e3.printStackTrace();
-									}
-
-								}else
-									ue = (UEngineException)e;
-
-								if(GlobalContext.useEJB)
-									WorkProcessorBean.fireFault(instance, act.getTracingTag(), ue);
-								else{
-
-									final UEngineException finalUE = ue;
-
-									/**
-									 * run it after roll-back the main transaction to prevent that the fault marking job
-									 * would be rolled back as well.
-									 */
-									instance.getProcessTransactionContext().addTransactionListener(new TransactionListener(){
-
-										public void beforeCommit(TransactionContext tx) throws Exception {
-											// TODO Auto-generated method stub
-
-										}
-
-										public void beforeRollback(TransactionContext tx) throws Exception {
-											// TODO Auto-generated method stub
-
-										}
-
-										public void afterCommit(TransactionContext tx) throws Exception {
-											afterRollback(tx);
-
-										}
-
-										public void afterRollback(TransactionContext tx) throws Exception {
-
-											System.out.println();
-
-//											Thread faultMarker = new Thread(){
-//
-//												public void run() {
-//													ProcessManagerFactoryBean pmfb = new ProcessManagerFactoryBean();
-//													ProcessManagerRemote pm = null;
-//													ProcessInstance instanceForFaultMarking = null;
-//
-//													try{
-//														pm = pmfb.getProcessManager();
-//														instanceForFaultMarking = pm.getProcessInstance(instanceId);
-//														try{
-//															//String oldStatus = act.getStatus(instanceForFaultMarking);
-//
-//															act.fireFault(instanceForFaultMarking, finalUE);
-//
-//															if(isRetrying){//Activity.STATUS_RETRYING.equals(oldStatus)){
-//																act.setStatus(instanceForFaultMarking, Activity.STATUS_RETRYING);
-//															}
-//
-//														}catch(Exception e){
-//															throw new RuntimeException(e);
-//															//e.printStackTrace();
-//														}
-//														pm.applyChanges();
-//													} catch (Exception e1) {
-//														if(pm!=null)
-//															try {
-//																pm.cancelChanges();
-//															} catch (RemoteException e) {
-//																// TODO Auto-generated catch block
-//																e.printStackTrace();
-//															}
-//
-//													} finally{
-//														try {
-//															pm.remove();
-//														} catch (RemoteException e2) {
-//															// TODO Auto-generated catch block
-//															e2.printStackTrace();
-//														} catch (RemoveException e2) {
-//															// TODO Auto-generated catch block
-//															e2.printStackTrace();
-//														}
-//													}
-//
-//												}
-//
-//											};
-//
-//											//faultMarker.run();
-//											faultMarker.start(); //run it in a different thread if you want to make sure to separate the transaction.
-
-										}
-
-									});
-								}
-
-
-								if(instance.getProcessTransactionContext().getSharedContext("faultTolerant")==null){
-
-									UEngineException richException = new UEngineException(e.getMessage(), null, e, instance, act);
-									throw new RuntimeException(richException);
-								}
-
-								if(pm!=null){
-									try {
-										pm.cancelChanges();
-									} catch (RemoteException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-								}
-							}finally{
-								if(pm!=null)
-									try {
-										pm.remove();
-									} catch (RemoteException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									} catch (RemoveException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-							}//end of try
-						}//end of for-loop
-					}//end of method run()
-
-				};//end of Thread runner
-
-				runner.run();
-
-
-
-
-			}
 
 		}catch(Exception e){
 
-			fireFault(finalInstance, e);
+			fireFault(instance, e);
 
-			if(instance_.getProcessTransactionContext().getSharedContext("faultTolerant")==null) {
-
-				//(new FaultMarker()).queue(instance_.getInstanceId(), act.getTracingTag());
+			if(instance.getProcessTransactionContext().getSharedContext("faultTolerant")==null) {
 
 				throw e;
 
 			}
 		}finally{
 			if(act.isFaultTolerant()){
-				onEvent(CHILD_DONE, finalInstance, act);
+				onEvent(CHILD_DONE, instance, act);
 			}
 		}
 

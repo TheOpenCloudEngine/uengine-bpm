@@ -214,7 +214,8 @@ public class EditorPanel implements ContextAware {
 			resourceManager.save(recentListRS, recentList);
 
 		}catch (Exception e){
-			throw new Exception("failed to store recent list", e);
+			//throw
+			new Exception("failed to store recent list", e).printStackTrace();
 		}
 	}
 

@@ -164,6 +164,9 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
     }
 
     public void setElement(IElement element) {
+        if(element!=null && element.getName()!=null)
+            setLabel(element.getName());
+
         this.element = element;
     }
 

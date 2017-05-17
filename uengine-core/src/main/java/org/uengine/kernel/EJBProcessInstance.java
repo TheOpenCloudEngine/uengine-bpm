@@ -1081,6 +1081,9 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	public void setMainProcessInstanceId(String mainInstId) {
 		try{
 			getProcessInstanceDAO().setMainInstId(new Long(mainInstId));
+
+			ProcessInstance mainProcessInstance = getMainProcessInstance();
+			getProcessInstanceDAO().setRootInstId(Long.valueOf(mainProcessInstance.getRootProcessInstanceId()));
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}

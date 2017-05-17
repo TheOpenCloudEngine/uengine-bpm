@@ -22,11 +22,18 @@ import java.util.List;
  */
 public class CouchbaseStorage extends AbstractStorage {
 
+    private String bucketPassword;
+        public void setBucketPassword(String bucketPassword) {
+            this.bucketPassword = bucketPassword;
+        }
+        public String getBucketPassword() {
+            return bucketPassword;
+        }
 
     String serverIp;
         public String getServerIp() {
-            return serverIp;
-        }
+                return serverIp;
+            }
         public void setServerIp(String serverIp) {
             this.serverIp = serverIp;
         }
@@ -45,6 +52,8 @@ public class CouchbaseStorage extends AbstractStorage {
     public void init(){
         CouchbaseEnvironment env = DefaultCouchbaseEnvironment.builder()
                 .queryEnabled(true) //that's the important part
+                .kvTimeout(100000)
+                .socketConnectTimeout(100000)
                 .build();
 
         cluster = CouchbaseCluster.create(env, getServerIp());
@@ -58,7 +67,7 @@ public class CouchbaseStorage extends AbstractStorage {
     }
 
     protected Bucket getBucket(){
-        return cluster.openBucket(getBucketName());
+        return cluster.openBucket(getBucketName(), getBucketPassword());
     }
 
     @Override
@@ -145,11 +154,17 @@ public class CouchbaseStorage extends AbstractStorage {
 
         String value = getSource(resource);
 
+        if(value==null)
+            return null;
+
         return Serializer.deserialize(value);
     }
 
     private String getSource(IResource resource) {
         JsonDocument document = getBucket().get(getAbsolutePath(resource));
+
+        if(document==null) return null;
+
         return document.content().getString("value");
     }
 
@@ -174,6 +189,8 @@ public class CouchbaseStorage extends AbstractStorage {
     public InputStream getInputStream(IResource resource) throws Exception {
         String value = getSource(resource);
 
+        if(value==null) return null;
+
         ByteArrayInputStream bai = new ByteArrayInputStream(value.getBytes());
 
         return bai;
@@ -183,4 +200,6 @@ public class CouchbaseStorage extends AbstractStorage {
     public OutputStream getOutputStream(IResource resource) throws Exception {
         return null;
     }
+
+
 }

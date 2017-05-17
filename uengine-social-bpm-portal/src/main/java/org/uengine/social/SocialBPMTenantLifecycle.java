@@ -25,7 +25,7 @@ public class SocialBPMTenantLifecycle implements TenantLifecycle {
             processApp = new ProcessApp();
             MetaworksRemoteService.autowire(processApp);
             processApp.setAppId(-1); // -1 means default app, omg!
-            processApp.setUrl("codi/StarterPack");
+            processApp.setUrl("StarterPack");
 
             processApp.addApp();
 
@@ -48,6 +48,8 @@ public class SocialBPMTenantLifecycle implements TenantLifecycle {
                             }
                         }
                 );
+
+//                onNewTenantSubscribe(tenantId); //try again.
             }else{
                 e.printStackTrace();
             }

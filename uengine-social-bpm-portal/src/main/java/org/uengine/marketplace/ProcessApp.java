@@ -108,7 +108,7 @@ public class ProcessApp extends App{
         }else{
             resourceList = new ArrayList<IResource>();
 
-            DefaultResource onlyOneResource = new DefaultResource(getProjectId());
+            DefaultResource onlyOneResource = new DefaultResource("codi/" + getProjectId());
             resourceList.add(onlyOneResource);
 
             setUrl(UEngineUtil.getFilePath(getProjectId()));
@@ -118,6 +118,7 @@ public class ProcessApp extends App{
         Object returnVal = super.save();
 
 
+        final ResourceManager resourceManagerForMarketplace = getComponent(ResourceManager.class, "resourceManagerForMarketplace");
         final ResourceManager resourceManager = getComponent(ResourceManager.class);
 
 
@@ -128,15 +129,11 @@ public class ProcessApp extends App{
                 DefaultResource zipFile = new DefaultResource();
                 zipFile.setPath(getAppId() + ".processapp");
 
-
                 try {
                     ZipOutputStream out = new ZipOutputStream(new
-                            BufferedOutputStream(resourceManager.getStorage().getOutputStream(zipFile)));
+                            BufferedOutputStream(resourceManagerForMarketplace.getStorage().getOutputStream(zipFile)));
                     return out;
-
-
                 } catch (Exception e) {
-
                     throw new RuntimeException(e);
                 }
 
@@ -181,6 +178,7 @@ public class ProcessApp extends App{
        BufferedOutputStream dest = null;
 
 
+        final ResourceManager resourceManagerForMarketplace = getComponent(ResourceManager.class, "resourceManagerForMarketplace");
         final ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
         ZipInputStream zis = (ZipInputStream) TenantContext.nonTenantSpecificOperation(new Operation(){
@@ -196,7 +194,7 @@ public class ProcessApp extends App{
 
                 try {
                     return new
-                            ZipInputStream(new BufferedInputStream(resourceManager.getStorage().getInputStream(processAppResource)));
+                            ZipInputStream(new BufferedInputStream(resourceManagerForMarketplace.getStorage().getInputStream(processAppResource)));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -213,22 +211,25 @@ public class ProcessApp extends App{
             // write the files to the disk
 
             DefaultResource defaultResource = new DefaultResource();
-            defaultResource.setPath(getUrl() + "/" + entry.getName());
+            defaultResource.setPath("codi/" + getUrl() + "/" + entry.getName());
 
             if(resourceManager.getStorage().exists(defaultResource)){
                 throw new Exception("There's already installed resource: " + defaultResource.getPath() + ". You must delete the resources before installing this resource.");
             }
 
-            OutputStream fos = resourceManager.getStorage().getOutputStream(defaultResource);
+            OutputStream baos = new ByteArrayOutputStream();
+            //fos = resourceManager.getStorage().getOutputStream(defaultResource);
 
             dest = new
-                    BufferedOutputStream(fos, BUFFER);
+                    BufferedOutputStream(baos, BUFFER);
             while ((count = zis.read(data, 0, BUFFER))
                     != -1) {
                 dest.write(data, 0, count);
             }
             dest.flush();
             dest.close();
+
+            resourceManager.save(defaultResource, Serializer.deserialize(baos.toString()));
 
             deployApp(defaultResource);
         }

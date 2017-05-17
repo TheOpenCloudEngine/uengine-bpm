@@ -981,7 +981,12 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		return "[At " + getName() + " Activity ("+getTracingTag()+")] ";
 	}
 	
-	//TODO: it's too difficult
+	public boolean isRunning(ProcessInstance instance) throws Exception {
+		String status = getStatus(instance);
+
+		return Activity.STATUS_RUNNING.equals(status);
+	}
+
 	public static boolean isSkippable(String status){
 		return !(status.equals(Activity.STATUS_SKIPPED) || status.equals(Activity.STATUS_READY) || status.equals(Activity.STATUS_CANCELLED) || status.equals(Activity.STATUS_COMPLETED));
 	}

@@ -759,6 +759,10 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	}
 
 	public boolean onComplete(ProcessInstance instance, Object payload) throws Exception{
+
+		if(!isRunning(instance))
+			throw new NotCompletableException();
+
 		String taskId;
 		
 		if(payload instanceof ResultPayload){

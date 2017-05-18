@@ -303,7 +303,6 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		procInsDAO.update();
 
 
-		setCaching(true);
 		if(modifiedKeyMap!=null){
 
 			if(fileBasedPersistence) {
@@ -353,8 +352,6 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		}
 
 
-		setCaching(false);
-
 		if(modifiedRoleMappings!=null){
 
 
@@ -382,7 +379,14 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 				roleMappingDAO.updateBatch();
 			}
 		}
-		//setCaching(true);
+
+		{//clear the change footprints
+			if (modifiedKeyMap != null)
+				modifiedKeyMap.clear();
+
+			if (modifiedRoleMappings != null)
+				modifiedRoleMappings.clear();
+		}
 
 		isNew = (false);
 

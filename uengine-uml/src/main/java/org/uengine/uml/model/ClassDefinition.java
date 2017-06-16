@@ -170,4 +170,10 @@ public class ClassDefinition extends WebObjectType implements Serializable{
     public List<ServiceMethodContext> getServiceMethodContexts() {
         return super.getServiceMethodContexts();
     }
+
+    @Override
+    @Hidden
+    public boolean isAlwaysSubmitted() {
+        return super.isAlwaysSubmitted();
+    }
 }

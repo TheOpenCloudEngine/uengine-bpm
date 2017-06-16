@@ -288,6 +288,9 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 	public void applyChanges() throws Exception{
 
+
+
+
 		ProcessInstanceDAO procInsDAO = getProcessInstanceDAO();
 		procInsDAO.getImplementationObject().setTableName("BPM_PROCINST");
 		procInsDAO.getImplementationObject().setKeyField("INSTID");

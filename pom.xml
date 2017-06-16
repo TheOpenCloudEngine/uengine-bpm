@@ -23,7 +23,8 @@
 	  <module>bpmn-model</module>
 	  <module>uengine-client-example</module>
 	  <module>uengine-social-bpm-portal</module>
- 	  <module>uengine-persistence-couchbase</module>
+	  <module>uengine-persistence-couchbase</module>
+	  <module>uengine-migrator</module>
   </modules>
 
 

@@ -51,7 +51,7 @@ public class CouchbaseStorage extends AbstractStorage {
     @PostConstruct
     public void init(){
         CouchbaseEnvironment env = DefaultCouchbaseEnvironment.builder()
-                .queryEnabled(true) //that's the important part
+//                .queryEnabled(true) //that's the important part
                 .kvTimeout(100000)
                 .socketConnectTimeout(100000)
                 .build();

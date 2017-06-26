@@ -21,6 +21,7 @@ import org.metaworks.dwr.SerializationSensitive;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.contexts.ComplexType;
 import org.uengine.contexts.DatabaseSynchronizationOption;
+import org.uengine.contexts.JavaClassDefinition;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
 import org.uengine.kernel.bpmn.face.RolePanel;
@@ -527,7 +528,7 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 
 				ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
-				ClassDefinition classDefinition = null;
+
 				try {
 
 					VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
@@ -535,9 +536,21 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 					String resourcePath = versionManager.getProductionResourcePath(getTypeClassName());
 
 					///// Need to be cached.
-					classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(resourcePath));
 
-					processVariableValue = classDefinition.createObjectInstance();
+					Object variableObject = resourceManager.getStorage().getObject(new DefaultResource(resourcePath));
+
+					if(variableObject instanceof ClassDefinition){
+
+						ClassDefinition classDefinition = null;
+						classDefinition = (ClassDefinition) variableObject;
+
+						processVariableValue = classDefinition.createObjectInstance();
+					}else if(variableObject instanceof JavaClassDefinition){
+						Class javaClass = Thread.currentThread().getContextClassLoader().loadClass(((JavaClassDefinition) variableObject).getClassName());
+
+						processVariableValue = (Serializable) javaClass.newInstance();
+
+					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}

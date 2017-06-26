@@ -42,6 +42,8 @@ public class Event extends DefaultActivity implements MessageListener{
 	@Override
 	protected void executeActivity(ProcessInstance instance) throws Exception {
 		// TODO Auto-generated method stub
+
+		//System.out.print("event started");
 	}
 
 

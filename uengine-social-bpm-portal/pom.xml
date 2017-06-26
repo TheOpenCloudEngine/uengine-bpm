@@ -83,6 +83,11 @@
 			<artifactId>spring-data-rest-core</artifactId>
 			<version>RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.uengine.metaworks</groupId>
+			<artifactId>metaworks4</artifactId>
+			<version>${uengine.metaworks3.version}</version>
+		</dependency>
 
 	</dependencies>
 

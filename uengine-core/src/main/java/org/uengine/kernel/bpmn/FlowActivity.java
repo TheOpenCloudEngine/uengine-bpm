@@ -47,6 +47,12 @@ public class FlowActivity extends ComplexActivity {
 	public void afterDeserialization() {
 		super.afterDeserialization();
 
+		//clear the incoming / outgoing sequence flows firstly.
+		for(Activity activity : getChildActivities()){
+			activity.setIncomingSequenceFlows(new ArrayList<SequenceFlow>());
+			activity.setOutgoingSequenceFlows(new ArrayList<SequenceFlow>());
+		}
+
 		SequenceFlow sequenceFlow = null;
 		if(sequenceFlows !=null){
 			for (Iterator<SequenceFlow> it = sequenceFlows.iterator(); it.hasNext();) {
@@ -137,11 +143,11 @@ public class FlowActivity extends ComplexActivity {
 			child = (Activity) it.next();
 			if (child.getIncomingSequenceFlows().size() == 0) {
 
-				if(child instanceof Event && ((Event) child).getAttachedToRef()!=null){
+				if(child instanceof Event && !(child instanceof StartEvent) && ((Event) child).getAttachedToRef()!=null){ //attachted to 가 있다는 이야기는 조건 이벤트가 왔을때만 실행하는 것이기 때문에 Start 로 인식하면 안된다.
 					continue;
 				}
 
-				if(!getProcessDefinition().isRunAllStartableActivities() && !(child instanceof StartEvent))
+				if(this instanceof ProcessDefinition && !(getProcessDefinition().isRunAllStartableActivities()) && !(child instanceof StartEvent))
 					continue;
 
 				startActivities.add(child);

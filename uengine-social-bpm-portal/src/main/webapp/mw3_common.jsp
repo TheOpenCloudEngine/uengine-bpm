@@ -188,6 +188,29 @@
     <script src="scripts/ace-1.1.0/build/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="scripts/ace-1.1.0/build/src-noconflict/ext-static_highlight.js"></script>
 
+    <!-- vue js and vue material -->
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-material@0.7.1"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vue-material@0.7.1/dist/vue-material.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <script>
+
+        Vue.use(VueMaterial);
+
+        //        Vue.material.registerTheme('default', {
+        //            primary: 'grey',
+        //            accent: 'blue',
+        //            warn: 'red',
+        //            background: 'white'
+        //        })
+
+    </script>
+
+
+
     <style>
         html,
         body {

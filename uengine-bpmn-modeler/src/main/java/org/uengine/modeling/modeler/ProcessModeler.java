@@ -432,6 +432,9 @@ public class ProcessModeler extends DefaultModeler {
                 } else if (activity instanceof FlowActivity) {
                     ((FlowActivity) activity).setSequenceFlows(null);
                 }
+
+               activity.setOutgoingSequenceFlows(new ArrayList<SequenceFlow>());
+               activity.setIncomingSequenceFlows(new ArrayList<SequenceFlow>());
             }
 
         }
@@ -509,8 +512,7 @@ public class ProcessModeler extends DefaultModeler {
             elementView.setElement(null);
         }
 
-
-
+        def.afterDeserialization();
         return def;
     }
 

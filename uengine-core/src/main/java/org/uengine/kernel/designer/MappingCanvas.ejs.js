@@ -47,7 +47,7 @@ var org_uengine_kernel_designer_MappingCanvas = function (objectId, className) {
     this.divId = mw3._getObjectDivId(this.objectId);
     this.divObj = $('#' + this.divId);
     // canvas는 단독으로 동작하는게 아니고 상위 화면을 가지고있기때문에 parent 로 구하여 작업한다.
-    this.parentDivObj = this.divObj.parent();
+    this.parentDivObj = this.divObj.closest('[name=mappingContext]');   //parent();
     this.leftTreeId = object.leftTreeId;
     this.rightTreeId = object.rightTreeId;
     var leftTreeObj = this.parentDivObj.find("#" + this.leftTreeId);

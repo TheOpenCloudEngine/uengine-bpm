@@ -1,7 +1,6 @@
 var isDroppable = false;
 
 var org_uengine_modeling_Canvas = function (objectId, className) {
-    debugger;
     this.objectId = objectId;
     this.className = className;
     this.object = mw3.objects[this.objectId];

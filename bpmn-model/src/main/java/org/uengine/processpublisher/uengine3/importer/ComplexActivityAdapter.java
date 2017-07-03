@@ -13,13 +13,11 @@ import java.util.Hashtable;
 public class ComplexActivityAdapter implements Adapter<ComplexActivity, FlowActivity> {
 
     @Override
-    public ProcessDefinition convert(ComplexActivity src, Hashtable keyedContext) throws Exception {
+    public ProcessDefinition convert(ComplexActivity complexActivity, Hashtable keyedContext) throws Exception {
         //
         ProcessDefinition processDefinition5 = (ProcessDefinition) keyedContext.get("root");
-        for(Activity activity : src.getChildActivities()){
+        for(Activity activity : complexActivity.getChildActivities()){
             Adapter adapter = AdapterUtil.getAdapter(activity.getClass(), getClass());
-            //newKeyedContext.put("root", processDefinition5);
-            //newKeyedContext.put("index", Index.getIndex());
             keyedContext.put("root", processDefinition5);
             processDefinition5 = (ProcessDefinition) adapter.convert(activity, keyedContext);
         }

@@ -1,27 +1,23 @@
 package org.uengine.processadmin;
 
 import org.metaworks.MetaworksContext;
-import org.metaworks.Remover;
-import org.metaworks.ToEvent;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Id;
+import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.website.MetaworksFile;
-import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.widget.Label;
-import org.metaworks.widget.ModalWindow;
 import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.modeling.resource.ResourceManager;
-import org.uengine.modeling.resource.ResourceNavigator;
 import org.uengine.modeling.resource.Serializer;
 import org.uengine.modeling.resource.resources.ProcessResource;
+import org.uengine.processpublisher.AdapterUtil;
 import org.uengine.processpublisher.BPMNUtil;
-import org.uengine.util.UEngineUtil;
+import org.uengine.processpublisher.uengine3.importer.ProcessDefinitionAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
  * Created by jjy on 2015. 10. 15..
@@ -67,6 +63,10 @@ public class ImportPopup {
                 fileNameToUpload = fileNameToUpload.replaceFirst("[.][^.]+$", "") + ".process";
             }
 
+            if(getSelectFile().getFilename().endsWith(".upd")) {
+                fileNameToUpload = fileNameToUpload.replaceFirst("[.][^.]+$", "") + ".process";
+            }
+
             processResource.setPath(getDir() + "/" + fileNameToUpload);
             ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
 
@@ -81,7 +81,12 @@ public class ImportPopup {
             if(getSelectFile().getFilename().endsWith(".bpmn")) {
                 definition = BPMNUtil.importAdapt(file);
 
-            } else{
+            } else if(getSelectFile().getFilename().endsWith(".upd")) {
+                definition = AdapterUtil.importAdapt(file, new ProcessDefinitionAdapter().getClass());
+                // display name 과 파일명을 새로 적용시킨다.
+                processResource.setDisplayName(definition.getName() + ".process");
+                processResource.setPath(getDir() + "/" + definition.getName() + ".process");
+            } else {
                 definition = (ProcessDefinition) Serializer.deserialize(new FileInputStream(file));
             }
 

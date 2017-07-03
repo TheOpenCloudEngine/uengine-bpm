@@ -11,23 +11,29 @@ import java.util.Hashtable;
  * Created by uengine on 2017. 6. 16..
  */
 public class SwitchActivityAdapter extends ComplexActivityAdapter {
-    @Override
-    public ProcessDefinition convert(ComplexActivity src, Hashtable keyedContext) throws Exception {
 
+    public final static int SwitchActivity_WIDTH = 30;
+    public final static int SwitchActivity_HEIGHT = 30;
+
+    private Gateway createView() throws Exception {
         Gateway gateWay = new Gateway();
         ElementView elementView = gateWay.createView();
         elementView.setX(150);
         elementView.setY(150);
-        elementView.setWidth(50);
-        elementView.setHeight(50);
+        elementView.setWidth(SwitchActivity_WIDTH);
+        elementView.setHeight(SwitchActivity_HEIGHT);
         gateWay.setElementView(elementView);
+        return gateWay;
+    }
+
+    @Override
+    public ProcessDefinition convert(ComplexActivity complexActivity, Hashtable keyedContext) throws Exception {
+
+        Gateway gateWay = this.createView();
         ProcessDefinition processDefinition5 = (ProcessDefinition) keyedContext.get("root");
         processDefinition5.addChildActivity(gateWay);
-        //Index.increase();
-        //Hashtable newKeyedContext = new Hashtable();
         keyedContext.put("root", processDefinition5);
-       // newKeyedContext.put("index", Index.getIndex());
-        return super.convert(src, keyedContext);
+        return super.convert(complexActivity, keyedContext);
 
     }
 }

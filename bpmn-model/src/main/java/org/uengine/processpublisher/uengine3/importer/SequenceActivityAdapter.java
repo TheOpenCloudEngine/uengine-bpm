@@ -10,7 +10,7 @@ import java.util.Hashtable;
  */
 public class SequenceActivityAdapter extends ComplexActivityAdapter {
     @Override
-    public ProcessDefinition convert(ComplexActivity src, Hashtable keyedContext) throws Exception {
-        return super.convert(src, keyedContext);
+    public ProcessDefinition convert(ComplexActivity complexActivity, Hashtable keyedContext) throws Exception {
+        return super.convert(complexActivity, keyedContext);
     }
 }

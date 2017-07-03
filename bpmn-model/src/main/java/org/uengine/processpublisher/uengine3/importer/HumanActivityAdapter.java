@@ -2,10 +2,8 @@ package org.uengine.processpublisher.uengine3.importer;
 
 import org.uengine.kernel.HumanActivity;
 import org.uengine.kernel.ProcessDefinition;
-import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
 import org.uengine.processpublisher.Adapter;
-import org.uengine.processpublisher.AdapterUtil;
 
 import java.util.Hashtable;
 
@@ -14,9 +12,10 @@ import java.util.Hashtable;
  */
 public class HumanActivityAdapter implements Adapter<HumanActivity, ProcessDefinition> {
 
-    public final static int DIALOG_HEIGHT = 100;
-    public final static int DIALOG_WIDTH = 100;
+    public final static int HumanActivity_WIDTH = 100;
+    public final static int HumanActivity_HEIGHT = 100;
 
+    /*
     private Hashtable calculatePositions(Hashtable hashtable) throws Exception {
 
         Hashtable keyedContext = new Hashtable();
@@ -40,20 +39,22 @@ public class HumanActivityAdapter implements Adapter<HumanActivity, ProcessDefin
         return keyedContext;
 
     }
+*/
+    private void createView(HumanActivity humanActivity) throws Exception {
+        ElementView elementView = humanActivity.createView();
+        elementView.setX(200);
+        elementView.setY(200);
+        elementView.setWidth(HumanActivity_WIDTH);
+        elementView.setHeight(HumanActivity_HEIGHT);
+        elementView.setId("HumanActivity_" + humanActivity.getTracingTag());
+        humanActivity.setElementView(elementView);
+    }
 
     @Override
-    public ProcessDefinition convert(HumanActivity src, Hashtable keyedContext) throws Exception {
-
-        ElementView elementView = src.createView();
-        elementView.setX(Double.parseDouble(this.calculatePositions(keyedContext).get("x").toString()));
-        elementView.setY(Double.parseDouble(this.calculatePositions(keyedContext).get("y").toString()));
-        elementView.setWidth(DIALOG_WIDTH);
-        elementView.setHeight(DIALOG_HEIGHT);
-        elementView.setId("HumanActivity_"+src.getTracingTag());
-        src.setElementView(elementView);
+    public ProcessDefinition convert(HumanActivity humanActivity, Hashtable keyedContext) throws Exception {
+        this.createView(humanActivity);
         ProcessDefinition processDefinition = (ProcessDefinition) keyedContext.get("root");
-        processDefinition.addChildActivity(src);
-        //AdapterUtil.createSequenceFlow(processDefinition, keyedContext);
+        processDefinition.addChildActivity(humanActivity);
         return processDefinition;
     }
 }

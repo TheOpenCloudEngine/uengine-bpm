@@ -35,7 +35,6 @@ public class MappingContext implements Serializable {
         rightTree.setAlign(TreeNode.ALIGN_RIGHT);
 
         MetaworksRemoteService.autowire(rightTree);
-
         MappingCanvas canvas = new MappingCanvas();
         canvas.setCanvasId("mappingCanvas");
         canvas.setLeftTreeId(leftTree.getId());

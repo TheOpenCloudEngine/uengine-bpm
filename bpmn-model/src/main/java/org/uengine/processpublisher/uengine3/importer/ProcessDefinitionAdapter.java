@@ -11,18 +11,23 @@ import java.util.Hashtable;
  * Created by uengine on 2017. 6. 16..
  */
 public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, ProcessDefinition>{
+
+    public ProcessDefinitionAdapter(){}
+
     @Override
     public ProcessDefinition convert(ProcessDefinition src, Hashtable keyedContext) throws Exception {
 
-        keyedContext.put("root", src);
 
+        ProcessDefinition processDefinition = new ProcessDefinition();
+        // index 초기화
+        int index = 0;
         for(Activity activity : src.getChildActivities()){
-
+            keyedContext.put("root", processDefinition);
+            keyedContext.put("index", index);
             Adapter adapter = AdapterUtil.getAdapter(activity.getClass(), getClass());
-            Activity activity5 = (Activity) adapter.convert(src, keyedContext);
-
+            processDefinition = (ProcessDefinition) adapter.convert(activity, keyedContext);
+            index++;
         }
-
-        return null;
+        return processDefinition;
     }
 }

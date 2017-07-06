@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.metaworks.Remover;
 import org.metaworks.annotation.*;
 import org.metaworks.component.Tree;
@@ -327,8 +328,22 @@ public class RestWebServiceActivity extends DefaultActivity {
 			mappingContext = new MappingContext();
 			MappingCanvas canvas = new MappingCanvas();
 			canvas.setCanvasId("mappingCanvas");
-			canvas.setLeftTreeId(leftTree.getId());
-			canvas.setRightTreeId(rightTree.getId());
+			try {
+				leftTree.init();
+				rightTree.init();
+				ObjectMapper mapper = new ObjectMapper();
+				Map leftMap = mapper.convertValue(leftTree, Map.class);
+				Map rightMap = mapper.convertValue(rightTree, Map.class);
+				String leftJson = mapper.writeValueAsString(leftMap);
+				String rightJson = mapper.writeValueAsString(rightMap);
+
+				canvas.setLeftTreeJson(leftJson);
+				canvas.setRightTreeJson(rightJson);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+//			canvas.setLeftTreeId(leftTree.getId());
+//			canvas.setRightTreeId(rightTree.getId());
 			mappingContext.setMappingCanvas(canvas);
 		}
 		mappingContext.setMappingTreeLeft(leftTree);
@@ -346,8 +361,22 @@ public class RestWebServiceActivity extends DefaultActivity {
 			if( mappingContextOut.getMappingCanvas() == null ){
 				MappingCanvas canvas = new MappingCanvas();
 				canvas.setCanvasId("mappingCanvas"+"Out");
-				canvas.setLeftTreeId(leftTreeOut.getId());
-				canvas.setRightTreeId(rightTreeOut.getId());
+				try {
+					leftTree.init();
+					rightTree.init();
+					ObjectMapper mapper = new ObjectMapper();
+					Map leftMap = mapper.convertValue(leftTree, Map.class);
+					Map rightMap = mapper.convertValue(rightTree, Map.class);
+					String leftJson = mapper.writeValueAsString(leftMap);
+					String rightJson = mapper.writeValueAsString(rightMap);
+
+					canvas.setLeftTreeJson(leftJson);
+					canvas.setRightTreeJson(rightJson);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+//				canvas.setLeftTreeId(leftTreeOut.getId());
+//				canvas.setRightTreeId(rightTreeOut.getId());
 				mappingContextOut.setMappingCanvas(canvas);
 			}
 			mappingContextOut.setMappingTreeLeft(leftTreeOut);

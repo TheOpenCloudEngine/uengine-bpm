@@ -6,7 +6,7 @@ import org.uengine.kernel.ParameterContext;
 import java.io.Serializable;
 
 public class MappingCanvas implements Serializable {
-	
+
 	String canvasId;
 	@Id
 		public String getCanvasId() {
@@ -15,20 +15,23 @@ public class MappingCanvas implements Serializable {
 		public void setCanvasId(String canvasId) {
 			this.canvasId = canvasId;
 		}
-	String leftTreeId;
-		public String getLeftTreeId() {
-			return leftTreeId;
+
+	String leftTreeJson;
+		public String getLeftTreeJson() {
+			return leftTreeJson;
 		}
-		public void setLeftTreeId(String leftTreeId) {
-			this.leftTreeId = leftTreeId;
+		public void setLeftTreeJson(String leftTreeJson) {
+			this.leftTreeJson = leftTreeJson;
 		}
-	String rightTreeId;
-		public String getRightTreeId() {
-			return rightTreeId;
+
+	String rightTreeJson;
+		public String getRightTreeJson() {
+			return rightTreeJson;
 		}
-		public void setRightTreeId(String rightTreeId) {
-			this.rightTreeId = rightTreeId;
+		public void setRightTreeJson(String rightTreeJson) {
+			this.rightTreeJson = rightTreeJson;
 		}
+
 	boolean inout;
 		public boolean isInout() {
 			return inout;
@@ -36,6 +39,7 @@ public class MappingCanvas implements Serializable {
 		public void setInout(boolean inout) {
 			this.inout = inout;
 		}
+
 	ParameterContext[] mappingElements;
 		public ParameterContext[] getMappingElements() {
 			return mappingElements;

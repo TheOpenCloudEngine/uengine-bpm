@@ -237,6 +237,8 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 			if((getType()==ComplexType.class) && (defaultValue instanceof String))
 				return null;
 
+			if(defaultValue instanceof String && !UEngineUtil.isNotEmpty((String) defaultValue)) return null;
+
 			return defaultValue;
 		}
 		public void setDefaultValue(Object object) {

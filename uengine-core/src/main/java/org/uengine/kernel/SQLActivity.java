@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.Date;
 import java.io.*;
 
+import org.metaworks.annotation.Face;
+import org.uengine.kernel.bpmn.face.ParameterContextArrayFace;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.util.UEngineUtil;
 import org.uengine.util.dao.ConnectionFactory;
@@ -19,6 +21,9 @@ public class SQLActivity extends DefaultActivity{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	String sqlStmt;
+	@Face(ejsPath = "dwr/metaworks/genericfaces/richText.ejs", options={"rows", "cols"}, values = {"7", "130"})
+
+//	@Face(faceClassName = "org.uengine.codi.mw3.widget.SourceCodeFace")
 		public String getSqlStmt() {
 			return sqlStmt;
 		}
@@ -75,6 +80,7 @@ public class SQLActivity extends DefaultActivity{
 		}
 		
 	ParameterContext[] selectMappings;
+		@Face(faceClass = ParameterContextArrayFace.class)
 		public ParameterContext[] getSelectMappings() {
 			return selectMappings;
 		}
@@ -110,6 +116,9 @@ public class SQLActivity extends DefaultActivity{
 		super("SQL");
 		setQuery(false);	
 		setReplaceWithBlankStringIfNull(true);
+		setConnectionFactory(new JDBCConnectionFactory());
+		setSqlStmt("");
+		setSelectMappings(new ParameterContext[]{});
 	}
 
 /*	public SQLActivity(String sqlStmt, String[] variantNames){

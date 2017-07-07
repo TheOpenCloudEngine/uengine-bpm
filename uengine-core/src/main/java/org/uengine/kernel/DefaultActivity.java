@@ -3,6 +3,7 @@ package org.uengine.kernel;
 import javax.naming.InitialContext;
 
 import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Group;
 import org.metaworks.annotation.Order;
 import org.metaworks.component.MetaWorksComponentCenter;
 import org.uengine.modeling.ElementView;
@@ -65,6 +66,7 @@ public class DefaultActivity extends Activity{
 
 	String document;
 	@Face(ejsPath = "dwr/metaworks/genericfaces/richText.ejs", options={"rows", "cols"}, values = {"7", "130"})
+	@Group(name = "Documentation")
 		public String getDocument() {
 			return document;
 		}

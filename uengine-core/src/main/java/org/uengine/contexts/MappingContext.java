@@ -1,7 +1,9 @@
 package org.uengine.contexts;
 
 import java.io.Serializable;
+import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.metaworks.annotation.Id;
 import org.metaworks.component.Tree;
 import org.metaworks.component.TreeNode;
@@ -37,18 +39,29 @@ public class MappingContext implements Serializable {
         MetaworksRemoteService.autowire(rightTree);
         MappingCanvas canvas = new MappingCanvas();
         canvas.setCanvasId("mappingCanvas");
-        canvas.setLeftTreeId(leftTree.getId());
-        canvas.setRightTreeId(rightTree.getId());
 
         //mappingElements 세팅
-        if(mappingElements != null){
+        if (mappingElements != null) {
             canvas.setMappingElements(mappingElements);
+        }
+        try {
+            leftTree.init();
+            rightTree.init();
+            ObjectMapper mapper = new ObjectMapper();
+            Map leftMap = mapper.convertValue(leftTree, Map.class);
+            Map rightMap = mapper.convertValue(rightTree, Map.class);
+            String leftJson = mapper.writeValueAsString(leftMap);
+            String rightJson = mapper.writeValueAsString(rightMap);
+
+            canvas.setLeftTreeJson(leftJson);
+            canvas.setRightTreeJson(rightJson);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         setMappingCanvas(canvas);
-
-        setMappingTreeLeft(leftTree);
-        setMappingTreeRight(rightTree);
+        //setMappingTreeLeft(leftTree);
+        //setMappingTreeRight(rightTree);
     }
 
 

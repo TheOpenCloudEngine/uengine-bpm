@@ -1,5 +1,4 @@
 var org_uengine_contexts_MappingTree = function(objectId, className){
-	debugger;
 	// default setting
 	this.objectId = objectId;
 	this.className = className;

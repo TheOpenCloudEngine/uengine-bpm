@@ -1260,8 +1260,8 @@ EditorRenderer.prototype = {
      * 스토리지의 데이터를 기반으로 화면에 렌더링한다.
      */
     render: function () {
-        this.createViewData();
-        this.renderViews();
+        this.createViewData(); // 두산에서 그려야할게 만개 이상이라서 멀 그려야 할지 뷰데이터를 쭉 뽑은것
+        this.renderViews(); // 실제 표현되는 화면 영역에서만 추려서 그린다.
     },
     /**
      * 스토리지의 데이터를 기반으로 화면에 표현되야 하는 각 객체의 y 좌표를 생성한 ViewData 를 반환한다.

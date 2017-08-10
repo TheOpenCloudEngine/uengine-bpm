@@ -69,12 +69,15 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
                         //      ElementView view = pool.createView();
 
                         BPMNShape bpmnShape = (BPMNShape) bpmnDiagramElementMap.get(tLaneSet.getId());
-                        view.setX((int) Math.round(bpmnShape.getBounds().getX() + (bpmnShape.getBounds().getWidth() / 2)));
-                        view.setY((int) Math.round(bpmnShape.getBounds().getY() + (bpmnShape.getBounds().getHeight() / 2)));
-                        view.setWidth((int) Math.round(bpmnShape.getBounds().getWidth()));
-                        view.setHeight((int) Math.round(bpmnShape.getBounds().getHeight()));
-                        view.setId(tLaneSet.getId());
-                        view.setParent("null");
+
+                        if(bpmnShape!=null) {
+                            view.setX((int) Math.round(bpmnShape.getBounds().getX() + (bpmnShape.getBounds().getWidth() / 2)));
+                            view.setY((int) Math.round(bpmnShape.getBounds().getY() + (bpmnShape.getBounds().getHeight() / 2)));
+                            view.setWidth((int) Math.round(bpmnShape.getBounds().getWidth()));
+                            view.setHeight((int) Math.round(bpmnShape.getBounds().getHeight()));
+                            view.setId(tLaneSet.getId());
+                            view.setParent("null");
+                        }
 
                         rootRole.setElementView(view);
                         processDefinition.addRole(rootRole);

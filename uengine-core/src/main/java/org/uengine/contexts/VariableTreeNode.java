@@ -74,17 +74,17 @@ public class VariableTreeNode extends TreeNode {
 							)
 							){
 						ResourceManager resourceManager = MetaworksRemoteService.getComponent(ResourceManager.class);
-						ClassDefinition classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource(processVariable.getTypeClassName()));
+						ClassDefinition classDefinition = (ClassDefinition) resourceManager.getStorage().getObject(new DefaultResource("codi/" + processVariable.getTypeClassName()));
 
 						if(classDefinition!=null){
-							node.setChild(loadClassProperties(node, classDefinition.metaworks2Type()));
+							node.setChild(loadClassProperties(node, classDefinition));
 						}
 					}else
 					if(processVariable.getTypeClassName()!=null){
 
 						WebObjectType webObjectType = MetaworksRemoteService.getInstance().getMetaworksType(processVariable.getTypeClassName());
 						if(webObjectType!=null){
-							node.setChild(loadClassProperties(node, webObjectType.metaworks2Type()));
+							node.setChild(loadClassProperties(node, webObjectType));
 						}
 
 					}else
@@ -93,7 +93,7 @@ public class VariableTreeNode extends TreeNode {
 						ClassDefinition classDefinition = objectInstance.getClassDefinition();
 
 						if(classDefinition!=null){
-							node.setChild(loadClassProperties(node, classDefinition.metaworks2Type()));
+							node.setChild(loadClassProperties(node, classDefinition));
 						}
 					}
 
@@ -106,12 +106,12 @@ public class VariableTreeNode extends TreeNode {
 	}
 
 
-	private ArrayList<TreeNode> loadClassProperties(VariableTreeNode node, Type classDefinition) throws Exception{
+	private ArrayList<TreeNode> loadClassProperties(VariableTreeNode node, WebObjectType classDefinition) throws Exception{
 
 		ArrayList<TreeNode> child = new ArrayList<TreeNode>();
 
-		FieldDescriptor[] fields = classDefinition.getFieldDescriptors();
-		for(FieldDescriptor attribute : fields){
+		WebFieldDescriptor[] fields = classDefinition.getFieldDescriptors();
+		for(WebFieldDescriptor attribute : fields){
 			VariableTreeNode childNode = new VariableTreeNode();
 
 			childNode.setId(node.getId() + "-" + attribute.getName());

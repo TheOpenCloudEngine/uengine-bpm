@@ -69,6 +69,9 @@ public class TFlowNodeAdapter<T extends TFlowNode, T1 extends Activity> implemen
     }
 
     private boolean isInActivityToLane(ElementView elementView, BPMNShape bpmnShape) {
+
+        if(bpmnShape==null) return false;
+
         double x = (elementView.getX());
         double y = (elementView.getY());
         double width = (elementView.getWidth());

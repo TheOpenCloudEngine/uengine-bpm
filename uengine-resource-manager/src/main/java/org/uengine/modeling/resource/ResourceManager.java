@@ -64,7 +64,8 @@ public class ResourceManager implements Storage{
 
     @Override
     public Object getObject(IResource resource) throws Exception {
-        TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", resource.getPath());
+        if(TransactionContext.getThreadLocalInstance()!=null)
+            TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", resource.getPath());
 
         Object object = getStorage().getObject(resource);
 
@@ -76,7 +77,8 @@ public class ResourceManager implements Storage{
             }
         }
 
-        TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", null);
+        if(TransactionContext.getThreadLocalInstance()!=null)
+            TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", null);
 
         return object;
 
@@ -84,11 +86,13 @@ public class ResourceManager implements Storage{
 
     @Override
     public void save(IResource resource, Object object) throws Exception {
-        TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", resource.getPath());
+        if(TransactionContext.getThreadLocalInstance()!=null)
+            TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", resource.getPath());
 
         getStorage().save(resource, object);
 
-        TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", null);
+        if(TransactionContext.getThreadLocalInstance()!=null)
+            TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", null);
     }
 
     @Override

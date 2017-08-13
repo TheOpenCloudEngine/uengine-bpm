@@ -72,15 +72,30 @@ public class BlockFinder {
     Map<Integer, List<Activity>> activitiesByDistanceMap = new HashMap<Integer, List<Activity>>();
     Map<String, Integer> distancesByActivity = new HashMap<String, Integer>();
     Map<String, Integer> visitCount = new HashMap<String, Integer>();
+    Stack<Activity> visitActivityStack = new Stack<Activity>();
 
     protected void visitForDepthAndVisitCountSetting(Activity activity){
 
         depth ++;
+        visitActivityStack.push(activity);
 
         for(SequenceFlow sequenceFlow : activity.getIncomingSequenceFlows()) {
             Activity sourceActivity = sequenceFlow.getSourceActivity();
 
             if(sourceActivity == null) continue;
+
+            if(visitActivityStack.contains(sourceActivity)){
+
+                Activity theFirstIncomingActivity = visitActivityStack.get(1);
+
+                for(SequenceFlow sequenceFlowToSourceActivity : theFirstIncomingActivity.getOutgoingSequenceFlows()){
+                    if(sequenceFlowToSourceActivity.getTargetActivity().equals(sourceActivity)){
+                        sequenceFlowToSourceActivity.setFeedback(true); //mark as feedback link
+                    }
+                }
+
+                continue; //cancel the already visited previous activity (feedback)
+            }
 
             Integer visitCountForThisActivity = 0;
             if(visitCount.containsKey(sourceActivity.getTracingTag())){
@@ -91,17 +106,21 @@ public class BlockFinder {
 
             visitCount.put(sourceActivity.getTracingTag(), visitCountForThisActivity);
 
-            visitForDepthAndVisitCountSetting(sourceActivity);
+            visitForDepthAndVisitCountSetting(sourceActivity); //<-- point of recursive
 
             distancesByActivity.put(sourceActivity.getTracingTag(), depth);
+
         }
 
         depth --;
+        visitActivityStack.pop();
     }
 
     public void visitToLineUp(Activity activity){
 
         for(SequenceFlow sequenceFlow : activity.getIncomingSequenceFlows()) {
+            if(sequenceFlow.isFeedback()) continue; //ignore feedback link to avoid infinite loop
+
             Activity sourceActivity = sequenceFlow.getSourceActivity();
 
             Integer distanceOfThis = distancesByActivity.get(sourceActivity.getTracingTag());
@@ -131,7 +150,7 @@ public class BlockFinder {
                 blockMembers.add(activity);
                 int visitedCountForThis = visitCount.get(activity.getTracingTag());
 
-                if(branch == visitedCountForThis){
+                if(branch == visitedCountForThis){  // stops when the number of splitted branch is same with visited count for the activity
                     break;
                 }
             }else {

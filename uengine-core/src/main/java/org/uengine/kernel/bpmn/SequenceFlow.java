@@ -18,7 +18,9 @@ public class SequenceFlow extends Relation implements java.io.Serializable, Need
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
 	private String sourceRef;
-    @Hidden
+	private boolean feedback;
+
+	@Hidden
 		public String getSourceRef() {
 			return sourceRef;
 		}
@@ -192,5 +194,13 @@ public class SequenceFlow extends Relation implements java.io.Serializable, Need
 	@Override
 	public void afterDeserialization() {
 
+	}
+
+	public void setFeedback(boolean feedback) {
+		this.feedback = feedback;
+	}
+
+	public boolean isFeedback() {
+		return feedback;
 	}
 }

@@ -20,9 +20,9 @@
 
 
 	  <!--
-    <create creator="new" javascript="JavascriptChat" scope="page">
+    <createActivity creator="new" javascript="JavascriptChat" scope="page">
       <param name="class" value="com.okmindmap.collaboration.JavascriptChat"/>
-    </create>
+    </createActivity>
     -->
 
     <create creator="spring" javascript="Metaworks" scope="page">

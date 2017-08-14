@@ -62,7 +62,7 @@ public class ActivityView extends ElementView {
 
 
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to create symbol", e);
+			throw new RuntimeException("Failed to createActivity symbol", e);
 		}
 
 	}

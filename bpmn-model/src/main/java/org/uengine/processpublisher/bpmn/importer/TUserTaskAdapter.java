@@ -18,16 +18,20 @@ public class TUserTaskAdapter extends TTaskAdapter{
     public Activity convert(TTask src, Hashtable keyedContext) throws Exception {
         HumanActivity humanActivity = (HumanActivity) super.convert(src, keyedContext);
 
+        ProcessDefinition processDefinition = (ProcessDefinition) keyedContext.get("processDefinition");
+
         if(src.getResourceRole() != null && src.getResourceRole().size() > 0){
             String roleId = src.getResourceRole().get(0).getValue().getId();
-            ProcessDefinition processDefinition = (ProcessDefinition) keyedContext.get("processDefinition");
 
             Role role = processDefinition.getRole(roleId);
 
             humanActivity.setRole(role);
         }else{ //if there's no semantic information from the original model, find the role (lane) by position of activity.
 
-
+            // if there's just one role has been defined in the process definition, definitely the role is that one.
+            if(processDefinition.getRoles()!=null && processDefinition.getRoles().length == 1){
+                humanActivity.setRole(processDefinition.getRoles()[0]);
+            }
 
         }
 

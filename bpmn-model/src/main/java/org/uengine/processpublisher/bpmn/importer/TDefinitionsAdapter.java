@@ -6,10 +6,7 @@ import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
-import org.omg.spec.bpmn._20100524.model.TDefinitions;
-import org.omg.spec.bpmn._20100524.model.TLane;
-import org.omg.spec.bpmn._20100524.model.TLaneSet;
-import org.omg.spec.bpmn._20100524.model.TProcess;
+import org.omg.spec.bpmn._20100524.model.*;
 import org.omg.spec.dd._20100524.di.DiagramElement;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.ProcessDefinition;
@@ -26,10 +23,7 @@ import org.uengine.processpublisher.BPMNUtil;
 import javax.xml.bind.JAXBElement;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinition>{
     @Override
@@ -52,6 +46,22 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
 
                 }else if(diagramElement instanceof BPMNEdge){
                     bpmnDiagramElementMap.put(((BPMNEdge)diagramElement).getBpmnElement().getLocalPart(), diagramElement);
+                }
+            }
+        }
+
+
+        //firstly define collaboration --> TODO: pool will be supported later
+        Map<String, TParticipant> collaborationParticipantByProcess = new HashMap<>();
+        for(JAXBElement element : src.getRootElement()) {
+            if (element.getValue() instanceof TCollaboration) {
+                TCollaboration collaboration = (TCollaboration) element.getValue();
+
+                if(collaboration.getParticipant()!=null){
+                    List<TParticipant> participants = collaboration.getParticipant();
+                    for(TParticipant participant: participants){
+                        collaborationParticipantByProcess.put(participant.getProcessRef().getLocalPart(), participant);
+                    }
                 }
             }
         }
@@ -92,6 +102,23 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
                             processDefinition.addRole(role);
                         }
                     }
+                }
+
+                //uEngine BPMN engine requires one or more roles defined at least.
+                if(processDefinition.getRoles()==null || processDefinition.getRoles().length == 0){
+
+                    //if there is no defined role, there are two cases -
+                    // 1. the process has been defined in collaboration (pool) or
+                    // 2. there no pool is defined ever.
+
+                    // check there is collaboration (pools) defintion //TODO: pool will be supported later. Later, we will utilize visitor pattern for executing BPMN model.
+                    TParticipant participant = collaborationParticipantByProcess.get(bpmnProcess.getId());
+                    if(participant!=null){
+                        Role role = new Role();
+                        role.setName(participant.getName());
+                        processDefinition.addRole(role);
+                    }
+
                 }
 
                 if(bpmnProcess.getFlowElement() != null && bpmnProcess.getFlowElement().size() > 0){

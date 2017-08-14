@@ -11,8 +11,10 @@ import java.util.Hashtable;
 
 public class TSubProcessAdapter extends TFlowNodeAdapter<TSubProcess, SubProcess>{
     @Override
-    protected SubProcess create(TSubProcess src, Hashtable context) {
+    protected SubProcess createActivity(TSubProcess src, Hashtable context) {
         SubProcess subProcess = new SubProcess();
+
+        initializeActivity(subProcess, src);
 
         try {
             for(JAXBElement flowElement: src.getFlowElement()){

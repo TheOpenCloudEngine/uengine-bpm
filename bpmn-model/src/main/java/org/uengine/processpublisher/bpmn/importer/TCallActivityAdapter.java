@@ -8,8 +8,11 @@ import java.util.Hashtable;
 
 public class TCallActivityAdapter extends TFlowNodeAdapter<TCallActivity, CallActivity>{
     @Override
-    protected Activity create(TCallActivity src, Hashtable keyedContext) {
+    protected Activity createActivity(TCallActivity src, Hashtable keyedContext) {
         CallActivity callActivity = new CallActivity();
+
+        initializeActivity(callActivity, src);
+
         String subProcessId = src.getCalledElement().getLocalPart();
         callActivity.setDefinitionId(subProcessId);
 

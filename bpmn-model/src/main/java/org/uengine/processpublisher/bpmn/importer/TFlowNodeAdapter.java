@@ -8,20 +8,16 @@ import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.dd._20100524.dc.Bounds;
 import org.uengine.kernel.Activity;
 import org.uengine.kernel.DefaultActivity;
-import org.uengine.kernel.Role;
-import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.modeling.ElementView;
 import org.uengine.processpublisher.Adapter;
-import org.uengine.processpublisher.BPMNUtil;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
 public class TFlowNodeAdapter<T extends TFlowNode, T1 extends Activity> implements Adapter<T, T1> {
     @Override
     public T1 convert(T src, Hashtable keyedContext) throws Exception {
-        Activity activity = create(src, keyedContext);
+        Activity activity = createActivity(src, keyedContext);
         activity.setName(src.getName());
         activity.setTracingTag(src.getId());
 
@@ -64,8 +60,17 @@ public class TFlowNodeAdapter<T extends TFlowNode, T1 extends Activity> implemen
         return (T1)activity;
     }
 
-    protected Activity create(T src, Hashtable keyedContext) {
-       return new DefaultActivity();
+    protected Activity createActivity(T src, Hashtable keyedContext) {
+
+       DefaultActivity defaultActivity = new DefaultActivity();
+        initializeActivity(defaultActivity, src);
+
+       return defaultActivity;
+    }
+
+    protected  void initializeActivity(Activity activity, T src){
+        activity.setTracingTag(src.getId());
+        activity.setName(src.getName());
     }
 
     private boolean isInActivityToLane(ElementView elementView, BPMNShape bpmnShape) {

@@ -7,8 +7,11 @@ import java.util.Hashtable;
 
 public class TUserTaskAdapter extends TTaskAdapter{
     @Override
-    protected Activity create(TTask src, Hashtable keyedContext) {
-        return new HumanActivity();
+    protected Activity createActivity(TTask src, Hashtable keyedContext) {
+        HumanActivity humanActivity = new HumanActivity();
+        initializeActivity(humanActivity, src);
+
+        return humanActivity;
     }
 
     @Override
@@ -22,6 +25,10 @@ public class TUserTaskAdapter extends TTaskAdapter{
             Role role = processDefinition.getRole(roleId);
 
             humanActivity.setRole(role);
+        }else{ //if there's no semantic information from the original model, find the role (lane) by position of activity.
+
+
+
         }
 
         return humanActivity;

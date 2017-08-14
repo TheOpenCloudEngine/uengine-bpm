@@ -15,8 +15,11 @@ import org.uengine.kernel.Activity;
 import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.Role;
 import org.uengine.kernel.bpmn.Event;
+import org.uengine.kernel.bpmn.FlowActivity;
+import org.uengine.kernel.bpmn.Pool;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
+import org.uengine.modeling.RelationView;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
 
@@ -26,6 +29,7 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 
 public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinition>{
     @Override
@@ -112,4 +116,64 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
 
         return processDefinition;
     }
+
+
+    private Activity findAttachedActivity(ElementView eventView, List<ElementView> elementViews) {
+//        // eventView size
+//        double event_x_min = (eventView.getX()) - (Math.abs((eventView.getWidth()) / 2));
+//        double event_x_max = (eventView.getX()) + (Math.abs((eventView.getWidth()) / 2));
+//        double event_y_min = (eventView.getY()) - (Math.abs((eventView.getHeight()) / 2));
+//        double event_y_max = (eventView.getY()) + (Math.abs((eventView.getHeight()) / 2));
+//
+//        for (ElementView elementView : elementViews) {
+//            if (!(elementView instanceof EventView)) {
+//                //if(elementView.getX() != null) {
+//                // elementView size
+//                double element_x_min = (elementView.getX()) - (Math.abs((elementView.getWidth()) / 2));
+//                double element_x_max = (elementView.getX()) + (Math.abs((elementView.getWidth()) / 2));
+//                double element_y_min = (elementView.getY()) - (Math.abs((elementView.getHeight()) / 2));
+//                double element_y_max = (elementView.getY()) + (Math.abs((elementView.getHeight()) / 2));
+//
+//                boolean checkMinX = (element_x_min <= event_x_min) && (event_x_min <= element_x_max);
+//                boolean checkMaxX = (element_x_min <= event_x_max) && (event_x_max <= element_x_max);
+//
+//                boolean checkMinY = (element_y_min <= event_y_min) && (event_y_min <= element_y_max);
+//                boolean checkMaxY = (element_y_min <= event_y_max) && (event_y_max <= element_y_max);
+//
+//                if ((checkMinX || checkMaxX) && (checkMinY || checkMaxY) && elementView.getElement() instanceof Activity) {
+//                    return (Activity) elementView.getElement();
+//                }
+//                //}
+//            }
+//        }
+      return null;
+    }
+
+
+    private boolean isIn(ElementView elem1, ElementView elem2) {
+        double x = (elem1.getX());
+        double y = (elem1.getY());
+        double width = (elem1.getWidth());
+        double height = (elem1.getHeight());
+        double left = x - (width / 2);
+        double right = x + (width / 2);
+        double top = y - (height / 2);
+        double bottom = y + (height / 2);
+
+        double p_x = (elem2.getX());
+        double p_y = (elem2.getY());
+        double p_width = (elem2.getWidth());
+        double p_height = (elem2.getHeight());
+        double p_left = p_x - (p_width / 2);
+        double p_right = p_x + (p_width / 2);
+        double p_top = p_y - (p_height / 2);
+        double p_bottom = p_y + (p_height / 2);
+
+        return (p_left < left &&
+                p_right > right &&
+                p_top < top &&
+                p_bottom > bottom
+        );
+    }
+
 }

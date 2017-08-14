@@ -14,7 +14,7 @@ public class TServiceTaskAdapter extends TTaskAdapter{
     public static final String SERVICE_IMPL_JAVA = "java:";
 
     @Override
-    protected Activity create(TTask src, Hashtable keyedContext) {
+    protected Activity createActivity(TTask src, Hashtable keyedContext) {
         TServiceTask serviceTask = (TServiceTask) src;
 
         //in case of Java Activity
@@ -24,7 +24,10 @@ public class TServiceTaskAdapter extends TTaskAdapter{
             try {
                 Class theActivityClass = Thread.currentThread().getContextClassLoader().loadClass(className);
                 if(Activity.class.isAssignableFrom(theActivityClass)){
-                    return (Activity) theActivityClass.newInstance();
+                    Activity activity = (Activity) theActivityClass.newInstance();
+                    initializeActivity(activity, src);
+
+                    return activity;
                 }else{
                     throw new RuntimeException(className + " is not an Activity");
                 }
@@ -39,7 +42,7 @@ public class TServiceTaskAdapter extends TTaskAdapter{
             }
 
         } else{
-            return new DefaultActivity(src.getName());
+            return super.createActivity(src, keyedContext);
         }
 
         //return new WebServiceActivity();

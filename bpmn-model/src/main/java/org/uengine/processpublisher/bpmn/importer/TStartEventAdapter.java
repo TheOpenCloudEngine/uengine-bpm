@@ -9,7 +9,11 @@ import java.util.Hashtable;
 public class TStartEventAdapter extends TFlowNodeAdapter<TStartEvent, StartEvent> {
 
     @Override
-    protected Activity create(TStartEvent src, Hashtable keyedContext) {
-        return new StartEvent();
+    protected Activity createActivity(TStartEvent src, Hashtable keyedContext) {
+        StartEvent startEvent = new StartEvent();
+
+        initializeActivity(startEvent, src);
+
+        return startEvent;
     }
 }

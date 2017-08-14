@@ -7,8 +7,11 @@ import java.util.Hashtable;
 
 public class TEventAdapter extends TFlowNodeAdapter<TEvent, Event> {
     @Override
-    public Event create(TEvent src, Hashtable keyedContext){
-        return new Event();
+    public Event createActivity(TEvent src, Hashtable keyedContext){
+        Event event = new Event();
+        initializeActivity(event, src);
+
+        return event;
     }
 
 }

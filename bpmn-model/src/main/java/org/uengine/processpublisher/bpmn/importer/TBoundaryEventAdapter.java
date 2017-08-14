@@ -8,7 +8,7 @@ import java.util.Hashtable;
 public class TBoundaryEventAdapter extends TFlowNodeAdapter<TBoundaryEvent, TimerEvent> {
 
     @Override
-    public TimerEvent create(TBoundaryEvent src, Hashtable keyedContext){
+    public TimerEvent createActivity(TBoundaryEvent src, Hashtable keyedContext){
 //        String eventDefinitionClassName = eventDefinition.getClass().getName();
 //        String eventTypeName = eventDefinitionClassName.substring(0, eventDefinitionClassName.length() - "Definition".length());
 

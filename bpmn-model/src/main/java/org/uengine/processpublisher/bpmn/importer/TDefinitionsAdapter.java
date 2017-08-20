@@ -17,6 +17,7 @@ import org.uengine.kernel.bpmn.Pool;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.RelationView;
+import org.uengine.modeling.Symbol;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.BPMNUtil;
 
@@ -116,6 +117,18 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
                     if(participant!=null){
                         Role role = new Role();
                         role.setName(participant.getName());
+                        role.setElementView(role.createView());
+                        ElementView view = role.getElementView();
+                        BPMNShape bpmnShape = (BPMNShape) bpmnDiagramElementMap.get(participant.getId());
+
+                        if(bpmnShape!=null) {
+                            view.setX((int) Math.round(bpmnShape.getBounds().getX() + (bpmnShape.getBounds().getWidth() / 2)));
+                            view.setY((int) Math.round(bpmnShape.getBounds().getY() + (bpmnShape.getBounds().getHeight() / 2)));
+                            view.setWidth((int) Math.round(bpmnShape.getBounds().getWidth()));
+                            view.setHeight((int) Math.round(bpmnShape.getBounds().getHeight()));
+                            view.setId(bpmnProcess.getId());
+                            view.setParent("null");
+                        }
                         processDefinition.addRole(role);
                     }
 

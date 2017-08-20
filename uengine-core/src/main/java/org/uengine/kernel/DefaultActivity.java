@@ -32,10 +32,6 @@ public class DefaultActivity extends Activity{
 		fireComplete(instance);
 	}
 
-	public InitialContext getInitialContext() throws javax.naming.NamingException {
-		return new InitialContext();
-	}
-
 //	IDocument document;
 //
 //	@Order(value=2)

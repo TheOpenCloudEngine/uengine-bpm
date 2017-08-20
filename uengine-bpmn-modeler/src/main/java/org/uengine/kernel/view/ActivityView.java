@@ -1,5 +1,6 @@
 package org.uengine.kernel.view;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.EventContext;
 import org.metaworks.Refresh;
 import org.metaworks.ServiceMethodContext;
@@ -66,7 +67,8 @@ public class ActivityView extends ElementView {
 		}
 
 	}
-	
+
+	@JsonIgnore
 	public Activity getRealActivity(){
 		Activity activity = null;
 //		if(getElement() instanceof ReferenceActivity){

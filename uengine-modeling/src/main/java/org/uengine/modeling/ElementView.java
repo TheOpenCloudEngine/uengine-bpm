@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.*;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Face;
@@ -156,6 +157,7 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         this.index = index;
     }
 
+    @JsonIgnore
     IElement element;
 
     @Face(ejsPath = "dwr/metaworks/genericfaces/HiddenFace.ejs")

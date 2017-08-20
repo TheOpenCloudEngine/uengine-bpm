@@ -22,17 +22,16 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.*;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
-import org.uengine.kernel.bpmn.SubProcess;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.IIntegrityElement;
-import org.uengine.util.TreeVisitor;
 import org.uengine.util.UEngineUtil;
 
 
@@ -107,7 +106,9 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	/**
 	 * points parent activity (should be kind of ComplexActivity of this activity)
 	 */
+	@JsonIgnore
 	Activity parentActivity = null;
+	@JsonIgnore
 		public Activity getParentActivity() {
 			return parentActivity;
 		}
@@ -474,6 +475,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	 * returns the root activity for this (child) activity. Basically the return value should be an instance of 'ProcessDefinition' class.
 	 * @return
 	 */
+	@JsonIgnore
 	public Activity getRootActivity(){
 		Activity temp=this;
 		while(temp.getParentActivity()!=null) temp = temp.getParentActivity();
@@ -486,6 +488,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	 * @return
 	 */
 	@Hidden
+	@JsonIgnore
 	public ProcessDefinition getProcessDefinition(){
 		Activity root = getRootActivity();
 		if(root instanceof ProcessDefinition)
@@ -1646,7 +1649,9 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	/*
 	 * api for graph-based model 
 	 */
+	@JsonIgnore
 	private transient List<SequenceFlow> incomingSequenceFlows;
+	@JsonIgnore
 	private transient List<SequenceFlow> outgoingSequenceFlows;
 	
 	@Hidden

@@ -1,5 +1,6 @@
 package org.uengine.modeling;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.ContextAware;
 import org.metaworks.EventContext;
 import org.metaworks.MetaworksContext;
@@ -160,6 +161,7 @@ public class RelationView implements Serializable, ContextAware, Cloneable {
         this.needReconnect = needReconnect;
     }
 
+    @JsonIgnore
     IRelation relation;
 
     @Face(ejsPath = "dwr/metaworks/genericfaces/HiddenFace.ejs")

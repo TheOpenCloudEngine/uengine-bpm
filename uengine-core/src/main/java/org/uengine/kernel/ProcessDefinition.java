@@ -10,6 +10,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.uengine.modeling.resource.Describable;
@@ -312,7 +313,9 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 			belongingDefinitionId = string;
 		}
 
+	@JsonIgnore
 	ActivityFilter[] activityFilters;
+		@JsonIgnore
 		public ActivityFilter[] getActivityFilters() {
 			
 			if(!GlobalContext.isDesignTime() && defaultActivityFilters == null){

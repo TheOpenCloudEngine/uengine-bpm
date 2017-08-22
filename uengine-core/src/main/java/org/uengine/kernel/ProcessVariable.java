@@ -131,7 +131,11 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 
 
 	private String typeClassName;
-	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector", displayName = "$Type")
+	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector", displayName = "변수 유형",
+			options = {"vue-component"},
+			values = {"class-selector"}
+
+	)
 		public String getTypeClassName() {
 			return typeClassName;
 		}

@@ -921,16 +921,17 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 	}
 	
 	public void beforeSerialization() {
+		registerToProcessDefinition(true, false);
+
 		super.beforeSerialization();
-		
-		if(GlobalContext.isDesignTime()){
-			//cache the initiator human activity
-			if(isInitiateByFirstWorkitem()){
-				getInitiatorHumanActivityReference(null);
-			}
-		
-			registerToProcessDefinition(true, false);
+
+		//if(true || GlobalContext.isDesignTime()){
+		//cache the initiator human activity
+		if(isInitiateByFirstWorkitem()){
+			getInitiatorHumanActivityReference(null);
 		}
+
+		//}
 
 		setActivityFilters(null);
 	}

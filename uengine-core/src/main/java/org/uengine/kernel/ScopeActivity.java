@@ -51,16 +51,20 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 		}
 		public void setProcessVariables(ProcessVariable[] pvds){
 			this.processVariableDescriptors = pvds;
-			processVariableDescriptorsHT = new Hashtable();
-			if( processVariableDescriptors != null ){
-				for(int i=0; i<processVariableDescriptors.length; i++)
-					processVariableDescriptorsHT.put(
-						processVariableDescriptors[i].getName().toLowerCase(),
-						processVariableDescriptors[i]
-					);
-				firePropertyChangeEvent(new PropertyChangeEvent(this, "processVariables", pvds, pvds));
-			}
+			alignProcessVariables();
 		}
+
+	private void alignProcessVariables() {
+		processVariableDescriptorsHT = new Hashtable();
+		if( processVariableDescriptors != null ){
+            for(int i=0; i<processVariableDescriptors.length; i++)
+                processVariableDescriptorsHT.put(
+                    processVariableDescriptors[i].getName().toLowerCase(),
+                    processVariableDescriptors[i]
+                );
+            firePropertyChangeEvent(new PropertyChangeEvent(this, "processVariables", processVariableDescriptors, processVariableDescriptors));
+        }
+	}
 
 	EventHandlerPanel eventHandlerPanel;
 
@@ -132,6 +136,7 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 	@Override
 	public void beforeSerialization() {
 
+		alignProcessVariables();
 
 		ProcessVariable [] processVariables = getProcessVariables();
 

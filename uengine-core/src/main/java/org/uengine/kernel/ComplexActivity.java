@@ -723,6 +723,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 		int i=0;
 		List<Activity> childActivities = getChildActivities();
 		for(Activity child : childActivities){
+			child.setParentActivity(this);
 			ok = child.registerToProcessDefinition(autoTagging, checkCollision);
 			if(checkCollision && !ok) return false;
 		}

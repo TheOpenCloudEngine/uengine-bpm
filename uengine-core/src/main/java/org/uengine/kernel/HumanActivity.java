@@ -22,6 +22,10 @@ import org.metaworks.annotation.Validator;
 import org.metaworks.annotation.ValidatorContext;
 import org.metaworks.component.Tree;
 import org.metaworks.dwr.MetaworksRemoteService;
+import org.oce.garuda.multitenancy.TenantContext;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.uengine.contexts.MappingContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.StartEvent;
@@ -667,11 +671,17 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 			 */
 			//kpv.put(KeyedParameter.DISPATCHINGOPTION, ""+getRole().getDispatchingOption());
 			roleMapping = new RoleMapping();
-			roleMapping.setEndpoint(GlobalContext.getPropertyString("codi.user.id","0"));
-			roleMapping.setResourceName(GlobalContext.getPropertyString("codi.user.name","CODI"));
+
+			//TODO: later spring security will be utilized
+//			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//			Map principal = (Map) authentication.getPrincipal();
+			roleMapping.setEndpoint(TenantContext.getThreadLocalInstance().getUserId());
+			//roleMapping.setResourceName((String) principal.get("user"));
+
+
 			
 			kpv.put("resourceName", roleMapping.getResourceName());
-			kpv.put(KeyedParameter.DISPATCHINGOPTION, ""+Role.DISPATCHINGOPTION_RACING);
+//			kpv.put(KeyedParameter.DISPATCHINGOPTION, ""+Role.DISPATCHINGOPTION_RACING);
 		}
 		
 		if(getRole()!=null)

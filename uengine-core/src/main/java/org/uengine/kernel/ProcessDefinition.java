@@ -1209,5 +1209,14 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 
 	}
 
+	private String opengraph;
+
+	public String getOpengraph() {
+		return opengraph;
+	}
+
+	public void setOpengraph(String opengraph) {
+		this.opengraph = opengraph;
+	}
 }
 

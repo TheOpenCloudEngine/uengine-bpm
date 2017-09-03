@@ -311,4 +311,41 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         public void setByDrop(boolean byDrop) {
             this.byDrop = byDrop;
         }
+
+    private String value;
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+    private String from;
+        public String getFrom() {
+            return from;
+        }
+
+        public void setFrom(String from) {
+            this.from = from;
+        }
+
+    private String to;
+        public String getTo() {
+            return to;
+        }
+
+        public void setTo(String to) {
+            this.to = to;
+        }
+
+    String geom;
+
+    public String getGeom() {
+        return geom;
+    }
+
+    public void setGeom(String geom) {
+        this.geom = geom;
+    }
 }

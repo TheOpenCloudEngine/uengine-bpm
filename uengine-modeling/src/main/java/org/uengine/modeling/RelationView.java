@@ -41,6 +41,16 @@ public class RelationView implements Serializable, ContextAware, Cloneable {
         this.shapeId = shapeId;
     }
 
+    String component;
+
+    public String getComponent() {
+        return component;
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
+    }
+
     double x;
 
     public double getX() {

@@ -121,6 +121,8 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener,
                 }
             } else if (payload instanceof ResultPayload) {
                 savePayload(instance, (ResultPayload) payload);
+            } else if (payload instanceof Map) {
+                savePayload(instance, (Map) payload);
             }
 
             //TODO: when user rollback this receive activity, listener should be added again.
@@ -148,6 +150,23 @@ public class ReceiveActivity extends DefaultActivity implements MessageListener,
                 if (saveVariableValue)
                     instance.set("", processVariableChanges[i].getKey(), (Serializable) processVariableChanges[i].getValue());
             }
+    }
+
+    public void savePayload(ProcessInstance instance, Map resultPayload) throws Exception {
+
+        for (Object key : resultPayload.keySet()) {
+            String variableKey = key.toString();
+            Object variableValue = resultPayload.get(key);
+
+            boolean saveVariableValue = true;
+
+            if (variableValue instanceof CommandVariableValue) {
+                saveVariableValue = !((CommandVariableValue) variableValue).doCommand(instance, variableKey);
+            }
+
+            if (saveVariableValue)
+                instance.set("", variableKey, (Serializable) variableValue);
+        }
     }
 
     protected boolean testMyMessage(ProcessInstance instance, Vector payloads) throws Exception {

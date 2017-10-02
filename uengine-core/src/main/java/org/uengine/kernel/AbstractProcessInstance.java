@@ -6,6 +6,7 @@ import java.io.*;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.*;
@@ -569,15 +570,15 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 			return new DefaultProcessInstance(def, name, options);
 		}
 
-		if(USE_CLASS==null){
-			try{
-				USE_CLASS = Thread.currentThread().getContextClassLoader().loadClass(GlobalContext.getPropertyString("processinstance.class"));
-			}catch(Exception e){
-				USE_CLASS = EJBProcessInstance.class;
-			}
-		}
+		return MetaworksRemoteService.getInstance().getBeanFactory().getBean(
+				org.uengine.kernel.ProcessInstance.class,
+				new Object[]{
+						def,
+						null,
+						options
+				}
+		);
 
-		return (ProcessInstance) USE_CLASS.getConstructor(new Class[]{ProcessDefinition.class, String.class, Map.class}).newInstance(new Object[]{def, name, options});			
 	}
 
 	public List<ExecutionScopeContext> getExecutionScopeContexts(){

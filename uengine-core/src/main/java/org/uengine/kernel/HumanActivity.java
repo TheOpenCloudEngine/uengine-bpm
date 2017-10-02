@@ -961,7 +961,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	}
 	
 	protected void cancelWorkItem(ProcessInstance instance, String status) throws Exception{
-		WorkList worklist = (new WorkListServiceLocator()).getWorkList();
+		WorkList worklist = instance.getWorkList();
 		
 		KeyedParameter[] parameters = new KeyedParameter[]{new KeyedParameter("status",status)};
 
@@ -1134,8 +1134,14 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 
 		firePropertyChangeEventToActivityFilters(instance, "roleMapping", roleMapping);
 	}
-	
-	
+
+	/**
+	 *
+	 * @param instance
+	 * @param payload
+	 * @throws Exception
+	 * @deprecated
+	 */
 	public void saveWorkItem(ProcessInstance instance, ResultPayload payload) throws Exception{
 		
 		savePayload(instance, payload);
@@ -1155,6 +1161,32 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 			wl.updateWorkItem(taskIds[0], null, rp.getExtendedValues(), instance.getProcessTransactionContext());
 		}
 		
+		firePropertyChangeEventToActivityFilters(instance, "saveDate", now);
+		firePropertyChangeEventToActivityFilters(instance, "saveEndpoint", payload);
+		fireEventToActivityFilters(instance, "saveWorkitem", payload);
+		fireEventToActivityFilters(instance, "saveAnyway", payload);
+
+	}
+
+	public void saveWorkItem(ProcessInstance instance, Map payload) throws Exception{
+
+		savePayload(instance, payload);
+		Date now = DAOFactory.getInstance(instance.getProcessTransactionContext()).getNow().getTime();
+
+		String[] taskIds = getTaskIds(instance);
+		if(taskIds == null || taskIds.length == 0){
+			addWorkitem(instance, DefaultWorkList.WORKITEM_STATUS_DRAFT);
+		}else{ //wl update : flag 'DRAFT'
+			WorkList wl = (new WorkListServiceLocator()).getWorkList();
+
+			ResultPayload rp = new ResultPayload();
+			rp.setExtendedValue(new KeyedParameter(KeyedParameter.DEFAULT_STATUS, DefaultWorkList.WORKITEM_STATUS_DRAFT));
+
+			rp.setExtendedValue(new KeyedParameter("saveDate", now));
+
+			wl.updateWorkItem(taskIds[0], null, rp.getExtendedValues(), instance.getProcessTransactionContext());
+		}
+
 		firePropertyChangeEventToActivityFilters(instance, "saveDate", now);
 		firePropertyChangeEventToActivityFilters(instance, "saveEndpoint", payload);
 		fireEventToActivityFilters(instance, "saveWorkitem", payload);

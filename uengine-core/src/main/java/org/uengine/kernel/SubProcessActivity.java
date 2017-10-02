@@ -809,13 +809,14 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 		realDefinitionId = "codi/" + getDefinitionId();
 
 		//replace with production version of the Sub process.
-		if(!instance.isSimulation()){
-
-			VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
-			versionManager.setAppName("codi");
-
-			realDefinitionId = versionManager.getProductionResourcePath(realDefinitionId);
-		}
+		//TODO: version manager
+//		if(!instance.isSimulation()){
+//
+//			VersionManager versionManager = MetaworksRemoteService.getComponent(VersionManager.class);
+//			versionManager.setAppName("codi");
+//
+//			realDefinitionId = versionManager.getProductionResourcePath(realDefinitionId);
+//		}
 
 		subProcessInstance = instance.getProcessTransactionContext().getProcessDefinition(realDefinitionId).createInstance(subProcessInstanceName, options);
 

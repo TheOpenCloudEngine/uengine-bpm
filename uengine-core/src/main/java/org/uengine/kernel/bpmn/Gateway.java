@@ -56,6 +56,11 @@ public class Gateway extends Activity {
 							continue;
 						}
 					}
+					else if (condition instanceof Otherwise) {
+						otherwiseFlag = true;
+						otherwiseActivity = ts.getTargetActivity();
+						continue;
+					}
 					activities.add(ts.getTargetActivity());
 				}
 			}else{

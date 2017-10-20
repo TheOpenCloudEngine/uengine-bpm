@@ -1171,13 +1171,13 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	public void saveWorkItem(ProcessInstance instance, Map payload) throws Exception{
 
 		savePayload(instance, payload);
-		Date now = DAOFactory.getInstance(instance.getProcessTransactionContext()).getNow().getTime();
+		Date now = new Date(); //TODO get date from database?
 
 		String[] taskIds = getTaskIds(instance);
 		if(taskIds == null || taskIds.length == 0){
 			addWorkitem(instance, DefaultWorkList.WORKITEM_STATUS_DRAFT);
 		}else{ //wl update : flag 'DRAFT'
-			WorkList wl = (new WorkListServiceLocator()).getWorkList();
+			WorkList wl = instance.getWorkList();
 
 			ResultPayload rp = new ResultPayload();
 			rp.setExtendedValue(new KeyedParameter(KeyedParameter.DEFAULT_STATUS, DefaultWorkList.WORKITEM_STATUS_DRAFT));

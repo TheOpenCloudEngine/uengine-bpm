@@ -53,6 +53,8 @@ public class ExpressionEvaluateCondition extends Condition {
             BSFManager manager = new BSFManager();
             manager.setClassLoader(this.getClass().getClassLoader());
 
+            //replace the process variable expressions with instance.get('varName') if found,
+
 
             if (instance != null)
                 manager.declareBean("instance", instance, ProcessInstance.class);

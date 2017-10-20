@@ -13,6 +13,7 @@ import java.util.Vector;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
+import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.modeling.resource.Describable;
 import org.uengine.modeling.HasThumbnail;
 import org.uengine.processmanager.ProcessManagerFactoryBean;
@@ -848,7 +849,7 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 			
 			Hashtable options = new Hashtable();
 			options.put("ptc", instance.getProcessTransactionContext());
-			
+
 			ProcessInstance returningInstance = AbstractProcessInstance.create().getInstance(returningProcess, options);
 			ProcessDefinition returningDefinition = returningInstance.getProcessDefinition();
 							

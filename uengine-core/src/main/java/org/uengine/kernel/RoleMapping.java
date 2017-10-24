@@ -1,5 +1,6 @@
 package org.uengine.kernel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.annotation.Hidden;
 
 import java.util.ArrayList;
@@ -310,6 +311,7 @@ public class RoleMapping implements java.io.Serializable, Cloneable, CommandVari
 			multipleMappings = null;
 	}
 
+	@JsonIgnore
 	public synchronized RoleMapping getCurrentRoleMapping(){
 		//TODO: currently disabled for XMLDecoder
 		/*if(isSingle)

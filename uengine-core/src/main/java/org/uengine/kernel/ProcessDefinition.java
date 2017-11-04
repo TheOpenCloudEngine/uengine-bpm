@@ -320,29 +320,45 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 		public ActivityFilter[] getActivityFilters() {
 			
 			if(!GlobalContext.isDesignTime() && defaultActivityFilters == null){
-				String defaultActivityFilterClsNames = GlobalContext.getPropertyString("defaultactivityfilters","");
-				
-				if(org.uengine.util.UEngineUtil.isNotEmpty(defaultActivityFilterClsNames)){
-					String [] filterClsNames = defaultActivityFilterClsNames.split(",");
-					defaultActivityFilters = new ActivityFilter[filterClsNames.length];
-					
-					int j=0;
-					for(int i=0; i<filterClsNames.length; i++){
-						String filterClsName = filterClsNames[i].trim();
-						
-						try{
-//							defaultActivityFilters[j] = (ActivityFilter)Thread.currentThread().getContextClassLoader().loadClass(filterClsName).newInstance();
-							defaultActivityFilters[j] = (ActivityFilter)GlobalContext.loadClass(filterClsName).newInstance();
-							j++;
-						}catch(Exception e){
-							new RuntimeException("Failed to load Activity Filter ["+filterClsName+"]: ", e);
-						}
+
+
+				Map<String, ActivityFilter> filters = MetaworksRemoteService.getInstance().getBeanFactory().getBeansOfType(ActivityFilter.class);
+
+				if(filters!=null && filters.size()>0){
+					defaultActivityFilters = new ActivityFilter[filters.size()];
+
+					int i=0;
+					for(ActivityFilter theFilter : filters.values()){
+						defaultActivityFilters[i++] = theFilter;
 					}
-					
+
 				}else{
-					defaultActivityFilters = new ActivityFilter[]{};
+
+					//TODO: Old way of declaring activity filter must be deprecated.
+					String defaultActivityFilterClsNames = GlobalContext.getPropertyString("defaultactivityfilters","");
+
+					if(org.uengine.util.UEngineUtil.isNotEmpty(defaultActivityFilterClsNames)){
+						String [] filterClsNames = defaultActivityFilterClsNames.split(",");
+						defaultActivityFilters = new ActivityFilter[filterClsNames.length];
+
+						int j=0;
+						for(int i=0; i<filterClsNames.length; i++){
+							String filterClsName = filterClsNames[i].trim();
+
+							try{
+								defaultActivityFilters[j] = (ActivityFilter)GlobalContext.loadClass(filterClsName).newInstance();
+								j++;
+							}catch(Exception e){
+								new RuntimeException("Failed to load Activity Filter ["+filterClsName+"]: ", e);
+							}
+						}
+
+					}else{
+						defaultActivityFilters = new ActivityFilter[]{};
+					}
 				}
-				
+
+
 			}
 			
 			if(defaultActivityFilters==null) defaultActivityFilters = new ActivityFilter[]{};
@@ -360,17 +376,6 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 			activityFilters = filters;
 		}
 
-	/*tring title;
-		public String getTitle() {
-			if(title==null)
-				setTitle(getName());
-			
-			return title;
-		}
-		public void setTitle(String string) {
-			title = string;
-		}
-*/
 	boolean isAdhoc;
 		public boolean isAdhoc() {
 			return isAdhoc;

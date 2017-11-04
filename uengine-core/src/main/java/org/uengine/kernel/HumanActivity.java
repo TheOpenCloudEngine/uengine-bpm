@@ -523,7 +523,8 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 					if( instance.isSubProcess() ){
 						currentLogin = instance.getRootProcessInstance().getRoleMapping("Initiator");
 					}else{
-						currentLogin = (RoleMapping)instance.getProcessTransactionContext().getProcessManager().getGenericContext().get(GENERICCONTEXT_CURR_LOGGED_ROLEMAPPING);
+						currentLogin = RoleMapping.create();
+						currentLogin.setEndpoint(TenantContext.getThreadLocalInstance().getUserId());
 					}
 				}catch(Exception e){
 					cause = e;
@@ -676,6 +677,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 //			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //			Map principal = (Map) authentication.getPrincipal();
 			roleMapping.setEndpoint(TenantContext.getThreadLocalInstance().getUserId());
+			instance.putRoleMapping(getRole().getName(), roleMapping);
 			//roleMapping.setResourceName((String) principal.get("user"));
 
 

@@ -284,22 +284,23 @@ public class FlowActivity extends ComplexActivity {
 		ActivityReference startActivityRef = new ActivityReference();
 		try {
 			List<Activity> act = getStartActivities();
-			if( act == null){
+			if( act == null || act.size()==0){
 				startActivityRef = super.getInitiatorHumanActivityReference(ptc);
 			}else{
 
 				//TODO implement this
-//
-//				if( act instanceof HumanActivity){
-//					startActivityRef.setActivity(act);
-//					startActivityRef.setAbsoluteTracingTag(act.getTracingTag());
-//				}else{
-//					Activity nextActivity = this.findNextHumanActivity(act);
-//					if( nextActivity != null ){
-//						startActivityRef.setActivity(nextActivity);
-//						startActivityRef.setAbsoluteTracingTag(nextActivity.getTracingTag());
-//					}
-//				}
+				Activity firstStartActivity = act.get(0);
+
+				if( firstStartActivity instanceof HumanActivity){
+					startActivityRef.setActivity(firstStartActivity);
+					startActivityRef.setAbsoluteTracingTag(firstStartActivity.getTracingTag());
+				}else{
+					Activity nextActivity = this.findNextHumanActivity(firstStartActivity);
+					if( nextActivity != null ){
+						startActivityRef.setActivity(nextActivity);
+						startActivityRef.setAbsoluteTracingTag(nextActivity.getTracingTag());
+					}
+				}
 			}
 		} catch (UEngineException e) {
 			// TODO Auto-generated catch block

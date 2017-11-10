@@ -13,6 +13,15 @@ import java.util.Hashtable;
  */
 public class SwitchActivityAdapter extends ComplexActivityAdapter {
 
+    /**
+     *
+     * a --> switch (b,c,d) --> e
+     *
+     * a --> gw -> b -+-> gw --> e
+     *        +--> c -+
+     *        +--> d -+
+     */
+
     public final static int SwitchActivity_WIDTH = 30;
     public final static int SwitchActivity_HEIGHT = 30;
 

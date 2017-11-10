@@ -45,7 +45,8 @@ public class RoleMapping implements java.io.Serializable, Cloneable, CommandVari
     boolean isSingle = true;
     
     //for multiple role binding
-    private ArrayList multipleMappings = null;
+	@JsonIgnore
+	private ArrayList multipleMappings = null;
 
     protected RoleMapping() {
     	this.isSingle = false;    	

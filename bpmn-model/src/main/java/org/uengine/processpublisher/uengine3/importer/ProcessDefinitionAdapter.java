@@ -18,6 +18,18 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proc
     @Override
     public ProcessDefinition convert(ProcessDefinition src, Hashtable keyedContext) throws Exception {
 
+//processdefinition
+//        SequenceActivity --> adapter: org.uengine.processpublisher.uengine3.importer.SequenceActivityAdapter
+//                            --> org.uengine.processpublisher.uengine3.importer.ComplexActivityAdapter
+//            a;
+//            b;
+//        allActivity
+//                switchActivity
+//                    c;
+//                    d;
+
+// root.child.add(a,b,c,d);
+
 
         ProcessDefinition processDefinition = new ProcessDefinition();
         // 기존의 process definitino에서 새로 만들 process definition의 변수로 세팅한다.

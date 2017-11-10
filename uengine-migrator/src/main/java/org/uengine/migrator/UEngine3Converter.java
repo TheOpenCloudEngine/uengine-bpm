@@ -2,10 +2,13 @@ package org.uengine.migrator;
 
 import org.uengine.kernel.*;
 import org.uengine.modeling.resource.Serializer;
+import org.uengine.processpublisher.uengine3.importer.ProcessDefinitionAdapter;
 import org.uengine.util.ActivityFor;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.Hashtable;
 
 /**
  * Created by uengine on 2017. 6. 16..
@@ -14,28 +17,13 @@ public class UEngine3Converter {
 
     public static void main(String... args) throws Exception {
 
-        ProcessDefinition processDefinition3 = (ProcessDefinition) Serializer.deserialize(new FileInputStream("/Users/uengine/Downloads/26.process"));
+        ProcessDefinition processDefinition3 = (ProcessDefinition) Serializer.deserialize(new FileInputStream(args[0]));
+        ProcessDefinition processDefinition5;
 
-        final ProcessDefinition processDefinition5 = new ProcessDefinition();
+        ProcessDefinitionAdapter processDefinitionAdapter = new ProcessDefinitionAdapter();
 
-        ActivityFor activityFor = new ActivityFor(){
+        processDefinition5 = processDefinitionAdapter.convert(processDefinition3, new Hashtable());
 
-            @Override
-            public void logic(Activity activity) {
-                if(activity instanceof SwitchActivity){
-
-                }else if(activity instanceof AllActivity){
-
-                }else if(activity instanceof SequenceActivity){
-
-                }else if(activity instanceof HumanActivity){
-
-                }
-            }
-        };
-
-        activityFor.run(processDefinition3);
-
-
+        Serializer.serialize(processDefinition5, new FileOutputStream(args[0]+".5.process"));
     }
 }

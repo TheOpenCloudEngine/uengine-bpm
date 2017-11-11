@@ -1,4 +1,4 @@
-# Deprecation and New version announcement
+# Retirement and New version announcement
 
 This version of uEngine BPMS has been deprecated. Since we decided to change uEngine5's architecure as a MSA (micro-services architecture) for long-term roadmap (BPaaS and CSB roadmap), Only some part of this project is reused for new version. Go to the MSA version of uEngine5 for now:
 

@@ -53,6 +53,11 @@
 			<artifactId>bpmn-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.uengine</groupId>
+			<artifactId>uengine-bpmn-modeler</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 	</dependencies>
 

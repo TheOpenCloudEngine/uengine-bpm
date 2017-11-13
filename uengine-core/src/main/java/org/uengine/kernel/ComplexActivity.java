@@ -807,7 +807,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 					}catch(Exception e){
 						throw new RuntimeException(e);
 					}finally{
-						if(ptc.getProcessManager()==null)
+						if(ptc!=null && ptc.getProcessManager()==null)
 							try {
 								pm.remove();
 							} catch (Exception e) {

@@ -1764,6 +1764,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 
 	public ElementView createView(){
 		ElementView elementView = (ElementView) UEngineUtil.getComponentByEscalation(getClass(), "view");
+
 		elementView.setElement(this);
 
 		return elementView;

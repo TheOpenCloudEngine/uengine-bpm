@@ -1162,6 +1162,9 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 		//replace the variable by real ones.
 		if(getVariableBindings()!=null)
 		for(ParameterContext parameterContext : getVariableBindings()){
+
+			if(parameterContext.getVariable()==null) continue;
+
 			ProcessVariable processVariable = getProcessDefinition().getProcessVariable(parameterContext.getVariable().getName());
 
 			if(processVariable!=null){

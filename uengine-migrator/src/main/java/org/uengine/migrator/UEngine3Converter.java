@@ -2,6 +2,7 @@ package org.uengine.migrator;
 
 import org.uengine.components.serializers.ActivityRepositoryConverter;
 import org.uengine.kernel.*;
+import org.uengine.kernel.bpmn.CallActivity;
 import org.uengine.modeling.resource.Serializer;
 import org.uengine.processpublisher.uengine3.importer.ProcessDefinitionAdapter;
 import org.uengine.util.ActivityFor;
@@ -32,6 +33,7 @@ public class UEngine3Converter {
 
         inputString = inputString.replace("org.uengine.kernel.ActivityRepository", "java.util.ArrayList");
         inputString = inputString.replace("kitech.apr.activity.KitechHumanActivity", "org.uengine.kernel.HumanActivity");
+        inputString = inputString.replace(SubProcessActivity.class.getName(), CallActivity.class.getName());
 
 
         ProcessDefinition processDefinition3 = (ProcessDefinition) Serializer.deserialize(inputString);
@@ -40,6 +42,7 @@ public class UEngine3Converter {
         ProcessDefinitionAdapter processDefinitionAdapter = new ProcessDefinitionAdapter();
 
         processDefinition5 = processDefinitionAdapter.convert(processDefinition3, new Hashtable());
+//        processDefinition5.afterDeserialization();//정리작업
 
         Serializer.serialize(processDefinition5, new FileOutputStream(args[0]+".5.process"));
     }

@@ -931,13 +931,13 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 
 		super.beforeSerialization();
 
-		//if(true || GlobalContext.isDesignTime()){
-		//cache the initiator human activity
-		if(isInitiateByFirstWorkitem()){
-			getInitiatorHumanActivityReference(null);
-		}
-
-		//}
+//		//if(true || GlobalContext.isDesignTime()){
+//		//cache the initiator human activity
+//		if(isInitiateByFirstWorkitem()){
+//			getInitiatorHumanActivityReference(null);
+//		}
+//
+//		//}
 
 		setActivityFilters(null);
 	}

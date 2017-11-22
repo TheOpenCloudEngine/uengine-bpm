@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.Hashtable;
 
 public class BPMNUtil {
+
     public static final String MSProject = "project";
     public static final String VP = "definitions";
 

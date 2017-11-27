@@ -1224,5 +1224,9 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 	public void setOpengraph(String opengraph) {
 		this.opengraph = opengraph;
 	}
+
+	public Hashtable getWholeChildActivities() {
+		return wholeChildActivities;
+	}
 }
 

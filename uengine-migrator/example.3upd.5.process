@@ -12,6 +12,37 @@
   <isQueuingEnabled>false</isQueuingEnabled>
   <isFaultTolerant>false</isFaultTolerant>
   <childActivities>
+    <org.uengine.kernel.bpmn.StartEvent>
+      <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
+      <breakpoint>false</breakpoint>
+      <name>
+        <text>Start</text>
+      </name>
+      <tracingTag>19</tracingTag>
+      <cost>0</cost>
+      <retryLimit>0</retryLimit>
+      <retryDelay>60</retryDelay>
+      <isHidden>false</isHidden>
+      <integrity>0</integrity>
+      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+      <isQueuingEnabled>false</isQueuingEnabled>
+      <isFaultTolerant>false</isFaultTolerant>
+      <elementView class="org.uengine.kernel.bpmn.view.StartEventView">
+        <shapeId>OG.shape.bpmn.A_Task</shapeId>
+        <x>263.0</x>
+        <y>187.0</y>
+        <width>30.0</width>
+        <height>30.0</height>
+        <label>Start</label>
+        <index>0</index>
+        <element class="org.uengine.kernel.bpmn.StartEvent" reference="../.."/>
+        <propertyDialogHeight>0</propertyDialogHeight>
+        <propertyDialogWidth>0</propertyDialogWidth>
+        <changed>false</changed>
+        <byDrop>false</byDrop>
+      </elementView>
+      <intermediate>false</intermediate>
+    </org.uengine.kernel.bpmn.StartEvent>
     <org.uengine.kernel.bpmn.CallActivity>
       <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
       <breakpoint>false</breakpoint>
@@ -36,10 +67,10 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.view.SubProcessActivityView">
-        <id>HumanActivity_1</id>
+        <id>1</id>
         <shapeId>OG.shape.bpmn.A_Task</shapeId>
-        <x>200.0</x>
-        <y>200.0</y>
+        <x>383.0</x>
+        <y>187.0</y>
         <width>100.0</width>
         <height>100.0</height>
         <label>계약체결 승인</label>
@@ -139,6 +170,22 @@
               <localedTexts/>
             </displayName>
             <dontPersistResolutionResult>false</dontPersistResolutionResult>
+            <elementView class="org.uengine.kernel.view.RoleView">
+              <id>Initiator</id>
+              <parent>ROLE</parent>
+              <shapeId>OG.shape.HorizontalLaneShape</shapeId>
+              <x>645.0</x>
+              <y>175.0</y>
+              <width>1050.0</width>
+              <height>150.0</height>
+              <label>Initiator</label>
+              <index>0</index>
+              <element class="org.uengine.kernel.Role" reference="../.."/>
+              <propertyDialogHeight>0</propertyDialogHeight>
+              <propertyDialogWidth>0</propertyDialogWidth>
+              <changed>false</changed>
+              <byDrop>false</byDrop>
+            </elementView>
           </role>
           <split>false</split>
         </org.uengine.kernel.RoleParameterContext>
@@ -163,6 +210,22 @@
               <localedTexts/>
             </displayName>
             <dontPersistResolutionResult>false</dontPersistResolutionResult>
+            <elementView class="org.uengine.kernel.view.RoleView">
+              <id>Charger</id>
+              <parent>ROLE</parent>
+              <shapeId>OG.shape.HorizontalLaneShape</shapeId>
+              <x>645.0</x>
+              <y>1075.0</y>
+              <width>1050.0</width>
+              <height>750.0</height>
+              <label>Charger</label>
+              <index>0</index>
+              <element class="org.uengine.kernel.Role" reference="../.."/>
+              <propertyDialogHeight>0</propertyDialogHeight>
+              <propertyDialogWidth>0</propertyDialogWidth>
+              <changed>false</changed>
+              <byDrop>false</byDrop>
+            </elementView>
           </role>
           <direction>in-out</direction>
           <split>false</split>
@@ -178,7 +241,7 @@
       <name>
         <text>Exclusive</text>
       </name>
-      <tracingTag>1</tracingTag>
+      <tracingTag>13</tracingTag>
       <cost>0</cost>
       <retryLimit>0</retryLimit>
       <retryDelay>60</retryDelay>
@@ -188,9 +251,10 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.bpmn.view.GatewayView">
+        <id>13</id>
         <shapeId>OG.shape.bpmn.G_Gateway</shapeId>
-        <x>300.0</x>
-        <y>200.0</y>
+        <x>503.0</x>
+        <y>187.0</y>
         <width>30.0</width>
         <height>30.0</height>
         <label>Exclusive</label>
@@ -208,7 +272,7 @@
       <name>
         <text>Exclusive</text>
       </name>
-      <tracingTag>2</tracingTag>
+      <tracingTag>6</tracingTag>
       <cost>0</cost>
       <retryLimit>0</retryLimit>
       <retryDelay>60</retryDelay>
@@ -218,9 +282,41 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.bpmn.view.GatewayView">
+        <id>6</id>
         <shapeId>OG.shape.bpmn.G_Gateway</shapeId>
-        <x>400.0</x>
-        <y>200.0</y>
+        <x>623.0</x>
+        <y>187.0</y>
+        <width>30.0</width>
+        <height>30.0</height>
+        <label>Exclusive</label>
+        <index>0</index>
+        <element class="org.uengine.kernel.bpmn.Gateway" reference="../.."/>
+        <propertyDialogHeight>0</propertyDialogHeight>
+        <propertyDialogWidth>0</propertyDialogWidth>
+        <changed>false</changed>
+        <byDrop>false</byDrop>
+      </elementView>
+    </org.uengine.kernel.bpmn.Gateway>
+    <org.uengine.kernel.bpmn.Gateway>
+      <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
+      <breakpoint>false</breakpoint>
+      <name>
+        <text>Exclusive</text>
+      </name>
+      <tracingTag>20</tracingTag>
+      <cost>0</cost>
+      <retryLimit>0</retryLimit>
+      <retryDelay>60</retryDelay>
+      <isHidden>false</isHidden>
+      <integrity>0</integrity>
+      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+      <isQueuingEnabled>false</isQueuingEnabled>
+      <isFaultTolerant>false</isFaultTolerant>
+      <elementView class="org.uengine.kernel.bpmn.view.GatewayView">
+        <id>20</id>
+        <shapeId>OG.shape.bpmn.G_Gateway</shapeId>
+        <x>863.0</x>
+        <y>187.0</y>
         <width>30.0</width>
         <height>30.0</height>
         <label>Exclusive</label>
@@ -252,10 +348,10 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.view.HumanActivityView">
-        <id>HumanActivity_7</id>
+        <id>7</id>
         <shapeId>OG.shape.bpmn.A_HumanTask</shapeId>
-        <x>650.0</x>
-        <y>200.0</y>
+        <x>743.0</x>
+        <y>824.5</y>
         <width>100.0</width>
         <height>100.0</height>
         <label>구매계약 전송(물품)</label>
@@ -307,10 +403,10 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.view.HumanActivityView">
-        <id>HumanActivity_8</id>
+        <id>8</id>
         <shapeId>OG.shape.bpmn.A_HumanTask</shapeId>
-        <x>650.0</x>
-        <y>200.0</y>
+        <x>743.0</x>
+        <y>924.5</y>
         <width>100.0</width>
         <height>100.0</height>
         <label>구매계약 전송(용역)</label>
@@ -358,10 +454,10 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.view.HumanActivityView">
-        <id>HumanActivity_9</id>
+        <id>9</id>
         <shapeId>OG.shape.bpmn.A_HumanTask</shapeId>
-        <x>650.0</x>
-        <y>200.0</y>
+        <x>743.0</x>
+        <y>1024.5</y>
         <width>100.0</width>
         <height>100.0</height>
         <label>구매계약 전송(공사)</label>
@@ -395,7 +491,7 @@
       <name>
         <text>Exclusive</text>
       </name>
-      <tracingTag>3</tracingTag>
+      <tracingTag>15</tracingTag>
       <cost>0</cost>
       <retryLimit>0</retryLimit>
       <retryDelay>60</retryDelay>
@@ -405,9 +501,41 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.bpmn.view.GatewayView">
+        <id>15</id>
         <shapeId>OG.shape.bpmn.G_Gateway</shapeId>
-        <x>400.0</x>
-        <y>400.0</y>
+        <x>623.0</x>
+        <y>287.0</y>
+        <width>30.0</width>
+        <height>30.0</height>
+        <label>Exclusive</label>
+        <index>0</index>
+        <element class="org.uengine.kernel.bpmn.Gateway" reference="../.."/>
+        <propertyDialogHeight>0</propertyDialogHeight>
+        <propertyDialogWidth>0</propertyDialogWidth>
+        <changed>false</changed>
+        <byDrop>false</byDrop>
+      </elementView>
+    </org.uengine.kernel.bpmn.Gateway>
+    <org.uengine.kernel.bpmn.Gateway>
+      <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
+      <breakpoint>false</breakpoint>
+      <name>
+        <text>Exclusive</text>
+      </name>
+      <tracingTag>21</tracingTag>
+      <cost>0</cost>
+      <retryLimit>0</retryLimit>
+      <retryDelay>60</retryDelay>
+      <isHidden>false</isHidden>
+      <integrity>0</integrity>
+      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+      <isQueuingEnabled>false</isQueuingEnabled>
+      <isFaultTolerant>false</isFaultTolerant>
+      <elementView class="org.uengine.kernel.bpmn.view.GatewayView">
+        <id>21</id>
+        <shapeId>OG.shape.bpmn.G_Gateway</shapeId>
+        <x>863.0</x>
+        <y>287.0</y>
         <width>30.0</width>
         <height>30.0</height>
         <label>Exclusive</label>
@@ -439,10 +567,10 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.view.HumanActivityView">
-        <id>HumanActivity_16</id>
+        <id>16</id>
         <shapeId>OG.shape.bpmn.A_HumanTask</shapeId>
-        <x>650.0</x>
-        <y>500.0</y>
+        <x>743.0</x>
+        <y>1124.5</y>
         <width>100.0</width>
         <height>100.0</height>
         <label>구매계약 확정(물품)</label>
@@ -494,10 +622,10 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.view.HumanActivityView">
-        <id>HumanActivity_17</id>
+        <id>17</id>
         <shapeId>OG.shape.bpmn.A_HumanTask</shapeId>
-        <x>650.0</x>
-        <y>500.0</y>
+        <x>743.0</x>
+        <y>1224.5</y>
         <width>100.0</width>
         <height>100.0</height>
         <label>구매계약 확정(용역)</label>
@@ -545,10 +673,10 @@
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
       <elementView class="org.uengine.kernel.view.HumanActivityView">
-        <id>HumanActivity_18</id>
+        <id>18</id>
         <shapeId>OG.shape.bpmn.A_HumanTask</shapeId>
-        <x>650.0</x>
-        <y>500.0</y>
+        <x>743.0</x>
+        <y>1324.5</y>
         <width>100.0</width>
         <height>100.0</height>
         <label>구매계약 확정(공사)</label>
@@ -576,8 +704,457 @@
       <instruction/>
       <keyword/>
     </org.uengine.kernel.HumanActivity>
+    <org.uengine.kernel.bpmn.EndEvent>
+      <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
+      <breakpoint>false</breakpoint>
+      <name>
+        <text>End</text>
+      </name>
+      <tracingTag>22</tracingTag>
+      <cost>0</cost>
+      <retryLimit>0</retryLimit>
+      <retryDelay>60</retryDelay>
+      <isHidden>false</isHidden>
+      <integrity>0</integrity>
+      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+      <isQueuingEnabled>false</isQueuingEnabled>
+      <isFaultTolerant>false</isFaultTolerant>
+      <elementView class="org.uengine.kernel.bpmn.view.EndEventView">
+        <shapeId>OG.shape.bpmn.A_Task</shapeId>
+        <x>983.0</x>
+        <y>187.0</y>
+        <width>30.0</width>
+        <height>30.0</height>
+        <label>End</label>
+        <index>0</index>
+        <element class="org.uengine.kernel.bpmn.EndEvent" reference="../.."/>
+        <propertyDialogHeight>0</propertyDialogHeight>
+        <propertyDialogWidth>0</propertyDialogWidth>
+        <changed>false</changed>
+        <byDrop>false</byDrop>
+      </elementView>
+      <intermediate>false</intermediate>
+    </org.uengine.kernel.bpmn.EndEvent>
   </childActivities>
   <pools/>
+  <roles>
+    <org.uengine.kernel.Role>
+      <name>ROLE</name>
+      <dispatchingOption>0</dispatchingOption>
+      <isHumanWorker>false</isHumanWorker>
+      <askWhenInit>true</askWhenInit>
+      <displayName>
+        <text></text>
+      </displayName>
+      <dontPersistResolutionResult>false</dontPersistResolutionResult>
+      <elementView class="org.uengine.kernel.view.RoleView">
+        <id>ROLE</id>
+        <shapeId>OG.shape.HorizontalLaneShape</shapeId>
+        <x>635.0</x>
+        <y>775.0</y>
+        <width>1070.0</width>
+        <height>1350.0</height>
+        <label>ROLE</label>
+        <index>0</index>
+        <element class="org.uengine.kernel.Role" reference="../.."/>
+        <propertyDialogHeight>0</propertyDialogHeight>
+        <propertyDialogWidth>0</propertyDialogWidth>
+        <changed>false</changed>
+        <byDrop>false</byDrop>
+      </elementView>
+    </org.uengine.kernel.Role>
+    <org.uengine.kernel.Role reference="../../childActivities/org.uengine.kernel.bpmn.CallActivity/roleBindings/org.uengine.kernel.RoleParameterContext/role"/>
+    <org.uengine.kernel.Role>
+      <name>manager1</name>
+      <dispatchingOption>0</dispatchingOption>
+      <serviceType/>
+      <isHumanWorker>false</isHumanWorker>
+      <askWhenInit>true</askWhenInit>
+      <displayName>
+        <text>계정책임자</text>
+        <localedTexts/>
+      </displayName>
+      <dontPersistResolutionResult>false</dontPersistResolutionResult>
+      <elementView class="org.uengine.kernel.view.RoleView">
+        <id>manager1</id>
+        <parent>ROLE</parent>
+        <shapeId>OG.shape.HorizontalLaneShape</shapeId>
+        <x>645.0</x>
+        <y>325.0</y>
+        <width>1050.0</width>
+        <height>150.0</height>
+        <label>manager1</label>
+        <index>0</index>
+        <element class="org.uengine.kernel.Role" reference="../.."/>
+        <propertyDialogHeight>0</propertyDialogHeight>
+        <propertyDialogWidth>0</propertyDialogWidth>
+        <changed>false</changed>
+        <byDrop>false</byDrop>
+      </elementView>
+    </org.uengine.kernel.Role>
+    <org.uengine.kernel.Role>
+      <name>manager2</name>
+      <dispatchingOption>0</dispatchingOption>
+      <serviceType/>
+      <isHumanWorker>false</isHumanWorker>
+      <askWhenInit>true</askWhenInit>
+      <displayName>
+        <text>입회자</text>
+        <localedTexts/>
+      </displayName>
+      <dontPersistResolutionResult>false</dontPersistResolutionResult>
+      <elementView class="org.uengine.kernel.view.RoleView">
+        <id>manager2</id>
+        <parent>ROLE</parent>
+        <shapeId>OG.shape.HorizontalLaneShape</shapeId>
+        <x>645.0</x>
+        <y>475.0</y>
+        <width>1050.0</width>
+        <height>150.0</height>
+        <label>manager2</label>
+        <index>0</index>
+        <element class="org.uengine.kernel.Role" reference="../.."/>
+        <propertyDialogHeight>0</propertyDialogHeight>
+        <propertyDialogWidth>0</propertyDialogWidth>
+        <changed>false</changed>
+        <byDrop>false</byDrop>
+      </elementView>
+    </org.uengine.kernel.Role>
+    <org.uengine.kernel.Role>
+      <name>manager3</name>
+      <dispatchingOption>0</dispatchingOption>
+      <serviceType/>
+      <isHumanWorker>false</isHumanWorker>
+      <askWhenInit>true</askWhenInit>
+      <displayName>
+        <text>자산담당자</text>
+        <localedTexts/>
+      </displayName>
+      <dontPersistResolutionResult>false</dontPersistResolutionResult>
+      <elementView class="org.uengine.kernel.view.RoleView">
+        <id>manager3</id>
+        <parent>ROLE</parent>
+        <shapeId>OG.shape.HorizontalLaneShape</shapeId>
+        <x>645.0</x>
+        <y>625.0</y>
+        <width>1050.0</width>
+        <height>150.0</height>
+        <label>manager3</label>
+        <index>0</index>
+        <element class="org.uengine.kernel.Role" reference="../.."/>
+        <propertyDialogHeight>0</propertyDialogHeight>
+        <propertyDialogWidth>0</propertyDialogWidth>
+        <changed>false</changed>
+        <byDrop>false</byDrop>
+      </elementView>
+    </org.uengine.kernel.Role>
+    <org.uengine.kernel.Role reference="../../childActivities/org.uengine.kernel.bpmn.CallActivity/roleBindings/org.uengine.kernel.RoleParameterContext[4]/role"/>
+  </roles>
+  <sequenceFlows>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <sourceRef>19</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>1</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <sourceRef>1</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>13</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <name>물품</name>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>6</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>7</targetRef>
+      <condition class="org.uengine.kernel.ExpressionEvaluateCondition">
+        <description/>
+        <conditionExpression>instance.get(&quot;OrderType&quot;)==&quot;EGF010&quot;</conditionExpression>
+      </condition>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>7</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>20</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <name>용역</name>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>6</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>8</targetRef>
+      <condition class="org.uengine.kernel.ExpressionEvaluateCondition">
+        <description/>
+        <conditionExpression>instance.get(&quot;OrderType&quot;)==&quot;EGF020&quot;</conditionExpression>
+      </condition>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>8</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>20</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <name>공사</name>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>6</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>9</targetRef>
+      <condition class="org.uengine.kernel.ExpressionEvaluateCondition">
+        <description/>
+        <conditionExpression>instance.get(&quot;OrderType&quot;)==&quot;EGF030&quot;</conditionExpression>
+      </condition>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>9</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>20</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>13</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>6</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <name>물품</name>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>15</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>16</targetRef>
+      <condition class="org.uengine.kernel.ExpressionEvaluateCondition">
+        <description/>
+        <conditionExpression>instance.get(&quot;OrderType&quot;)==&quot;EGF010&quot;</conditionExpression>
+      </condition>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>16</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>21</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <name>용역</name>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>15</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>17</targetRef>
+      <condition class="org.uengine.kernel.ExpressionEvaluateCondition">
+        <description/>
+        <conditionExpression>instance.get(&quot;OrderType&quot;)==&quot;EGF020&quot;</conditionExpression>
+      </condition>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>17</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>21</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <name>공사</name>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>15</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>18</targetRef>
+      <condition class="org.uengine.kernel.ExpressionEvaluateCondition">
+        <description/>
+        <conditionExpression>instance.get(&quot;OrderType&quot;)==&quot;EGF030&quot;</conditionExpression>
+      </condition>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>18</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>21</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <name>연계</name>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>13</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>15</targetRef>
+      <condition class="org.uengine.kernel.ExpressionEvaluateCondition">
+        <description/>
+        <conditionExpression>instance.get(&quot;ContractTypeMain&quot;)==&quot;PRG010&quot;</conditionExpression>
+      </condition>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>21</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>22</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+    <org.uengine.kernel.bpmn.SequenceFlow>
+      <relationView class="org.uengine.kernel.bpmn.view.SequenceFlowView">
+        <TERMINAL__IN__OUT>_TERMINAL_C_INOUT_0</TERMINAL__IN__OUT>
+        <shapeId>OG.shape.bpmn.C_Flow</shapeId>
+        <x>0.0</x>
+        <y>0.0</y>
+        <width>0.0</width>
+        <height>0.0</height>
+        <needReconnect>false</needReconnect>
+        <relation class="org.uengine.kernel.bpmn.SequenceFlow" reference="../.."/>
+      </relationView>
+      <sourceRef>20</sourceRef>
+      <feedback>false</feedback>
+      <targetRef>22</targetRef>
+      <otherwise>false</otherwise>
+    </org.uengine.kernel.bpmn.SequenceFlow>
+  </sequenceFlows>
   <processVariableDescriptors>
     <org.uengine.kernel.ProcessVariable reference="../../childActivities/org.uengine.kernel.bpmn.CallActivity/variableBindings/org.uengine.kernel.SubProcessParameterContext/variable"/>
     <org.uengine.kernel.ProcessVariable>
@@ -613,5 +1190,5 @@
   <isAdhoc>true</isAdhoc>
   <initiateByFirstWorkitem>true</initiateByFirstWorkitem>
   <isVolatile>false</isVolatile>
-  <activitySequence>3</activitySequence>
+  <activitySequence>0</activitySequence>
 </org.uengine.kernel.ProcessDefinition>

@@ -83,8 +83,10 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
 
         //tracingtag duplication preventation
         startGateway.setTracingTag(complexActivity.getTracingTag());
+        startGateway.getElementView().setId(startGateway.getTracingTag());
         if(makeEndGateway) {
             endGateway.setTracingTag(MigUtils.getNewTracingTag());
+            endGateway.getElementView().setId(endGateway.getTracingTag());
         }
         processDefinition5.addChildActivity(startGateway);
         if(makeEndGateway) {

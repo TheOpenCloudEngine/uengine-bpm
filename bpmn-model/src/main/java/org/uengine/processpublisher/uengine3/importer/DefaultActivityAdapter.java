@@ -24,7 +24,9 @@ public class DefaultActivityAdapter implements Adapter<DefaultActivity, ProcessD
 
         elementView.setWidth(MigDrawPositoin.getHumanActivityWidth());
         elementView.setHeight(MigDrawPositoin.getHumanActivityHeight());
-        elementView.setId("HumanActivity_" + humanActivity.getTracingTag());
+        //elementView.setId("HumanActivity_" + humanActivity.getTracingTag());
+        //50은 액티비티 삭제시 elementview id = tracing tag 조건이 있음
+        elementView.setId(humanActivity.getTracingTag());
         humanActivity.setElementView(elementView);
         Index.indexX.set(indexX + 1);
     }

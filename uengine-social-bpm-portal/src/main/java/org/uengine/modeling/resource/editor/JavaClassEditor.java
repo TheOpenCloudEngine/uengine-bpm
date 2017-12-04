@@ -9,7 +9,7 @@ import org.uengine.modeling.resource.IResource;
  * Created by jjy on 2016. 4. 7..
  */
 @Face(ejsPath="genericfaces/CleanObjectFace.ejs")
-public class JavaclassEditor implements IEditor<JavaClassDefinition> {
+public class JavaClassEditor implements IEditor<JavaClassDefinition> {
 
     JavaClassDefinition javaClassDefinition;
         public JavaClassDefinition getJavaClassDefinition() {

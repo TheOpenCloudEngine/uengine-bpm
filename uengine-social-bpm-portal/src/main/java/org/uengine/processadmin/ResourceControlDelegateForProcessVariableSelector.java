@@ -3,14 +3,10 @@ package org.uengine.processadmin;
 import org.metaworks.Remover;
 import org.metaworks.ToOpener;
 import org.metaworks.dwr.MetaworksRemoteService;
-import org.metaworks.widget.ModalWindow;
 import org.uengine.codi.mw3.model.Popup;
-import org.uengine.contexts.JavaClassDefinition;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.ResourceControlDelegate;
-import org.uengine.modeling.resource.ResourceManager;
-import org.uengine.modeling.resource.resources.JavaclassResource;
 import org.uengine.social.SocialBPMProcessVariableTypeSelector;
 
 /**

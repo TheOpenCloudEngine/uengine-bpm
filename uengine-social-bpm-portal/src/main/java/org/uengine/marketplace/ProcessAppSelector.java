@@ -1,5 +1,8 @@
 package org.uengine.marketplace;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.metaworks.Face;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
@@ -9,12 +12,9 @@ import org.uengine.codi.mw3.model.Session;
 import org.uengine.modeling.resource.DefaultResource;
 import org.uengine.modeling.resource.IResource;
 import org.uengine.modeling.resource.resources.ClassResource;
-import org.uengine.modeling.resource.resources.UrlappResource;
+import org.uengine.modeling.resource.resources.URLappResource;
 import org.uengine.processadmin.ProcessAdminResourceNavigator;
 import org.uengine.processadmin.ResourceControlDelegateForAddingProcessMap;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProcessAppSelector implements Face<String> {
 
@@ -40,7 +40,7 @@ public class ProcessAppSelector implements Face<String> {
 		getProcessAdminResourceNavigator().setResourceControlDelegate(new ResourceControlDelegateForAddingProcessMap());
 
 		getProcessAdminResourceNavigator().getRoot().filtResources(ClassResource.class);
-		getProcessAdminResourceNavigator().getRoot().filtResources(UrlappResource.class);
+		getProcessAdminResourceNavigator().getRoot().filtResources(URLappResource.class);
 
 		try {
 			ProcessMapList processMapList = new ProcessMapList();

@@ -1,23 +1,24 @@
 package org.uengine.processadmin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.AutowiredFromClient;
 import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.Label;
-import org.oce.garuda.multitenancy.TenantContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.uengine.codi.mw3.model.IProcessMap;
 import org.uengine.codi.mw3.model.ProcessMapList;
 import org.uengine.codi.mw3.model.Session;
-import org.uengine.modeling.resource.*;
+import org.uengine.modeling.resource.ContainerResource;
+import org.uengine.modeling.resource.DefaultResource;
+import org.uengine.modeling.resource.IResource;
+import org.uengine.modeling.resource.VersionManager;
 import org.uengine.modeling.resource.resources.ClassResource;
-import org.uengine.modeling.resource.resources.UrlappResource;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.uengine.modeling.resource.resources.URLappResource;
 
 @Component
 @Scope("prototype")
@@ -95,7 +96,7 @@ public class ProcessAdminAddProcessMapPanel extends org.uengine.codi.mw3.model.A
 
 
 		getProcessAdminResourceNavigator().getRoot().filtResources(ClassResource.class);
-		getProcessAdminResourceNavigator().getRoot().filtResources(UrlappResource.class);
+		getProcessAdminResourceNavigator().getRoot().filtResources(URLappResource.class);
 
 		try {
 			ProcessMapList processMapList = new ProcessMapList();

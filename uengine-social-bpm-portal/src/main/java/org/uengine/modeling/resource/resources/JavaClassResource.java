@@ -5,7 +5,7 @@ import org.uengine.modeling.resource.DefaultResource;
 /**
  * Created by jangjinyoung on 15. 9. 27..
  */
-public class JavaclassResource extends DefaultResource {
+public class JavaClassResource extends DefaultResource {
 
 //    @Override
 //    public String getName() {

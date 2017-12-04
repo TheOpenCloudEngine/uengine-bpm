@@ -1,17 +1,19 @@
 package org.uengine.social;
 
-import org.metaworks.MetaworksContext;
-import org.metaworks.annotation.*;
-import org.metaworks.dwr.MetaworksRemoteService;
-import org.uengine.modeling.resource.*;
-import org.uengine.modeling.resource.resources.ClassResource;
-import org.uengine.modeling.resource.resources.JavaclassResource;
-import org.uengine.modeling.resource.resources.UrlappResource;
-import org.uengine.processadmin.ProcessAdminResourceNavigator;
-import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelector;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import org.metaworks.MetaworksContext;
+import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Range;
+import org.metaworks.dwr.MetaworksRemoteService;
+import org.uengine.modeling.resource.DefaultResource;
+import org.uengine.modeling.resource.ResourceNavigator;
+import org.uengine.modeling.resource.resources.ClassResource;
+import org.uengine.modeling.resource.resources.JavaClassResource;
+import org.uengine.modeling.resource.resources.URLappResource;
+import org.uengine.processadmin.ProcessAdminResourceNavigator;
+import org.uengine.processadmin.ResourceControlDelegateForProcessVariableSelector;
 
 /**
  * Created by jangjinyoung on 15. 9. 17..
@@ -56,8 +58,8 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
 
         Set<Class> resourceTypes = new HashSet<Class>();
         resourceTypes.add(ClassResource.class);
-        resourceTypes.add(UrlappResource.class);
-        resourceTypes.add(JavaclassResource.class);
+        resourceTypes.add(URLappResource.class);
+        resourceTypes.add(JavaClassResource.class);
 
         classResourceNavigator.getRoot().filtResources(resourceTypes, false);
 
@@ -65,23 +67,23 @@ public class SocialBPMProcessVariableTypeSelectorPopup {
 
 
         {
-            DefaultResource primitive = new JavaclassResource();
+            DefaultResource primitive = new JavaClassResource();
             primitive.setPath("java.lang.String");
             classResourceNavigator.getRoot().getChildren().add(0, primitive);
         }
         {
-            DefaultResource primitive = new JavaclassResource();
+            DefaultResource primitive = new JavaClassResource();
             primitive.setPath("java.lang.Long");
             classResourceNavigator.getRoot().getChildren().add(0, primitive);
         }
         {
-            DefaultResource primitive = new JavaclassResource();
+            DefaultResource primitive = new JavaClassResource();
             primitive.setPath("java.lang.Double");
             classResourceNavigator.getRoot().getChildren().add(0, primitive);
         }
 
         {
-            DefaultResource primitive = new JavaclassResource();
+            DefaultResource primitive = new JavaClassResource();
             primitive.setPath(RoleUser.class.getName());
             classResourceNavigator.getRoot().getChildren().add(0, primitive);
         }

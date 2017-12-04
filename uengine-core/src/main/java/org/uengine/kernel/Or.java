@@ -47,6 +47,7 @@ public class Or extends And{
 
 	@Override
 	public String toString() {
-		return "Or";
+		//return "Or";
+		return super.toString("Or");
 	}
 }

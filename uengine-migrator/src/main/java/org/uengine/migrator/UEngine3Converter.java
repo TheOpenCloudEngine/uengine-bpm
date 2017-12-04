@@ -4,6 +4,7 @@ import org.uengine.components.serializers.ActivityRepositoryConverter;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.CallActivity;
 import org.uengine.modeling.resource.Serializer;
+import org.uengine.processpublisher.MigUtils;
 import org.uengine.processpublisher.uengine3.importer.ProcessDefinitionAdapter;
 import org.uengine.util.ActivityFor;
 import org.uengine.util.UEngineUtil;
@@ -38,6 +39,9 @@ public class UEngine3Converter {
 
         ProcessDefinition processDefinition3 = (ProcessDefinition) Serializer.deserialize(inputString);
         ProcessDefinition processDefinition5;
+
+        //set max tracing tag value
+        MigUtils.setMaxTracingTag(processDefinition3);
 
         ProcessDefinitionAdapter processDefinitionAdapter = new ProcessDefinitionAdapter();
 

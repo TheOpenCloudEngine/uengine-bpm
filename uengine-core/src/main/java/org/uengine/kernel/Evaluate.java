@@ -292,20 +292,32 @@ public class Evaluate extends Condition{
 	}
 	
 	public String toString(){
-		if(getDescription().getText()!=null && getDescription().getText().length() > 0)
-			return getDescription().getText();
-		
-		Object k = key;
-		
-		if(pv!=null)
-			k = pv;				
 
-		if(k==null){
-			return "[Evaluate] Not Set (Right click - 'Edit' to edit)";
+		if (getDescription().getText() != null && getDescription().getText().length() > 0)
+			return getDescription().getText();
+
+		Object k = key;
+
+		String expression;
+
+		if (pv != null){
+			k = pv;
+			expression = pv.getName();
+		}else{
+			expression = k.toString();
 		}
 
-		String returnVal = k + " " + condition + " " + val;
-		
+		//String returnVal = "instance.get(\""+ expression + "\"). " + this.convertJavaCondition(condition, val.toString());
+		String returnVal = "instance.get(\""+ expression + "\")" + this.convertJavaCondition(condition, val.toString());
+
+		return returnVal;
+	}
+
+	private String convertJavaCondition(String condition, String val){
+		//String returnVal = "equals(\"" + val + "\")";
+		String returnVal = "==\"" + val + "\"";
+		//add condtion type
+
 		return returnVal;
 	}
 

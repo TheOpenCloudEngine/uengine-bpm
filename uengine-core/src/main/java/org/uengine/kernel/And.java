@@ -17,7 +17,7 @@ public class And extends Condition{
 
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
-	Vector conditionsVt;
+	Vector<Condition> conditionsVt;
 
 	
 	public And(){
@@ -174,6 +174,23 @@ public class And extends Condition{
 
 	@Override
 	public String toString() {
-		return "And";
+
+		return toString("and");
+	}
+
+	public String toString(String connector) {
+
+		StringBuffer evalutionExpression = new StringBuffer();
+
+		boolean first = true;
+		for(Condition childCondition : conditionsVt){
+			if(!first) evalutionExpression.append(" "+connector+" ");
+
+			evalutionExpression.append(childCondition.toString());
+
+			first = false;
+		}
+
+		return evalutionExpression.toString();
 	}
 }

@@ -194,10 +194,12 @@ public class HumanActivity extends ReceiveActivity{
 			//reflect the duedate changes to the worklist where the taskid matches.
 			String[] taskIds = getTaskIds(instance);
 			
-//			update the duedates of the associated workitems
-			WorklistDAOType worklistDF = WorklistDAOType.getInstance(instance.getProcessTransactionContext());
 			Date dueDateInDate = (dueDate == null ? null:dueDate.getTime());
-			worklistDF.updateDueDateByTaskId(taskIds, dueDateInDate);
+
+			WorkList workList = instance.getWorkList();
+			if (taskIds != null) {
+				workList.updateWorkItem(taskIds[0], null, new KeyedParameter[]{new KeyedParameter(KeyedParameter.DUEDATE, dueDateInDate)}, instance.getProcessTransactionContext());
+			}
 		}
 		
 		firePropertyChangeEventToActivityFilters(instance, PVKEY_DUEDATE, dueDate);

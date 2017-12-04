@@ -2,13 +2,7 @@ package org.uengine.kernel;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.annotation.Face;
@@ -1227,6 +1221,10 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 
 	public Hashtable getWholeChildActivities() {
 		return wholeChildActivities;
+	}
+
+	public void gatherPropagatedActivitiesOf(ProcessInstance instance, Activity child, List list) throws Exception {
+		super.gatherPropagatedActivitiesOf(instance, child, list);
 	}
 }
 

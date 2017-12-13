@@ -105,10 +105,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proc
         this.createStartEventView(startEvent);
         startEvent.setTracingTag(MigUtils.getNewTracingTag());
         processDefinition.addChildActivity(startEvent);
-        MigUtils.addPreActivities(startEvent);
-        //MigUtils.setPreActivityTracingTag(startEvent.getTracingTag());
-        MigUtils.setDrawLinePreActivity(true);
-
+        
         // 액티비티 변환
         for(Activity activity : src.getChildActivities()){
             keyedContext.put("root", processDefinition);
@@ -126,7 +123,6 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proc
 
 
         //ROLE 재조정
-
         //부모 롤 조정
         parentRole.getElementView().setHeight(MigUtils.getRoleTotalHeight(processDefinition));
         parentRole.getElementView().setWidth((MigDrawPositoin.getChildRoleWidth() * Index.indexX.get())+MigDrawPositoin.getParentRoleNameLabelWidth());
@@ -135,7 +131,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proc
 
         //차일드 롤 조정
         double preRoleHeight = 0;
-        int loopChildCnt = 0;
+        int childRoleCnt = 0;
         for(Role role : processDefinition.getRoles()) {
             if (role.getElementView().getParent() != null) {
                 //차일드 롤
@@ -143,7 +139,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proc
                 role.getElementView().setX(role.getElementView().getWidth() / 2 + MigDrawPositoin.getRoleXPosition() + MigDrawPositoin.getParentRoleNameLabelWidth());
                 role.getElementView().setY( role.getElementView().getHeight() /2 + MigDrawPositoin.getRoleYPosition() + preRoleHeight );
                 preRoleHeight += role.getElementView().getHeight();
-                loopChildCnt++;
+                childRoleCnt++;
             }
         }
 
@@ -153,7 +149,7 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proc
         while(enumeration.hasMoreElements()){
             Activity activity = (Activity)enumeration.nextElement();
             //액티비티가 트래지션이 없는 경우 endEVENT에 연결
-            if(MigUtils.isNotTransition(processDefinition, activity.getTracingTag())){
+            if(MigUtils.isNotSourceTransition(processDefinition, activity.getTracingTag())){
                 if(activity.getTracingTag().equals(endEvent.getTracingTag()) == false) {
                     SequenceFlow sequenceFlow = new SequenceFlow();
 
@@ -166,10 +162,12 @@ public class ProcessDefinitionAdapter implements Adapter<ProcessDefinition, Proc
                 }
             }
             //휴먼 액티비티 위치 재조정
-            if( activity instanceof  org.uengine.kernel.HumanActivity ) {
-                activity.getElementView().setY(activity.getElementView().getY()
-                        + (processDefinition.getRole(((HumanActivity) activity).getRole().getName()).getElementView().getY()/2)
-                        + MigDrawPositoin.getRoleYPosition() );
+            if(childRoleCnt > 1){
+                if( activity instanceof  org.uengine.kernel.HumanActivity ) {
+                    activity.getElementView().setY(activity.getElementView().getY()
+                            + (processDefinition.getRole(((HumanActivity) activity).getRole().getName()).getElementView().getY()/2)
+                            + MigDrawPositoin.getRoleYPosition() );
+                }
             }
         }
 

@@ -9,6 +9,7 @@ import org.uengine.processpublisher.Index;
 import org.uengine.processpublisher.MigDrawPositoin;
 import org.uengine.processpublisher.MigUtils;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
@@ -42,27 +43,36 @@ public class DefaultActivityAdapter implements Adapter<DefaultActivity, ProcessD
         if( humanActivity instanceof  org.uengine.kernel.HumanActivity ) {
             curRole = processDefinition.getRole(((HumanActivity) humanActivity).getRole().getName());
             //humanActivity.getElementView().setY(humanActivity.getElementView().getY() + curRole.getElementView().getY());
-            if( MigUtils.isParallelStructure() ){
+            if( MigUtils.isDrawingSwitchActicity() ){
                 curRole.getElementView().setHeight(curRole.getElementView().getHeight() + MigDrawPositoin.getHumanActivityHeight());
                 curRole.getElementView().setY(curRole.getElementView().getY() + (MigDrawPositoin.getHumanActivityHeight()/2));
             }
         }
         humanActivity.getElementView().setY(MigUtils.getYPosition(processDefinition, humanActivity));
-
-        //전 액티비티가 트랜지션 없이 끝난경우 시퀀스플로우로 전 액티비티연결
-        if( MigUtils.isDrawLinePreActivity()) {
-            for(Activity preActivity : MigUtils.getPreAcitivities()) {
-                SequenceFlow sequenceFlowActivity = new SequenceFlow();
-
-                sequenceFlowActivity.setSourceRef(preActivity.getTracingTag());
-                sequenceFlowActivity.setTargetRef(humanActivity.getTracingTag());
-
-                processDefinition.addSequenceFlow(sequenceFlowActivity);
+        
+        if( MigUtils.isNotTargetTransition(processDefinition, humanActivity.getTracingTag())){
+            Enumeration<Activity> enumeration = processDefinition.getWholeChildActivities().elements();
+            while(enumeration.hasMoreElements()){
+                Activity activity = (Activity)enumeration.nextElement();
+                if( MigUtils.isNotSourceTransition(processDefinition, activity.getTracingTag())
+                        && MigUtils.isNotTargetTransition(processDefinition, humanActivity.getTracingTag())
+                        && ((MigUtils.isDrawingSwitchActicity() && !(activity.getClass().getName().equals(org.uengine.kernel.bpmn.Gateway.class.getName())))
+                                || !MigUtils.isDrawingSwitchActicity())
+                        
+                        )
+                {
+                    if(activity.getTracingTag().equals(humanActivity.getTracingTag())==false){
+                        SequenceFlow sequenceFlow = new SequenceFlow();
+                        
+                        sequenceFlow.setSourceRef(activity.getTracingTag());
+                        sequenceFlow.setTargetRef(humanActivity.getTracingTag());
+                        sequenceFlow.setRelationView(sequenceFlow.createView());
+                        
+                        processDefinition.addSequenceFlow(sequenceFlow);
+                    }
+                }
             }
-            MigUtils.removeAllPreActivities();
-            MigUtils.addPreActivities(humanActivity);
         }
-
         return processDefinition;
     }
 }

@@ -6,6 +6,7 @@ import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
 import org.uengine.processpublisher.*;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
@@ -73,9 +74,10 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
     @Override
     public ProcessDefinition convert(ComplexActivity complexActivity, Hashtable keyedContext) throws Exception {
         System.out.println("<<--------------SwitchActivity.trcTAG : " + complexActivity.getTracingTag());
-        MigUtils.setParallelStructure(true);
+        MigUtils.setDrawingSwitchActicity(true);
         boolean makeEndGateway = this.makeEndGateway(complexActivity);
-
+        boolean makeOtherwise = false;
+        
         Gateway startGateway = this.createStartGateway();
         Gateway endGateway = this.createEndGateway();
 
@@ -84,38 +86,31 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
         //tracingtag duplication preventation
         startGateway.setTracingTag(complexActivity.getTracingTag());
         startGateway.getElementView().setId(startGateway.getTracingTag());
-        if(makeEndGateway) {
-            endGateway.setTracingTag(MigUtils.getNewTracingTag());
-            endGateway.getElementView().setId(endGateway.getTracingTag());
-        }
+        
         processDefinition5.addChildActivity(startGateway);
-        if(makeEndGateway) {
-            processDefinition5.addChildActivity(endGateway);
-        }
         keyedContext.put("root", processDefinition5);
-
-
-        //전 액티비티가 트랜지션 없이 끝난경우 시퀀스플로우로 전 액티비티연결
-        if( MigUtils.isDrawLinePreActivity()) {
-            for(Activity preActivity : MigUtils.getPreAcitivities()) {
-                SequenceFlow sequenceFlowActivity = new SequenceFlow();
-                sequenceFlowActivity.setSourceRef(preActivity.getTracingTag());
-                sequenceFlowActivity.setTargetRef(complexActivity.getTracingTag());
-                processDefinition5.addSequenceFlow(sequenceFlowActivity);
+        
+        //액티비티간연결
+        //StartGateWay가 Target 연결이 안된 경우
+        if( MigUtils.isNotTargetTransition(processDefinition5, startGateway.getTracingTag())){
+            Enumeration<Activity> enumeration = processDefinition5.getWholeChildActivities().elements();
+            while(enumeration.hasMoreElements()){
+                Activity activity = (Activity)enumeration.nextElement();
+                if(activity.getTracingTag().equals(startGateway.getTracingTag())==false){
+                    SequenceFlow sequenceFlow = new SequenceFlow();
+                    
+                    sequenceFlow.setSourceRef(activity.getTracingTag());
+                    sequenceFlow.setTargetRef(startGateway.getTracingTag());
+                    sequenceFlow.setRelationView(sequenceFlow.createView());
+                    
+                    processDefinition5.addSequenceFlow(sequenceFlow);
+                }
             }
         }
 
-        //스위치액티비티인 경우 전단계액티비티에 저장
-        if( complexActivity.getClass().getName().equals(org.uengine.kernel.SwitchActivity.class.getName())) {
-            MigUtils.removeAllPreActivities();
-            MigUtils.addPreActivities(complexActivity);
-        }
 
         int initialIndexX = Index.indexX.get();
         int i=0;
-
-        //SwitchActivity의 경우, child 액티비티 기준으로 라이 드로우
-        MigUtils.setDrawLinePreActivity(false);
 
         for(Activity activity : complexActivity.getChildActivities()){
             System.out.println("   complexActivity.getChildActivities.trcTAG : " + activity.getTracingTag());
@@ -127,8 +122,9 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
 
             //시퀀스 액티비티의 경우 처리 없음
             if(activity.getClass().getName().equals(org.uengine.kernel.SequenceActivity.class.getName())){
-                 continue;
+                 MigUtils.setParentSequenceActivity(true);
             }
+            
             //link from startgateway to activity
             SequenceFlow sequenceFlowFromStartGatewayToActivity = new SequenceFlow();
 
@@ -138,8 +134,20 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
             expressionEvaluateCondition.setConditionExpression(switchActivity.getConditions()[i].toString());
             sequenceFlowFromStartGatewayToActivity.setCondition(expressionEvaluateCondition);
 
+            //condition size=1이면 otherwise강제생성
+            if(switchActivity.getConditions().length == 1){
+                makeOtherwise = true;
+            }
+            
             //set transtion
             sequenceFlowFromStartGatewayToActivity.setSourceRef(startGateway.getTracingTag());
+            if(MigUtils.isParentSequenceActivity() && activity instanceof SequenceActivity){
+                sequenceFlowFromStartGatewayToActivity.setTargetRef(
+                        ((SequenceActivity)activity).getChildActivities().get(0).getTracingTag());
+                
+            }else{
+                sequenceFlowFromStartGatewayToActivity.setTargetRef(activity.getTracingTag());
+            }
             sequenceFlowFromStartGatewayToActivity.setTargetRef(activity.getTracingTag());
             sequenceFlowFromStartGatewayToActivity.setRelationView(sequenceFlowFromStartGatewayToActivity.createView());
             sequenceFlowFromStartGatewayToActivity.setName(switchActivity.getConditions()[i].getDescription().toString());
@@ -147,21 +155,31 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
             processDefinition5.addSequenceFlow(sequenceFlowFromStartGatewayToActivity);
 
             if(makeEndGateway) {
+                if( i == 0){
+                    endGateway.setTracingTag(MigUtils.getNewTracingTag());
+                    endGateway.getElementView().setId(endGateway.getTracingTag());
+                    processDefinition5.addChildActivity(endGateway);
+                 }
+                
                 //link from activity to endgateway
                 SequenceFlow sequenceFlowToEndGatewayToActivity = new SequenceFlow();
 
                 //set transtion
-                sequenceFlowToEndGatewayToActivity.setSourceRef(activity.getTracingTag());
+                if(MigUtils.isParentSequenceActivity() && activity instanceof SequenceActivity){
+                    sequenceFlowFromStartGatewayToActivity.setSourceRef(
+                            ((SequenceActivity)activity).getChildActivities().get(
+                                    ((SequenceActivity)activity).getChildActivities().size()-1).getTracingTag()
+                            );
+                }else{
+                    sequenceFlowToEndGatewayToActivity.setSourceRef(activity.getTracingTag());
+                }
                 sequenceFlowToEndGatewayToActivity.setTargetRef(endGateway.getTracingTag());
                 sequenceFlowToEndGatewayToActivity.setRelationView(sequenceFlowToEndGatewayToActivity.createView());
 
                 processDefinition5.addSequenceFlow(sequenceFlowToEndGatewayToActivity);
 
-            }else{
-                //END GATEWAY가 만들어지지 않은 경우
-                MigUtils.setDrawLinePreActivity(false);
             }
-
+            
             i++;
         }
 
@@ -173,9 +191,24 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
             endGateway.getElementView().setX(MigDrawPositoin.getStartEventXPosition() + (MigDrawPositoin.getActivityIntervalX() * Index.indexX.get()));
             endGateway.getElementView().setY(startGateway.getElementView().getY());
             Index.indexX.set(Index.indexX.get() + 1);
+            
+            if( makeOtherwise ){
+                SequenceFlow sequenceFlowOtherwise = new SequenceFlow();
+                sequenceFlowOtherwise.setSourceRef(startGateway.getTracingTag());
+                sequenceFlowOtherwise.setTargetRef(endGateway.getTracingTag());
+                sequenceFlowOtherwise.setRelationView(sequenceFlowOtherwise.createView());
+                
+                sequenceFlowOtherwise.setName("Otherwise");
+                sequenceFlowOtherwise.setOtherwise(true);
+                sequenceFlowOtherwise.getRelationView().setValue(MigUtils.getOtherwiseSequenceElementValue(startGateway, endGateway));
+                
+                processDefinition5.addSequenceFlow(sequenceFlowOtherwise);
+                
+            }
         }
 
-        MigUtils.setParallelStructure(false);
+        MigUtils.setDrawingSwitchActicity(false);
+        MigUtils.setParentSequenceActivity(false);
 
         return processDefinition5;
     }

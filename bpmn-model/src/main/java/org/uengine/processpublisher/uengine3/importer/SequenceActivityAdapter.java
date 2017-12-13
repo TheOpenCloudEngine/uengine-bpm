@@ -16,8 +16,6 @@ public class SequenceActivityAdapter extends ComplexActivityAdapter {
     @Override
     public ProcessDefinition convert(ComplexActivity complexActivity, Hashtable keyedContext) throws Exception {
         System.out.println("<<--SequenceActivityAdapter.trcTAG : " + complexActivity.getTracingTag());
-
-        String parentActivityTracingTag = complexActivity.getParentActivity().getTracingTag();
         ProcessDefinition processDefinition5 = (ProcessDefinition) keyedContext.get("root");
         //do not add
         //processDefinition5.addChildActivity(complexActivity);
@@ -26,25 +24,10 @@ public class SequenceActivityAdapter extends ComplexActivityAdapter {
         int i=0;
 
         for(Activity activity : complexActivity.getChildActivities()){
-            System.out.println("   complexActivity.getChildActivities.trcTAG : " + activity.getTracingTag());
-            Index.indexX.set(initialIndexX);
+            Index.indexX.set(initialIndexX + i);
             Adapter adapter = AdapterUtil.getAdapter(activity.getClass(), getClass());
             keyedContext.put("root", processDefinition5);
             processDefinition5 = (ProcessDefinition) adapter.convert(activity, keyedContext);
-
-            //link
-            SequenceFlow sequenceFlow = new SequenceFlow();
-
-            //set transtion
-            sequenceFlow.setSourceRef(parentActivityTracingTag);
-            sequenceFlow.setTargetRef(activity.getTracingTag());
-            sequenceFlow.setRelationView(sequenceFlow.createView());
-
-            processDefinition5.addSequenceFlow(sequenceFlow);
-
-
-            System.out.println("------ || start:"+sequenceFlow.getSourceRef()
-                    +"  end : " +sequenceFlow.getTargetRef());
             i++;
         }
 

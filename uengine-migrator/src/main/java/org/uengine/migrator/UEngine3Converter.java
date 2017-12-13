@@ -31,7 +31,12 @@ public class UEngine3Converter {
         UEngineUtil.copyStream(inputFileStream, bao);
 
         String inputString = bao.toString();
-
+        
+        //LGD 추가
+        inputString = inputString.replace("org.uengine.kernel.OCAPProcessDefinition", "org.uengine.kernel.ProcessDefinition");
+        inputString = inputString.replace("org.uengine.kernel.EndActivity", "org.uengine.kernel.DefaultActivity");
+        inputString = inputString.replace("com.lgdisplay.activity.OCAPBackActivity", "org.uengine.kernel.DefaultActivity");
+        
         inputString = inputString.replace("org.uengine.kernel.ActivityRepository", "java.util.ArrayList");
         inputString = inputString.replace("kitech.apr.activity.KitechHumanActivity", "org.uengine.kernel.HumanActivity");
         inputString = inputString.replace(SubProcessActivity.class.getName(), CallActivity.class.getName());

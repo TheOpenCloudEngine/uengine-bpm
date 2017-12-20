@@ -1,24 +1,17 @@
 package org.uengine.processmanager;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
@@ -42,9 +35,27 @@ import javax.naming.NamingException;
 import org.uengine.contexts.TextContext;
 //import org.uengine.formmanager.trans.Html2FormView;
 //import org.uengine.formmanager.trans.Html2Write;
-import org.uengine.kernel.*;
+import org.uengine.kernel.AbstractProcessInstance;
+import org.uengine.kernel.Activity;
+import org.uengine.kernel.ActivityInstanceContext;
+import org.uengine.kernel.ActivityReference;
+import org.uengine.kernel.ComplexActivity;
+import org.uengine.kernel.DefaultProcessInstance;
+import org.uengine.kernel.EventHandler;
+import org.uengine.kernel.EventMessagePayload;
+import org.uengine.kernel.GlobalContext;
+import org.uengine.kernel.HumanActivity;
+import org.uengine.kernel.KeyedParameter;
+import org.uengine.kernel.ProcessDefinition;
+import org.uengine.kernel.ProcessDefinitionFactory;
+import org.uengine.kernel.ProcessInstance;
+import org.uengine.kernel.ProcessVariable;
+import org.uengine.kernel.ProcessVariableValue;
+import org.uengine.kernel.ResultPayload;
+import org.uengine.kernel.RoleMapping;
+import org.uengine.kernel.SubProcessActivity;
+import org.uengine.kernel.UEngineException;
 import org.uengine.persistence.dao.UniqueKeyGenerator;
-import org.uengine.persistence.processdefinition.ProcessDefinitionDAO;
 import org.uengine.persistence.processdefinition.ProcessDefinitionDAOType;
 import org.uengine.persistence.processdefinition.ProcessDefinitionRepositoryHomeLocal;
 import org.uengine.persistence.processdefinition.ProcessDefinitionRepositoryLocal;
@@ -53,10 +64,7 @@ import org.uengine.persistence.processdefinitionversion.ProcessDefinitionVersion
 import org.uengine.persistence.processdefinitionversion.ProcessDefinitionVersionRepositoryLocal;
 import org.uengine.persistence.processinstance.ProcessInstanceRepositoryHomeLocal;
 import org.uengine.persistence.processinstance.ProcessInstanceRepositoryLocal;
-import org.uengine.security.AclManager;
-import org.uengine.security.Authority;
 import org.uengine.util.ActivityForLoop;
-import org.uengine.util.DeleteDir;
 import org.uengine.util.FileCopy;
 import org.uengine.util.UEngineUtil;
 import org.uengine.util.ZipEntryMapper;
@@ -710,10 +718,10 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		}
 	}
 
-	public void setProcessDefinitionProductionVersion(String pdvid) throws RemoteException{
+	public void setProcessDefinitionProductionVersion(String pdvid) throws RemoteException {
 		log("setProcessDefinitionProductionVersion", new Object[]{pdvid});
-		try{
-			if(pdvid.indexOf("@")>-1){
+		try {
+			if (pdvid.indexOf("@")>-1) {
 				pdvid = ProcessDefinition.splitDefinitionAndVersionId(pdvid)[1];
 			}
 			
@@ -726,10 +734,10 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 			pdlr.setProdVer(pdvlr.getVer().intValue());
 			pdlr.setProdVerId(new Long(pdvid));
 			
-			if(pdlr.getObjType()==null){
+			if (pdlr.getObjType() == null) {
 				ProcessDefinition definition = getProcessDefinition(pdvid);
-				String shortDescription = definition.getShortDescription();
-				if(shortDescription!=null){
+				String shortDescription = definition.getShortDescription().getText();
+				if (shortDescription != null) {
 					pdlr.setDescription(shortDescription);
 				}
 			}

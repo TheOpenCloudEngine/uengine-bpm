@@ -9,6 +9,7 @@ import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.http.*;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.uengine.kernel.*;
@@ -16,6 +17,7 @@ import org.uengine.kernel.*;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
  * Created by uengine on 2017. 12. 4..
@@ -30,7 +32,7 @@ public class ServiceTask extends DefaultActivity {
 
         /**
          * get the target server:
-         *  1. try full uri,
+         *  1. try full uri from uriTemplate,
          *  2. find full url from rolemapping data,
          *  3. try searching from EUREKA server by the endpoint of roleMapping
          *  4. try searching from EUREKA server by the role name.
@@ -126,6 +128,9 @@ public class ServiceTask extends DefaultActivity {
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity<String> body = new HttpEntity<String>(payload, headers);
+
+                restTemplate.getMessageConverters()
+                        .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
                 // send request and parse result
                 ResponseEntity<String> response = restTemplate

@@ -76,7 +76,7 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
                 if(bpmnProcess.getLaneSet() != null && bpmnProcess.getLaneSet().size() > 0){
                     for(TLaneSet tLaneSet : bpmnProcess.getLaneSet()){
                         Role rootRole = new Role();
-                        rootRole.setName(tLaneSet.getName());
+                        rootRole.setName(tLaneSet.getName()!=null ? tLaneSet.getName() : "root");
 
                         ElementView view = rootRole.createView();
                         //      Pool pool = new Pool();
@@ -99,6 +99,9 @@ public class TDefinitionsAdapter implements Adapter<TDefinitions, ProcessDefinit
 
                         for(TLane tLane: tLaneSet.getLane()){
                             Role role = (Role) BPMNUtil.importAdapt(tLane, context);
+
+                            if(role.getName()==null) role.setName("role-" + (processDefinition.getRoles().length + 1));
+
                             role.getElementView().setParent(tLaneSet.getId());
                             processDefinition.addRole(role);
                         }

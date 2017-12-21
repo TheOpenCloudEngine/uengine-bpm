@@ -14,13 +14,10 @@ import java.util.Hashtable;
 /**
  * Created by uengine on 2017. 6. 16..
  */
-public class DefaultActivityAdapter implements Adapter<DefaultActivity, ProcessDefinition> {
+public class DefaultActivityAdapter implements Adapter<DefaultActivity, ConvertedContext> {
 
     private void createView(DefaultActivity humanActivity) throws Exception {
-        int indexX = Index.indexX.get();
-        int indexY = Index.indexY.get();
         ElementView elementView = humanActivity.createView();
-        elementView.setX(MigDrawPositoin.getStartEventXPosition() + (MigDrawPositoin.getActivityIntervalX()*indexX));
 
         elementView.setWidth(MigDrawPositoin.getHumanActivityWidth());
         elementView.setHeight(MigDrawPositoin.getHumanActivityHeight());
@@ -28,26 +25,25 @@ public class DefaultActivityAdapter implements Adapter<DefaultActivity, ProcessD
         //50은 액티비티 삭제시 elementview id = tracing tag 조건이 있음
         elementView.setId(humanActivity.getTracingTag());
         humanActivity.setElementView(elementView);
-        Index.indexX.set(indexX + 1);
     }
 
     @Override
-    public ProcessDefinition convert(DefaultActivity humanActivity, Hashtable keyedContext) throws Exception {
-        this.createView(humanActivity);
+    public ConvertedContext convert(DefaultActivity activity, Hashtable keyedContext) throws Exception {
+        this.createView(activity);
         ProcessDefinition processDefinition = (ProcessDefinition) keyedContext.get("root");
-        processDefinition.addChildActivity(humanActivity);
+        processDefinition.addChildActivity(activity);
 
         //롤 스윔레인에 위치 설정
         Role curRole = new Role();
-        if( humanActivity instanceof  org.uengine.kernel.HumanActivity ) {
-            curRole = processDefinition.getRole(((HumanActivity) humanActivity).getRole().getName());
+        if( activity instanceof  org.uengine.kernel.HumanActivity ) {
+            curRole = processDefinition.getRole(((HumanActivity) activity).getRole().getName());
             //humanActivity.getElementView().setY(humanActivity.getElementView().getY() + curRole.getElementView().getY());
             if( MigUtils.isParallelStructure() ){
                 curRole.getElementView().setHeight(curRole.getElementView().getHeight() + MigDrawPositoin.getHumanActivityHeight());
                 curRole.getElementView().setY(curRole.getElementView().getY() + (MigDrawPositoin.getHumanActivityHeight()/2));
             }
         }
-        humanActivity.getElementView().setY(MigUtils.getYPosition(processDefinition, humanActivity));
+        activity.getElementView().setY(MigUtils.getYPosition(processDefinition, activity));
 
         //전 액티비티가 트랜지션 없이 끝난경우 시퀀스플로우로 전 액티비티연결
         if( MigUtils.isDrawLinePreActivity()) {
@@ -55,14 +51,18 @@ public class DefaultActivityAdapter implements Adapter<DefaultActivity, ProcessD
                 SequenceFlow sequenceFlowActivity = new SequenceFlow();
 
                 sequenceFlowActivity.setSourceRef(preActivity.getTracingTag());
-                sequenceFlowActivity.setTargetRef(humanActivity.getTracingTag());
+                sequenceFlowActivity.setTargetRef(activity.getTracingTag());
 
                 processDefinition.addSequenceFlow(sequenceFlowActivity);
             }
             MigUtils.removeAllPreActivities();
-            MigUtils.addPreActivities(humanActivity);
+            MigUtils.addPreActivities(activity);
         }
 
-        return processDefinition;
+        ConvertedContext convertedContext = new ConvertedContext();
+        convertedContext.setInActivity(activity);
+        convertedContext.setOutActivity(activity);
+
+        return convertedContext;
     }
 }

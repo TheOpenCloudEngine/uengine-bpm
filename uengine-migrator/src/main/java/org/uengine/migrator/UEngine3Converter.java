@@ -19,35 +19,54 @@ public class UEngine3Converter {
 
     public static void main(String... args) throws Exception {
 
-        if(args.length == 0) args = new String[]{"example.3upd"};
+//        if(args.length == 0) args = new String[]{"example.3upd"};
+//
+//
+//        FileInputStream inputFileStream = new FileInputStream(args[0]);
+//        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+//
+//        UEngineUtil.copyStream(inputFileStream, bao);
+//
+//        String inputString = bao.toString();
+//
+//        inputString = inputString.replace("org.uengine.kernel.ActivityRepository", "java.util.ArrayList");
+//        inputString = inputString.replace("kitech.apr.activity.KitechHumanActivity", "org.uengine.kernel.HumanActivity");
+//        inputString = inputString.replace(SubProcessActivity.class.getName(), CallActivity.class.getName());
+//
+//
+//        ProcessDefinition processDefinition3 = (ProcessDefinition) Serializer.deserialize(inputString);
 
-//        System.out.println(new File(".").getAbsoluteFile().getPath());
+        ProcessDefinition processDefinition3 = new ProcessDefinition();
 
-        //Serializer.xstream.registerConverter(new ActivityRepositoryConverter());
+        SwitchActivity switchActivity = new SwitchActivity();
+        switchActivity.addChildActivity(new DefaultActivity());
+        switchActivity.addChildActivity(new DefaultActivity());
+        switchActivity.addChildActivity(new DefaultActivity());
 
-        FileInputStream inputFileStream = new FileInputStream(args[0]);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        SequenceActivity sequenceActivity = new SequenceActivity();
+        sequenceActivity.addChildActivity(new DefaultActivity());
+        sequenceActivity.addChildActivity(new DefaultActivity());
+        sequenceActivity.addChildActivity(new DefaultActivity());
 
-        UEngineUtil.copyStream(inputFileStream, bao);
-
-        String inputString = bao.toString();
-
-        inputString = inputString.replace("org.uengine.kernel.ActivityRepository", "java.util.ArrayList");
-        inputString = inputString.replace("kitech.apr.activity.KitechHumanActivity", "org.uengine.kernel.HumanActivity");
-        inputString = inputString.replace(SubProcessActivity.class.getName(), CallActivity.class.getName());
+        switchActivity.addChildActivity(sequenceActivity);
 
 
-        ProcessDefinition processDefinition3 = (ProcessDefinition) Serializer.deserialize(inputString);
-        ProcessDefinition processDefinition5;
+        processDefinition3.addChildActivity(switchActivity);
+
 
         //set max tracing tag value
         MigUtils.setMaxTracingTag(processDefinition3);
 
         ProcessDefinitionAdapter processDefinitionAdapter = new ProcessDefinitionAdapter();
 
-        processDefinition5 = processDefinitionAdapter.convert(processDefinition3, new Hashtable());
-//        processDefinition5.afterDeserialization();//정리작업
+        Hashtable hashtable = new Hashtable();
+        processDefinitionAdapter.convert(processDefinition3, hashtable);
 
-        Serializer.serialize(processDefinition5, new FileOutputStream(args[0]+".5.process"));
+        ProcessDefinition processDefinition5 = (ProcessDefinition) hashtable.get("root");
+
+
+
+//        Serializer.serialize(processDefinition5, new FileOutputStream(args[0]+".5.process"));
+        Serializer.serialize(processDefinition5, System.out);
     }
 }

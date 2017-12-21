@@ -12,15 +12,13 @@ public class MigUtils {
 
     private static int MAX_TRACING_TAG = 0;
 
-    private static boolean DRAW_LINE_PRE_ACTIVITY = false;
-
-    private static boolean PARALLEL_STRUCTURE = false;
-
-    private static Vector<Activity> PRE_ACITIVITIES;
-
     private static String PARENT_ROLE_NAME = "ROLE";
 
     private static double maxY = 0;
+    
+    private static boolean isParentSequenceActivity = false;
+    
+    private static boolean isDrawingSwitchActicity = false;
 
     public static double getYPosition(ProcessDefinition src, Activity curActivity){
         Activity tempActivity = curActivity;
@@ -85,61 +83,6 @@ public class MigUtils {
         return Integer.parseInt(str);
     }
 
-
-    public static boolean isDrawLinePreActivity() {
-        return DRAW_LINE_PRE_ACTIVITY;
-    }
-
-    public static void setDrawLinePreActivity(boolean drawLinePreActivity) {
-        DRAW_LINE_PRE_ACTIVITY = drawLinePreActivity;
-    }
-
-    public static Vector<Activity> getPreAcitivities() {
-        return PRE_ACITIVITIES;
-    }
-
-    public static void addPreActivities(Activity preActivity){
-        if( PRE_ACITIVITIES == null){
-            PRE_ACITIVITIES = new Vector<Activity>();
-        }
-        PRE_ACITIVITIES.add(preActivity);
-    }
-
-    //백터사이즈가 1인 경우에만 액티비티 리턴
-    public static Activity getPreActivity(){
-        if(PRE_ACITIVITIES.size() == 1){
-            return PRE_ACITIVITIES.get(0);
-        }
-        return null;
-    }
-
-    public static Activity getPreActivity(String name){
-        for(Activity activity : PRE_ACITIVITIES){
-            if(activity.getName().equals(name)){
-                return activity;
-            }
-        }
-        return null;
-    }
-
-    public static void removeAllPreActivities(){
-        PRE_ACITIVITIES.removeAllElements();
-    }
-
-    public static void removePreActivity(Activity preActivity){
-        PRE_ACITIVITIES.remove(preActivity);
-    }
-
-
-    //Parallel Structure
-    public static boolean isParallelStructure() {
-        return PARALLEL_STRUCTURE;
-    }
-
-    public static void setParallelStructure(boolean parallelStructure) {
-        PARALLEL_STRUCTURE = parallelStructure;
-    }
-
     public static double getFirstRoleYPosition(ProcessDefinition processDefinition){
         double rv = MigDrawPositoin.getRoleXPosition();
         for(Role role : processDefinition.getRoles()){
@@ -166,7 +109,7 @@ public class MigUtils {
         return PARENT_ROLE_NAME;
     }
 
-    public static boolean isNotTransition(ProcessDefinition processDefinition, String trcTag) {
+    public static boolean isNotSourceTransition(ProcessDefinition processDefinition, String trcTag) {
         for (SequenceFlow sFlow : processDefinition.getSequenceFlows()) {
             if (sFlow.getSourceRef().equals(trcTag)) {
                 return false;
@@ -174,4 +117,66 @@ public class MigUtils {
         }
         return true;
     }
+    
+    
+    public static boolean isNotTargetTransition(ProcessDefinition processDefinition, String trcTag) {
+        for (SequenceFlow sFlow : processDefinition.getSequenceFlows()) {
+            if (sFlow.getTargetRef().equals(trcTag)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isParentSequenceActivity() {
+        return isParentSequenceActivity;
+    }
+
+    public static void setParentSequenceActivity(boolean isParentSequenceActivity) {
+        MigUtils.isParentSequenceActivity = isParentSequenceActivity;
+    }
+
+    public static boolean isDrawingSwitchActicity() {
+        return isDrawingSwitchActicity;
+    }
+
+    public static void setDrawingSwitchActicity(boolean isDrawingSwitchActicity) {
+        MigUtils.isDrawingSwitchActicity = isDrawingSwitchActicity;
+    }
+    
+    
+    public static boolean dupTransition(ProcessDefinition processDefinition, String soucrceTrcTag, String targetTrcTag){
+        for(SequenceFlow sequenceFlow : processDefinition.getSequenceFlows()){
+            if(sequenceFlow.getSourceRef().equals(soucrceTrcTag) && sequenceFlow.getTargetRef().equals(targetTrcTag) ){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static String getOtherwiseSequenceElementValue(Activity sourceActivity, Activity targetActivity){
+        StringBuffer rv = new StringBuffer();
+        double sourceX = sourceActivity.getElementView().getX();
+        double sourceY = sourceActivity.getElementView().getY();
+        double targetX = targetActivity.getElementView().getX();
+        double targetY = targetActivity.getElementView().getY();
+        
+        rv.append("[");
+        rv.append("[");
+        rv.append( (sourceX+1)+","+(sourceY+24) );
+        rv.append("]");
+        rv.append(",[");
+        rv.append( (sourceX+1)+","+(sourceY+124) );
+        rv.append("]");
+        rv.append(",[");
+        rv.append( (targetX+1)+","+(targetY+124) );
+        rv.append("]");
+        rv.append(",[");
+        rv.append( (targetX+1)+","+(targetY+24) );
+        rv.append("]");
+        rv.append("]");
+        
+        return rv.toString();
+    }
 }
+

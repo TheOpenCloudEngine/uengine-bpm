@@ -1,6 +1,11 @@
 package org.uengine.kernel;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -19,27 +24,16 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Validator;
-import org.metaworks.annotation.ValidatorContext;
-import org.metaworks.component.Tree;
-import org.metaworks.dwr.MetaworksRemoteService;
 import org.oce.garuda.multitenancy.TenantContext;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.uengine.contexts.MappingContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.StartEvent;
-import org.uengine.modeling.IModelingTimeSensitive;
 import org.uengine.persistence.dao.DAOFactory;
-import org.uengine.persistence.worklist.WorklistDAOType;
 import org.uengine.util.ActivityForLoop;
 import org.uengine.util.UEngineUtil;
 import org.uengine.webservices.worklist.DefaultWorkList;
 import org.uengine.webservices.worklist.SimulatorWorkList;
 import org.uengine.webservices.worklist.WorkList;
 import org.uengine.webservices.worklist.WorkListServiceLocator;
-
-import static org.metaworks.dwr.MetaworksRemoteService.autowire;
 
 /**
  * @author Jinyoung Jang

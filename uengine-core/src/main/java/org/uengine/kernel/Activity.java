@@ -22,10 +22,14 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
-import org.metaworks.annotation.*;
+import org.metaworks.annotation.Face;
+import org.metaworks.annotation.Group;
+import org.metaworks.annotation.Hidden;
+import org.metaworks.annotation.Id;
+import org.metaworks.annotation.Name;
+import org.metaworks.annotation.Order;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
@@ -33,6 +37,8 @@ import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.modeling.IIntegrityElement;
 import org.uengine.util.UEngineUtil;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -140,74 +146,76 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		}
 
 
-	TextContext name;
-		@Name
-	@Face(displayName="이름")
-	@Order(1)
-//		@Available(where=MetaworksContext.WHERE_DIALOG)
-		public String getName() {
-			if(name==null) return null;
+    TextContext name;
+        @Name
+        @Face(displayName="이름")
+        @Order(1)
+//      @Available(where=MetaworksContext.WHERE_DIALOG)
+        public String getName() {
+            if (name == null) {
+                return null;
+            }
+            return name.getText();
+        }
+        public String getName(String locale) {
+            if (name == null) {
+                return null;
+            }
+            return name.getText(locale);
+        }
+        public void setName(TextContext name) {
+            if (name == null) {
+                name = new TextContext();
+            }
 
-			return name.getText();
-		}
-		public String getName(String locale) {
-			if(name==null) return null;
+            TextContext oldName = this.name;
+            this.name = name;
+            
+            //TODO All the properties should be coded like this
+            firePropertyChangeEvent(new PropertyChangeEvent(this, "name", oldName, name));
+        }
+        public void setName(String name) {
+            if (getName() == null) {
+                TextContext textCtx = null;
+//              if(getProcessDefinition() == null) {
+                textCtx = TextContext.createInstance();
 
-			return name.getText(locale);
-		}
-		public void setName(TextContext name) {
-			if(name==null) name = new TextContext();
+//              } else {
+//                  textCtx = TextContext.createInstance(getProcessDefinition());
+//              }
+                setName(textCtx);
+            }
+            this.name.setText(name);
+        }
+        
+    TextContext description;
+        @Hidden
+        public String getDescription() {
+            if (description == null) {
+                description = TextContext.createInstance();
+            }
+            return description.getText();
+        }
+        public void setDescription(TextContext string) {
+            description = string;
+        }
+        public void setDescription(String name) {
+            if(getDescription()==null){
+                TextContext textCtx = null;
+                //if(getProcessDefinition() == null) {
+                    textCtx = TextContext.createInstance();
 
-			TextContext oldName = this.name;
-			this.name = name;
-			
-			//TODO All the properties should be coded like this
-			firePropertyChangeEvent(new PropertyChangeEvent(this, "name", oldName, name));
-		}
-		public void setName(String name) {
-			if(getName() == null){
-				TextContext textCtx = null;
-//				if(getProcessDefinition() == null) {
-				textCtx = TextContext.createInstance();
-
-//				} else {
-//					textCtx = TextContext.createInstance(getProcessDefinition());
-//				}
-				setName(textCtx);
-			}
-			
-			this.name.setText(name);
-		}
-		
-	TextContext description;
-		@Hidden
-		public String getDescription() {
-			if(description == null)
-				description = TextContext.createInstance();
-			
-			return description.getText();
-		}
-		public void setDescription(TextContext string) {
-			description = string;
-		}
-		public void setDescription(String name) {
-			if(getDescription()==null){
-				TextContext textCtx = null;
-				//if(getProcessDefinition() == null) {
-					textCtx = TextContext.createInstance();
-
-//				} else {
-//					textCtx = TextContext.createInstance(getProcessDefinition());
-//				}
-
-				setDescription(textCtx);
-			}
-			
-			this.description.setText(name);
-		}
-		/**
-		 * tracingTag is a identifier for a certain activity within a process definition.
-		 */
+//              } else {
+//                  textCtx = TextContext.createInstance(getProcessDefinition());
+//              }
+                setDescription(textCtx);
+            }
+            this.description.setText(name);
+        }
+        
+	/**
+	 * tracingTag is a identifier for a certain activity within a process definition.
+	 */
 	String tracingTag;
 	@Id
 	//@Hidden

@@ -432,6 +432,10 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 			((NeedArrangementToSerialize) getDefaultValue()).beforeSerialization();
 		}
 
+		if(getDefaultValueInString()!=null){
+		    setDefaultValue(getDefaultValueInString());
+		}
+
 		if(getType()!=null) {  //When a class class is serialized, Stackoverflow maybe occur.
 
 			if(getTypeClassName()==null)

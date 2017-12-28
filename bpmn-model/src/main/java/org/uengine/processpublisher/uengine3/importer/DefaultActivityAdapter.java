@@ -38,26 +38,8 @@ public class DefaultActivityAdapter implements Adapter<DefaultActivity, Converte
         if( activity instanceof  org.uengine.kernel.HumanActivity ) {
             curRole = processDefinition.getRole(((HumanActivity) activity).getRole().getName());
             //humanActivity.getElementView().setY(humanActivity.getElementView().getY() + curRole.getElementView().getY());
-            if( MigUtils.isParallelStructure() ){
-                curRole.getElementView().setHeight(curRole.getElementView().getHeight() + MigDrawPositoin.getHumanActivityHeight());
-                curRole.getElementView().setY(curRole.getElementView().getY() + (MigDrawPositoin.getHumanActivityHeight()/2));
-            }
         }
         activity.getElementView().setY(MigUtils.getYPosition(processDefinition, activity));
-
-        //전 액티비티가 트랜지션 없이 끝난경우 시퀀스플로우로 전 액티비티연결
-        if( MigUtils.isDrawLinePreActivity()) {
-            for(Activity preActivity : MigUtils.getPreAcitivities()) {
-                SequenceFlow sequenceFlowActivity = new SequenceFlow();
-
-                sequenceFlowActivity.setSourceRef(preActivity.getTracingTag());
-                sequenceFlowActivity.setTargetRef(activity.getTracingTag());
-
-                processDefinition.addSequenceFlow(sequenceFlowActivity);
-            }
-            MigUtils.removeAllPreActivities();
-            MigUtils.addPreActivities(activity);
-        }
 
         ConvertedContext convertedContext = new ConvertedContext();
         convertedContext.setInActivity(activity);

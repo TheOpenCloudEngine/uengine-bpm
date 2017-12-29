@@ -224,20 +224,30 @@ public class FlowActivity extends ComplexActivity {
 			Activity currentActivity = (Activity) payload;
 			List<Activity> possibleNextActivities = currentActivity.getPossibleNextActivities(instance, "");
 			
-			if (possibleNextActivities.size() == 0) {
-				// fireComplete(instance);
-				 if( !currentActivity.checkStartsWithBoundaryEventActivity() ){
-					 setStatus(instance, STATUS_COMPLETED);
-
-					 fireComplete(instance);
-
-				 }
-				 // change the status to be completed 
-				 //after the completion of all the activities
-				 if (instance != null && instance.isSubProcess()) {
-					instance.getProcessDefinition().returnToMainProcess(instance);
-				 }
-			}
+            if (possibleNextActivities.size() == 0) {
+                
+                // 프로세스의 경우 실행중인 Activity가 없을 경우에만 종료                
+                boolean completeAvail = true;
+                if (this instanceof ProcessDefinition) {
+                    List<Activity> list = instance.getCurrentRunningActivities();
+                    if (list.size() != 0) {
+                        completeAvail = false;
+                    }                    
+                }
+                
+                if (completeAvail) {                    
+                    if (!currentActivity.checkStartsWithBoundaryEventActivity()) {
+                        setStatus(instance, STATUS_COMPLETED);
+                        fireComplete(instance);
+                    }
+                    /*
+                     * 아래 주석 처리 부분 재검토 요망 2017.12.29 LeeHanChan
+                     * instance의 경우 fireComplete에서 returnToMainProcess 처리됨
+                    if (instance != null && instance.isSubProcess()) {
+                        instance.getProcessDefinition().returnToMainProcess(instance);
+                    }*/
+                }
+            }
 
 			// register token before queueActivity()
 			for (int i = 0; i < possibleNextActivities.size(); i++) {

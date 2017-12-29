@@ -16,7 +16,7 @@ import org.uengine.webservices.worklist.WorkList;
  * @author Jinyoung Jang
  */
 
-public abstract class AbstractProcessInstance implements ProcessInstance, java.io.Serializable{
+public abstract class AbstractProcessInstance implements ProcessInstance, java.io.Serializable {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	public final String PVKEY_EXECUTION_SCOPES = "_executionScopes";
 
@@ -80,7 +80,7 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 	abstract public Calendar getDueDate() throws Exception;
 
 	abstract public boolean isSubProcess() throws Exception;
-	abstract public boolean isAdhocProcess() throws Exception;
+	abstract public boolean isAdhoc() throws Exception;
 	abstract public boolean isSimulation() throws Exception;
 
 	abstract public String getMainProcessInstanceId();

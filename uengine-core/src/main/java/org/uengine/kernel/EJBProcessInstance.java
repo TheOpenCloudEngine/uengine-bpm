@@ -150,12 +150,12 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 				);
 
 		if(isSubProcess){
-			processInstanceDAO.setIsSubProcess(true);
+			processInstanceDAO.setSubProcess(true);
 			processInstanceDAO.setMainInstId(new Long((String)options.get(DefaultProcessInstance.RETURNING_PROCESS)));
 			processInstanceDAO.setMainActTrcTag((String)options.get(DefaultProcessInstance.RETURNING_TRACINGTAG));
 			processInstanceDAO.setMainExecScope((String)options.get(DefaultProcessInstance.RETURNING_EXECSCOPE));
 			processInstanceDAO.setDontReturn(((Boolean)options.get(DefaultProcessInstance.DONT_RETURN)).booleanValue());
-			processInstanceDAO.setIsEventHandler(options.containsKey("isEventHandler"));
+			processInstanceDAO.setEventHandler(options.containsKey("isEventHandler"));
 		}
 
 		if(options.containsKey(DefaultProcessInstance.ROOT_PROCESS)){
@@ -242,7 +242,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 
 			setInstanceId(instanceId);
-			boolean isArchive = getProcessInstanceDAO().getIsArchive();
+			boolean isArchive = getProcessInstanceDAO().isArchive();
 
 			//setSimulation(getProcessInstanceDAO().get("isSim")==1);
 
@@ -931,7 +931,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 			try {
 				ProcessDefinitionFactory.getInstance(getProcessTransactionContext()).storeProcessDefinition(generatedPath, value);
 				getProcessInstanceDAO().setDefPath(generatedPath);
-				getProcessInstanceDAO().setIsAdhoc(true);
+				getProcessInstanceDAO().setAdhoc(true);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -1033,7 +1033,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 	}
 
 	public boolean isSubProcess() throws Exception {
-		return getProcessInstanceDAO().getIsSubProcess();
+		return getProcessInstanceDAO().isSubProcess();
 	}
 
 	Boolean isSubProcess = null;
@@ -1041,7 +1041,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 		if(isSubProcess==null){
 			try{
 				ProcessInstanceDAO piDAO = getProcessInstanceDAO();
-				isSubProcess = Boolean.valueOf(piDAO.getIsAdhoc());
+				isSubProcess = Boolean.valueOf(piDAO.isAdhoc());
 			}catch(Exception e){
 				isSubProcess = Boolean.valueOf(false);
 			}
@@ -1106,7 +1106,7 @@ public class EJBProcessInstance extends DefaultProcessInstance implements Transa
 
 	public boolean isDontReturn() {
 		try{
-			return (getProcessInstanceDAO().getDontReturn());
+			return (getProcessInstanceDAO().isDontReturn());
 		}catch(Exception e){
 			return false;
 		}

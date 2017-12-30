@@ -13,8 +13,4 @@ import java.util.Hashtable;
  * Created by uengine on 2017. 6. 16..
  */
 public class AllActivityAdapter extends SwitchActivityAdapter {
-    @Override
-    protected Gateway createSourceGateway(){
-        return new ParallelGateway();
-    }
 }

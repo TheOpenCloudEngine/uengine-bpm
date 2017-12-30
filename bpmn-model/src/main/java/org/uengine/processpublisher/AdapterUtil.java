@@ -31,7 +31,7 @@ public class AdapterUtil {
                 String activityTypeName = org.uengine.util.UEngineUtil.getClassNameOnly(clazz);
                 String packageStr = adapterBaseClass.getPackage().getName();
 
-                System.out.println(packageStr + "." + activityTypeName + "Adapter");
+                //System.out.println(packageStr + "." + activityTypeName + "Adapter");
                 adapter = (Adapter) Thread.currentThread().getContextClassLoader().loadClass(packageStr + "." + activityTypeName + "Adapter").newInstance();
                 if(adapter != null) {
                     adapters.put(clazz.getName(), adapter);
@@ -47,7 +47,7 @@ public class AdapterUtil {
             System.out.println("ProcessDefinitionAdapter::getAdapter : can't find adapter for " + clazz);
 
         } else {
-            System.out.println("matching adapter for " + clazz + " is " + adapter);
+            //System.out.println("matching adapter for " + clazz + " is " + adapter);
             adapters.put(clazz.getName(), adapter);
         }
 

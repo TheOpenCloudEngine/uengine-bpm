@@ -4,7 +4,10 @@ import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.Gateway;
 import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.ElementView;
-import org.uengine.modeling.layout.GridLayout;
+import org.uengine.modeling.cnv.layout.CnvFlowLayout;
+import org.uengine.modeling.cnv.layout.CnvGridLayout;
+import org.uengine.modeling.cnv.layout.CnvLayoutGroup;
+import org.uengine.modeling.layout.LayoutGroup;
 import org.uengine.processpublisher.*;
 
 import java.util.Hashtable;
@@ -34,71 +37,52 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
      *
      *
      */
+    private Gateway createGateway(String tracingTag){
+        Gateway gateway = new Gateway();
+        gateway.setTracingTag(tracingTag);
+        gateway.setName("");
 
-    public final static int SwitchActivity_WIDTH = 30;
-    public final static int SwitchActivity_HEIGHT = 30;
+        ElementView elementView = gateway.createView();
+        elementView.setId(tracingTag);
+        gateway.setElementView(elementView);
 
-
-    protected Gateway createSourceGateway(){
-
-        return new Gateway();
-    }
-    protected Gateway createStartGateway() throws Exception {
-        Gateway gateWay = createSourceGateway();
-        ElementView elementView = gateWay.createView();
-        elementView.setWidth(SwitchActivity_WIDTH);
-        elementView.setHeight(SwitchActivity_HEIGHT);
-        gateWay.setElementView(elementView);
-
-        return gateWay;
-    }
-
-    protected Gateway createEndGateway() throws Exception {
-        return createStartGateway();
-    }
-
-
-    private boolean makeEndGateway(ComplexActivity complexActivity) {
-        boolean rv = true;
-        for(Activity activity : complexActivity.getChildActivities()){
-            if(activity.getClass().getName().equals(org.uengine.kernel.SwitchActivity.class.getName())
-                    || activity.getClass().getName().equals(org.uengine.kernel.SequenceActivity.class.getName())){
-                rv = false;
-                continue;
-            }
-            rv = true;
-        }
-        return rv;
+        return gateway;
     }
 
     @Override
     public ConvertedContext convert(ComplexActivity complexActivity, Hashtable keyedContext) throws Exception {
+        ProcessDefinition processDefinition5 = (ProcessDefinition) keyedContext.get("root");
 
+        //make startGateway
+        Gateway startGateway = createGateway(complexActivity.getTracingTag());
+
+        //make endGateway
+        Gateway endGateway = createGateway(MigUtils.getNewTracingTag());
+        //System.out.println("-======================== SwitchActivityAdapter : " + complexActivity.getTracingTag() + " - " + endGateway.getTracingTag());
+
+        //init ConvertedContext
         ConvertedContext convertedContext = new ConvertedContext();
-
-        Gateway startGateway = this.createStartGateway();
-        Gateway endGateway = this.createEndGateway();
+        convertedContext.setLayout(new CnvFlowLayout());
 
         convertedContext.setInActivity(startGateway);
         convertedContext.setOutActivity(endGateway);
-        convertedContext.setLayout(new GridLayout());
 
+        convertedContext.getLayout().add(startGateway.getElementView());
 
-        ProcessDefinition processDefinition5 = (ProcessDefinition) keyedContext.get("root");
-
-        //tracingtag duplication preventation
-        startGateway.setTracingTag(complexActivity.getTracingTag());
-        startGateway.getElementView().setId(startGateway.getTracingTag());
-        endGateway.setTracingTag(MigUtils.getNewTracingTag());
-        endGateway.getElementView().setId(endGateway.getTracingTag());
-
+        //ADD start anc end Gateway
         processDefinition5.addChildActivity(startGateway);
         processDefinition5.addChildActivity(endGateway);
 
         keyedContext.put("root", processDefinition5);
 
-
         int i=0;
+        //Switch activity 의 경우 flow-grid-flow형식 layout 3단계설정(2단계 설정)
+        ConvertedContext gridConvertedContext = new ConvertedContext();
+        gridConvertedContext.setLayout(new CnvGridLayout());
+
+        SequenceFlow sequenceFlow = null;
+        ExpressionEvaluateCondition expressionEvaluateCondition = null;
+
         for(Activity activity : complexActivity.getChildActivities()){
 
             Adapter adapter = AdapterUtil.getAdapter(activity.getClass(), getClass());
@@ -106,41 +90,53 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
 
             ConvertedContext childConvertedContext = (ConvertedContext) adapter.convert(activity, keyedContext);
 
-            //link from startgateway to activity
-            SequenceFlow sequenceFlowFromStartGatewayToActivity = new SequenceFlow();
+            //SwitchActivity는 child별로 layout grouping
+            if(childConvertedContext.getLayout()==null) {
+                childConvertedContext.setLayout(new CnvFlowLayout());
+                childConvertedContext.getLayout().add(activity.getElementView());
+            }
 
-            SwitchActivity switchActivity = (SwitchActivity) complexActivity;
+            gridConvertedContext.getLayout().add(childConvertedContext.getLayout());
 
-//            ExpressionEvaluateCondition expressionEvaluateCondition = new ExpressionEvaluateCondition();
-//            expressionEvaluateCondition.setConditionExpression(switchActivity.getConditions()[i].toString());
-//            sequenceFlowFromStartGatewayToActivity.setCondition(expressionEvaluateCondition);
+            //set SequenceFlow
+            sequenceFlow = new SequenceFlow();
+            expressionEvaluateCondition = new ExpressionEvaluateCondition();
+            expressionEvaluateCondition.setConditionExpression(((SwitchActivity)complexActivity).getConditions()[i].toString());
+            sequenceFlow.setCondition(expressionEvaluateCondition);
+            sequenceFlow.setSourceRef(startGateway.getTracingTag());
+            sequenceFlow.setTargetRef(childConvertedContext.getLayout().getElemnetId(1));
+            sequenceFlow.setName(((SwitchActivity)complexActivity).getConditions()[i].getDescription().toString());
+            processDefinition5.addSequenceFlow(sequenceFlow);
+            //System.out.println(">>>>>>>>>>>>>SwitchActivityAdapter(1) : source(" + sequenceFlow.getSourceRef() + ")/target(" + sequenceFlow.getTargetRef() + ")");
 
-            //set transtion
-            sequenceFlowFromStartGatewayToActivity.setSourceRef(startGateway.getTracingTag());
-            sequenceFlowFromStartGatewayToActivity.setTargetRef(activity.getTracingTag());
-            sequenceFlowFromStartGatewayToActivity.setRelationView(sequenceFlowFromStartGatewayToActivity.createView());
-//            sequenceFlowFromStartGatewayToActivity.setName(switchActivity.getConditions()[i].getDescription().toString());
+            sequenceFlow = new SequenceFlow();
+            sequenceFlow.setSourceRef(childConvertedContext.getLayout().getLastElementIdInFirstGroup());
+            sequenceFlow.setTargetRef(endGateway.getTracingTag());
+            processDefinition5.addSequenceFlow(sequenceFlow);
+            //System.out.println(">>>>>>>>>>>>>SwitchActivityAdapter(2) : source(" + sequenceFlow.getSourceRef() + ")/target(" + sequenceFlow.getTargetRef() + ")");
 
-            processDefinition5.addSequenceFlow(sequenceFlowFromStartGatewayToActivity);
-
-            //link from activity to endgateway
-            SequenceFlow sequenceFlowToEndGatewayToActivity = new SequenceFlow();
-
-            //set transtion
-            sequenceFlowToEndGatewayToActivity.setSourceRef(activity.getTracingTag());
-            sequenceFlowToEndGatewayToActivity.setTargetRef(endGateway.getTracingTag());
-            sequenceFlowToEndGatewayToActivity.setRelationView(sequenceFlowToEndGatewayToActivity.createView());
-
-            processDefinition5.addSequenceFlow(sequenceFlowToEndGatewayToActivity);
-
-            if(childConvertedContext.getLayout()==null)
-                convertedContext.getLayout().add(activity.getElementView());
-            else
-                convertedContext.getLayout().add(childConvertedContext.getLayout());
 
             i++;
+        }
+        //2단계 layout group 설정
+        convertedContext.getLayout().add(gridConvertedContext.getLayout());
+        //endGateway elementView 설정
+        convertedContext.getLayout().add(endGateway.getElementView());
+
+        //otherwise생성 (=Switch인데 조건이 하나밖에 없는경우 )
+        if( i == 1 ){
+            sequenceFlow = new SequenceFlow();
+            sequenceFlow.setSourceRef(startGateway.getTracingTag());
+            sequenceFlow.setTargetRef(endGateway.getTracingTag());
+            sequenceFlow.setName("Otherwise");
+            sequenceFlow.setOtherwise(true);
+
+            processDefinition5.addSequenceFlow(sequenceFlow);
         }
 
         return convertedContext;
     }
+
+
+
 }

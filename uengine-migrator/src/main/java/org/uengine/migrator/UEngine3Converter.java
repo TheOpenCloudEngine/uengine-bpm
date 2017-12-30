@@ -19,42 +19,24 @@ public class UEngine3Converter {
 
     public static void main(String... args) throws Exception {
 
-//        if(args.length == 0) args = new String[]{"example.3upd"};
-//
-//
-//        FileInputStream inputFileStream = new FileInputStream(args[0]);
-//        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-//
-//        UEngineUtil.copyStream(inputFileStream, bao);
-//
-//        String inputString = bao.toString();
-//
-//        inputString = inputString.replace("org.uengine.kernel.ActivityRepository", "java.util.ArrayList");
-//        inputString = inputString.replace("kitech.apr.activity.KitechHumanActivity", "org.uengine.kernel.HumanActivity");
-//        inputString = inputString.replace(SubProcessActivity.class.getName(), CallActivity.class.getName());
-//
-//
-//        ProcessDefinition processDefinition3 = (ProcessDefinition) Serializer.deserialize(inputString);
+        if(args.length == 0) args = new String[]{"example.3upd"};
+        FileInputStream inputFileStream = new FileInputStream(args[0]);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
 
-        ProcessDefinition processDefinition3 = new ProcessDefinition();
+        UEngineUtil.copyStream(inputFileStream, bao);
 
-        SwitchActivity switchActivity = new SwitchActivity();
-        switchActivity.addChildActivity(new DefaultActivity());
-        switchActivity.addChildActivity(new DefaultActivity());
-        switchActivity.addChildActivity(new DefaultActivity());
+        String inputString = bao.toString();
+        //LGD 추가
+        inputString = inputString.replace("org.uengine.kernel.OCAPProcessDefinition", "org.uengine.kernel.ProcessDefinition");
+        inputString = inputString.replace("org.uengine.kernel.EndActivity", "org.uengine.kernel.DefaultActivity");
+        inputString = inputString.replace("com.lgdisplay.activity.OCAPBackActivity", "org.uengine.kernel.DefaultActivity");
 
-        SequenceActivity sequenceActivity = new SequenceActivity();
-        sequenceActivity.addChildActivity(new DefaultActivity());
-        sequenceActivity.addChildActivity(new DefaultActivity());
-        sequenceActivity.addChildActivity(new DefaultActivity());
+        inputString = inputString.replace("org.uengine.kernel.ActivityRepository", "java.util.ArrayList");
+        inputString = inputString.replace("kitech.apr.activity.KitechHumanActivity", "org.uengine.kernel.HumanActivity");
+        inputString = inputString.replace(SubProcessActivity.class.getName(), CallActivity.class.getName());
 
-        switchActivity.addChildActivity(sequenceActivity);
-
-
-        processDefinition3.addChildActivity(switchActivity);
-
-
-        //set max tracing tag value
+        ProcessDefinition processDefinition3 = (ProcessDefinition) Serializer.deserialize(inputString);
+         //set max tracing tag value
         MigUtils.setMaxTracingTag(processDefinition3);
 
         ProcessDefinitionAdapter processDefinitionAdapter = new ProcessDefinitionAdapter();
@@ -64,9 +46,6 @@ public class UEngine3Converter {
 
         ProcessDefinition processDefinition5 = (ProcessDefinition) hashtable.get("root");
 
-
-
-//        Serializer.serialize(processDefinition5, new FileOutputStream(args[0]+".5.process"));
-        Serializer.serialize(processDefinition5, System.out);
+        Serializer.serialize(processDefinition5, new FileOutputStream(args[0]+".5.process"));
     }
 }

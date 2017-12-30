@@ -64,7 +64,7 @@ public interface ProcessInstance extends BeanPropertyResolver{
     abstract public Calendar getDueDate() throws Exception;
 
     abstract public boolean isSubProcess() throws Exception;
-    abstract public boolean isAdhocProcess() throws Exception;
+    abstract public boolean isAdhoc() throws Exception;
     abstract public boolean isSimulation() throws Exception;
 
     abstract public String getMainProcessInstanceId();

@@ -9,6 +9,21 @@ public class EndEventActivity extends DefaultActivity{
 		if (instance != null && instance.isSubProcess()) {
 			instance.getProcessDefinition().returnToMainProcess(instance);
 		}
+
+		if(isStopAllTokens()){
+			instance.stop();
+		}
+
 		fireComplete(instance);
 	}
+
+	boolean stopAllTokens;
+		public boolean isStopAllTokens() {
+			return stopAllTokens;
+		}
+
+		public void setStopAllTokens(boolean stopAllTokens) {
+			this.stopAllTokens = stopAllTokens;
+		}
+
 }

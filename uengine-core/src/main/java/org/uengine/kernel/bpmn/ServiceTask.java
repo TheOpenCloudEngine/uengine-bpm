@@ -3,6 +3,7 @@ package org.uengine.kernel.bpmn;
 import com.jayway.jsonpath.JsonPath;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.common.TemplateParserContext;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * Created by uengine on 2017. 12. 4..
@@ -63,6 +65,9 @@ public class ServiceTask extends DefaultActivity {
                     serviceId = role.getName();
 
                 LoadBalancerClient loadBalancerClient = MetaworksRemoteService.getInstance().getComponent(LoadBalancerClient.class);
+
+                DiscoveryClient discoveryClient = MetaworksRemoteService.getInstance().getComponent(DiscoveryClient.class);
+                List<String> services = discoveryClient.getServices();
 
                 if (loadBalancerClient != null) {
                     ServiceInstance serviceInstance = loadBalancerClient.choose(serviceId);

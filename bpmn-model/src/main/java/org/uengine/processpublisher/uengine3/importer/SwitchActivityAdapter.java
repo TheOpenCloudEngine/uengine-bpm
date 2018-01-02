@@ -101,11 +101,17 @@ public class SwitchActivityAdapter extends ComplexActivityAdapter {
             //set SequenceFlow
             sequenceFlow = new SequenceFlow();
             expressionEvaluateCondition = new ExpressionEvaluateCondition();
-            expressionEvaluateCondition.setConditionExpression(((SwitchActivity)complexActivity).getConditions()[i].toString());
+            SwitchActivity switchActivity = (SwitchActivity)complexActivity;
+            if(switchActivity.getConditions()[i] instanceof Otherwise){
+                sequenceFlow.setOtherwise(true);
+            }else{
+                expressionEvaluateCondition.setConditionExpression(switchActivity.getConditions()[i].toString());
+            }
             sequenceFlow.setCondition(expressionEvaluateCondition);
             sequenceFlow.setSourceRef(startGateway.getTracingTag());
             sequenceFlow.setTargetRef(childConvertedContext.getLayout().getElemnetId(1));
-            sequenceFlow.setName(((SwitchActivity)complexActivity).getConditions()[i].getDescription().toString());
+            sequenceFlow.setName(switchActivity.getConditions()[i].getDescription().toString());
+
             processDefinition5.addSequenceFlow(sequenceFlow);
             //System.out.println(">>>>>>>>>>>>>SwitchActivityAdapter(1) : source(" + sequenceFlow.getSourceRef() + ")/target(" + sequenceFlow.getTargetRef() + ")");
 

@@ -41,6 +41,12 @@ public class ProcessDefinitionAdapter extends ComplexActivityAdapter{
         ProcessDefinition src = (ProcessDefinition) complexActivity;
 
         ProcessDefinition processDefinition5 = new ProcessDefinition();
+
+        //ROLE정보 설정
+        for(Role role : src.getRoles()){
+            processDefinition5.addRole(role);
+        }
+
         StartEvent startEvent = new StartEvent();
         startEvent.setTracingTag(MigUtils.getNewTracingTag());
         startEvent = this.createStartEventView(startEvent);
@@ -58,7 +64,7 @@ public class ProcessDefinitionAdapter extends ComplexActivityAdapter{
         convertedContext.setInActivity(startEvent);
         convertedContext.setOutActivity(endEvent);
 
-        // 기존의 process definitino에서 새로 만들 process definition의 변수로 세팅한다.
+        // 기존의 process definition에서 새로 만들 process definition의 변수로 세팅한다.
         processDefinition5.setName(src.getName());
         processDefinition5.setProcessVariables(src.getProcessVariables());
 

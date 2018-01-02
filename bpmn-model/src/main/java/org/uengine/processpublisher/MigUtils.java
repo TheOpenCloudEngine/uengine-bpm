@@ -49,12 +49,13 @@ public class MigUtils {
 
         rv.append(cl_);
         //포인트가 3개이상 있는경우만 생성(그외는 자동 설정됨)
-        if( isOtherwise || (sourceY < targetY) ){
+        //Otherwise의경우 SourceY = targetY 가 같은경우만 4point 계산(강제생성된 otherwise)
+        if( (isOtherwise  && (sourceY == targetY)) || (sourceY < targetY) ){
             //down
             rv.append( cl_ + (sourceX)+ cs_ +(sourceY + (sourceH / 2)) + cr_ );
             rv.append( cs_ );
 
-            if( isOtherwise ){
+            if( (isOtherwise  && (sourceY == targetY))  ){
                 rv.append( cl_ + (sourceX)+ cs_ +(sourceY + sourceH) + cr_ );
                 rv.append( cs_ );
                 rv.append( cl_ + (targetX)+ cs_ +(sourceY + sourceH) + cr_ );

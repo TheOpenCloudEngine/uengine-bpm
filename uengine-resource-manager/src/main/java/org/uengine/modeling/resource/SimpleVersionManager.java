@@ -79,21 +79,7 @@ public class SimpleVersionManager implements VersionManager{
 
         setVersions(listVersions());
 
-        Collections.sort(versions, new Comparator<Version>() {
-
-            @Override
-            public int compare(Version o2, Version o1) {
-                int comp = (o1.getMajor() - o2.getMajor());
-
-                if (comp != 0) return comp;
-
-                comp = (o1.getMinor() - o2.getMinor());
-
-                return comp;
-            }
-        });
-
-        setMakeThisVersionAsProduction(true);
+        //setMakeThisVersionAsProduction(true);
     }
 
     @Override
@@ -126,6 +112,20 @@ public class SimpleVersionManager implements VersionManager{
                 versionList.add(version);
             }
         }
+
+        Collections.sort(versionList, new Comparator<Version>() {
+
+            @Override
+            public int compare(Version o2, Version o1) {
+                int comp = (o1.getMajor() - o2.getMajor());
+
+                if (comp != 0) return comp;
+
+                comp = (o1.getMinor() - o2.getMinor());
+
+                return comp;
+            }
+        });
 
         return versionList;
     }

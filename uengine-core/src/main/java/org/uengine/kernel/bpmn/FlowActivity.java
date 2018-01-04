@@ -6,8 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.metaworks.annotation.Hidden;
-import org.uengine.kernel.*;
+import org.uengine.five.framework.ProcessTransactionListener;
+import org.uengine.kernel.Activity;
+import org.uengine.kernel.ActivityEventListener;
+import org.uengine.kernel.ActivityReference;
+import org.uengine.kernel.ComplexActivity;
+import org.uengine.kernel.HumanActivity;
+import org.uengine.kernel.MessageListener;
+import org.uengine.kernel.ProcessDefinition;
+import org.uengine.kernel.ProcessInstance;
+import org.uengine.kernel.TransactionListener;
+import org.uengine.kernel.UEngineException;
 import org.uengine.processmanager.ProcessTransactionContext;
+import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.TreeVisitor;
 
 public class FlowActivity extends ComplexActivity {
@@ -209,36 +220,73 @@ public class FlowActivity extends ComplexActivity {
 	}
 
 	@Override
-	protected void onEvent(String command, ProcessInstance instance, Object payload) throws Exception {
+	protected void onEvent(String command, final ProcessInstance instance, Object payload) throws Exception {
 
 		if (command.equals(CHILD_DONE)) {
 
 			//if adhoc instance, don't continue to execute process
 			Boolean adhoc = (Boolean) instance.getProperty("","__adhoc");
-			if(adhoc!=null && adhoc) return;
-			//end
-
+			if (adhoc!=null && adhoc) {
+			    return;
+			}
 
 			// when we finish??
 			// boolean stillRunning = false;
-			Activity currentActivity = (Activity) payload;
+			final Activity currentActivity = (Activity) payload;
 			List<Activity> possibleNextActivities = currentActivity.getPossibleNextActivities(instance, "");
 			
-			if (possibleNextActivities.size() == 0) {
-				// fireComplete(instance);
-				 if( !currentActivity.checkStartsWithBoundaryEventActivity() ){
-					 setStatus(instance, STATUS_COMPLETED);
-
-					 fireComplete(instance);
-
-				 }
-				 // change the status to be completed 
-				 //after the completion of all the activities
-				 if (instance != null && instance.isSubProcess()) {
-					instance.getProcessDefinition().returnToMainProcess(instance);
-				 }
-			}
-
+            if (possibleNextActivities.size() == 0) {
+                
+                /*
+                 * 1 -> G -> 2
+                 *      |
+                 *      ---> 3 -> 4  
+                 * 2의 TracTag가 3보다 작을 경우 2가 먼저 실행됨
+                 * 2가 시스템 Task(또는 Event)일 경우 2 수행 이후 ProcessDefinition의 fireComplete가 호출되면서 main으로 복귀함
+                 * G가 Parallel Gateway일 경우 2수행 이후 3이 수행되기 때문에
+                 * main으로 복귀할 경우 main의 다음 Task와 Task 3이 동시에 발생함
+                 * 본 문제를 해결하기 위해 ProcessDefinition의 fireComplete는 ProcessTransactionContext의 beforeCommit시 처리하도록 수정함으로서
+                 * 3까지 수행된 이후에 최종 수행중인 Task가 있는지 확인하여 처리함
+                 * 2018.01.02 Leehc
+                 */
+                final FlowActivity finalThis = this;
+                ProcessTransactionListener tl = new ProcessTransactionListener() {
+                    
+                    @Override
+                    public void beforeRollback(org.uengine.five.framework.ProcessTransactionContext tx) throws Exception {
+                    }
+                    
+                    @Override
+                    public void beforeCommit(org.uengine.five.framework.ProcessTransactionContext tx) throws Exception {
+                        // 프로세스의 경우 실행중인 Activity가 없을 경우에만 종료
+                        boolean completeAvail = true;
+                        if (finalThis instanceof ProcessDefinition) {
+                            List<Activity> list = instance.getCurrentRunningActivities();
+                            if (list.size() != 0) {
+                                completeAvail = false;
+                            }                    
+                        }
+                        
+                        if (completeAvail) {                    
+                            if (!currentActivity.checkStartsWithBoundaryEventActivity()) {
+                                setStatus(instance, STATUS_COMPLETED);
+                                fireComplete(instance);
+                            }
+                        }
+                    }
+                    
+                    @Override
+                    public void afterRollback(org.uengine.five.framework.ProcessTransactionContext tx) throws Exception {
+                    }
+                    
+                    @Override
+                    public void afterCommit(org.uengine.five.framework.ProcessTransactionContext tx) throws Exception {
+                    }
+                };
+                
+                org.uengine.five.framework.ProcessTransactionContext.getThreadLocalInstance().addTransactionListener(tl);
+            }
+                
 			// register token before queueActivity()
 			for (int i = 0; i < possibleNextActivities.size(); i++) {
 				Activity child = possibleNextActivities.get(i);

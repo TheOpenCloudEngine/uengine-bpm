@@ -14,7 +14,8 @@ import java.util.*;
  * @author Jinyoung Jang
  */
 
-public class DefaultProcessInstance extends AbstractProcessInstance{
+public class DefaultProcessInstance extends AbstractProcessInstance {
+    
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	public final static String ROOT_PROCESS = "_rootProcess";
 	public final static String RETURNING_PROCESS = "_returningProcess";
@@ -43,7 +44,6 @@ public class DefaultProcessInstance extends AbstractProcessInstance{
 	boolean bDone = false ;
 	boolean bRunning = false ;
 		
-
 	private String instanceId="";
 		public String getInstanceId() {
 			return instanceId;
@@ -68,6 +68,17 @@ public class DefaultProcessInstance extends AbstractProcessInstance{
 			this.isSimulation = isSimulation;
 		}
 
+    boolean subProcess;
+        @Override
+        public boolean isSubProcess() throws Exception {
+            return this.subProcess;
+        }
+
+    boolean adhoc;
+        @Override
+        public boolean isAdhoc() throws Exception {
+            return this.adhoc;
+        }
 
 	//TODO: make it transient to prevent a huge object
 	transient ProcessDefinition processDefinition;
@@ -197,14 +208,13 @@ public class DefaultProcessInstance extends AbstractProcessInstance{
 		if(getProcessTransactionContext()!=null)
 			getProcessTransactionContext().registerProcessInstance(this);
 	
-		isSubProcess = 
+		subProcess = 
 			(	options!=null 
 				&& options.containsKey("isSubProcess") 
 				&& options.get("isSubProcess").equals("yes")
 			);
 		
-		if(isSubProcess){
-			
+		if(subProcess) {
 			mainProcessInstanceId = (String)options.get(DefaultProcessInstance.RETURNING_PROCESS);
 			mainExecutionScope = (String)options.get(DefaultProcessInstance.RETURNING_EXECSCOPE);
 			mainActivityTracingTag = ((String)options.get(DefaultProcessInstance.RETURNING_TRACINGTAG));
@@ -572,16 +582,6 @@ public class DefaultProcessInstance extends AbstractProcessInstance{
 		getProcessDefinition().stop(this,status);
 	}
 
-	boolean isSubProcess;
-	public boolean isSubProcess() throws Exception {
-		return isSubProcess;
-	}
-
-	boolean isAdhocProcess;
-	public boolean isAdhocProcess() throws Exception {
-		return false;
-	}
-
 	String mainProcessInstanceId;
 		public String getMainProcessInstanceId(){
 			return mainProcessInstanceId;
@@ -589,7 +589,6 @@ public class DefaultProcessInstance extends AbstractProcessInstance{
 		public void setMainProcessInstanceId(String mainProcessInstanceId) {
 			this.mainProcessInstanceId = mainProcessInstanceId;
 		}
-
 
 	String mainActivityTracingTag;
 	public String getMainActivityTracingTag(){
@@ -927,4 +926,3 @@ public class DefaultProcessInstance extends AbstractProcessInstance{
 //	}
 
 }
-

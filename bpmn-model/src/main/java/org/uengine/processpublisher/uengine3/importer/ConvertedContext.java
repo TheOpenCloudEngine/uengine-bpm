@@ -1,7 +1,7 @@
 package org.uengine.processpublisher.uengine3.importer;
 
 import org.uengine.kernel.Activity;
-import org.uengine.modeling.layout.Layout;
+import org.uengine.modeling.cnv.layout.CnvLayout;
 
 /**
  * Created by uengine on 2017. 12. 21..
@@ -12,7 +12,7 @@ public class ConvertedContext {
 
     Activity outActivity;
 
-    Layout layout;
+    CnvLayout layout;
 
     public Activity getInActivity() {
         return inActivity;
@@ -30,11 +30,11 @@ public class ConvertedContext {
         this.outActivity = outActivity;
     }
 
-    public Layout getLayout() {
+    public CnvLayout getLayout() {
         return layout;
     }
 
-    public void setLayout(Layout layout) {
+    public void setLayout(CnvLayout layout) {
         this.layout = layout;
     }
 

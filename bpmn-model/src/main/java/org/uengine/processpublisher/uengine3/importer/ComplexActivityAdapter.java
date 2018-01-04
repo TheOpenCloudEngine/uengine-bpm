@@ -1,12 +1,10 @@
 package org.uengine.processpublisher.uengine3.importer;
 
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.FlowActivity;
 import org.uengine.kernel.bpmn.SequenceFlow;
-import org.uengine.modeling.layout.FlowLayout;
+import org.uengine.modeling.cnv.layout.CnvFlowLayout;
 import org.uengine.processpublisher.Adapter;
 import org.uengine.processpublisher.AdapterUtil;
-import org.uengine.processpublisher.Index;
 
 import java.util.Hashtable;
 
@@ -17,44 +15,55 @@ public class ComplexActivityAdapter implements Adapter<ComplexActivity, Converte
 
     @Override
     public ConvertedContext convert(ComplexActivity complexActivity, Hashtable keyedContext) throws Exception {
-        //
+        //System.out.println("===============ComplexActivityAdapter========= : " + complexActivity.getTracingTag());
         ProcessDefinition processDefinition5 = (ProcessDefinition) keyedContext.get("root");
+
         ConvertedContext convertedContext = new ConvertedContext();
-        convertedContext.setLayout(new FlowLayout());
-
-        Activity previous = null;
+        convertedContext.setLayout(new CnvFlowLayout());
         ConvertedContext childConvertedContext = null;
-        for(Activity activity : complexActivity.getChildActivities()){
 
+        //set convertedContext
+        String sourceRef = null, targetRef = null;
+        for(Activity activity : complexActivity.getChildActivities()){
+            //System.out.println("===============CA : " + activity.getTracingTag());
             Adapter adapter = AdapterUtil.getAdapter(activity.getClass(), getClass());
             keyedContext.put("root", processDefinition5);
             childConvertedContext = (ConvertedContext) adapter.convert(activity, keyedContext);
 
-            Activity incomingActivity = childConvertedContext.getInActivity();
-            Activity outgoingActivity = childConvertedContext.getOutActivity();
-
-            if(previous==null){
-                convertedContext.setInActivity(incomingActivity);
+            if(childConvertedContext.getLayout()==null) {
+                convertedContext.getLayout().add(activity.getElementView());
+                if( sourceRef == null ) {
+                    sourceRef = activity.getTracingTag();
+                }
+                else {
+                    targetRef = activity.getTracingTag();
+                }
+            }else {
+                convertedContext.getLayout().add(childConvertedContext.getLayout());
+                if( sourceRef == null ) {
+                    sourceRef = childConvertedContext.getOutActivity().getTracingTag();
+                }
+                else {
+                    targetRef = childConvertedContext.getInActivity().getTracingTag();
+                }
             }
 
-            SequenceFlow sequenceFlow = new SequenceFlow();
-            sequenceFlow.setSourceActivity(previous);
-            sequenceFlow.setTargetActivity(incomingActivity);
+            //set transition
+            if( sourceRef != null && targetRef != null) {
+                SequenceFlow sequenceFlow = new SequenceFlow();
+                sequenceFlow.setSourceRef(sourceRef);
+                sequenceFlow.setTargetRef(targetRef);
+                processDefinition5.addSequenceFlow(sequenceFlow);
+                //System.out.println(">>>>>>>>>>>>>ComplexActivityAdapter : source(" + sourceRef + ")/target(" + targetRef + ")");
+                //앞단계가 layoutgroup 이면 앞단계의 outActivity의 tracingtag 설정
+                sourceRef = (childConvertedContext.getLayout() == null)? targetRef:childConvertedContext.getOutActivity().getTracingTag();
+                targetRef = null;
 
-            previous = outgoingActivity;
-
-            processDefinition5.addSequenceFlow(sequenceFlow);
-
-            if(childConvertedContext.getLayout()==null)
-                convertedContext.getLayout().add(activity.getElementView());
-            else
-                convertedContext.getLayout().add(childConvertedContext.getLayout());
-
+            }
 
         }
 
-        convertedContext.setOutActivity(childConvertedContext.getOutActivity());
-
         return convertedContext;
     }
+
 }

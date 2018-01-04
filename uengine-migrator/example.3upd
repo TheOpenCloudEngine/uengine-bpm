@@ -1,219 +1,68 @@
 <org.uengine.kernel.ProcessDefinition>
-  <serviceDefinitions/>
-  <defaultFlowchartViewType>swimlane</defaultFlowchartViewType>
-  <defaultFlowchartViewOption>vertical</defaultFlowchartViewOption>
-  <isAbstract>false</isAbstract>
-  <duration>10</duration>
-  <simulationInstanceCount>10</simulationInstanceCount>
-  <simulationInputFrequency>10</simulationInputFrequency>
-  <simulationInputFrequencyDeviation>0</simulationInputFrequencyDeviation>
-  <revisionInfoList>
-    <org.uengine.kernel.RevisionInfo>
-      <authorName>허재형</authorName>
-      <authorId>eipheojh</authorId>
-      <authorCompany>kitech</authorCompany>
-      <changeTime>
-        <time>1448244945592</time>
-      </changeTime>
-      <version>1</version>
-    </org.uengine.kernel.RevisionInfo>
-    <org.uengine.kernel.RevisionInfo>
-      <authorName>허재형</authorName>
-      <authorId>eipheojh</authorId>
-      <authorCompany>kitech</authorCompany>
-      <changeTime>
-        <time>1448244945592</time>
-      </changeTime>
-      <version>2</version>
-    </org.uengine.kernel.RevisionInfo>
-    <org.uengine.kernel.RevisionInfo>
-      <authorName>허재형</authorName>
-      <authorId>eipheojh</authorId>
-      <authorCompany>kitech</authorCompany>
-      <changeTime>
-        <time>1452850026020</time>
-      </changeTime>
-      <version>3</version>
-    </org.uengine.kernel.RevisionInfo>
-    <org.uengine.kernel.RevisionInfo>
-      <authorName>허재형</authorName>
-      <authorId>eipheojh</authorId>
-      <authorCompany>kitech</authorCompany>
-      <changeTime>
-        <time>1456065022690</time>
-      </changeTime>
-      <version>4</version>
-    </org.uengine.kernel.RevisionInfo>
-    <org.uengine.kernel.RevisionInfo>
-      <authorName>이민기</authorName>
-      <authorId>mklee</authorId>
-      <authorCompany>kitech</authorCompany>
-      <changeTime>
-        <time>1463538417843</time>
-      </changeTime>
-      <version>5</version>
-    </org.uengine.kernel.RevisionInfo>
-  </revisionInfoList>
-  <archive>true</archive>
-  <uEngineVersion>0</uEngineVersion>
-  <id>9263</id>
-  <version>5</version>
-  <belongingDefinitionId>82316</belongingDefinitionId>
-  <isAdhoc>true</isAdhoc>
-  <initiateByFirstWorkitem>true</initiateByFirstWorkitem>
-  <isVolatile>false</isVolatile>
-  <modifiedDate>
-    <time>1463538523000</time>
-  </modifiedDate>
-  <activitySequence>0</activitySequence>
-  <alias>P32M</alias>
-  <processVariableDescriptors>
-    <org.uengine.kernel.ProcessVariable>
-      <name>ExtUiId</name>
-      <displayName>
-        <localedTexts/>
-      </displayName>
-      <type>java.lang.String</type>
-      <askWhenInit>false</askWhenInit>
-      <isVolatile>false</isVolatile>
-      <isDatabaseSynchronized>false</isDatabaseSynchronized>
-      <databaseSynchronizationOption/>
-    </org.uengine.kernel.ProcessVariable>
-    <org.uengine.kernel.ProcessVariable>
-      <name>OrderType</name>
-      <displayName>
-        <text>발주종류</text>
-        <localedTexts/>
-      </displayName>
-      <type>java.lang.String</type>
-      <askWhenInit>false</askWhenInit>
-      <isVolatile>false</isVolatile>
-      <isDatabaseSynchronized>false</isDatabaseSynchronized>
-      <databaseSynchronizationOption/>
-    </org.uengine.kernel.ProcessVariable>
-    <org.uengine.kernel.ProcessVariable>
-      <name>ContractTypeMain</name>
-      <displayName>
-        <text>계약진행방식</text>
-        <localedTexts/>
-      </displayName>
-      <type>java.lang.String</type>
-      <askWhenInit>false</askWhenInit>
-      <isVolatile>false</isVolatile>
-      <isDatabaseSynchronized>false</isDatabaseSynchronized>
-      <databaseSynchronizationOption/>
-    </org.uengine.kernel.ProcessVariable>
-  </processVariableDescriptors>
-  <leaveEventListenersEvenIfOutOfScope>false</leaveEventListenersEvenIfOutOfScope>
-  <isLeaveEventListenersEvenIfOutOfScope>false</isLeaveEventListenersEvenIfOutOfScope>
-  <isCollapsed>false</isCollapsed>
-  <childActivities class="java.util.ArrayList">
-    <org.uengine.kernel.SubProcessActivity>
-      <instanceId>&lt;%=Instance.Name%&gt;</instanceId>
-      <definitionId>[P32]@11520</definitionId>
-      <versionSelectOption>0</versionSelectOption>
-      <variableBindings class="org.uengine.kernel.SubProcessParameterContext-array">
-        <org.uengine.kernel.SubProcessParameterContext>
-          <split>false</split>
-          <argument>
-            <text>ExtUiId</text>
-            <localedTexts/>
-          </argument>
-          <variable reference="../../../../../processVariableDescriptors/org.uengine.kernel.ProcessVariable"/>
-          <direction>in-out</direction>
-          <transformerMapping/>
-        </org.uengine.kernel.SubProcessParameterContext>
-        <org.uengine.kernel.SubProcessParameterContext>
-          <split>false</split>
-          <argument>
-            <text>dummyform</text>
-          </argument>
-        </org.uengine.kernel.SubProcessParameterContext>
-        <org.uengine.kernel.SubProcessParameterContext>
-          <split>false</split>
-          <argument>
-            <text>arbitraryDecisionComment</text>
-          </argument>
-        </org.uengine.kernel.SubProcessParameterContext>
-        <org.uengine.kernel.SubProcessParameterContext>
-          <split>false</split>
-          <argument>
-            <text>arbitJikCodes</text>
-          </argument>
-        </org.uengine.kernel.SubProcessParameterContext>
-        <org.uengine.kernel.SubProcessParameterContext>
-          <split>false</split>
-          <argument>
-            <text>OrderType</text>
-          </argument>
-        </org.uengine.kernel.SubProcessParameterContext>
-        <org.uengine.kernel.SubProcessParameterContext>
-          <split>false</split>
-          <argument>
-            <text>ContractTypeMain</text>
-          </argument>
-          <variable reference="../../../../../processVariableDescriptors/org.uengine.kernel.ProcessVariable[3]"/>
-          <transformerMapping/>
-        </org.uengine.kernel.SubProcessParameterContext>
-      </variableBindings>
-      <roleBindings>
-        <org.uengine.kernel.RoleParameterContext>
-          <argument>Initiator</argument>
-          <role>
-            <name>Initiator</name>
-            <dispatchingOption>0</dispatchingOption>
-            <isHumanWorker>false</isHumanWorker>
-            <askWhenInit>false</askWhenInit>
-            <displayName>
-              <text>Initiator</text>
-              <localedTexts/>
-            </displayName>
-            <dontPersistResolutionResult>false</dontPersistResolutionResult>
-          </role>
-          <split>false</split>
-        </org.uengine.kernel.RoleParameterContext>
-        <org.uengine.kernel.RoleParameterContext>
-          <argument>InitAppvLine</argument>
-          <split>false</split>
-        </org.uengine.kernel.RoleParameterContext>
-        <org.uengine.kernel.RoleParameterContext>
-          <argument>drafter</argument>
-          <split>false</split>
-        </org.uengine.kernel.RoleParameterContext>
-        <org.uengine.kernel.RoleParameterContext>
-          <argument>Charger</argument>
-          <role>
-            <name>Charger</name>
-            <dispatchingOption>0</dispatchingOption>
-            <serviceType/>
-            <isHumanWorker>false</isHumanWorker>
-            <askWhenInit>true</askWhenInit>
-            <displayName>
-              <text>Charger</text>
-              <localedTexts/>
-            </displayName>
-            <dontPersistResolutionResult>false</dontPersistResolutionResult>
-          </role>
-          <direction>in-out</direction>
-          <split>false</split>
-        </org.uengine.kernel.RoleParameterContext>
-      </roleBindings>
-      <runAndForget>false</runAndForget>
-      <createAsRootProcess>false</createAsRootProcess>
-      <multipleInstanceLabel/>
-      <viewAlsoInMainProcess>false</viewAlsoInMainProcess>
+  <name>
+    <text>LGD_MIG_TEST</text>
+  </name>
+  <description/>
+  <cost>0</cost>
+  <retryLimit>0</retryLimit>
+  <retryDelay>60</retryDelay>
+  <isHidden>false</isHidden>
+  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+  <isQueuingEnabled>false</isQueuingEnabled>
+  <isFaultTolerant>false</isFaultTolerant>
+  <childActivities class="org.uengine.kernel.ActivityRepository">
+    <org.uengine.kernel.HumanActivity>
       <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
       <name>
-        <text>계약체결 승인</text>
-        <localedTexts/>
+        <text>작업(38)</text>
       </name>
       <description/>
-      <tracingTag>1</tracingTag>
+      <tracingTag>38</tracingTag>
+      <cost>0</cost>
+      <retryLimit>0</retryLimit>
+      <retryDelay>60</retryDelay>
+      <isHidden>false</isHidden>
+      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+      <isQueuingEnabled>false</isQueuingEnabled>
+      <isFaultTolerant>false</isFaultTolerant>
+      <message>onHumanActivityResult38</message>
+      <parameters/>
+      <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+      <role>
+        <name>Initiator</name>
+        <dispatchingOption>0</dispatchingOption>
+        <isHumanWorker>false</isHumanWorker>
+        <askWhenInit>false</askWhenInit>
+        <displayName>
+          <text>Initiator</text>
+        </displayName>
+        <dontPersistResolutionResult>false</dontPersistResolutionResult>
+      </role>
+      <tool>defaultHandler</tool>
+      <isSendEmailWorkitem>true</isSendEmailWorkitem>
+      <isNotificationWorkitem>false</isNotificationWorkitem>
+      <isAllowAnonymous>true</isAllowAnonymous>
+      <duration>5</duration>
+      <co2Emission>0</co2Emission>
+      <workload>0</workload>
+      <priority>0</priority>
+      <instruction/>
+      <keyword/>
+    </org.uengine.kernel.HumanActivity>
+    <org.uengine.kernel.SwitchActivity>
+      <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
+      <name/>
+      <description/>
+      <tracingTag>24</tracingTag>
       <cost>0</cost>
       <extendedAttributes>
         <entry>
-          <string>DefinitionId_displayValue</string>
-          <string>구매계약 결재 v9(production)</string>
+          <string>conditionDescriptions_1</string>
+          <string>변수1 &lt;&gt; 1</string>
+        </entry>
+        <entry>
+          <string>conditionDescriptions_0</string>
+          <string>변수1 ==1</string>
         </entry>
       </extendedAttributes>
       <retryLimit>0</retryLimit>
@@ -222,234 +71,65 @@
       <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
-    </org.uengine.kernel.SubProcessActivity>
-    <org.uengine.kernel.SwitchActivity>
-      <conditions>
-        <org.uengine.kernel.Or>
-          <conditionsVt>
-            <org.uengine.kernel.And>
-              <conditionsVt>
-                <org.uengine.kernel.Evaluate>
-                  <key>ContractTypeMain</key>
-                  <pv reference="../../../../../../../../../processVariableDescriptors/org.uengine.kernel.ProcessVariable[3]"/>
-                  <val class="string">PRG010</val>
-                  <condition>==</condition>
-                  <description/>
-                </org.uengine.kernel.Evaluate>
-              </conditionsVt>
-              <description/>
-            </org.uengine.kernel.And>
-          </conditionsVt>
-          <description>
-            <text>연계</text>
-            <localedTexts/>
-          </description>
-        </org.uengine.kernel.Or>
-        <org.uengine.kernel.Otherwise>
-          <description>
-            <text>비연계</text>
-            <localedTexts/>
-          </description>
-        </org.uengine.kernel.Otherwise>
-      </conditions>
-      <operateAsIfThenElse>false</operateAsIfThenElse>
-      <childActivities class="java.util.ArrayList">
+      <childActivities class="org.uengine.kernel.ActivityRepository">
         <org.uengine.kernel.SequenceActivity>
-          <childActivities class="java.util.ArrayList">
-            <org.uengine.kernel.SwitchActivity>
-              <conditions>
-                <org.uengine.kernel.Or>
-                  <conditionsVt>
-                    <org.uengine.kernel.And>
-                      <conditionsVt>
-                        <org.uengine.kernel.Evaluate>
-                          <key>OrderType</key>
-                          <pv reference="../../../../../../../../../../../../../processVariableDescriptors/org.uengine.kernel.ProcessVariable[2]"/>
-                          <val class="string">EGF010</val>
-                          <condition>==</condition>
-                          <description/>
-                        </org.uengine.kernel.Evaluate>
-                      </conditionsVt>
-                      <description/>
-                    </org.uengine.kernel.And>
-                  </conditionsVt>
-                  <description>
-                    <text>물품</text>
-                    <localedTexts/>
-                  </description>
-                </org.uengine.kernel.Or>
-                <org.uengine.kernel.Or>
-                  <conditionsVt>
-                    <org.uengine.kernel.And>
-                      <conditionsVt>
-                        <org.uengine.kernel.Evaluate>
-                          <key>OrderType</key>
-                          <pv reference="../../../../../../../../../../../../../processVariableDescriptors/org.uengine.kernel.ProcessVariable[2]"/>
-                          <val class="string">EGF020</val>
-                          <condition>==</condition>
-                          <description/>
-                        </org.uengine.kernel.Evaluate>
-                      </conditionsVt>
-                      <description/>
-                    </org.uengine.kernel.And>
-                  </conditionsVt>
-                  <description>
-                    <text>용역</text>
-                    <localedTexts/>
-                  </description>
-                </org.uengine.kernel.Or>
-                <org.uengine.kernel.Or>
-                  <conditionsVt>
-                    <org.uengine.kernel.And>
-                      <conditionsVt>
-                        <org.uengine.kernel.Evaluate>
-                          <key>OrderType</key>
-                          <pv reference="../../../../../../../../../../../../../processVariableDescriptors/org.uengine.kernel.ProcessVariable[2]"/>
-                          <val class="string">EGF030</val>
-                          <condition>==</condition>
-                          <description/>
-                        </org.uengine.kernel.Evaluate>
-                      </conditionsVt>
-                      <description/>
-                    </org.uengine.kernel.And>
-                  </conditionsVt>
-                  <description>
-                    <text>공사</text>
-                    <localedTexts/>
-                  </description>
-                </org.uengine.kernel.Or>
-              </conditions>
-              <operateAsIfThenElse>false</operateAsIfThenElse>
-              <childActivities class="org.uengine.kernel.ActivityRepository">
-                <kitech.apr.activity.KitechHumanActivity>
-                  <isLikeRcvSingleDraft>false</isLikeRcvSingleDraft>
-                  <isDisplayApprovalLine>false</isDisplayApprovalLine>
-                  <role reference="../../../../../../../../org.uengine.kernel.SubProcessActivity/roleBindings/org.uengine.kernel.RoleParameterContext[4]/role"/>
-                  <tool>defaultHandler</tool>
-                  <isSendEmailWorkitem>true</isSendEmailWorkitem>
-                  <isNotificationWorkitem>false</isNotificationWorkitem>
-                  <isAllowAnonymous>true</isAllowAnonymous>
-                  <duration>5</duration>
-                  <workload>0</workload>
-                  <priority>0</priority>
-                  <extValue1>P332</extValue1>
-                  <extValue2>P332</extValue2>
-                  <extValue6>work</extValue6>
-                  <instruction>
-                    <localedTexts/>
-                  </instruction>
-                  <keyword>
-                    <localedTexts/>
-                  </keyword>
-                  <message>onHumanActivityResult7</message>
-                  <parameters/>
-                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
-                  <name>
-                    <text>구매계약 전송(물품)</text>
-                    <localedTexts/>
-                  </name>
-                  <description>
-                    <localedTexts/>
-                  </description>
-                  <tracingTag>7</tracingTag>
-                  <cost>0</cost>
-                  <retryLimit>0</retryLimit>
-                  <retryDelay>60</retryDelay>
-                  <isHidden>false</isHidden>
-                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
-                  <isQueuingEnabled>false</isQueuingEnabled>
-                  <isFaultTolerant>false</isFaultTolerant>
-                </kitech.apr.activity.KitechHumanActivity>
-                <kitech.apr.activity.KitechHumanActivity>
-                  <isLikeRcvSingleDraft>false</isLikeRcvSingleDraft>
-                  <isDisplayApprovalLine>false</isDisplayApprovalLine>
-                  <role reference="../../../../../../../../org.uengine.kernel.SubProcessActivity/roleBindings/org.uengine.kernel.RoleParameterContext[4]/role"/>
-                  <tool>defaultHandler</tool>
-                  <isSendEmailWorkitem>true</isSendEmailWorkitem>
-                  <isNotificationWorkitem>false</isNotificationWorkitem>
-                  <isAllowAnonymous>true</isAllowAnonymous>
-                  <duration>5</duration>
-                  <workload>0</workload>
-                  <priority>0</priority>
-                  <extValue1>P374</extValue1>
-                  <extValue2>P374</extValue2>
-                  <extValue6>work</extValue6>
-                  <instruction/>
-                  <keyword/>
-                  <message>onHumanActivityResult8</message>
-                  <parameters/>
-                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
-                  <name>
-                    <text>구매계약 전송(용역)</text>
-                    <localedTexts/>
-                  </name>
-                  <description>
-                    <localedTexts/>
-                  </description>
-                  <tracingTag>8</tracingTag>
-                  <cost>0</cost>
-                  <retryLimit>0</retryLimit>
-                  <retryDelay>60</retryDelay>
-                  <isHidden>false</isHidden>
-                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
-                  <isQueuingEnabled>false</isQueuingEnabled>
-                  <isFaultTolerant>false</isFaultTolerant>
-                </kitech.apr.activity.KitechHumanActivity>
-                <kitech.apr.activity.KitechHumanActivity>
-                  <isLikeRcvSingleDraft>false</isLikeRcvSingleDraft>
-                  <isDisplayApprovalLine>false</isDisplayApprovalLine>
-                  <role reference="../../../../../../../../org.uengine.kernel.SubProcessActivity/roleBindings/org.uengine.kernel.RoleParameterContext[4]/role"/>
-                  <tool>defaultHandler</tool>
-                  <isSendEmailWorkitem>true</isSendEmailWorkitem>
-                  <isNotificationWorkitem>false</isNotificationWorkitem>
-                  <isAllowAnonymous>true</isAllowAnonymous>
-                  <duration>5</duration>
-                  <workload>0</workload>
-                  <priority>0</priority>
-                  <extValue1>P375</extValue1>
-                  <extValue2>P375</extValue2>
-                  <extValue6>work</extValue6>
-                  <instruction/>
-                  <keyword/>
-                  <message>onHumanActivityResult9</message>
-                  <parameters/>
-                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
-                  <name>
-                    <text>구매계약 전송(공사)</text>
-                    <localedTexts/>
-                  </name>
-                  <description>
-                    <localedTexts/>
-                  </description>
-                  <tracingTag>9</tracingTag>
-                  <cost>0</cost>
-                  <retryLimit>0</retryLimit>
-                  <retryDelay>60</retryDelay>
-                  <isHidden>false</isHidden>
-                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
-                  <isQueuingEnabled>false</isQueuingEnabled>
-                  <isFaultTolerant>false</isFaultTolerant>
-                </kitech.apr.activity.KitechHumanActivity>
-              </childActivities>
+          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+          <name>
+            <text>seq</text>
+          </name>
+          <description/>
+          <tracingTag>30</tracingTag>
+          <cost>0</cost>
+          <retryLimit>0</retryLimit>
+          <retryDelay>60</retryDelay>
+          <isHidden>false</isHidden>
+          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+          <isQueuingEnabled>false</isQueuingEnabled>
+          <isFaultTolerant>false</isFaultTolerant>
+          <childActivities class="org.uengine.kernel.ActivityRepository">
+            <org.uengine.kernel.HumanActivity>
               <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
               <name>
-                <localedTexts/>
+                <text>작업(32)</text>
               </name>
               <description/>
-              <tracingTag>6</tracingTag>
+              <tracingTag>32</tracingTag>
+              <cost>0</cost>
+              <retryLimit>0</retryLimit>
+              <retryDelay>60</retryDelay>
+              <isHidden>false</isHidden>
+              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+              <isQueuingEnabled>false</isQueuingEnabled>
+              <isFaultTolerant>false</isFaultTolerant>
+              <message>onHumanActivityResult32</message>
+              <parameters/>
+              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+              <role reference="../../../../../../org.uengine.kernel.HumanActivity/role"/>
+              <tool>defaultHandler</tool>
+              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+              <isNotificationWorkitem>false</isNotificationWorkitem>
+              <isAllowAnonymous>true</isAllowAnonymous>
+              <duration>5</duration>
+              <co2Emission>0</co2Emission>
+              <workload>0</workload>
+              <priority>0</priority>
+              <instruction/>
+              <keyword/>
+            </org.uengine.kernel.HumanActivity>
+            <org.uengine.kernel.SwitchActivity>
+              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+              <name/>
+              <description/>
+              <tracingTag>29</tracingTag>
               <cost>0</cost>
               <extendedAttributes>
                 <entry>
-                  <string>conditionDescriptions_2</string>
-                  <string>공사</string>
-                </entry>
-                <entry>
                   <string>conditionDescriptions_1</string>
-                  <string>용역</string>
+                  <string>변수2 &lt;&gt; 1</string>
                 </entry>
                 <entry>
                   <string>conditionDescriptions_0</string>
-                  <string>물품</string>
+                  <string>변수2 == 1</string>
                 </entry>
               </extendedAttributes>
               <retryLimit>0</retryLimit>
@@ -458,14 +138,247 @@
               <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
               <isQueuingEnabled>false</isQueuingEnabled>
               <isFaultTolerant>false</isFaultTolerant>
+              <childActivities class="org.uengine.kernel.ActivityRepository">
+                <org.uengine.kernel.SequenceActivity>
+                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                  <name>
+                    <text>seq</text>
+                  </name>
+                  <description/>
+                  <tracingTag>33</tracingTag>
+                  <cost>0</cost>
+                  <retryLimit>0</retryLimit>
+                  <retryDelay>60</retryDelay>
+                  <isHidden>false</isHidden>
+                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                  <isQueuingEnabled>false</isQueuingEnabled>
+                  <isFaultTolerant>false</isFaultTolerant>
+                  <childActivities class="org.uengine.kernel.ActivityRepository">
+                    <org.uengine.kernel.HumanActivity>
+                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                      <name>
+                        <text>작업(31)</text>
+                      </name>
+                      <description/>
+                      <tracingTag>31</tracingTag>
+                      <cost>0</cost>
+                      <retryLimit>0</retryLimit>
+                      <retryDelay>60</retryDelay>
+                      <isHidden>false</isHidden>
+                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                      <isQueuingEnabled>false</isQueuingEnabled>
+                      <isFaultTolerant>false</isFaultTolerant>
+                      <message>onHumanActivityResult31</message>
+                      <parameters/>
+                      <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                      <role reference="../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                      <tool>defaultHandler</tool>
+                      <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                      <isNotificationWorkitem>false</isNotificationWorkitem>
+                      <isAllowAnonymous>true</isAllowAnonymous>
+                      <duration>5</duration>
+                      <co2Emission>0</co2Emission>
+                      <workload>0</workload>
+                      <priority>0</priority>
+                      <instruction/>
+                      <keyword/>
+                    </org.uengine.kernel.HumanActivity>
+                    <org.uengine.kernel.HumanActivity>
+                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                      <name>
+                        <text>작업(34)</text>
+                      </name>
+                      <description/>
+                      <tracingTag>34</tracingTag>
+                      <cost>0</cost>
+                      <retryLimit>0</retryLimit>
+                      <retryDelay>60</retryDelay>
+                      <isHidden>false</isHidden>
+                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                      <isQueuingEnabled>false</isQueuingEnabled>
+                      <isFaultTolerant>false</isFaultTolerant>
+                      <message>onHumanActivityResult34</message>
+                      <parameters/>
+                      <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                      <role reference="../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                      <tool>defaultHandler</tool>
+                      <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                      <isNotificationWorkitem>false</isNotificationWorkitem>
+                      <isAllowAnonymous>true</isAllowAnonymous>
+                      <duration>5</duration>
+                      <co2Emission>0</co2Emission>
+                      <workload>0</workload>
+                      <priority>0</priority>
+                      <instruction/>
+                      <keyword/>
+                    </org.uengine.kernel.HumanActivity>
+                    <org.uengine.kernel.HumanActivity>
+                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                      <name>
+                        <text>작업(35)</text>
+                      </name>
+                      <description/>
+                      <tracingTag>35</tracingTag>
+                      <cost>0</cost>
+                      <retryLimit>0</retryLimit>
+                      <retryDelay>60</retryDelay>
+                      <isHidden>false</isHidden>
+                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                      <isQueuingEnabled>false</isQueuingEnabled>
+                      <isFaultTolerant>false</isFaultTolerant>
+                      <message>onHumanActivityResult35</message>
+                      <parameters/>
+                      <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                      <role reference="../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                      <tool>defaultHandler</tool>
+                      <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                      <isNotificationWorkitem>false</isNotificationWorkitem>
+                      <isAllowAnonymous>true</isAllowAnonymous>
+                      <duration>5</duration>
+                      <co2Emission>0</co2Emission>
+                      <workload>0</workload>
+                      <priority>0</priority>
+                      <instruction/>
+                      <keyword/>
+                    </org.uengine.kernel.HumanActivity>
+                  </childActivities>
+                </org.uengine.kernel.SequenceActivity>
+                <org.uengine.kernel.HumanActivity>
+                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                  <name>
+                    <text>작업(36)</text>
+                  </name>
+                  <description/>
+                  <tracingTag>36</tracingTag>
+                  <cost>0</cost>
+                  <retryLimit>0</retryLimit>
+                  <retryDelay>60</retryDelay>
+                  <isHidden>false</isHidden>
+                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                  <isQueuingEnabled>false</isQueuingEnabled>
+                  <isFaultTolerant>false</isFaultTolerant>
+                  <message>onHumanActivityResult36</message>
+                  <parameters/>
+                  <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                  <role reference="../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                  <tool>defaultHandler</tool>
+                  <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                  <isNotificationWorkitem>false</isNotificationWorkitem>
+                  <isAllowAnonymous>true</isAllowAnonymous>
+                  <duration>5</duration>
+                  <co2Emission>0</co2Emission>
+                  <workload>0</workload>
+                  <priority>0</priority>
+                  <instruction/>
+                  <keyword/>
+                </org.uengine.kernel.HumanActivity>
+              </childActivities>
+              <conditions>
+                <org.uengine.kernel.Or>
+                  <description>
+                    <text>변수2 == 1</text>
+                  </description>
+                  <conditionsVt>
+                    <org.uengine.kernel.And>
+                      <description/>
+                      <conditionsVt>
+                        <org.uengine.kernel.Evaluate>
+                          <description/>
+                          <key>V2</key>
+                          <pv>
+                            <name>V2</name>
+                            <displayName>
+                              <text>변수2</text>
+                            </displayName>
+                            <type>java.lang.String</type>
+                            <askWhenInit>false</askWhenInit>
+                            <defaultValue class="string">1</defaultValue>
+                            <isVolatile>false</isVolatile>
+                            <isDatabaseSynchronized>false</isDatabaseSynchronized>
+                            <databaseSynchronizationOption/>
+                          </pv>
+                          <val class="string">1</val>
+                          <condition>==</condition>
+                        </org.uengine.kernel.Evaluate>
+                      </conditionsVt>
+                    </org.uengine.kernel.And>
+                  </conditionsVt>
+                </org.uengine.kernel.Or>
+                <org.uengine.kernel.Otherwise>
+                  <description>
+                    <text>변수2 &lt;&gt; 1</text>
+                  </description>
+                </org.uengine.kernel.Otherwise>
+              </conditions>
+              <operateAsIfThenElse>false</operateAsIfThenElse>
             </org.uengine.kernel.SwitchActivity>
+            <org.uengine.kernel.HumanActivity>
+              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+              <name>
+                <text>작업(51)</text>
+              </name>
+              <description/>
+              <tracingTag>51</tracingTag>
+              <cost>0</cost>
+              <retryLimit>0</retryLimit>
+              <retryDelay>60</retryDelay>
+              <isHidden>false</isHidden>
+              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+              <isQueuingEnabled>false</isQueuingEnabled>
+              <isFaultTolerant>false</isFaultTolerant>
+              <message>onHumanActivityResult51</message>
+              <parameters/>
+              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+              <role reference="../../../../../../org.uengine.kernel.HumanActivity/role"/>
+              <tool>defaultHandler</tool>
+              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+              <isNotificationWorkitem>false</isNotificationWorkitem>
+              <isAllowAnonymous>true</isAllowAnonymous>
+              <duration>5</duration>
+              <co2Emission>0</co2Emission>
+              <workload>0</workload>
+              <priority>0</priority>
+              <instruction/>
+              <keyword/>
+            </org.uengine.kernel.HumanActivity>
+            <org.uengine.kernel.HumanActivity>
+              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+              <name>
+                <text>작업(52)</text>
+              </name>
+              <description/>
+              <tracingTag>52</tracingTag>
+              <cost>0</cost>
+              <retryLimit>0</retryLimit>
+              <retryDelay>60</retryDelay>
+              <isHidden>false</isHidden>
+              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+              <isQueuingEnabled>false</isQueuingEnabled>
+              <isFaultTolerant>false</isFaultTolerant>
+              <message>onHumanActivityResult52</message>
+              <parameters/>
+              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+              <role reference="../../../../../../org.uengine.kernel.HumanActivity/role"/>
+              <tool>defaultHandler</tool>
+              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+              <isNotificationWorkitem>false</isNotificationWorkitem>
+              <isAllowAnonymous>true</isAllowAnonymous>
+              <duration>5</duration>
+              <co2Emission>0</co2Emission>
+              <workload>0</workload>
+              <priority>0</priority>
+              <instruction/>
+              <keyword/>
+            </org.uengine.kernel.HumanActivity>
           </childActivities>
+        </org.uengine.kernel.SequenceActivity>
+        <org.uengine.kernel.SequenceActivity>
           <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
           <name>
             <text>seq</text>
           </name>
           <description/>
-          <tracingTag>14</tracingTag>
+          <tracingTag>28</tracingTag>
           <cost>0</cost>
           <retryLimit>0</retryLimit>
           <retryDelay>60</retryDelay>
@@ -473,235 +386,1055 @@
           <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
           <isQueuingEnabled>false</isQueuingEnabled>
           <isFaultTolerant>false</isFaultTolerant>
-        </org.uengine.kernel.SequenceActivity>
-        <org.uengine.kernel.SwitchActivity>
-          <conditions>
-            <org.uengine.kernel.Or>
-              <conditionsVt>
-                <org.uengine.kernel.And>
-                  <conditionsVt>
-                    <org.uengine.kernel.Evaluate>
-                      <key>OrderType</key>
-                      <pv>
-                        <name>OrderType</name>
-                        <displayName>
-                          <text>발주종류</text>
-                          <localedTexts/>
-                        </displayName>
-                        <type>java.lang.String</type>
-                        <askWhenInit>false</askWhenInit>
-                        <isVolatile>false</isVolatile>
-                        <isDatabaseSynchronized>false</isDatabaseSynchronized>
-                        <databaseSynchronizationOption/>
-                      </pv>
-                      <val class="string">EGF010</val>
-                      <condition>==</condition>
-                      <description/>
-                    </org.uengine.kernel.Evaluate>
-                  </conditionsVt>
-                  <description/>
-                </org.uengine.kernel.And>
-              </conditionsVt>
-              <description>
-                <text>물품</text>
-                <localedTexts/>
-              </description>
-            </org.uengine.kernel.Or>
-            <org.uengine.kernel.Or>
-              <conditionsVt>
-                <org.uengine.kernel.And>
-                  <conditionsVt>
-                    <org.uengine.kernel.Evaluate>
-                      <key>OrderType</key>
-                      <pv reference="../../../../../../org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
-                      <val class="string">EGF020</val>
-                      <condition>==</condition>
-                      <description/>
-                    </org.uengine.kernel.Evaluate>
-                  </conditionsVt>
-                  <description/>
-                </org.uengine.kernel.And>
-              </conditionsVt>
-              <description>
-                <text>용역</text>
-                <localedTexts/>
-              </description>
-            </org.uengine.kernel.Or>
-            <org.uengine.kernel.Or>
-              <conditionsVt>
-                <org.uengine.kernel.And>
-                  <conditionsVt>
-                    <org.uengine.kernel.Evaluate>
-                      <key>OrderType</key>
-                      <pv reference="../../../../../../org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
-                      <val class="string">EGF030</val>
-                      <condition>==</condition>
-                      <description/>
-                    </org.uengine.kernel.Evaluate>
-                  </conditionsVt>
-                  <description/>
-                </org.uengine.kernel.And>
-              </conditionsVt>
-              <description>
-                <text>공사</text>
-                <localedTexts/>
-              </description>
-            </org.uengine.kernel.Or>
-          </conditions>
-          <operateAsIfThenElse>false</operateAsIfThenElse>
           <childActivities class="org.uengine.kernel.ActivityRepository">
-            <kitech.apr.activity.KitechHumanActivity>
-              <isLikeRcvSingleDraft>false</isLikeRcvSingleDraft>
-              <isDisplayApprovalLine>false</isDisplayApprovalLine>
-              <role reference="../../../../../../org.uengine.kernel.SubProcessActivity/roleBindings/org.uengine.kernel.RoleParameterContext[4]/role"/>
-              <tool>defaultHandler</tool>
-              <isSendEmailWorkitem>true</isSendEmailWorkitem>
-              <isNotificationWorkitem>false</isNotificationWorkitem>
-              <isAllowAnonymous>true</isAllowAnonymous>
-              <duration>5</duration>
-              <workload>0</workload>
-              <priority>0</priority>
-              <extValue1>P332</extValue1>
-              <extValue2>P332</extValue2>
-              <extValue6>work</extValue6>
-              <instruction>
-                <localedTexts/>
-              </instruction>
-              <keyword>
-                <localedTexts/>
-              </keyword>
-              <message>onHumanActivityResult16</message>
-              <parameters/>
-              <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
-              <name>
-                <text>구매계약 확정(물품)</text>
-                <localedTexts/>
-              </name>
-              <description>
-                <localedTexts/>
-              </description>
-              <tracingTag>16</tracingTag>
+            <org.uengine.kernel.SwitchActivity>
+              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+              <name/>
+              <description/>
+              <tracingTag>3</tracingTag>
               <cost>0</cost>
+              <extendedAttributes>
+                <entry>
+                  <string>conditionDescriptions_1</string>
+                  <string>변수2 &lt;&gt; 1</string>
+                </entry>
+                <entry>
+                  <string>conditionDescriptions_0</string>
+                  <string>변수2 == 1</string>
+                </entry>
+              </extendedAttributes>
               <retryLimit>0</retryLimit>
               <retryDelay>60</retryDelay>
               <isHidden>false</isHidden>
               <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
               <isQueuingEnabled>false</isQueuingEnabled>
               <isFaultTolerant>false</isFaultTolerant>
-            </kitech.apr.activity.KitechHumanActivity>
-            <kitech.apr.activity.KitechHumanActivity>
-              <isLikeRcvSingleDraft>false</isLikeRcvSingleDraft>
-              <isDisplayApprovalLine>false</isDisplayApprovalLine>
-              <role reference="../../../../../../org.uengine.kernel.SubProcessActivity/roleBindings/org.uengine.kernel.RoleParameterContext[4]/role"/>
-              <tool>defaultHandler</tool>
-              <isSendEmailWorkitem>true</isSendEmailWorkitem>
-              <isNotificationWorkitem>false</isNotificationWorkitem>
-              <isAllowAnonymous>true</isAllowAnonymous>
-              <duration>5</duration>
-              <workload>0</workload>
-              <priority>0</priority>
-              <extValue1>P374</extValue1>
-              <extValue2>P374</extValue2>
-              <extValue6>work</extValue6>
-              <instruction/>
-              <keyword/>
-              <message>onHumanActivityResult17</message>
-              <parameters/>
-              <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
-              <name>
-                <text>구매계약 확정(용역)</text>
-                <localedTexts/>
-              </name>
-              <description>
-                <localedTexts/>
-              </description>
-              <tracingTag>17</tracingTag>
+              <childActivities class="org.uengine.kernel.ActivityRepository">
+                <org.uengine.kernel.SequenceActivity>
+                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                  <name>
+                    <text>seq</text>
+                  </name>
+                  <description/>
+                  <tracingTag>23</tracingTag>
+                  <cost>0</cost>
+                  <retryLimit>0</retryLimit>
+                  <retryDelay>60</retryDelay>
+                  <isHidden>false</isHidden>
+                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                  <isQueuingEnabled>false</isQueuingEnabled>
+                  <isFaultTolerant>false</isFaultTolerant>
+                  <childActivities class="org.uengine.kernel.ActivityRepository">
+                    <org.uengine.kernel.HumanActivity>
+                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                      <name>
+                        <text>작업(39)</text>
+                      </name>
+                      <description/>
+                      <tracingTag>39</tracingTag>
+                      <cost>0</cost>
+                      <retryLimit>0</retryLimit>
+                      <retryDelay>60</retryDelay>
+                      <isHidden>false</isHidden>
+                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                      <isQueuingEnabled>false</isQueuingEnabled>
+                      <isFaultTolerant>false</isFaultTolerant>
+                      <message>onHumanActivityResult39</message>
+                      <parameters/>
+                      <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                      <role reference="../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                      <tool>defaultHandler</tool>
+                      <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                      <isNotificationWorkitem>false</isNotificationWorkitem>
+                      <isAllowAnonymous>true</isAllowAnonymous>
+                      <duration>5</duration>
+                      <co2Emission>0</co2Emission>
+                      <workload>0</workload>
+                      <priority>0</priority>
+                      <instruction/>
+                      <keyword/>
+                    </org.uengine.kernel.HumanActivity>
+                    <org.uengine.kernel.SwitchActivity>
+                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                      <name/>
+                      <description/>
+                      <tracingTag>17</tracingTag>
+                      <cost>0</cost>
+                      <extendedAttributes>
+                        <entry>
+                          <string>conditionDescriptions_1</string>
+                          <string>변수3 &lt;&gt; 1</string>
+                        </entry>
+                        <entry>
+                          <string>conditionDescriptions_0</string>
+                          <string>변수3 == 1</string>
+                        </entry>
+                      </extendedAttributes>
+                      <retryLimit>0</retryLimit>
+                      <retryDelay>60</retryDelay>
+                      <isHidden>false</isHidden>
+                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                      <isQueuingEnabled>false</isQueuingEnabled>
+                      <isFaultTolerant>false</isFaultTolerant>
+                      <childActivities class="org.uengine.kernel.ActivityRepository">
+                        <org.uengine.kernel.SequenceActivity>
+                          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                          <name>
+                            <text>seq</text>
+                          </name>
+                          <description/>
+                          <tracingTag>20</tracingTag>
+                          <cost>0</cost>
+                          <retryLimit>0</retryLimit>
+                          <retryDelay>60</retryDelay>
+                          <isHidden>false</isHidden>
+                          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                          <isQueuingEnabled>false</isQueuingEnabled>
+                          <isFaultTolerant>false</isFaultTolerant>
+                          <childActivities class="org.uengine.kernel.ActivityRepository">
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(40)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>40</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult40</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(41)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>41</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult41</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                          </childActivities>
+                        </org.uengine.kernel.SequenceActivity>
+                        <org.uengine.kernel.SequenceActivity>
+                          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                          <name>
+                            <text>seq</text>
+                          </name>
+                          <description/>
+                          <tracingTag>42</tracingTag>
+                          <cost>0</cost>
+                          <retryLimit>0</retryLimit>
+                          <retryDelay>60</retryDelay>
+                          <isHidden>false</isHidden>
+                          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                          <isQueuingEnabled>false</isQueuingEnabled>
+                          <isFaultTolerant>false</isFaultTolerant>
+                          <childActivities class="org.uengine.kernel.ActivityRepository">
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(43)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>43</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult43</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                          </childActivities>
+                        </org.uengine.kernel.SequenceActivity>
+                      </childActivities>
+                      <conditions>
+                        <org.uengine.kernel.Or>
+                          <description>
+                            <text>변수3 == 1</text>
+                          </description>
+                          <conditionsVt>
+                            <org.uengine.kernel.And>
+                              <description/>
+                              <conditionsVt>
+                                <org.uengine.kernel.Evaluate>
+                                  <description/>
+                                  <key>V3</key>
+                                  <pv>
+                                    <name>V3</name>
+                                    <displayName>
+                                      <text>변수3</text>
+                                    </displayName>
+                                    <type>java.lang.String</type>
+                                    <askWhenInit>false</askWhenInit>
+                                    <defaultValue class="string">1</defaultValue>
+                                    <isVolatile>false</isVolatile>
+                                    <isDatabaseSynchronized>false</isDatabaseSynchronized>
+                                    <databaseSynchronizationOption/>
+                                  </pv>
+                                  <val class="string">1</val>
+                                  <condition>==</condition>
+                                </org.uengine.kernel.Evaluate>
+                              </conditionsVt>
+                            </org.uengine.kernel.And>
+                          </conditionsVt>
+                        </org.uengine.kernel.Or>
+                        <org.uengine.kernel.Otherwise>
+                          <description>
+                            <text>변수3 &lt;&gt; 1</text>
+                          </description>
+                        </org.uengine.kernel.Otherwise>
+                      </conditions>
+                      <operateAsIfThenElse>false</operateAsIfThenElse>
+                    </org.uengine.kernel.SwitchActivity>
+                    <org.uengine.kernel.SwitchActivity>
+                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                      <name/>
+                      <description/>
+                      <tracingTag>26</tracingTag>
+                      <cost>0</cost>
+                      <extendedAttributes>
+                        <entry>
+                          <string>conditionDescriptions_2</string>
+                          <string>otherwise</string>
+                        </entry>
+                        <entry>
+                          <string>conditionDescriptions_1</string>
+                          <string>변수4 == 2</string>
+                        </entry>
+                        <entry>
+                          <string>conditionDescriptions_0</string>
+                          <string>변수4 == 1</string>
+                        </entry>
+                      </extendedAttributes>
+                      <retryLimit>0</retryLimit>
+                      <retryDelay>60</retryDelay>
+                      <isHidden>false</isHidden>
+                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                      <isQueuingEnabled>false</isQueuingEnabled>
+                      <isFaultTolerant>false</isFaultTolerant>
+                      <childActivities class="org.uengine.kernel.ActivityRepository">
+                        <org.uengine.kernel.SequenceActivity>
+                          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                          <name>
+                            <text>seq</text>
+                          </name>
+                          <description/>
+                          <tracingTag>62</tracingTag>
+                          <cost>0</cost>
+                          <retryLimit>0</retryLimit>
+                          <retryDelay>60</retryDelay>
+                          <isHidden>false</isHidden>
+                          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                          <isQueuingEnabled>false</isQueuingEnabled>
+                          <isFaultTolerant>false</isFaultTolerant>
+                          <childActivities class="org.uengine.kernel.ActivityRepository">
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(37)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>37</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult37</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(61)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>61</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult61</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                          </childActivities>
+                        </org.uengine.kernel.SequenceActivity>
+                        <org.uengine.kernel.HumanActivity>
+                          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                          <name>
+                            <text>작업(56)</text>
+                          </name>
+                          <description/>
+                          <tracingTag>56</tracingTag>
+                          <cost>0</cost>
+                          <retryLimit>0</retryLimit>
+                          <retryDelay>60</retryDelay>
+                          <isHidden>false</isHidden>
+                          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                          <isQueuingEnabled>false</isQueuingEnabled>
+                          <isFaultTolerant>false</isFaultTolerant>
+                          <message>onHumanActivityResult56</message>
+                          <parameters/>
+                          <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                          <role reference="../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                          <tool>defaultHandler</tool>
+                          <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                          <isNotificationWorkitem>false</isNotificationWorkitem>
+                          <isAllowAnonymous>true</isAllowAnonymous>
+                          <duration>5</duration>
+                          <co2Emission>0</co2Emission>
+                          <workload>0</workload>
+                          <priority>0</priority>
+                          <instruction/>
+                          <keyword/>
+                        </org.uengine.kernel.HumanActivity>
+                        <org.uengine.kernel.SequenceActivity>
+                          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                          <name>
+                            <text>seq</text>
+                          </name>
+                          <description/>
+                          <tracingTag>58</tracingTag>
+                          <cost>0</cost>
+                          <retryLimit>0</retryLimit>
+                          <retryDelay>60</retryDelay>
+                          <isHidden>false</isHidden>
+                          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                          <isQueuingEnabled>false</isQueuingEnabled>
+                          <isFaultTolerant>false</isFaultTolerant>
+                          <childActivities class="org.uengine.kernel.ActivityRepository">
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(57)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>57</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult57</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(60)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>60</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult60</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(59)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>59</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult59</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                          </childActivities>
+                        </org.uengine.kernel.SequenceActivity>
+                      </childActivities>
+                      <conditions>
+                        <org.uengine.kernel.Or>
+                          <description>
+                            <text>변수4 == 1</text>
+                          </description>
+                          <conditionsVt>
+                            <org.uengine.kernel.And>
+                              <description/>
+                              <conditionsVt>
+                                <org.uengine.kernel.Evaluate>
+                                  <description/>
+                                  <key>V4</key>
+                                  <pv>
+                                    <name>V4</name>
+                                    <displayName>
+                                      <text>변수4</text>
+                                    </displayName>
+                                    <type>java.lang.String</type>
+                                    <askWhenInit>false</askWhenInit>
+                                    <defaultValue class="string">1</defaultValue>
+                                    <isVolatile>false</isVolatile>
+                                    <isDatabaseSynchronized>false</isDatabaseSynchronized>
+                                    <databaseSynchronizationOption/>
+                                  </pv>
+                                  <val class="string">1</val>
+                                  <condition>==</condition>
+                                </org.uengine.kernel.Evaluate>
+                              </conditionsVt>
+                            </org.uengine.kernel.And>
+                          </conditionsVt>
+                        </org.uengine.kernel.Or>
+                        <org.uengine.kernel.Or>
+                          <description>
+                            <text>변수4 == 2</text>
+                          </description>
+                          <conditionsVt>
+                            <org.uengine.kernel.And>
+                              <description/>
+                              <conditionsVt>
+                                <org.uengine.kernel.Evaluate>
+                                  <description/>
+                                  <key>V4</key>
+                                  <pv reference="../../../../../../org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+                                  <val class="string">2</val>
+                                  <condition>==</condition>
+                                </org.uengine.kernel.Evaluate>
+                              </conditionsVt>
+                            </org.uengine.kernel.And>
+                          </conditionsVt>
+                        </org.uengine.kernel.Or>
+                        <org.uengine.kernel.Otherwise>
+                          <description>
+                            <text>otherwise</text>
+                          </description>
+                        </org.uengine.kernel.Otherwise>
+                      </conditions>
+                      <operateAsIfThenElse>false</operateAsIfThenElse>
+                    </org.uengine.kernel.SwitchActivity>
+                  </childActivities>
+                </org.uengine.kernel.SequenceActivity>
+                <org.uengine.kernel.SequenceActivity>
+                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                  <name>
+                    <text>seq</text>
+                  </name>
+                  <description/>
+                  <tracingTag>5</tracingTag>
+                  <cost>0</cost>
+                  <retryLimit>0</retryLimit>
+                  <retryDelay>60</retryDelay>
+                  <isHidden>false</isHidden>
+                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                  <isQueuingEnabled>false</isQueuingEnabled>
+                  <isFaultTolerant>false</isFaultTolerant>
+                  <childActivities class="org.uengine.kernel.ActivityRepository">
+                    <org.uengine.kernel.SwitchActivity>
+                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                      <name/>
+                      <description/>
+                      <tracingTag>6</tracingTag>
+                      <cost>0</cost>
+                      <extendedAttributes>
+                        <entry>
+                          <string>conditionDescriptions_1</string>
+                          <string>변수3 &lt;&gt; 1</string>
+                        </entry>
+                        <entry>
+                          <string>conditionDescriptions_0</string>
+                          <string>변수3 == 1</string>
+                        </entry>
+                      </extendedAttributes>
+                      <retryLimit>0</retryLimit>
+                      <retryDelay>60</retryDelay>
+                      <isHidden>false</isHidden>
+                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                      <isQueuingEnabled>false</isQueuingEnabled>
+                      <isFaultTolerant>false</isFaultTolerant>
+                      <childActivities class="org.uengine.kernel.ActivityRepository">
+                        <org.uengine.kernel.SequenceActivity>
+                          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                          <name>
+                            <text>seq</text>
+                          </name>
+                          <description/>
+                          <tracingTag>8</tracingTag>
+                          <cost>0</cost>
+                          <retryLimit>0</retryLimit>
+                          <retryDelay>60</retryDelay>
+                          <isHidden>false</isHidden>
+                          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                          <isQueuingEnabled>false</isQueuingEnabled>
+                          <isFaultTolerant>false</isFaultTolerant>
+                          <childActivities class="org.uengine.kernel.ActivityRepository">
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(44)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>44</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult44</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(45)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>45</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult45</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                          </childActivities>
+                        </org.uengine.kernel.SequenceActivity>
+                        <org.uengine.kernel.SequenceActivity>
+                          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                          <name>
+                            <text>seq</text>
+                          </name>
+                          <description/>
+                          <tracingTag>14</tracingTag>
+                          <cost>0</cost>
+                          <retryLimit>0</retryLimit>
+                          <retryDelay>60</retryDelay>
+                          <isHidden>false</isHidden>
+                          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                          <isQueuingEnabled>false</isQueuingEnabled>
+                          <isFaultTolerant>false</isFaultTolerant>
+                          <childActivities class="org.uengine.kernel.ActivityRepository">
+                            <org.uengine.kernel.HumanActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name>
+                                <text>작업(46)</text>
+                              </name>
+                              <description/>
+                              <tracingTag>46</tracingTag>
+                              <cost>0</cost>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <message>onHumanActivityResult46</message>
+                              <parameters/>
+                              <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                              <role reference="../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                              <tool>defaultHandler</tool>
+                              <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                              <isNotificationWorkitem>false</isNotificationWorkitem>
+                              <isAllowAnonymous>true</isAllowAnonymous>
+                              <duration>5</duration>
+                              <co2Emission>0</co2Emission>
+                              <workload>0</workload>
+                              <priority>0</priority>
+                              <instruction/>
+                              <keyword/>
+                            </org.uengine.kernel.HumanActivity>
+                            <org.uengine.kernel.SwitchActivity>
+                              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                              <name/>
+                              <description/>
+                              <tracingTag>15</tracingTag>
+                              <cost>0</cost>
+                              <extendedAttributes>
+                                <entry>
+                                  <string>conditionDescriptions_0</string>
+                                  <string>변수 4 == 1</string>
+                                </entry>
+                              </extendedAttributes>
+                              <retryLimit>0</retryLimit>
+                              <retryDelay>60</retryDelay>
+                              <isHidden>false</isHidden>
+                              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                              <isQueuingEnabled>false</isQueuingEnabled>
+                              <isFaultTolerant>false</isFaultTolerant>
+                              <childActivities class="org.uengine.kernel.ActivityRepository">
+                                <org.uengine.kernel.SequenceActivity>
+                                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                                  <name>
+                                    <text>seq</text>
+                                  </name>
+                                  <description/>
+                                  <tracingTag>47</tracingTag>
+                                  <cost>0</cost>
+                                  <retryLimit>0</retryLimit>
+                                  <retryDelay>60</retryDelay>
+                                  <isHidden>false</isHidden>
+                                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                                  <isQueuingEnabled>false</isQueuingEnabled>
+                                  <isFaultTolerant>false</isFaultTolerant>
+                                  <childActivities class="org.uengine.kernel.ActivityRepository">
+                                    <org.uengine.kernel.HumanActivity>
+                                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                                      <name>
+                                        <text>작업(48)</text>
+                                      </name>
+                                      <description/>
+                                      <tracingTag>48</tracingTag>
+                                      <cost>0</cost>
+                                      <retryLimit>0</retryLimit>
+                                      <retryDelay>60</retryDelay>
+                                      <isHidden>false</isHidden>
+                                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                                      <isQueuingEnabled>false</isQueuingEnabled>
+                                      <isFaultTolerant>false</isFaultTolerant>
+                                      <message>onHumanActivityResult48</message>
+                                      <parameters/>
+                                      <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                                      <role reference="../../../../../../../../../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                                      <tool>defaultHandler</tool>
+                                      <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                                      <isNotificationWorkitem>false</isNotificationWorkitem>
+                                      <isAllowAnonymous>true</isAllowAnonymous>
+                                      <duration>5</duration>
+                                      <co2Emission>0</co2Emission>
+                                      <workload>0</workload>
+                                      <priority>0</priority>
+                                      <instruction/>
+                                      <keyword/>
+                                    </org.uengine.kernel.HumanActivity>
+                                  </childActivities>
+                                </org.uengine.kernel.SequenceActivity>
+                              </childActivities>
+                              <conditions>
+                                <org.uengine.kernel.Or>
+                                  <description>
+                                    <text>변수 4 == 1</text>
+                                  </description>
+                                  <conditionsVt>
+                                    <org.uengine.kernel.And>
+                                      <description/>
+                                      <conditionsVt>
+                                        <org.uengine.kernel.Evaluate>
+                                          <description/>
+                                          <key>V4</key>
+                                          <pv reference="../../../../../../../../../../../../../../org.uengine.kernel.SequenceActivity/childActivities/org.uengine.kernel.SwitchActivity[2]/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+                                          <val class="string">1</val>
+                                          <condition>==</condition>
+                                        </org.uengine.kernel.Evaluate>
+                                      </conditionsVt>
+                                    </org.uengine.kernel.And>
+                                  </conditionsVt>
+                                </org.uengine.kernel.Or>
+                              </conditions>
+                              <operateAsIfThenElse>false</operateAsIfThenElse>
+                            </org.uengine.kernel.SwitchActivity>
+                          </childActivities>
+                        </org.uengine.kernel.SequenceActivity>
+                      </childActivities>
+                      <conditions>
+                        <org.uengine.kernel.Or>
+                          <description>
+                            <text>변수3 == 1</text>
+                          </description>
+                          <conditionsVt>
+                            <org.uengine.kernel.And>
+                              <description/>
+                              <conditionsVt>
+                                <org.uengine.kernel.Evaluate>
+                                  <description/>
+                                  <key>V3</key>
+                                  <pv reference="../../../../../../../../../../org.uengine.kernel.SequenceActivity/childActivities/org.uengine.kernel.SwitchActivity/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+                                  <val class="string">1</val>
+                                  <condition>==</condition>
+                                </org.uengine.kernel.Evaluate>
+                              </conditionsVt>
+                            </org.uengine.kernel.And>
+                          </conditionsVt>
+                        </org.uengine.kernel.Or>
+                        <org.uengine.kernel.Otherwise>
+                          <description>
+                            <text>변수3 &lt;&gt; 1</text>
+                          </description>
+                        </org.uengine.kernel.Otherwise>
+                      </conditions>
+                      <operateAsIfThenElse>false</operateAsIfThenElse>
+                    </org.uengine.kernel.SwitchActivity>
+                    <org.uengine.kernel.HumanActivity>
+                      <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+                      <name>
+                        <text>작업(49)</text>
+                      </name>
+                      <description/>
+                      <tracingTag>49</tracingTag>
+                      <cost>0</cost>
+                      <retryLimit>0</retryLimit>
+                      <retryDelay>60</retryDelay>
+                      <isHidden>false</isHidden>
+                      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                      <isQueuingEnabled>false</isQueuingEnabled>
+                      <isFaultTolerant>false</isFaultTolerant>
+                      <message>onHumanActivityResult49</message>
+                      <parameters/>
+                      <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                      <role reference="../../../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                      <tool>defaultHandler</tool>
+                      <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                      <isNotificationWorkitem>false</isNotificationWorkitem>
+                      <isAllowAnonymous>true</isAllowAnonymous>
+                      <duration>5</duration>
+                      <co2Emission>0</co2Emission>
+                      <workload>0</workload>
+                      <priority>0</priority>
+                      <instruction/>
+                      <keyword/>
+                    </org.uengine.kernel.HumanActivity>
+                  </childActivities>
+                </org.uengine.kernel.SequenceActivity>
+              </childActivities>
+              <conditions>
+                <org.uengine.kernel.Or>
+                  <description>
+                    <text>변수2 == 1</text>
+                  </description>
+                  <conditionsVt>
+                    <org.uengine.kernel.And>
+                      <description/>
+                      <conditionsVt>
+                        <org.uengine.kernel.Evaluate>
+                          <description/>
+                          <key>V2</key>
+                          <pv reference="../../../../../../../../../../org.uengine.kernel.SequenceActivity/childActivities/org.uengine.kernel.SwitchActivity/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+                          <val class="string">1</val>
+                          <condition>==</condition>
+                        </org.uengine.kernel.Evaluate>
+                      </conditionsVt>
+                    </org.uengine.kernel.And>
+                  </conditionsVt>
+                </org.uengine.kernel.Or>
+                <org.uengine.kernel.Otherwise>
+                  <description>
+                    <text>변수2 &lt;&gt; 1</text>
+                  </description>
+                </org.uengine.kernel.Otherwise>
+              </conditions>
+              <operateAsIfThenElse>false</operateAsIfThenElse>
+            </org.uengine.kernel.SwitchActivity>
+            <org.uengine.kernel.SwitchActivity>
+              <parentActivity class="org.uengine.kernel.SequenceActivity" reference="../../.."/>
+              <name/>
+              <description/>
+              <tracingTag>27</tracingTag>
               <cost>0</cost>
+              <extendedAttributes>
+                <entry>
+                  <string>conditionDescriptions_0</string>
+                  <string>변수5 == 1</string>
+                </entry>
+              </extendedAttributes>
               <retryLimit>0</retryLimit>
               <retryDelay>60</retryDelay>
               <isHidden>false</isHidden>
               <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
               <isQueuingEnabled>false</isQueuingEnabled>
               <isFaultTolerant>false</isFaultTolerant>
-            </kitech.apr.activity.KitechHumanActivity>
-            <kitech.apr.activity.KitechHumanActivity>
-              <isLikeRcvSingleDraft>false</isLikeRcvSingleDraft>
-              <isDisplayApprovalLine>false</isDisplayApprovalLine>
-              <role reference="../../../../../../org.uengine.kernel.SubProcessActivity/roleBindings/org.uengine.kernel.RoleParameterContext[4]/role"/>
-              <tool>defaultHandler</tool>
-              <isSendEmailWorkitem>true</isSendEmailWorkitem>
-              <isNotificationWorkitem>false</isNotificationWorkitem>
-              <isAllowAnonymous>true</isAllowAnonymous>
-              <duration>5</duration>
-              <workload>0</workload>
-              <priority>0</priority>
-              <extValue1>P375</extValue1>
-              <extValue2>P375</extValue2>
-              <extValue6>work</extValue6>
-              <instruction/>
-              <keyword/>
-              <message>onHumanActivityResult18</message>
-              <parameters/>
-              <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
-              <name>
-                <text>구매계약 확정(공사)</text>
-                <localedTexts/>
-              </name>
-              <description>
-                <localedTexts/>
-              </description>
-              <tracingTag>18</tracingTag>
-              <cost>0</cost>
-              <retryLimit>0</retryLimit>
-              <retryDelay>60</retryDelay>
-              <isHidden>false</isHidden>
-              <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
-              <isQueuingEnabled>false</isQueuingEnabled>
-              <isFaultTolerant>false</isFaultTolerant>
-            </kitech.apr.activity.KitechHumanActivity>
+              <childActivities class="org.uengine.kernel.ActivityRepository">
+                <org.uengine.kernel.HumanActivity>
+                  <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+                  <name>
+                    <text>작업(50)</text>
+                  </name>
+                  <description/>
+                  <tracingTag>50</tracingTag>
+                  <cost>0</cost>
+                  <retryLimit>0</retryLimit>
+                  <retryDelay>60</retryDelay>
+                  <isHidden>false</isHidden>
+                  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+                  <isQueuingEnabled>false</isQueuingEnabled>
+                  <isFaultTolerant>false</isFaultTolerant>
+                  <message>onHumanActivityResult50</message>
+                  <parameters/>
+                  <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+                  <role reference="../../../../../../../../org.uengine.kernel.HumanActivity/role"/>
+                  <tool>defaultHandler</tool>
+                  <isSendEmailWorkitem>true</isSendEmailWorkitem>
+                  <isNotificationWorkitem>false</isNotificationWorkitem>
+                  <isAllowAnonymous>true</isAllowAnonymous>
+                  <duration>5</duration>
+                  <co2Emission>0</co2Emission>
+                  <workload>0</workload>
+                  <priority>0</priority>
+                  <instruction/>
+                  <keyword/>
+                </org.uengine.kernel.HumanActivity>
+              </childActivities>
+              <conditions>
+                <org.uengine.kernel.Or>
+                  <description>
+                    <text>변수5 == 1</text>
+                  </description>
+                  <conditionsVt>
+                    <org.uengine.kernel.And>
+                      <description/>
+                      <conditionsVt>
+                        <org.uengine.kernel.Evaluate>
+                          <description/>
+                          <key>V5</key>
+                          <pv>
+                            <name>V5</name>
+                            <displayName>
+                              <text>변수5</text>
+                            </displayName>
+                            <type>java.lang.String</type>
+                            <askWhenInit>false</askWhenInit>
+                            <defaultValue class="string">1</defaultValue>
+                            <isVolatile>false</isVolatile>
+                            <isDatabaseSynchronized>false</isDatabaseSynchronized>
+                            <databaseSynchronizationOption/>
+                          </pv>
+                          <val class="string">1</val>
+                          <condition>==</condition>
+                        </org.uengine.kernel.Evaluate>
+                      </conditionsVt>
+                    </org.uengine.kernel.And>
+                  </conditionsVt>
+                </org.uengine.kernel.Or>
+              </conditions>
+              <operateAsIfThenElse>false</operateAsIfThenElse>
+            </org.uengine.kernel.SwitchActivity>
           </childActivities>
-          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
-          <name>
-            <localedTexts/>
-          </name>
-          <description/>
-          <tracingTag>15</tracingTag>
-          <cost>0</cost>
-          <extendedAttributes>
-            <entry>
-              <string>conditionDescriptions_2</string>
-              <string>공사</string>
-            </entry>
-            <entry>
-              <string>conditionDescriptions_1</string>
-              <string>용역</string>
-            </entry>
-            <entry>
-              <string>conditionDescriptions_0</string>
-              <string>물품</string>
-            </entry>
-          </extendedAttributes>
-          <retryLimit>0</retryLimit>
-          <retryDelay>60</retryDelay>
-          <isHidden>false</isHidden>
-          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
-          <isQueuingEnabled>false</isQueuingEnabled>
-          <isFaultTolerant>false</isFaultTolerant>
-        </org.uengine.kernel.SwitchActivity>
+        </org.uengine.kernel.SequenceActivity>
       </childActivities>
+      <conditions>
+        <org.uengine.kernel.Or>
+          <description>
+            <text>변수1 ==1</text>
+          </description>
+          <conditionsVt>
+            <org.uengine.kernel.And>
+              <description/>
+              <conditionsVt>
+                <org.uengine.kernel.Evaluate>
+                  <description/>
+                  <key>V1</key>
+                  <pv>
+                    <name>V1</name>
+                    <displayName>
+                      <text>변수1</text>
+                    </displayName>
+                    <type>java.lang.String</type>
+                    <askWhenInit>false</askWhenInit>
+                    <defaultValue class="string">1</defaultValue>
+                    <isVolatile>false</isVolatile>
+                    <isDatabaseSynchronized>false</isDatabaseSynchronized>
+                    <databaseSynchronizationOption/>
+                  </pv>
+                  <val class="string">1</val>
+                  <condition>==</condition>
+                </org.uengine.kernel.Evaluate>
+              </conditionsVt>
+            </org.uengine.kernel.And>
+          </conditionsVt>
+        </org.uengine.kernel.Or>
+        <org.uengine.kernel.Otherwise>
+          <description>
+            <text>변수1 &lt;&gt; 1</text>
+          </description>
+        </org.uengine.kernel.Otherwise>
+      </conditions>
+      <operateAsIfThenElse>false</operateAsIfThenElse>
+    </org.uengine.kernel.SwitchActivity>
+    <org.uengine.kernel.HumanActivity>
+      <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
+      <name>
+        <text>작업(53)</text>
+      </name>
+      <description/>
+      <tracingTag>53</tracingTag>
+      <cost>0</cost>
+      <retryLimit>0</retryLimit>
+      <retryDelay>60</retryDelay>
+      <isHidden>false</isHidden>
+      <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+      <isQueuingEnabled>false</isQueuingEnabled>
+      <isFaultTolerant>false</isFaultTolerant>
+      <message>onHumanActivityResult53</message>
+      <parameters/>
+      <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+      <role reference="../../org.uengine.kernel.HumanActivity/role"/>
+      <tool>defaultHandler</tool>
+      <isSendEmailWorkitem>true</isSendEmailWorkitem>
+      <isNotificationWorkitem>false</isNotificationWorkitem>
+      <isAllowAnonymous>true</isAllowAnonymous>
+      <duration>5</duration>
+      <co2Emission>0</co2Emission>
+      <workload>0</workload>
+      <priority>0</priority>
+      <instruction/>
+      <keyword/>
+    </org.uengine.kernel.HumanActivity>
+    <org.uengine.kernel.SwitchActivity>
       <parentActivity class="org.uengine.kernel.ProcessDefinition" reference="../../.."/>
       <name/>
       <description/>
-      <tracingTag>13</tracingTag>
+      <tracingTag>54</tracingTag>
       <cost>0</cost>
       <extendedAttributes>
         <entry>
-          <string>conditionDescriptions_1</string>
-          <string>비연계</string>
-        </entry>
-        <entry>
           <string>conditionDescriptions_0</string>
-          <string>연계</string>
+          <string>변수 6 ==1</string>
         </entry>
       </extendedAttributes>
       <retryLimit>0</retryLimit>
@@ -710,61 +1443,115 @@
       <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
       <isQueuingEnabled>false</isQueuingEnabled>
       <isFaultTolerant>false</isFaultTolerant>
+      <childActivities class="org.uengine.kernel.ActivityRepository">
+        <org.uengine.kernel.HumanActivity>
+          <parentActivity class="org.uengine.kernel.SwitchActivity" reference="../../.."/>
+          <name>
+            <text>작업(55)</text>
+          </name>
+          <description/>
+          <tracingTag>55</tracingTag>
+          <cost>0</cost>
+          <retryLimit>0</retryLimit>
+          <retryDelay>60</retryDelay>
+          <isHidden>false</isHidden>
+          <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
+          <isQueuingEnabled>false</isQueuingEnabled>
+          <isFaultTolerant>false</isFaultTolerant>
+          <message>onHumanActivityResult55</message>
+          <parameters/>
+          <whenRoleNotBoundingSetLoggedUserRoleMapping>false</whenRoleNotBoundingSetLoggedUserRoleMapping>
+          <role reference="../../../../org.uengine.kernel.HumanActivity/role"/>
+          <tool>defaultHandler</tool>
+          <isSendEmailWorkitem>true</isSendEmailWorkitem>
+          <isNotificationWorkitem>false</isNotificationWorkitem>
+          <isAllowAnonymous>true</isAllowAnonymous>
+          <duration>5</duration>
+          <co2Emission>0</co2Emission>
+          <workload>0</workload>
+          <priority>0</priority>
+          <instruction/>
+          <keyword/>
+        </org.uengine.kernel.HumanActivity>
+      </childActivities>
+      <conditions>
+        <org.uengine.kernel.Or>
+          <description>
+            <text>변수 6 ==1</text>
+          </description>
+          <conditionsVt>
+            <org.uengine.kernel.And>
+              <description/>
+              <conditionsVt>
+                <org.uengine.kernel.Evaluate>
+                  <description/>
+                  <key>V6</key>
+                  <pv>
+                    <name>V6</name>
+                    <displayName>
+                      <text>변수6</text>
+                    </displayName>
+                    <type>java.lang.String</type>
+                    <askWhenInit>false</askWhenInit>
+                    <defaultValue class="string">1</defaultValue>
+                    <isVolatile>false</isVolatile>
+                    <isDatabaseSynchronized>false</isDatabaseSynchronized>
+                    <databaseSynchronizationOption/>
+                  </pv>
+                  <val class="string">1</val>
+                  <condition>==</condition>
+                </org.uengine.kernel.Evaluate>
+              </conditionsVt>
+            </org.uengine.kernel.And>
+          </conditionsVt>
+        </org.uengine.kernel.Or>
+      </conditions>
+      <operateAsIfThenElse>false</operateAsIfThenElse>
     </org.uengine.kernel.SwitchActivity>
   </childActivities>
   <roles>
-    <org.uengine.kernel.Role reference="../../childActivities/org.uengine.kernel.SubProcessActivity/roleBindings/org.uengine.kernel.RoleParameterContext/role"/>
-    <org.uengine.kernel.Role>
-      <name>manager1</name>
-      <dispatchingOption>0</dispatchingOption>
-      <serviceType/>
-      <isHumanWorker>false</isHumanWorker>
-      <askWhenInit>true</askWhenInit>
-      <displayName>
-        <text>계정책임자</text>
-        <localedTexts/>
-      </displayName>
-      <dontPersistResolutionResult>false</dontPersistResolutionResult>
-    </org.uengine.kernel.Role>
-    <org.uengine.kernel.Role>
-      <name>manager2</name>
-      <dispatchingOption>0</dispatchingOption>
-      <serviceType/>
-      <isHumanWorker>false</isHumanWorker>
-      <askWhenInit>true</askWhenInit>
-      <displayName>
-        <text>입회자</text>
-        <localedTexts/>
-      </displayName>
-      <dontPersistResolutionResult>false</dontPersistResolutionResult>
-    </org.uengine.kernel.Role>
-    <org.uengine.kernel.Role>
-      <name>manager3</name>
-      <dispatchingOption>0</dispatchingOption>
-      <serviceType/>
-      <isHumanWorker>false</isHumanWorker>
-      <askWhenInit>true</askWhenInit>
-      <displayName>
-        <text>자산담당자</text>
-        <localedTexts/>
-      </displayName>
-      <dontPersistResolutionResult>false</dontPersistResolutionResult>
-    </org.uengine.kernel.Role>
-    <org.uengine.kernel.Role reference="../../childActivities/org.uengine.kernel.SubProcessActivity/roleBindings/org.uengine.kernel.RoleParameterContext[4]/role"/>
+    <org.uengine.kernel.Role reference="../../childActivities/org.uengine.kernel.HumanActivity/role"/>
   </roles>
-  <name>
-    <text>내자구매계약 통합프로세스</text>
-    <localedTexts/>
-  </name>
-  <description>
-    <localedTexts/>
-  </description>
-  <cost>0</cost>
-  <retryLimit>0</retryLimit>
-  <retryDelay>60</retryDelay>
-  <isHidden>false</isHidden>
-  <isDynamicChangeAllowed>true</isDynamicChangeAllowed>
-  <isQueuingEnabled>false</isQueuingEnabled>
-  <statusCode>MegaProcess</statusCode>
-  <isFaultTolerant>false</isFaultTolerant>
+  <processVariableDescriptors>
+    <org.uengine.kernel.ProcessVariable reference="../../childActivities/org.uengine.kernel.SwitchActivity/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+    <org.uengine.kernel.ProcessVariable reference="../../childActivities/org.uengine.kernel.SwitchActivity/childActivities/org.uengine.kernel.SequenceActivity/childActivities/org.uengine.kernel.SwitchActivity/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+    <org.uengine.kernel.ProcessVariable reference="../../childActivities/org.uengine.kernel.SwitchActivity/childActivities/org.uengine.kernel.SequenceActivity[2]/childActivities/org.uengine.kernel.SwitchActivity/childActivities/org.uengine.kernel.SequenceActivity/childActivities/org.uengine.kernel.SwitchActivity/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+    <org.uengine.kernel.ProcessVariable reference="../../childActivities/org.uengine.kernel.SwitchActivity/childActivities/org.uengine.kernel.SequenceActivity[2]/childActivities/org.uengine.kernel.SwitchActivity/childActivities/org.uengine.kernel.SequenceActivity/childActivities/org.uengine.kernel.SwitchActivity[2]/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+    <org.uengine.kernel.ProcessVariable reference="../../childActivities/org.uengine.kernel.SwitchActivity/childActivities/org.uengine.kernel.SequenceActivity[2]/childActivities/org.uengine.kernel.SwitchActivity[2]/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+    <org.uengine.kernel.ProcessVariable reference="../../childActivities/org.uengine.kernel.SwitchActivity[2]/conditions/org.uengine.kernel.Or/conditionsVt/org.uengine.kernel.And/conditionsVt/org.uengine.kernel.Evaluate/pv"/>
+  </processVariableDescriptors>
+  <leaveEventListenersEvenIfOutOfScope>false</leaveEventListenersEvenIfOutOfScope>
+  <isCollapsed>false</isCollapsed>
+  <serviceDefinitions/>
+  <defaultFlowchartViewType>swimlane</defaultFlowchartViewType>
+  <defaultFlowchartViewOption>vertical</defaultFlowchartViewOption>
+  <isAbstract>false</isAbstract>
+  <duration>10</duration>
+  <simulationInstanceCount>10</simulationInstanceCount>
+  <simulationInputFrequency>10</simulationInputFrequency>
+  <simulationInputFrequencyDeviation>0</simulationInputFrequencyDeviation>
+  <simulationResources/>
+  <revisionInfoList>
+    <org.uengine.kernel.RevisionInfo>
+      <authorName>Tester</authorName>
+      <authorId>test</authorId>
+      <authorCompany>uEngine</authorCompany>
+      <changeTime>
+        <time>1513647233072</time>
+        <timezone>Asia/Seoul</timezone>
+      </changeTime>
+      <version>2</version>
+    </org.uengine.kernel.RevisionInfo>
+  </revisionInfoList>
+  <archive>true</archive>
+  <uEngineVersion>0</uEngineVersion>
+  <id>18</id>
+  <version>2</version>
+  <isAdhoc>true</isAdhoc>
+  <initiateByFirstWorkitem>true</initiateByFirstWorkitem>
+  <instanceListFields/>
+  <workListFields/>
+  <isVolatile>false</isVolatile>
+  <activitySequence>62</activitySequence>
+  <alias>LGD_TEST</alias>
 </org.uengine.kernel.ProcessDefinition>

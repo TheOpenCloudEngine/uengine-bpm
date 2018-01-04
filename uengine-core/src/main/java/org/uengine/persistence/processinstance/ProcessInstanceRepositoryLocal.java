@@ -49,17 +49,17 @@ public interface ProcessInstanceRepositoryLocal extends javax.ejb.EJBLocalObject
 	public abstract String getName();
 	public abstract void setName(String name);
 	
-	public abstract boolean getIsDeleted();
-	public abstract void setIsDeleted(boolean isDeleted);
+	public abstract boolean isDeleted();
+	public abstract void setDeleted(boolean deleted);
 	
-	public abstract boolean getIsAdhoc();
-	public abstract void setIsAdhoc(boolean isAdhoc);
+	public abstract boolean isAdhoc();
+	public abstract void setAdhoc(boolean adhoc);
 
-	public abstract boolean getIsSubProcess();
-	public abstract void setIsSubProcess(boolean isSubProcess);
+	public abstract boolean isSubProcess();
+	public abstract void setSubProcess(boolean subProcess);
 	
-	public abstract boolean getIsEventHandler();
-	public abstract void setIsEventHandler(boolean isEventHandler);
+	public abstract boolean isEventHandler();
+	public abstract void setEventHandler(boolean eventHandler);
 	
 	public abstract Long getRootInstId();
 	public abstract void setRootInstId(Long instanceId);
@@ -76,14 +76,14 @@ public interface ProcessInstanceRepositoryLocal extends javax.ejb.EJBLocalObject
 	public abstract Long getMainDefVerId();
 	public abstract void setMainDefVerId(Long defVerId);
 	
-	public boolean getIsArchive();
-	public void setIsArchive(boolean isArchive);
+	public boolean isArchive();
+	public void setArchive(boolean archive);
 	
 	public abstract String getAbsTrcPath();
 	public abstract void setAbsTrcPath(String value);
 
-	public boolean getDontReturn();
-	public void setDontReturn(boolean value);
+	public boolean isDontReturn();
+	public void setDontReturn(boolean dontReturn);
 	
 	public String getExt1();
 	public void setExt1(String ext1);

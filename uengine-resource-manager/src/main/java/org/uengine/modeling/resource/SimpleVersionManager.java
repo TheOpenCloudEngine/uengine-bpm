@@ -173,7 +173,7 @@ public class SimpleVersionManager implements VersionManager{
         majorVersionUp(); // version up for restore later for this version.
 
         resourceManager.getStorage().delete(dev);
-        resourceManager.getStorage().copy(versionDirectory, dev.getPath());
+        resourceManager.getStorage().copy(versionDirectory, dev.getPath()); //TODO: filter interface is needed.
         prodVersion.makeAsProduction(this);
 
         MetaworksRemoteService.wrapReturn(new Label("<div class='alert alert-success' role='alert'>Version has been restored.</div>"));
@@ -200,14 +200,19 @@ public class SimpleVersionManager implements VersionManager{
         IContainer newVersion = new ContainerResource();
         newVersion.setPath(versionDirectoryOf(lastVersion));
 
-        resourceManager.getStorage().copy(dev, newVersion.getPath());
+        List<IResource> firstLevelFiles = resourceManager.getStorage().listFiles(dev);
+        for(IResource file : firstLevelFiles) {
+            if(!file.getName().startsWith(VERSION_DIR))
+                resourceManager.getStorage().copy(file, newVersion.getPath() + "/" + file.getName());
+        }
 
         if(isMakeThisVersionAsProduction()){
             MetaworksRemoteService.autowire(lastVersion);
             lastVersion.makeAsProduction(this);
         }
 
-        MetaworksRemoteService.wrapReturn(new Label("<div class='alert alert-success' role='alert'>Version has been set as " + lastVersion.getMajor() + "." + lastVersion.getMinor() + "</div>"));
+        if(TransactionContext.getThreadLocalInstance()!=null)
+            MetaworksRemoteService.wrapReturn(new Label("<div class='alert alert-success' role='alert'>Version has been set as " + lastVersion.getMajor() + "." + lastVersion.getMinor() + "</div>"));
     }
 
 
@@ -258,7 +263,7 @@ public class SimpleVersionManager implements VersionManager{
 
 
 
-        Boolean isDevelopmentTime = (Boolean) TransactionContext.getThreadLocalInstance().getSharedContext("isDevelopmentTime");
+        Boolean isDevelopmentTime = (Boolean) (TransactionContext.getThreadLocalInstance()!=null && (Boolean)TransactionContext.getThreadLocalInstance().getSharedContext("isDevelopmentTime"));
         if(isDevelopmentTime!=null && isDevelopmentTime)
             return original;
 

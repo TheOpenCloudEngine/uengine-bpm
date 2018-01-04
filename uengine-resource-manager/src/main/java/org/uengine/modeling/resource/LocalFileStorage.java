@@ -85,7 +85,9 @@ public class LocalFileStorage extends AbstractStorage{
 
                 subContainerResource.setPath(relativePath);
                 subContainerResource.setMetaworksContext(new MetaworksContext());
-                subContainerResource.setChildren(listFiles(subContainerResource));
+
+//                if(false)
+//                    subContainerResource.setChildren(listFiles(subContainerResource));
 
                 resourceList.add(subContainerResource);
             }else{
@@ -140,6 +142,11 @@ public class LocalFileStorage extends AbstractStorage{
             directory.mkdirs();
 
         return new FileOutputStream(file);
+    }
+
+    @Override
+    public boolean isContainer(IResource resource) throws Exception {
+        return getFile(resource).isDirectory();
     }
 
     private File getFile(IResource fileResource) {

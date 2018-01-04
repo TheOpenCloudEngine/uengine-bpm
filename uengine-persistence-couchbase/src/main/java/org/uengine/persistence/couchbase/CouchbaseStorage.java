@@ -201,5 +201,10 @@ public class CouchbaseStorage extends AbstractStorage {
         return null;
     }
 
+    @Override
+    public boolean isContainer(IResource resource) throws Exception {
+        return false;
+    }
+
 
 }

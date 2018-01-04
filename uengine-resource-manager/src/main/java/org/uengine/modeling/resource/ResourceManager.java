@@ -63,6 +63,11 @@ public class ResourceManager implements Storage{
     }
 
     @Override
+    public boolean isContainer(IResource resource) throws Exception {
+        return getStorage().isContainer(resource);
+    }
+
+    @Override
     public Object getObject(IResource resource) throws Exception {
         if(TransactionContext.getThreadLocalInstance()!=null)
             TransactionContext.getThreadLocalInstance().setSharedContext("resourceManager.resourcePath", resource.getPath());

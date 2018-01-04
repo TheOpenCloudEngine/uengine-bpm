@@ -256,6 +256,11 @@ public class AmazonS3Storage implements Storage{
         return outputStream;
     }
 
+    @Override
+    public boolean isContainer(IResource resource) throws Exception {
+        return false;
+    }
+
     private S3Object getS3Object(String path) throws IOException, NoSuchAlgorithmException {
         return new S3Object(getS3Path(path));
     }

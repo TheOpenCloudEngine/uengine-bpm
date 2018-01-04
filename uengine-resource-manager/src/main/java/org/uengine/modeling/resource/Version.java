@@ -20,6 +20,19 @@ public class Version implements Serializable{
     Calendar date;
     private boolean production;
 
+    public Version(){}
+
+    public Version(String version) {
+
+        try {
+            String[] majorAndMinor = version.split("\\.");
+            setMajor(Integer.parseInt(majorAndMinor[0]));
+            setMinor(Integer.parseInt(majorAndMinor[1]));
+        }catch (Exception e){
+            throw new RuntimeException("Unable to parse the version: " + version, e);
+        }
+    }
+
     public int getMajor() {
         return major;
     }
@@ -86,5 +99,10 @@ public class Version implements Serializable{
         Version versionObj = (Version)obj;
 
         return (getMajor() == versionObj.getMajor() && getMinor() == versionObj.getMinor());
+    }
+
+    @Override
+    public String toString() {
+        return major + "." + minor;
     }
 }

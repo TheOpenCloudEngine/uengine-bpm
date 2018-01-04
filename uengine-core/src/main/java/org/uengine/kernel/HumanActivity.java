@@ -441,6 +441,10 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 //		if( getDescription() != null && getDescription().getText() != null ){
 //			title = getDescription().getText();
 //		}
+
+		if(title==null)
+			throw new IllegalArgumentException("Human Activity must have its activity name.");
+
 		kpv.setProperty(KeyedParameter.TITLE, title);
 		kpv.setProperty(KeyedParameter.DURATION, ""+getDuration());
 		kpv.setProperty(KeyedParameter.PROCESSDEFINITIONNAME, getProcessDefinition().getName(GlobalContext.DEFAULT_LOCALE));

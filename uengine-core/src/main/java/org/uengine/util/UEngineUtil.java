@@ -733,8 +733,18 @@ public class UEngineUtil {
         }
     }
 
+    public static String getNamedExtFile(String namedFile, String ext, boolean addIfNoExt) {
+        int whereDot = namedFile.lastIndexOf('.');
+        if(whereDot>-1)
+            return namedFile.substring(0, whereDot) + "." + ext;
+        else if(addIfNoExt)
+            return namedFile + "." + ext;
+
+        return namedFile;
+    }
+
     public static String getNamedExtFile(String namedFile, String ext) {
-        return namedFile.substring(0, namedFile.lastIndexOf('.')) + "." + ext;
+        return getNamedExtFile(namedFile, ext, false);
     }
 
 

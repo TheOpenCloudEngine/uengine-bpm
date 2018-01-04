@@ -30,4 +30,5 @@ public interface Storage {
     public OutputStream getOutputStream(IResource resource) throws Exception;
 
 
+    boolean isContainer(IResource resource) throws Exception;
 }

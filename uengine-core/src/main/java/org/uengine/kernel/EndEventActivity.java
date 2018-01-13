@@ -11,7 +11,7 @@ public class EndEventActivity extends DefaultActivity{
 		}
 
 		if(isStopAllTokens()){
-			instance.stop();
+			instance.getRootProcessInstance().stop();
 		}
 
 		fireComplete(instance);

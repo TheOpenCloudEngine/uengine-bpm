@@ -806,7 +806,7 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 
 		ProcessInstance subProcessInstance =null;
 
-		realDefinitionId = "codi/" + getDefinitionId();
+		realDefinitionId = getDefinitionId();
 
 		//replace with production version of the Sub process.
 		//TODO: version manager

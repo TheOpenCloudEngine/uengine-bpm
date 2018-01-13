@@ -153,9 +153,9 @@ public interface ProcessInstance extends BeanPropertyResolver{
      * @return
      * @throws Exception
      */
-    public Vector getActivitiesDeeply(final String filter) throws Exception;
+    public List<ActivityInstanceContext> getActivitiesDeeply(final String filter) throws Exception;
 
-    public Vector getCurrentRunningActivitiesDeeply() throws Exception;
+    public List<ActivityInstanceContext> getCurrentRunningActivitiesDeeply() throws Exception;
 
     public Vector getEventHandlerActivity(String eventHandlerName,Vector runningActivities) throws Exception;
 

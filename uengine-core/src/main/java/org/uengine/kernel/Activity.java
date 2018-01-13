@@ -11,16 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.*;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
@@ -1737,10 +1728,19 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	 * @throws Exception
 	 */
 	public boolean checkStartsWithBoundaryEventActivity() throws Exception {
+		Set<Activity> checked = new HashSet<Activity>();
+		return _checkStartsWithBoundaryEventActivity(checked);
+	}
+
+	private boolean _checkStartsWithBoundaryEventActivity(Set<Activity> checked) throws Exception {
 		boolean check = false;
 		for (Iterator<SequenceFlow> it = getIncomingSequenceFlows().iterator(); it.hasNext(); ) {
 			SequenceFlow ts = (SequenceFlow)it.next();
-			Activity beforeActivity = ts.getSourceActivity();
+			Activity beforeActivity = ts.getSourceActivity(); //may cause recursive loop
+			if(checked.contains(beforeActivity))
+				return false;
+
+			checked.add(beforeActivity);
 
 			if(beforeActivity instanceof Event && beforeActivity instanceof MessageListener && ((Event)beforeActivity).getAttachedToRef()!=null){
 //				if( "STOP_ACTIVITY".equals(((Event)beforeActivity).getActivityStop()) ){
@@ -1751,7 +1751,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 			}else if(beforeActivity==null) {
 				return false;
 			}else{
-				check = beforeActivity.checkStartsWithBoundaryEventActivity();
+				check = beforeActivity._checkStartsWithBoundaryEventActivity(checked);
 			}
 		}
 		return check;

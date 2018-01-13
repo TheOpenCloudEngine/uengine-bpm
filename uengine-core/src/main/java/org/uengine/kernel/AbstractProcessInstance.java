@@ -391,7 +391,7 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 	 * @return
 	 * @throws Exception
 	 */
-	public Vector getActivitiesDeeply(final String filter) throws Exception{
+	public List<ActivityInstanceContext> getActivitiesDeeply(final String filter) throws Exception{
 		final ProcessInstance finalThis = this;
 		final Vector runningActivities = new Vector();
 
@@ -440,7 +440,7 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 		return runningActivities;
 	}
 
-	public Vector getCurrentRunningActivitiesDeeply() throws Exception{
+	public List<ActivityInstanceContext> getCurrentRunningActivitiesDeeply() throws Exception{
 		return getActivitiesDeeply(Activity.STATUS_RUNNING);
 	}
 

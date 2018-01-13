@@ -7,16 +7,7 @@ import java.util.List;
 
 import org.metaworks.annotation.Hidden;
 import org.uengine.five.framework.ProcessTransactionListener;
-import org.uengine.kernel.Activity;
-import org.uengine.kernel.ActivityEventListener;
-import org.uengine.kernel.ActivityReference;
-import org.uengine.kernel.ComplexActivity;
-import org.uengine.kernel.HumanActivity;
-import org.uengine.kernel.MessageListener;
-import org.uengine.kernel.ProcessDefinition;
-import org.uengine.kernel.ProcessInstance;
-import org.uengine.kernel.TransactionListener;
-import org.uengine.kernel.UEngineException;
+import org.uengine.kernel.*;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.TreeVisitor;
@@ -137,7 +128,7 @@ public class FlowActivity extends ComplexActivity {
 
 	}
 
-	private List<Activity> getStartActivities() throws UEngineException {
+	public List<Activity> getStartActivities() throws UEngineException {
 
 		List<Activity> startActivities = new ArrayList<Activity>();
 
@@ -154,11 +145,11 @@ public class FlowActivity extends ComplexActivity {
 			child = (Activity) it.next();
 			if (child.getIncomingSequenceFlows().size() == 0) {
 
-				if(child instanceof Event && !(child instanceof StartEvent) && ((Event) child).getAttachedToRef()!=null){ //attachted to 가 있다는 이야기는 조건 이벤트가 왔을때만 실행하는 것이기 때문에 Start 로 인식하면 안된다.
+				if(child instanceof Event && !(child instanceof StartEvent || child instanceof CatchingMessageEvent) && ((Event) child).getAttachedToRef()!=null){ //attachted to 가 있다는 이야기는 조건 이벤트가 왔을때만 실행하는 것이기 때문에 Start 로 인식하면 안된다.
 					continue;
 				}
 
-				if(this instanceof ProcessDefinition && !(getProcessDefinition().isRunAllStartableActivities()) && !(child instanceof StartEvent))
+				if(this instanceof ProcessDefinition && !(getProcessDefinition().isRunAllStartableActivities()) && !(child instanceof StartEvent || child instanceof CatchingMessageEvent))
 					continue;
 
 				startActivities.add(child);

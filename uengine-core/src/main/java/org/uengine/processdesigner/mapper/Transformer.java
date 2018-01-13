@@ -122,20 +122,31 @@ public abstract class Transformer implements NeedArrangementToSerialize, Seriali
 					parameters.put(inputArguments[i], /*resolveOutputValue(transformerArgument.getName(), */result/*)*/);
 				}else
 				if(argumentSource instanceof String){
-					Object parameter = instance.getBeanProperty((String)argumentSource);
-					
-					if(parameter instanceof ProcessVariableValue){
-						ProcessVariableValue pvv = ((ProcessVariableValue)parameter);
-						if(maxNumberOfParameterValues < pvv.size()) maxNumberOfParameterValues = pvv.size();
-					}else
-	
-					if(parameter instanceof RoleMapping){
-						RoleMapping rm = ((RoleMapping)parameter);
-						if(maxNumberOfParameterValues < rm.size()) maxNumberOfParameterValues = rm.size();
+
+					if(((String) argumentSource).startsWith("[direct].")){
+
+						Object optionValue = options.get(argumentSource);
+
+						parameters.put(inputArguments[i], optionValue);
+
+					}else{
+						Object parameter = instance.getBeanProperty((String)argumentSource);
+
+						if(parameter instanceof ProcessVariableValue){
+							ProcessVariableValue pvv = ((ProcessVariableValue)parameter);
+							if(maxNumberOfParameterValues < pvv.size()) maxNumberOfParameterValues = pvv.size();
+						}else
+
+						if(parameter instanceof RoleMapping){
+							RoleMapping rm = ((RoleMapping)parameter);
+							if(maxNumberOfParameterValues < rm.size()) maxNumberOfParameterValues = rm.size();
+						}
+
+						parameters.put(inputArguments[i], parameter);
 					}
-					
-					parameters.put(inputArguments[i], parameter);
+
 				}
+
 			}
 		}
 

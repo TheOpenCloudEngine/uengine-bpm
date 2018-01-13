@@ -148,7 +148,8 @@ public class ServiceTask extends DefaultActivity {
              *  parse the result by JSON PATH for each parameter contexts
              *  ******/
 
-            if (result != null) {
+            if (result != null && getOutputMapping()!=null) {
+
 
                 for (ParameterContext parameterContext : getOutputMapping()) {
                     Object value = JsonPath.read(result, parameterContext.getArgument().getText());

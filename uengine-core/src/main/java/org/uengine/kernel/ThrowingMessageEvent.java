@@ -2,8 +2,8 @@ package org.uengine.kernel;
 
 import org.uengine.kernel.bpmn.Event;
 
-public class SendMessageEvent extends Event {
-	public SendMessageEvent(){
+public class ThrowingMessageEvent extends Event {
+	public ThrowingMessageEvent(){
 		super();
 		if( this.getName() == null ){
 			setName(this.getClass().getSimpleName());

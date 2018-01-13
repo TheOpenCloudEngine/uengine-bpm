@@ -23,7 +23,7 @@ import org.uengine.util.UEngineUtil;
 public class Evaluate extends Condition{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	String key;
-	ProcessVariable pv;
+	protected ProcessVariable pv;
 	Object val;
 	String type;
 		
@@ -67,6 +67,16 @@ public class Evaluate extends Condition{
 
 	public boolean isMet(ProcessInstance instance, String scope) throws Exception{
 		Object returnVal = null;
+
+		if(key==null && pv!=null){
+			key = pv.getName();
+		}
+
+		if(!UEngineUtil.isNotEmpty(key)){
+			return true; //ignore the condition
+		}
+
+
 		if( key.startsWith("[instance]")  ){
 			returnVal = instance.getBeanProperty(key); 
 		}else{

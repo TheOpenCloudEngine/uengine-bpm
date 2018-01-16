@@ -144,7 +144,11 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 
 
 	public void setFault(String tracingTag, FaultContext fc) throws Exception{
-		setStatus(tracingTag, Activity.STATUS_FAULT);			
+
+		//if faultTolerant option is on, just mark the fault data only, don't change the instance status.
+		if(getProcessTransactionContext().getSharedContext("faultTolerant")==null) {
+			setStatus(tracingTag, Activity.STATUS_FAULT);
+		}
 
 		if(fc==null) return;
 		UEngineExceptionContext ctx = fc.getFault().createContext();
@@ -738,16 +742,41 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 //		}
 
 	}	
-	
-	transient ArrayList eventInterceptors;
+
+	final static String PROP_KEY_EVENT_LISTENERS = "EVENT_LISTENERS";
+	transient List<ActivityEventInterceptor> eventInterceptors;
 		public void addActivityEventInterceptor(ActivityEventInterceptor aei){
-			if(eventInterceptors == null) eventInterceptors = new ArrayList();
-			eventInterceptors.add(aei);
+			try {
+
+				if(eventInterceptors==null) {
+					eventInterceptors = (List<ActivityEventInterceptor>) getProperty("", PROP_KEY_EVENT_LISTENERS);
+				}
+
+				if(eventInterceptors==null) eventInterceptors = new ArrayList<ActivityEventInterceptor>();
+
+				eventInterceptors.add(aei);
+
+			} catch (Exception e) {
+				throw new RuntimeException("Error when to register activity event listener", e);
+			}
 		}
+
 		public void removeActivityEventInterceptor(ActivityEventInterceptor aei){
 			if(eventInterceptors != null) eventInterceptors.remove(aei);
+
+			try {
+				setProperty("", PROP_KEY_EVENT_LISTENERS, (Serializable) eventInterceptors);
+			} catch (Exception e) {
+				throw new RuntimeException("Error when to remove activity event listener", e);
+			}
+
 		}
+
 		public boolean fireActivityEventInterceptor(Activity activity, String command, ProcessInstance instance, Object payload) throws Exception{
+
+			if(eventInterceptors==null) {
+				eventInterceptors = (List<ActivityEventInterceptor>) getProperty("", PROP_KEY_EVENT_LISTENERS);
+			}
 
 			if(eventInterceptors==null) return false;
 			

@@ -371,7 +371,11 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setFaultTolerant(boolean isErrorTolerant) {
 			this.isFaultTolerant = isErrorTolerant;
 		}
-		
+
+		public boolean isFaultTolerant(ProcessInstance instance) {
+			return isFaultTolerant() || instance.getProcessTransactionContext().getSharedContext("faultTolerant")!=null;
+		}
+
 	public Calendar getStartedTime(ProcessInstance instance){
 		try{
 			Calendar theTime = (Calendar)instance.getProperty(getTracingTag(), VAR_START_TIME);
@@ -511,6 +515,16 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 			
 		}else{
 			setStartedTime(instance, GlobalContext.getNow(instance.getProcessTransactionContext()));
+		}
+
+		//run attached events
+		for(Activity childActivity: getProcessDefinition().getChildActivities()) {
+			if(childActivity instanceof Event){
+				Event event = (Event) childActivity;
+				if(this.getTracingTag().equals(event.getAttachedToRef())){
+					instance.execute(event.getTracingTag());
+				}
+			}
 		}
 
 		ActivityFilter[] activityFilters = getProcessDefinition().getActivityFilters();

@@ -3,6 +3,9 @@ package org.uengine.kernel.bpmn;
 import org.uengine.kernel.*;
 import org.uengine.kernel.bpmn.Event;
 
+/**
+ * Not used. Use CatchingErrorEvent instead.
+ */
 public class ReceiveErrorEvent extends Event implements MessageListener {
 	public ReceiveErrorEvent(){
 		super();

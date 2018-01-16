@@ -498,6 +498,15 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 			this.isVolatile = isVolatile;
 		}
 
+	String defaultFaultMessage;
+		public String getDefaultFaultMessage() {
+			return defaultFaultMessage;
+		}
+		public void setDefaultFaultMessage(String defaultFaultMessage) {
+			this.defaultFaultMessage = defaultFaultMessage;
+		}
+
+
 	public ActivityReference getInitiatorHumanActivityReference(final ProcessTransactionContext ptc){
 		if(initiatorHumanActivity!=null){
 			ActivityReference ref = new ActivityReference();
@@ -825,7 +834,8 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		if(command.equals(ACTIVITY_DONE) || command.equals(ACTIVITY_SKIPPED)){
 			returnToMainProcess(instance, command.equals(ACTIVITY_SKIPPED));
 		}else if(command.equals(CHILD_FAULT)){
-			if(!isFaultTolerant())
+			if(!isFaultTolerant(instance))
+
 				stop(instance); // stop the process instance there
 
 			reportFaultToMainProcess(instance, (FaultContext) payload);

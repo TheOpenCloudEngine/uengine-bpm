@@ -325,7 +325,7 @@ public class Evaluate extends Condition{
 
 	private String convertJavaCondition(String condition, String val){
 		//String returnVal = "equals(\"" + val + "\")";
-		String returnVal = "==\"" + val + "\"";
+		String returnVal = condition + "\"" + val + "\"";
 		//add condtion type
 
 		return returnVal;

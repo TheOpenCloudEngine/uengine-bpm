@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * @author jyj
  */
-public class Relation implements Serializable, IRelation{
+public abstract class Relation implements Serializable, IRelation{
 
 	private static final long serialVersionUID = 1234L;
 

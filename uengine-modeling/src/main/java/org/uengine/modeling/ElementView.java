@@ -14,7 +14,7 @@ import org.metaworks.dao.TransactionContext;
 /**
  * @author jyj
  */
-public abstract class ElementView implements Serializable, ContextAware, Cloneable {
+public class ElementView implements Serializable, ContextAware, Cloneable {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -197,7 +197,7 @@ public abstract class ElementView implements Serializable, ContextAware, Cloneab
         this.setHeight((symbol.getHeight()));
     }
 
-    public abstract Symbol createSymbol();
+    public Symbol createSymbol(){return null;};
 //
 //    //TODO: should make interface for createSymbol()....
 //    public Symbol createSymbol(String type) {

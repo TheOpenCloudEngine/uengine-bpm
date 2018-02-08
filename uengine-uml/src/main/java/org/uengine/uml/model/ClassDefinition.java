@@ -4,6 +4,10 @@ import org.metaworks.*;
 import org.metaworks.annotation.*;
 import org.metaworks.annotation.Face;
 import org.metaworks.widget.ModalWindow;
+import org.springframework.beans.BeanUtils;
+import org.uengine.modeling.ElementView;
+import org.uengine.modeling.IElement;
+import org.uengine.modeling.Symbol;
 import org.uengine.uml.model.face.AttributeListFace;
 
 import java.io.Serializable;
@@ -15,7 +19,7 @@ import java.util.Map;
 import static org.metaworks.dwr.MetaworksRemoteService.metaworksCall;
 import static org.metaworks.dwr.MetaworksRemoteService.wrapReturn;
 
-public class ClassDefinition extends WebObjectType implements Serializable{
+public class ClassDefinition extends WebObjectType implements Serializable, IElement{
 
     //List<Attribute> attributeList = new ArrayList<Attribute>();
 //    @Face(faceClass = AttributeListFace.class)
@@ -31,6 +35,25 @@ public class ClassDefinition extends WebObjectType implements Serializable{
     @Override
     @Face(faceClass = AttributeListFace.class, displayName = "Attributes")
     public Attribute[] getFieldDescriptors() {
+        WebFieldDescriptor[] webFieldDescriptors = super.getFieldDescriptors();
+
+        if(!(webFieldDescriptors instanceof Attribute[])){
+
+            for(int i=0; i<super.getFieldDescriptors().length; i++){
+                WebFieldDescriptor webFieldDescriptor = super.getFieldDescriptors()[i];
+
+                if(!(webFieldDescriptor instanceof Attribute)){
+                    super.getFieldDescriptors()[i] = new Attribute();
+                    BeanUtils.copyProperties(webFieldDescriptor, super.getFieldDescriptors()[i]);
+                }
+            }
+
+            Attribute[] attributes = (new Attribute[webFieldDescriptors.length]);
+
+            System.arraycopy(webFieldDescriptors, 0, attributes, 0, webFieldDescriptors.length);
+            setFieldDescriptors(attributes);
+        }
+
         return (Attribute[]) super.getFieldDescriptors();
     }
 
@@ -48,7 +71,7 @@ public class ClassDefinition extends WebObjectType implements Serializable{
         objectInstance.setClassName(getName());
 
         if(getFieldDescriptors()!=null)
-        for(Attribute attribute: getFieldDescriptors()){
+        for(WebFieldDescriptor attribute: getFieldDescriptors()){
             if(MetaworksFile.class.getName().equals(attribute.getClassName())){
                 objectInstance.setBeanProperty(attribute.getName(), new MetaworksFile());
             }
@@ -85,6 +108,7 @@ public class ClassDefinition extends WebObjectType implements Serializable{
 
     ///// -- ordering ---
 
+
     @Override
     @Order(1)
     @Hidden
@@ -92,6 +116,11 @@ public class ClassDefinition extends WebObjectType implements Serializable{
 
     public String getName() {
         return super.getName();
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 
     @Override
@@ -175,5 +204,43 @@ public class ClassDefinition extends WebObjectType implements Serializable{
     @Hidden
     public boolean isAlwaysSubmitted() {
         return super.isAlwaysSubmitted();
+    }
+
+
+
+    /////////// Implementation on Modeling /////////////
+
+
+    @Override
+    public ElementView createView() {
+        return new ElementView() {
+            @Override
+            public Symbol createSymbol() {
+                return null;
+            }
+        };
+    }
+
+    ElementView elementView;
+
+    @Override
+    public ElementView getElementView() {
+        return elementView;
+    }
+
+    @Override
+    public void setElementView(ElementView elementView) {
+        this.elementView = elementView;
+    }
+
+    public void addFieldDescriptor(Attribute attribute) {
+
+        Attribute[] attributes = getFieldDescriptors();
+        Attribute[] newAttributes = new Attribute[attributes.length + 1];
+
+        System.arraycopy(attributes, 0, newAttributes, 0, attributes.length);
+        newAttributes[attributes.length] = attribute;
+
+        setFieldDescriptors(newAttributes);
     }
 }

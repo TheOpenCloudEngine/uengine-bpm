@@ -11,15 +11,7 @@ import javax.xml.namespace.QName;
 
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
-import org.metaworks.annotation.Available;
-import org.metaworks.annotation.Face;
-import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Id;
-import org.metaworks.annotation.Name;
-import org.metaworks.annotation.Order;
-import org.metaworks.annotation.Validator;
-import org.metaworks.annotation.ValidatorContext;
-import org.metaworks.annotation.ValidatorSet;
+import org.metaworks.annotation.*;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.dwr.SerializationSensitive;
 import org.uengine.contexts.ComplexType;
@@ -38,7 +30,8 @@ import org.uengine.util.UEngineUtil;
 
 public class ProcessVariable implements java.io.Serializable, NeedArrangementToSerialize, Cloneable, ContextAware, SerializationSensitive, Validatable {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
-	
+
+	@Hidden
 	transient MetaworksContext metaworksContext;
 		public MetaworksContext getMetaworksContext() {
 			return metaworksContext;
@@ -126,13 +119,23 @@ public class ProcessVariable implements java.io.Serializable, NeedArrangementToS
 			this.global = global;
 		}
 
+	@Range(options={"BPMS", "REST", "DBMS"}, values={"bpms", "rest", "dbms"})
+	String persistOption;
+		public String getPersistOption() {
+			return persistOption;
+		}
+		public void setPersistOption(String persistOption) {
+			this.persistOption = persistOption;
+		}
 
-	private String typeClassName;
+
+
 	@Face(faceClassName = "org.uengine.kernel.face.ProcessVariableTypeSelector", displayName = "변수 유형",
 			options = {"vue-component"},
 			values = {"class-selector"}
 
 	)
+	private String typeClassName;
 		public String getTypeClassName() {
 			return typeClassName;
 		}
@@ -408,7 +411,7 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 		try {
 			if (UEngineUtil.isNotEmpty(getTypeClassName())) {
 
-				if(getTypeClassName().indexOf("/") > 0){
+				if(getTypeClassName().indexOf("/") > 0 || getTypeClassName().indexOf("#") > 0){
 					setType(ComplexType.class);
 				}else {
 					setType(Thread.currentThread().getContextClassLoader().loadClass(getTypeClassName()));

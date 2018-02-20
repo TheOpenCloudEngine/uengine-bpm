@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class Attribute extends WebFieldDescriptor implements Serializable{
 
@@ -111,19 +112,5 @@ public class Attribute extends WebFieldDescriptor implements Serializable{
         return super.getValues();
     }
 
-    @Override
-    @Hidden
-    public Map<String, Object> getAttributes() {
-        return super.getAttributes();
-    }
 
-    public void setAttribute(String key, Object value) {
-
-        if(getAttributes()==null){
-            setAttributes(new HashMap<String, Object>());
-        }
-
-        getAttributes().put(key, value);
-
-    }
 }

@@ -37,6 +37,8 @@ public class ClassDefinition extends WebObjectType implements Serializable, IEle
     public Attribute[] getFieldDescriptors() {
         WebFieldDescriptor[] webFieldDescriptors = super.getFieldDescriptors();
 
+        if(webFieldDescriptors==null) return (new Attribute[]{});
+
         if(!(webFieldDescriptors instanceof Attribute[])){
 
             for(int i=0; i<super.getFieldDescriptors().length; i++){
@@ -242,5 +244,33 @@ public class ClassDefinition extends WebObjectType implements Serializable, IEle
         newAttributes[attributes.length] = attribute;
 
         setFieldDescriptors(newAttributes);
+    }
+
+    ////
+
+    String sourceCode;
+        public String getSourceCode() {
+            return sourceCode;
+        }
+        public void setSourceCode(String sourceCode) {
+            this.sourceCode = sourceCode;
+        }
+
+    String javaClassName;
+        public String getJavaClassName() {
+            return javaClassName;
+        }
+        public void setJavaClassName(String javaClassName) {
+            this.javaClassName = javaClassName;
+        }
+
+
+    public void setFieldDescriptor(String name, Attribute attributeAtTarget) {
+        for(int i=0; i<getFieldDescriptors().length; i++){
+            Attribute attribute = getFieldDescriptors()[i];
+            if(attribute.getName().equals(attributeAtTarget.getName())){
+                getFieldDescriptors()[i] = attributeAtTarget;
+            }
+        }
     }
 }

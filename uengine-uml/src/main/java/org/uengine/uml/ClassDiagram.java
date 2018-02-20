@@ -52,4 +52,13 @@ public class ClassDiagram implements IModel, Serializable {
             this.relations = relations;
         }
 
+    public ClassDefinition getClassDefinition(String className) {
+        for(ClassDefinition classDefinition : getClassDefinitions()){
+            if(className.equals(classDefinition.getName())){
+                return classDefinition;
+            }
+        }
+
+        return null;
+    }
 }

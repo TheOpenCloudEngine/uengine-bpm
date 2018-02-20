@@ -87,6 +87,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 
 	final public static String PVKEY_STATUS = "_status";
 	final public static String PVKEY_RETRY_CNT = "_retryCnt";
+	final public static String PVKEY_LOOPBACK_CNT = "_loopBackCnt";
 
 	public static final String STATUS_RESERVED = "Reserved";
 
@@ -98,7 +99,20 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		public void setMetaworksContext(MetaworksContext metaworksContext) {
 			this.metaworksContext = metaworksContext;
 		}
-
+		
+	public int getLoopBackCount(ProcessInstance instance) throws Exception {
+	    if (instance == null) {
+	        return 0;
+	    }
+	    return instance.getProperty(getTracingTag(), PVKEY_LOOPBACK_CNT) == null ? 0
+	            : new Integer((Integer)instance.getProperty(getTracingTag(), PVKEY_LOOPBACK_CNT));
+	}
+	
+    public void addLoopBackCount(ProcessInstance instance) throws Exception {
+        int backCount = instance.getProperty(getTracingTag(), PVKEY_LOOPBACK_CNT) == null ? 0
+                : new Integer((Integer)instance.getProperty(getTracingTag(), PVKEY_LOOPBACK_CNT));        
+        instance.setProperty(getTracingTag(), PVKEY_LOOPBACK_CNT, backCount+1);
+    }
 
 	/**
 	 * points parent activity (should be kind of ComplexActivity of this activity)

@@ -18,6 +18,9 @@ public class Gateway extends Activity {
 
 	@Override
 	protected void executeActivity(ProcessInstance instance) throws Exception {
+	    
+	    addLoopBackCount(instance);
+	    
 		if(isCompletedAllOfPreviousActivities(instance)) {
 			fireComplete(instance);
 		}

@@ -592,6 +592,9 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 	}
 		
 	protected void executeActivity(ProcessInstance instance) throws Exception{
+	    
+	    addLoopBackCount(instance);
+	    
 		addWorkitem(instance, null);
 		setCompletedHumanActivityInTransaction(instance);
 	}

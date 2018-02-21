@@ -89,7 +89,8 @@ public class BlockFinder {
                 Activity theFirstIncomingActivity = visitActivityStack.get(1);
 
                 for(SequenceFlow sequenceFlowToSourceActivity : theFirstIncomingActivity.getOutgoingSequenceFlows()){
-                    if(sequenceFlowToSourceActivity.getTargetActivity().equals(sourceActivity)){
+                    if(sequenceFlowToSourceActivity.getTargetActivity().equals(sourceActivity)
+                            || sequenceFlowToSourceActivity.getTargetActivity().equals(activity)){
                         sequenceFlowToSourceActivity.setFeedback(true); //mark as feedback link
                     }
                 }
@@ -181,7 +182,7 @@ public class BlockFinder {
     private static void visitForPossibleNodes(Activity activity, List<Activity> blockMembers, ProcessInstance instance, List<Activity>possibleNodes) throws Exception {
 
         for(Activity next : activity.getPossibleNextActivities(instance, "")){
-            if(blockMembers.contains(next)){
+            if(blockMembers.contains(next) && !possibleNodes.contains(next)){
                 possibleNodes.add(next);
                 visitForPossibleNodes(next, blockMembers, instance, possibleNodes);
             }

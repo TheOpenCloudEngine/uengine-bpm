@@ -26,12 +26,7 @@ public class ParallelGateway extends Gateway {
 	@Override
 	protected boolean isCompletedAllOfPreviousActivities(ProcessInstance instance) throws Exception {
 		
-		// this is before execute
-//		System.out.println("---- parent activity's tracing tag: " + getParentActivity().getTracingTag());
-		// why this previousActivities() is always 1?
-//		System.out.println("---- previous activities number: " + getPreviousActivities().size());
-		
-		
+		//there are two-phase condition checks: 1. all out sequence flows must be cleared and 2. no remaining running token
 		
 		SequenceFlow sequenceFlow = null;
 		for (Iterator<SequenceFlow> it = getIncomingSequenceFlows().iterator(); it.hasNext(); ) {
@@ -41,8 +36,8 @@ public class ParallelGateway extends Gateway {
 				return false;
 			}
 		}
-		
-		return true;
+
+		return super.isCompletedAllOfPreviousActivities(instance);
 	}
 
 

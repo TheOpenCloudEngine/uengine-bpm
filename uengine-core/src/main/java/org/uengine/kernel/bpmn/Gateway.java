@@ -91,7 +91,7 @@ public class Gateway extends Activity {
 			for (Activity blockMember : possibleBlockMembers) {
 				String status = blockMember.getStatus(instance);
 
-				if (Activity.STATUS_RUNNING.equals(status) || Activity.STATUS_SUSPENDED.equals(status)) { //with catching event incoming sequence flows, old implemntation was problematic (
+				if (Activity.STATUS_READY.equals(status) || Activity.STATUS_RUNNING.equals(status) || Activity.STATUS_SUSPENDED.equals(status)) { //with catching event incoming sequence flows, old implemntation was problematic (
 					//debug here under condition 'getTracingTag().equals("a7")' --------- when the a11 and 12 never executed
 					return true;
 				}

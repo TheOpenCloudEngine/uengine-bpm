@@ -265,6 +265,15 @@ public class ClassDefinition extends WebObjectType implements Serializable, IEle
         }
 
 
+    String classReference;
+        public String getClassReference() {
+            return classReference;
+        }
+        public void setClassReference(String classReference) {
+            this.classReference = classReference;
+        }
+
+
     public void setFieldDescriptor(String name, Attribute attributeAtTarget) {
         for(int i=0; i<getFieldDescriptors().length; i++){
             Attribute attribute = getFieldDescriptors()[i];

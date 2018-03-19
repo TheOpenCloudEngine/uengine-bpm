@@ -4,11 +4,13 @@ package org.uengine.kernel.bpmn;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 import org.uengine.kernel.ProcessInstance;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.JobKey.jobKey;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.utils.Key.DEFAULT_GROUP;
 
@@ -32,24 +34,19 @@ public class TimerEvent extends Event{
 		}
 
 
+	String scheduleType; // sec, min, hour, milisec, cron (if null)
+		public String getScheduleType() {
+			return scheduleType;
+		}
+		public void setScheduleType(String scheduleType) {
+			this.scheduleType = scheduleType;
+		}
+
+
 	@Override
 	protected void executeActivity(ProcessInstance instance) throws Exception {
 
-		StdSchedulerFactory schedulerFactoryBean = MetaworksRemoteService.getComponent(StdSchedulerFactory.class);
-
-        Scheduler sched = schedulerFactoryBean.getScheduler();
 		String jobId = createJobId(instance);
-
-		try {
-			JobKey jobKey = new JobKey(jobId, SCHEDULER_GROUP_ID);
-			JobDetail jobDetail = sched.getJobDetail(jobKey);
-
-			//if there already exising job, delete it first.
-			if(jobDetail!=null)
-				unschedule(instance);
-		}catch (Exception e){
-
-		}
 
 		JobDetail job = newJob(TimerEventJob.class)
                 .withIdentity(jobId, SCHEDULER_GROUP_ID)
@@ -62,18 +59,48 @@ public class TimerEvent extends Event{
 
 		job.getJobDataMap().put("tracingTag", getTracingTag());
 
-		StringBuffer cronExpression = evaluateContent(instance, getExpression());
+		StdSchedulerFactory schedulerFactoryBean = MetaworksRemoteService.getComponent(StdSchedulerFactory.class);
 
-		CronTrigger trigger = newTrigger()
-				.withIdentity(jobId, SCHEDULER_GROUP_ID)
-				.withSchedule(cronSchedule(cronExpression.toString()))
-				.build();
+		Scheduler sched = schedulerFactoryBean.getScheduler();
+
+		try {
+			JobKey jobKey = new JobKey(jobId, SCHEDULER_GROUP_ID);
+			JobDetail jobDetail = sched.getJobDetail(jobKey);
+
+			//if there already exising job, delete it first.
+			if(jobDetail!=null)
+				unschedule(instance);
+		}catch (Exception e){
+
+		}
+
+		Trigger trigger = null;
+
+		if("sec".equals(getScheduleType())){
+			int second = Integer.valueOf(getExpression());
+
+			trigger = newTrigger()
+					.withIdentity(jobId, SCHEDULER_GROUP_ID)
+					.withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(second))
+					.build();
+
+		}else{ //treat as cron expression
+
+			StringBuffer cronExpression = evaluateContent(instance, getExpression());
+
+			trigger = newTrigger()
+					.withIdentity(jobId, SCHEDULER_GROUP_ID)
+					.withSchedule(cronSchedule(cronExpression.toString()))
+					.build();
+
+		}
 
 		sched.scheduleJob(job, trigger);
 
 		if (!sched.isStarted()) {
 			sched.start();
 		}
+
 
 	}
 
@@ -96,7 +123,7 @@ public class TimerEvent extends Event{
 
 	@Override
 	public boolean onMessage(ProcessInstance instance, Object payload) throws Exception {
-		return super.onMessage(instance, payload);
+		return super.onMessage(instance, getTracingTag());
 	}
 
 	@Override
@@ -107,7 +134,7 @@ public class TimerEvent extends Event{
 
 	}
 
-	private void unschedule(ProcessInstance instance) {
+	protected void unschedule(ProcessInstance instance) {
 		StdSchedulerFactory schedulerFactoryBean = MetaworksRemoteService.getComponent(StdSchedulerFactory.class);
 
 		try {

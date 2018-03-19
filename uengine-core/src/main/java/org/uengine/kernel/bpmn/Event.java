@@ -81,8 +81,6 @@ public class Event extends DefaultActivity implements MessageListener{
 				return true;
 
 			}
-
-
 		}
 
 		return false;

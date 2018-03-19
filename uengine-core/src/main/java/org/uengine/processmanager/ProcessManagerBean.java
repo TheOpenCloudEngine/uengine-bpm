@@ -223,7 +223,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		transactionContext = new ProcessTransactionContext(this);
     }
 	
-	private ProcessInstance getInstance(String instId) throws Exception{
+	protected ProcessInstance getInstance(String instId) throws Exception{
 		HashMap options = new HashMap();
 
 //System.out.println("instId = " + instId);		

@@ -1,8 +1,13 @@
 package org.uengine.kernel;
 
-import org.uengine.kernel.bpmn.SequenceFlow;
+public class MessageFlow extends AbstractFlow {
 
-public class MessageFlow extends SequenceFlow {
-
+    boolean localCall;
+        public boolean isLocalCall() {
+            return localCall;
+        }
+        public void setLocalCall(boolean localCall) {
+            this.localCall = localCall;
+        }
 
 }

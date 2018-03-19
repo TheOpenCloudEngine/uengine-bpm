@@ -63,7 +63,7 @@ public class OpenGraphAdapter {
 
     }
 
-    public void createOpenGraphInformation() {
+    public void createOpenGraphInformation() { //TODO: why this is needed?
         for(SequenceFlow sequenceFlow : getAllSequenceFlowList()) {
             StringBuffer values = new StringBuffer();
 
@@ -73,8 +73,8 @@ public class OpenGraphAdapter {
                 }
             }
             sequenceFlow.getRelationView().setValue(values.toString().substring(0, values.length() - 1).replace("@", ","));
-            sequenceFlow.getRelationView().setGeom(createGEOM(values.toString().substring(0, values.length() - 1)));
-            sequenceFlow.getRelationView().setStyle(createStyle());
+//            sequenceFlow.getRelationView().setGeom(createGEOM(values.toString().substring(0, values.length() - 1)));
+//            sequenceFlow.getRelationView().setStyle(createStyle());
         }
     }
 

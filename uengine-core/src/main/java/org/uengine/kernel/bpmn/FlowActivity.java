@@ -30,7 +30,7 @@ public class FlowActivity extends ComplexActivity {
 
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
-	public ArrayList<SequenceFlow> sequenceFlows;
+	ArrayList<SequenceFlow> sequenceFlows;
 	@Hidden
 		public ArrayList<SequenceFlow> getSequenceFlows() {
 			if (this.sequenceFlows == null) {
@@ -144,6 +144,9 @@ public class FlowActivity extends ComplexActivity {
 		for (Iterator it = getChildActivities().iterator(); it.hasNext();) {
 			child = (Activity) it.next();
 			if (child.getIncomingSequenceFlows().size() == 0) {
+
+				if(child instanceof IntermediateEvent)
+					continue;
 
 				if(child instanceof Event && !(child instanceof StartEvent || child instanceof CatchingMessageEvent) && ((Event) child).getAttachedToRef()!=null){ //attachted to 가 있다는 이야기는 조건 이벤트가 왔을때만 실행하는 것이기 때문에 Start 로 인식하면 안된다.
 					continue;

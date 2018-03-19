@@ -40,12 +40,16 @@ public class ServiceTask extends DefaultActivity {
          *  4. try searching from EUREKA server by the role name.
          *  ******/
 
+        if(checkLocalCall(instance)){
+            return;
+        }
+
         Role role = getRole();
 
         String fullURITemplate = null;
         String serviceId = null;
 
-        if (role == null || getUriTemplate().startsWith("http")) {
+        if (role == null || (getUriTemplate() != null && getUriTemplate().startsWith("http"))) {
             fullURITemplate = getUriTemplate();
         } else {
             RoleMapping roleMapping = getRole().getMapping(instance);
@@ -75,7 +79,7 @@ public class ServiceTask extends DefaultActivity {
                     if (serviceInstance != null) {
                         String baseUrl = serviceInstance.getUri().toString();
 
-                        fullURITemplate = baseUrl + getUriTemplate();
+                        fullURITemplate = baseUrl + (getUriTemplate().startsWith("/") ? getUriTemplate() : "/" + getUriTemplate());
                     }
                 }
             }
@@ -169,6 +173,33 @@ public class ServiceTask extends DefaultActivity {
         super.executeActivity(instance);
     }
 
+    private boolean checkLocalCall(ProcessInstance instance) throws Exception {
+
+        ProcessDefinition processDefinition = getProcessDefinition();
+
+        Activity localCallTarget = null;
+
+        if(processDefinition.getMessageFlows()!=null && processDefinition.getMessageFlows().size() > 0)
+        for(MessageFlow messageFlow : processDefinition.getMessageFlows()){
+
+            if(getTracingTag().equals(messageFlow.getSourceRef()) && messageFlow.isLocalCall()){
+                //this is local call
+                localCallTarget = processDefinition.getActivity(messageFlow.getTargetRef());
+
+                break;
+            }
+        }
+
+        if(localCallTarget!=null){
+            fireComplete(instance);
+            instance.execute(localCallTarget.getTracingTag()); // this must be after the fireComplete
+
+            return true;
+        }
+
+        return false;
+    }
+
     Role role;
         public Role getRole() {
             return role;
@@ -218,4 +249,7 @@ public class ServiceTask extends DefaultActivity {
     public void setSkipIfNotFound(boolean skipIfNotFound) {
         this.skipIfNotFound = skipIfNotFound;
     }
+
+
+
 }

@@ -1,13 +1,6 @@
 package org.uengine.kernel.bpmn.view;
 
-import org.metaworks.EventContext;
-import org.metaworks.annotation.ServiceMethod;
-import org.uengine.kernel.MessageSequenceFlow;
-import org.uengine.kernel.bpmn.SequenceFlow;
 import org.uengine.modeling.IRelation;
-import org.uengine.modeling.RelationPropertiesView;
-import org.uengine.modeling.Symbol;
-import org.uengine.modeling.modeler.symbol.ConnectorSymbol;
 
 public class MessageFlowView extends SequenceFlowView {
 	

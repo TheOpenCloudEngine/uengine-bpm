@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.metaworks.ContextAware;
 import org.metaworks.MetaworksContext;
 import org.metaworks.annotation.Face;
@@ -90,6 +91,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	final public static String PVKEY_LOOPBACK_CNT = "_loopBackCnt";
 
 	public static final String STATUS_RESERVED = "Reserved";
+	static ObjectMapper objectMapper = new ObjectMapper();
 
 
 	transient MetaworksContext metaworksContext;
@@ -573,8 +575,6 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		instance.getProcessTransactionContext().addExecutedActivityInstanceContext(new ActivityInstanceContext(this, instance));
 		//
 
-		if(!(this instanceof ProcessDefinition))
-			instance.getActivityCompletionHistory().add(getTracingTag());
 	}
 	
 	/**
@@ -738,6 +738,10 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	 * In the other hand, if you implement a asynchronous job of activity, you calls this fireComplete() after done (or after receiving the result).
 	 */
 	public void fireComplete(ProcessInstance instance) throws Exception{
+		//This must be before than the onEvent since connected activity would not recognize this is completed.
+		if(!(this instanceof ProcessDefinition))
+			instance.getActivityCompletionHistory().add(getTracingTag());
+
 		setTokenCount(instance, 0);
 		onEvent(ACTIVITY_DONE, instance, this);
 	}
@@ -1256,6 +1260,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 		int pos;
 		int endpos;
 		String key;
+
 		while((pos = expression.indexOf(starter, oldpos)) > -1){
 			pos += starter.length();
 			endpos = expression.indexOf(ending, pos);
@@ -1272,8 +1277,18 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	System.out.println("Activity:: evaluateContent: key="+key);
 				Object val = Activity.getSpecialKeyValues(this, instance, key, validationContext);
 //	System.out.println("EMailActivity:: parseContent: val:"+val);
-				if(val!=null)
-					generating.append("" + val);
+
+				if(val!=null) {
+					if(val instanceof Map) {
+						try {
+							generating.append(objectMapper.writeValueAsString(val));
+						} catch (IOException e) {
+							throw new RuntimeException("failed to convert to JSON", e);
+						}
+					}else
+
+						generating.append("" + val);
+				}
 			}
 			oldpos = endpos + ending.length();
 		}

@@ -3,6 +3,7 @@ package org.uengine.kernel;
 import com.jayway.jsonpath.JsonPath;
 import org.codehaus.jackson.JsonNode;
 import org.uengine.kernel.bpmn.Event;
+import org.uengine.kernel.bpmn.ServiceTask;
 import org.uengine.processdesigner.mapper.TransformerMapping;
 import org.uengine.uml.model.ObjectInstance;
 
@@ -22,7 +23,7 @@ public class CatchingMessageEvent extends Event implements MessageListener {
 
 	@Override
 	protected void executeActivity(ProcessInstance instance) throws Exception {
-		//start listens...
+		if(checkLocalCall(instance)) return;
 
 		System.out.print("inside " + getClass().getName());
 	}
@@ -44,6 +45,48 @@ public class CatchingMessageEvent extends Event implements MessageListener {
 			this.dataOutputMapping = dataOutputMapping;
 		}
 
+	private boolean checkLocalCall(ProcessInstance instance) throws Exception {
+
+		ProcessDefinition processDefinition = getProcessDefinition();
+
+		Activity localCallSource = null;
+
+		if(processDefinition.getMessageFlows()!=null && processDefinition.getMessageFlows().size() > 0)
+			for(MessageFlow messageFlow : processDefinition.getMessageFlows()){
+
+				if(getTracingTag().equals(messageFlow.getTargetRef()) && messageFlow.isLocalCall()){
+					//this is local call
+					localCallSource = processDefinition.getActivity(messageFlow.getSourceRef());
+
+					break;
+				}
+			}
+
+		if(localCallSource!=null){
+
+			// only when the execution token has been triggered by the source activity of message flow
+			if(instance.getActivityCompletionHistory().contains(localCallSource.getTracingTag())) {
+
+				//if the message has been consumed already in this thread, pass this request: preventing recursive loop
+				if(instance.getProcessTransactionContext().getSharedContext("_messageConsumed_" + getTracingTag())!=null){
+					return true;
+				}
+
+				if (localCallSource instanceof ServiceTask) {
+					ServiceTask serviceTask = (ServiceTask) localCallSource;
+					String data = serviceTask.getInputPayloadTemplate();
+				}
+
+				instance.getProcessTransactionContext().setSharedContext("_messageConsumed_" + getTracingTag(), new Boolean(true));
+
+				onMessage(instance, null /* TODO: must be calculated from source activity and parameter input */);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	public boolean onMessage(ProcessInstance instance, Object payload) throws Exception {
 

@@ -45,7 +45,7 @@ public class TimerEventJob implements Job {
 
         processManagerRemote.sendMessage(
                 instanceId + (executionScope != null ? "@" + executionScope : ""),
-                "event",
+                "onTime", //it is important! --> org.uengine.five.overriding.ProcessManagerBean.sendMessage(..) will check this as key
                 tracingTag
         );
 

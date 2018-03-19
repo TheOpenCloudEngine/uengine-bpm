@@ -1,12 +1,8 @@
 package org.uengine.kernel.bpmn;
 
 import org.metaworks.annotation.Available;
-import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Hidden;
-import org.metaworks.annotation.Id;
 import org.uengine.kernel.*;
-import org.uengine.kernel.bpmn.face.ConditionFace;
-import org.uengine.modeling.Relation;
 import org.uengine.modeling.RelationView;
 import org.uengine.util.UEngineUtil;
 
@@ -14,39 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SequenceFlow extends Relation implements java.io.Serializable, NeedArrangementToSerialize {
+public class SequenceFlow extends AbstractFlow implements java.io.Serializable, NeedArrangementToSerialize {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 
-	private String sourceRef;
 	private boolean feedback;
+		public void setFeedback(boolean feedback) {
+			this.feedback = feedback;
+		}
+		public boolean isFeedback() {
+			return feedback;
+		}
 
-	@Hidden
-		public String getSourceRef() {
-			return sourceRef;
+	int priority;
+		public int getPriority() {
+			return priority;
 		}
-		public void setSourceRef(String source) {
-			this.sourceRef = source;
+		public void setPriority(int priority) {
+			this.priority = priority;
 		}
-		
-	private String targetRef;
-    @Hidden
-		public String getTargetRef() {
-			return targetRef;
-		}
-		public void setTargetRef(String target) {
-			this.targetRef = target;
-		}
-		
-	String tracingTag;	
-		@Id
-		@Hidden
-		public String getTracingTag() {
-			return tracingTag;
-		}
-		public void setTracingTag(String tag) {
-			tracingTag = tag;
-		}
-		
+
 	Condition condition;
     //@Face(faceClass=ConditionFace.class)
 	@Available(condition = "!otherwise")
@@ -196,11 +178,4 @@ public class SequenceFlow extends Relation implements java.io.Serializable, Need
 
 	}
 
-	public void setFeedback(boolean feedback) {
-		this.feedback = feedback;
-	}
-
-	public boolean isFeedback() {
-		return feedback;
-	}
 }

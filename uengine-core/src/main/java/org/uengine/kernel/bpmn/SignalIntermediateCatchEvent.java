@@ -1,90 +1,73 @@
-package org.uengine.kernel;
+package org.uengine.kernel.bpmn;
 
-import com.jayway.jsonpath.JsonPath;
-import org.codehaus.jackson.JsonNode;
-import org.uengine.kernel.bpmn.Event;
+import org.uengine.kernel.*;
 import org.uengine.processdesigner.mapper.TransformerMapping;
-import org.uengine.uml.model.ObjectInstance;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class CatchingMessageEvent extends Event implements MessageListener {
+public class SignalIntermediateCatchEvent extends CatchingMessageEvent implements IntermediateEvent{
 
-	public static final String DIRECT_VALUE = "[direct].value";
+	public static final String SIGNAL_EVENTS = "signalEvents";
 
-	public CatchingMessageEvent(){
+	public SignalIntermediateCatchEvent(){
 		super();
-		if( this.getName() == null ){
-			setName(this.getClass().getSimpleName());
-		}
 	}
+
+	String signalType;
+		public String getSignalType() {
+			return signalType;
+		}
+		public void setSignalType(String signalType) {
+			this.signalType = signalType;
+		}
+
 
 	@Override
 	protected void executeActivity(ProcessInstance instance) throws Exception {
-		//start listens...
+		super.executeActivity(instance);
 
-		System.out.print("inside " + getClass().getName());
+		//TODO: need to introduce global activity reference space (tag@tag@tag)
+
+		Map<String, SignalEventInstance> signals = getSignalEvents(instance);
+
+		if(!signals.containsKey(getName())) {
+
+			SignalEventInstance signalEventInstance = new SignalEventInstance();
+			signalEventInstance.setActivityRef(getTracingTag());
+			signalEventInstance.setSignalName(getName());
+
+			signals.put(getName(), signalEventInstance);
+
+			setSignalEvents(instance, signals);
+		}
+
 	}
 
-	ProcessVariable dataOutput;
-		public ProcessVariable getDataOutput() {
-			return dataOutput;
-		}
-		public void setDataOutput(ProcessVariable dataOutput) {
-			this.dataOutput = dataOutput;
-		}
+	public static Map<String, SignalEventInstance> getSignalEvents(ProcessInstance instance) throws Exception {
+		Map<String, SignalEventInstance> signals = (Map<String, SignalEventInstance>) instance.getProperty("", SIGNAL_EVENTS);
 
+		if(signals==null) signals = new HashMap<>();
 
-	ParameterContext[] dataOutputMapping;
-		public ParameterContext[] getDataOutputMapping() {
-			return dataOutputMapping;
-		}
-		public void setDataOutputMapping(ParameterContext[] dataOutputMapping) {
-			this.dataOutputMapping = dataOutputMapping;
-		}
-
-
-	public boolean onMessage(ProcessInstance instance, Object payload) throws Exception {
-
-		if(getDataOutput()!=null)
-			getDataOutput().set(instance, "", (Serializable) payload);
-
-		if (getDataOutputMapping()!=null && payload instanceof BeanPropertyResolver) {
-
-			BeanPropertyResolver payload_ = (BeanPropertyResolver) payload;
-
-			for (ParameterContext parameterContext : getDataOutputMapping()) {
-				Object value = payload_.getBeanProperty(
-						parameterContext.getArgument().getText()
-				);
-
-				HashMap options = new HashMap<>();
-
-				if(parameterContext.getTransformerMapping()!=null && parameterContext.getTransformerMapping().getTransformer()!=null){
-					TransformerMapping transformerMapping = parameterContext.getTransformerMapping();
-					if(transformerMapping.getTransformer().getArgumentSourceMap()==null || transformerMapping.getTransformer().getArgumentSourceMap().size() < transformerMapping.getTransformer().getInputArguments().length){
-						transformerMapping.getTransformer().setArgumentSourceMap(new HashMap());
-						options.put(DIRECT_VALUE, value);
-						transformerMapping.getTransformer().getArgumentSourceMap().put(transformerMapping.getTransformer().getInputArguments()[0], DIRECT_VALUE);
-					}
-
-					value = transformerMapping.getTransformer().letTransform(instance, options);
-				}
-
-
-				if(parameterContext.getVariable()==null)
-					throw new UEngineException("Mapping variable is not set");
-
-				parameterContext.getVariable().set(instance, "", (Serializable) value!=null ? value.toString(): null);
-			}
-		}
-
-		fireComplete(instance);
-		return true;
+		return signals;
 	}
 
-	public String getMessage() {
-		return this.getName();
+	public static void setSignalEvents(ProcessInstance instance, Map<String, SignalEventInstance> signals) throws Exception {
+		instance/*.getRootProcessInstance()*/.setProperty("", SIGNAL_EVENTS, (Serializable) signals);
+	}
+
+	@Override
+	protected void afterComplete(ProcessInstance instance) throws Exception {
+
+		// remove signal
+		Map<String, SignalEventInstance> signals = getSignalEvents(instance);
+		signals.remove(getName());
+		setSignalEvents(instance, signals);
+
+
+		super.afterComplete(instance);
 	}
 }

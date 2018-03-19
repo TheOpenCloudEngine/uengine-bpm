@@ -6,6 +6,8 @@
  */
 package org.uengine.kernel;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,9 @@ import org.metaworks.FieldDescriptor;
 import org.metaworks.Type;
 import org.metaworks.inputter.RadioInput;
 import org.metaworks.inputter.SelectInput;
+import org.mozilla.javascript.NativeObject;
+import org.springframework.beans.BeanUtils;
+import org.uengine.util.TreeVisitor;
 
 /**
  * @author Jinyoung Jang
@@ -88,7 +93,11 @@ public class ScriptActivity extends DefaultActivity {
 	}
 	
 	protected void executeActivity(ProcessInstance instance) throws Exception{
-		if(getScript()==null) return;
+		if(getScript()==null){
+			fireComplete(instance);
+
+			return;
+		}
 	
 		
 		Object result=null;
@@ -167,8 +176,42 @@ public class ScriptActivity extends DefaultActivity {
 	        }
 		}
 				
-		if(getOut()!=null)
-			getOut().set(instance, "", (java.io.Serializable)result);
+		if(getOut()!=null) {
+
+			if(result instanceof NativeObject){
+				NativeObject nativeObject = (NativeObject) result;
+
+				Map<String, Object> valueMap = new HashMap<String, Object>();
+
+//				TreeVisitor<NativeObject> treeVisitor = new TreeVisitor<NativeObject>() {
+//					@Override
+//					public List<NativeObject> getChild(NativeObject parent) {
+//						return null;
+//					}
+//
+//					@Override
+//					public void logic(NativeObject elem) {
+//						Map<String, Object> valueMap = new HashMap<String, Object>();
+//						valueMap.putAll(elem);
+//					}
+//				};
+//
+//				treeVisitor.run(nativeObject);
+
+				valueMap.putAll(nativeObject);
+
+				result = valueMap; //change with normal map to safely stored.
+
+			}
+
+
+
+
+			getOut().set(instance, "", (java.io.Serializable) result);
+
+
+		}
+
 		fireComplete(instance);
 	}
 	

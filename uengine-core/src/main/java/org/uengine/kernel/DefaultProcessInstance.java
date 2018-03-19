@@ -1,5 +1,7 @@
 package org.uengine.kernel;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.SimulatorTransactionContext;
 import org.uengine.util.ActivityForLoop;
@@ -8,6 +10,7 @@ import org.uengine.webservices.worklist.SimulatorWorkList;
 import org.uengine.webservices.worklist.WorkList;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -256,8 +259,9 @@ public class DefaultProcessInstance extends AbstractProcessInstance {
 //		.append("key: " + key)
 //		.append("val: " + val)
 //		.append("instance id: " + getInstanceId());
-//		
+//		jh
 //		System.out.println(sb);
+		val = formatValue(key, val);
 
 		String fullKeyName = createFullKey(scopeByTracingTag, key, false);
 		if(val==null)
@@ -265,6 +269,29 @@ public class DefaultProcessInstance extends AbstractProcessInstance {
 		else
 			variables.put(fullKeyName, val);
 		//repository.put(getInstanceId()+":"+scopeByTracingTag+":"+key, val);
+	}
+
+	private Serializable formatValue(String key, Serializable val) throws Exception {
+
+		ProcessDefinition definition = getProcessDefinition();
+		ProcessVariable variable = definition.getProcessVariable(key);
+
+		if(variable!=null && variable.getTypeClassName()!=null){
+			if(variable.getTypeClassName().startsWith("java.lang.")){
+				Class type = Thread.currentThread().getContextClassLoader().loadClass(variable.getTypeClassName());
+
+				if(!val.getClass().isAssignableFrom(type)) { //need to convert
+
+					try {
+						val = (Serializable) ConvertUtils.convert(val, type);
+					}catch (Exception e){
+
+					}
+				}
+			}
+		}
+
+		return val;
 	}
 
 	public Serializable get(String scopeByTracingTag, String key) throws Exception{
@@ -309,11 +336,15 @@ public class DefaultProcessInstance extends AbstractProcessInstance {
 
 		try {
 			int indexOfDot = key.indexOf(".");
-			if (indexOfDot > 0 && sourceValue instanceof BeanPropertyResolver) {
-
+			if (indexOfDot > 0){
 				String beanPath = key.substring(indexOfDot + 1);
 
-				return (Serializable) ((BeanPropertyResolver) sourceValue).getBeanProperty(beanPath);
+				if(sourceValue instanceof BeanPropertyResolver) {
+
+					return (Serializable) ((BeanPropertyResolver) sourceValue).getBeanProperty(beanPath);
+				}else{
+					return (Serializable) PropertyUtils.getProperty(sourceValue, beanPath);
+				}
 			}
 		}catch(ClassCastException e){
 			throw new Exception("Process variable's property value must be serializable", e);
@@ -335,6 +366,8 @@ public class DefaultProcessInstance extends AbstractProcessInstance {
 				}
 			}
 		}
+
+
 		
 		return sourceValue;
 	}

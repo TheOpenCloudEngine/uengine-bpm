@@ -29,6 +29,10 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 		}		
 		@Hidden
 		public ProcessVariable getProcessVariable(String pvName) {
+
+			if(pvName==null)
+				return null;
+
 			String pvNameLower = pvName.toLowerCase();
 			if(pvName.indexOf('.') > -1){
 				String[] parts = pvNameLower.replace('.','@').split("@");

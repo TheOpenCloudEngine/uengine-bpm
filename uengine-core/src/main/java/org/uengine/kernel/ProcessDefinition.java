@@ -141,6 +141,17 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 			setServiceDefinitions(newSDs);			
 		}
 
+	ArrayList<MessageFlow> messageFlows;
+		public ArrayList<MessageFlow> getMessageFlows() {
+			return messageFlows;
+		}
+
+		public void setMessageFlows(ArrayList<MessageFlow> messageFlows) {
+			this.messageFlows = messageFlows;
+		}
+
+
+
 	boolean isGlobal;
 	@Hidden
 		public boolean isGlobal() {
@@ -404,6 +415,14 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
         public void setShortDescription(String shortDescription) {
             getShortDescription().setText(shortDescription);
         }
+
+	String instanceNamePattern;
+		public String getInstanceNamePattern() {
+			return instanceNamePattern;
+		}
+		public void setInstanceNamePattern(String instanceNamePattern) {
+			this.instanceNamePattern = instanceNamePattern;
+		}
 
 	boolean initiateByFirstWorkitem = false;
 		public boolean isInitiateByFirstWorkitem() {
@@ -951,6 +970,10 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 	
 	public void beforeSerialization() {
 		registerToProcessDefinition(true, false);
+
+//		if(getInstanceNamePattern()==null){
+//			setInstanceNamePattern(getId() + "_<%=instance.id%>");
+//		}
 
 		super.beforeSerialization();
 

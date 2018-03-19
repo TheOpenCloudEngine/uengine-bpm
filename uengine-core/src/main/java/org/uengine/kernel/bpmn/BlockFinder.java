@@ -84,10 +84,11 @@ public class BlockFinder {
 
             if(sourceActivity == null) continue;
 
-            if(visitActivityStack.contains(sourceActivity)){
+            if(visitActivityStack.contains(sourceActivity)){ //there are some feedback activity!
 
                 Activity theFirstIncomingActivity = visitActivityStack.get(1);
 
+                //find out which link is the feedback link
                 for(SequenceFlow sequenceFlowToSourceActivity : theFirstIncomingActivity.getOutgoingSequenceFlows()){
                     if(sequenceFlowToSourceActivity.getTargetActivity().equals(sourceActivity)
                             || sequenceFlowToSourceActivity.getTargetActivity().equals(activity)){

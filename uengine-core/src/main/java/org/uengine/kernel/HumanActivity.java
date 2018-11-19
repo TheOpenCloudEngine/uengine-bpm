@@ -33,7 +33,6 @@ import org.uengine.util.UEngineUtil;
 import org.uengine.webservices.worklist.DefaultWorkList;
 import org.uengine.webservices.worklist.SimulatorWorkList;
 import org.uengine.webservices.worklist.WorkList;
-import org.uengine.webservices.worklist.WorkListServiceLocator;
 
 /**
  * @author Jinyoung Jang
@@ -1124,7 +1123,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 		
 		String[] taskIds = getTaskIds(instance);
 		
-		WorkList wl = (new WorkListServiceLocator()).getWorkList();
+		WorkList wl = instance.getWorkList();
 
 		ResultPayload rp = new ResultPayload();
 		rp.setExtendedValue(new KeyedParameter(KeyedParameter.DEFAULT_STATUS, DefaultWorkList.WORKITEM_STATUS_DELEGATED));
@@ -1156,7 +1155,7 @@ System.out.println("=========================== HARD-TO-FIND : HumanActivity.cre
 		if(taskIds == null || taskIds.length == 0){ 
 			addWorkitem(instance, DefaultWorkList.WORKITEM_STATUS_DRAFT);
 		}else{ //wl update : flag 'DRAFT'
-			WorkList wl = (new WorkListServiceLocator()).getWorkList();
+			WorkList wl = instance.getWorkList();
 
 			ResultPayload rp = new ResultPayload();
 			rp.setExtendedValue(new KeyedParameter(KeyedParameter.DEFAULT_STATUS, DefaultWorkList.WORKITEM_STATUS_DRAFT));

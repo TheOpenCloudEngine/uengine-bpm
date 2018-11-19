@@ -3,8 +3,6 @@ package org.uengine.kernel.bpmn.face;
 import org.metaworks.Face;
 import org.uengine.kernel.Condition;
 import org.uengine.kernel.Or;
-import org.uengine.modeling.modeler.condition.ConditionEditor;
-import org.uengine.modeling.modeler.condition.OrConditionFace;
 
 /**
  * Created by Ryuha on 2015-07-30.

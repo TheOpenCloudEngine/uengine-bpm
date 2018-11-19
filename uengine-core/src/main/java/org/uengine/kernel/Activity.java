@@ -22,6 +22,10 @@ import org.metaworks.annotation.Hidden;
 import org.metaworks.annotation.Id;
 import org.metaworks.annotation.Name;
 import org.metaworks.annotation.Order;
+import org.oce.garuda.multitenancy.TenantContext;
+import org.springframework.context.expression.MapAccessor;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.Event;
 import org.uengine.kernel.bpmn.SequenceFlow;
@@ -70,6 +74,7 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 	final public static String STATUS_COMPLETED=	"Completed";
 	final public static String STATUS_FAULT=		"Failed";
 	final public static String STATUS_RETRYING=		"Retrying";
+	final public static String STATUS_QUEUED=		"Queued";
 	final public static String STATUS_RUNNING=		"Running";
 	final public static String STATUS_SUSPENDED=	"Suspended";
 	final public static String STATUS_SKIPPED=		"Skipped";
@@ -1236,25 +1241,107 @@ public abstract class Activity implements IElement, Validatable, java.io.Seriali
 
 	public StringBuffer evaluateContent(ProcessInstance instance, String expression, ValidationContext validationContext){
 		
-		//if(instance==null) return new StringBuffer(expression);
-		
-//System.out.println("EMailActivity:: parseContent:1");
 		StringBuffer generating = new StringBuffer("");
 
 		if(expression==null) return generating;
-//System.out.println("EMailActivity:: parseContent:2");
-		
+
 		int pos=0, endpos=0, oldpos=0;
 		String key;
 		String starter = "<%", ending="%>";
 
-		oldpos = evaluateContent_(instance, expression, validationContext, generating, oldpos, starter, ending);
-//System.out.println(generating.toString());			
-		generating.append(expression.substring(oldpos));
-		//end
-		
+//		if(expression.contains(starter)) {
+//			oldpos = evaluateContent_(instance, expression, validationContext, generating, oldpos, starter, ending);
+//			generating.append(expression.substring(oldpos));
+//
+//		}else{ //use spEL
+		generating.append(evaluateBySpEL(expression, instance));
+//		}
+
 		return generating;
+
 	}
+
+	static final String starter = "<%=";
+	static final String ending = "%>";
+
+
+	public String evaluateBySpEL(String expression, ProcessInstance instance) {
+
+		boolean allIsNull = true;
+		try {
+
+			SpelExpressionParser expressionParser = new SpelExpressionParser();
+
+			int pos;
+			int oldpos = 0;
+			int endpos;
+			String key;
+			StringBuffer generating = new StringBuffer();
+
+			StandardEvaluationContext context = new StandardEvaluationContext();
+			context.setRootObject(instance);
+
+			context.setVariable("tenant", TenantContext.getThreadLocalInstance());
+
+//			if(getProcessDefinition().getProcessVariables()!=null)
+//				for(ProcessVariable processVariable : getProcessDefinition().getProcessVariables()){
+//					context.setVariable(processVariable.getName(), instance.get("", processVariable.getName()));
+//				}
+
+			Map<String, Object> rootObject = new HashMap<>();
+
+			if(getProcessDefinition().getProcessVariables()!=null)
+				for(ProcessVariable processVariable : getProcessDefinition().getProcessVariables()){
+					rootObject.put(processVariable.getName(), instance.get("", processVariable.getName()));
+				}
+
+			rootObject.put("instance", instance);
+			rootObject.put("activity", this);
+			rootObject.put("systemEnvironments", System.getenv());
+			rootObject.put("systemProperties", System.getProperties());
+
+
+			context.setRootObject(rootObject);
+
+			context.addPropertyAccessor(new MapAccessor());
+
+			//TODO: change to a major template engine such as Grunt which supports SpEL
+			while ((pos = expression.indexOf(starter, oldpos)) > -1) {
+				pos += starter.length();
+				endpos = expression.indexOf(ending, pos);
+
+				if (endpos > pos) {
+					generating.append(expression.substring(oldpos, pos - starter.length()));
+					key = expression.substring(pos, endpos);
+
+					key = key.trim();
+
+					Object val = null;
+
+					try {
+						val = expressionParser.parseExpression(key).getValue(context);
+						allIsNull = false;
+					} catch (Exception e) {
+						throw e;
+					}
+
+					if (val != null)
+						generating.append("" + val);
+				}
+				oldpos = endpos + ending.length();
+			}
+
+			generating.append(expression.substring(oldpos));
+
+			return generating.toString();
+
+		} catch (Exception e) {
+			throw new RuntimeException("Error to parse expression " + expression, e);
+		}
+
+
+	}
+
 
 	private int evaluateContent_(ProcessInstance instance, String expression, ValidationContext validationContext, StringBuffer generating, int oldpos, String starter, String ending) {
 		int pos;

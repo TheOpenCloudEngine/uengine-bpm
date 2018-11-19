@@ -17,8 +17,6 @@ import org.metaworks.annotation.ServiceMethod;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.widget.ModalWindow;
 import org.uengine.kernel.bpmn.face.ProcessVariablePanel;
-import org.uengine.kernel.face.GenericValueFace;
-import org.uengine.kernel.face.ProcessVariableExpressionFace;
 import org.uengine.processmanager.SimulatorTransactionContext;
 import org.uengine.util.UEngineUtil;
 
@@ -117,7 +115,7 @@ public class Evaluate extends Condition{
     		
     		String condition = this.condition.trim();
     		
-    		if(compareVal==null){
+    		if(compareVal==null || "null".equals(compareVal)){
     			if(condition.equals("!=")){
     				return (returnVal!=null);
     			}else if(condition.equals("contains") || condition.equals("not contains")){
@@ -129,9 +127,9 @@ public class Evaluate extends Condition{
     		
     		if(returnVal==null){
     			if(condition.equals("!=")){
-    				return (compareVal!=null);
+    				return (compareVal!=null && !"null".equals(compareVal));
     			}else{
-    				return (compareVal==null);
+    				return (compareVal==null || "null".equals(compareVal));
     			}
     		}
     		
@@ -363,7 +361,6 @@ public class Evaluate extends Condition{
 		return returnVal;
 	}
 
-	@Face(faceClass = ProcessVariableExpressionFace.class)
 	@Order(1)
 	public String getKey() {
 		return key;
@@ -374,7 +371,6 @@ public class Evaluate extends Condition{
 	}
 
 	@Order(3)
-	@Face(faceClass=GenericValueFace.class)
 	public Object getValue(){
 		return val;
 	}

@@ -1,8 +1,8 @@
 package org.uengine.persistence;
 
-import org.uengine.processmanager.TransactionContext;
+import org.uengine.processmanager.DefaultTransactionContext;
 
 public interface DAOType {
 
-	public void setTransactionContext(TransactionContext tc);
+	public void setTransactionContext(DefaultTransactionContext tc);
 }

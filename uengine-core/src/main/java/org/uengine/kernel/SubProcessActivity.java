@@ -15,9 +15,6 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.metaworks.inputter.ArrayObjectInput;
 import org.uengine.contexts.TextContext;
 import org.uengine.kernel.bpmn.face.SubProcessParameterContextListFace;
-import org.uengine.kernel.face.RoleParameterContextArrayFace;
-import org.uengine.kernel.face.RoleParameterContextListFace;
-import org.uengine.kernel.face.SubProcessParameterContextArrayFace;
 import org.uengine.modeling.resource.VersionManager;
 import org.uengine.util.UEngineUtil;
 
@@ -48,7 +45,7 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 		super();
 		setName("Call");
 		setDescription("");
-		setInstanceId("<%=Instance.Name%>");
+		setInstanceId("<%=instance.name%>");
 	}
 
 	String instanceId;
@@ -114,7 +111,6 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 	}
 
 	ParameterContext[] variableBindings;
-		@Face(faceClass = SubProcessParameterContextArrayFace.class)
 		public ParameterContext[] getVariableBindings() {
 			return variableBindings;
 		}
@@ -123,7 +119,6 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 		}
 
 	RoleParameterContext[] roleBindings;
-	@Face(faceClass = RoleParameterContextArrayFace.class)
 		public RoleParameterContext[] getRoleBindings() {
 			return roleBindings;
 		}
@@ -744,30 +739,30 @@ public class SubProcessActivity extends DefaultActivity implements NeedArrangeme
 		return subProcesses;
 	}
 
-	public String getDefinitionVersionId(ProcessInstance instance) throws Exception{
-		return getDefinitionVersionId(null, instance);
-	}
+//	public String getDefinitionVersionId(ProcessInstance instance) throws Exception{
+//		return getDefinitionVersionId(null, instance);
+//	}
 
-	public String getDefinitionVersionId(String realDefinitionId, ProcessInstance instance) throws Exception{
-		//String realDefinitionId = evaluateContent(instance, getDynamicDefinitionId()).toString();
-
-		/*    ProcessManagerFactoryBean pmfb = new ProcessManagerFactoryBean();
-    ProcessManagerRemote pm = null;
-
-    try {  
-      pm = pmfb.getProcessManager();
-    }catch(Exception e) {
-      e.printStackTrace();
-    }
-
-    realDefinitionId = pm.getProcessDefinitionProductionVersionByAlias(realDefinitionId);
-		 */  
-		if(!UEngineUtil.isNotEmpty(realDefinitionId)){
-			realDefinitionId = "codi/" + getDefinitionId();
-		}
-
-		return ProcessDefinition.getDefinitionVersionId(instance, realDefinitionId, getVersionSelectOption(), getProcessDefinition());
-	}
+//	public String getDefinitionVersionId(String realDefinitionId, ProcessInstance instance) throws Exception{
+//		//String realDefinitionId = evaluateContent(instance, getDynamicDefinitionId()).toString();
+//
+//		/*    ProcessManagerFactoryBean pmfb = new ProcessManagerFactoryBean();
+//    ProcessManagerRemote pm = null;
+//
+//    try {
+//      pm = pmfb.getProcessManager();
+//    }catch(Exception e) {
+//      e.printStackTrace();
+//    }
+//
+//    realDefinitionId = pm.getProcessDefinitionProductionVersionByAlias(realDefinitionId);
+//		 */
+//		if(!UEngineUtil.isNotEmpty(realDefinitionId)){
+//			realDefinitionId = "codi/" + getDefinitionId();
+//		}
+//
+//		return ProcessDefinition.getDefinitionVersionId(instance, realDefinitionId, getVersionSelectOption(), getProcessDefinition());
+//	}
 
 	protected ProcessInstance initiateSubProcess(String realDefinitionId, ProcessInstance instance, RoleMapping currentRoleMapping, Serializable currentVariableValue, boolean isConnectedMultipleSubProcesses, int mappingIndex) throws Exception{        
 		//    String versionId = getDefinitionVersionId(realDefinitionId, instance);

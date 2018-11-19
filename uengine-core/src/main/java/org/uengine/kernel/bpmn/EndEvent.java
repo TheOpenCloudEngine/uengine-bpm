@@ -7,8 +7,6 @@ import org.uengine.kernel.Activity;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.UEngineException;
 import org.uengine.kernel.ValidationContext;
-import org.uengine.persistence.processinstance.ProcessInstanceDAO;
-import org.uengine.persistence.processinstance.ProcessInstanceDAOType;
 
 import java.util.Hashtable;
 import java.util.Map;

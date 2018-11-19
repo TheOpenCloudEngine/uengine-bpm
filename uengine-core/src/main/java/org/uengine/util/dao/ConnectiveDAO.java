@@ -3,9 +3,7 @@ package org.uengine.util.dao;
 import java.lang.reflect.*;
 import java.sql.Connection;
 
-import org.uengine.kernel.TransactionListener;
-import org.uengine.kernel.UEngineException;
-import org.uengine.processmanager.TransactionContext;
+import org.uengine.processmanager.DefaultTransactionContext;
 
 /**
  * Generic DAO
@@ -21,7 +19,7 @@ public class ConnectiveDAO extends AbstractGenericDAO {
 	}
 	
 	/**
-	 * TransactionContext�� �Բ� DAO ��
+	 * DefaultTransactionContext�� �Բ� DAO ��
 	 * 
 	 * @param tc 		Ʈ����� ���ؽ�Ʈ (see DefaultTransactionContext, ProcessTransactionContext)
 	 * @param sqlStmt 	DB ��
@@ -38,7 +36,7 @@ public class ConnectiveDAO extends AbstractGenericDAO {
 		);		
 	}	
 	
-	public static IDAO createDAOImpl(TransactionContext tc, String sqlStmt, Class daoClass) throws Exception{		
+	public static IDAO createDAOImpl(DefaultTransactionContext tc, String sqlStmt, Class daoClass) throws Exception{
 
 		return (IDAO)Proxy.newProxyInstance(
 			daoClass.getClassLoader(),
@@ -47,7 +45,7 @@ public class ConnectiveDAO extends AbstractGenericDAO {
 		);		
 	}	
 
-	public static IDAO createDAOImpl(final String dataSourceJndiName, final TransactionContext tc, String sqlStmt, Class daoClass) throws Exception{
+	public static IDAO createDAOImpl(final String dataSourceJndiName, final DefaultTransactionContext tc, String sqlStmt, Class daoClass) throws Exception{
 		
 		ConnectionFactory staticConnectionFactory = new ConnectionFactory(){
 

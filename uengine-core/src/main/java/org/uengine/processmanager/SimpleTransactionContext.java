@@ -9,7 +9,7 @@ import org.uengine.util.dao.ConnectionFactory;
 import org.uengine.util.dao.DefaultConnectionFactory;
 
 
-public class SimpleTransactionContext extends TransactionContext{
+public class SimpleTransactionContext extends DefaultTransactionContext {
 	
 	String dataSourceJNDIName;
 		public String getDataSourceJNDIName() {

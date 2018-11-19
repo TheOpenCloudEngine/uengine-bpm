@@ -1,6 +1,12 @@
 package org.uengine.kernel.bpmn;
 
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.TrustStrategy;
 import org.metaworks.dwr.MetaworksRemoteService;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -10,16 +16,24 @@ import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.uengine.kernel.*;
 
+import javax.net.ssl.SSLContext;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by uengine on 2017. 12. 4..
@@ -119,34 +133,53 @@ public class ServiceTask extends DefaultActivity {
         String result = null;
 
         try {
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate;
 
-            if ("GET".equals(getMethod())) {
+            if(isNoValidationForSSL()){
+                restTemplate = noValidatingRestTemplate();
 
-                ResponseEntity<String> response = null;
-                response = restTemplate.exchange(realURI,
-                        HttpMethod.GET, null, String.class);
+            }else{
+                restTemplate = new RestTemplate();
+            }
 
-                result = response.getBody();
+            HttpMethod httpMethod = HttpMethod.GET;
 
-            } else if ("POST".equals(getMethod())) {
+            if ("POST".equals(getMethod())){
+                httpMethod = HttpMethod.POST;
+            }else if ("PUT".equals(getMethod())){
+                httpMethod = HttpMethod.PUT;
+            }else if ("DELETE".equals(getMethod())){
+                httpMethod = HttpMethod.DELETE;
+            }
 
+            if ("GET,DELETE".indexOf(getMethod()) == -1){
                 payload =
                         evaluateContent(instance, getInputPayloadTemplate()).toString();
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity<String> body = new HttpEntity<String>(payload, headers);
-
-                restTemplate.getMessageConverters()
-                        .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
-
-                // send request and parse result
-                ResponseEntity<String> response = restTemplate
-                        .exchange(realURI, HttpMethod.POST, body, String.class);
-
-                result = response.getBody();
+            }else{
+                payload = null;
             }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            //load headers
+            for(HttpHeader header : getHeaders()){
+                String headerKey = header.getName();
+                String value = header.getValue();
+
+                headers.set(headerKey, evaluateContent(instance, value).toString());
+            }
+
+            HttpEntity<String> body = new HttpEntity<String>(payload, headers);
+
+            restTemplate.getMessageConverters()
+                    .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+
+            // send request and parse result
+            ResponseEntity<String> response = restTemplate
+                    .exchange(realURI, httpMethod, body, String.class);
+
+            result = response.getBody();
 
             /**
              *  parse the result by JSON PATH for each parameter contexts
@@ -156,7 +189,12 @@ public class ServiceTask extends DefaultActivity {
 
 
                 for (ParameterContext parameterContext : getOutputMapping()) {
-                    Object value = JsonPath.read(result, parameterContext.getArgument().getText());
+                    Object value = null;
+                    try {
+                        value = JsonPath.read(result, parameterContext.getArgument().getText());
+                    }catch(PathNotFoundException e){ //forgive for the path not found, it means just null
+                        value = null;
+                    }
 
                     parameterContext.getVariable().set(instance, "", (Serializable) value);
                 }
@@ -171,6 +209,31 @@ public class ServiceTask extends DefaultActivity {
         }
 
         super.executeActivity(instance);
+    }
+
+    private RestTemplate noValidatingRestTemplate() {
+
+        try{
+            TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
+                @Override
+                public boolean isTrusted(java.security.cert.X509Certificate[] x509Certificates, String s) throws java.security.cert.CertificateException {
+                    return true;
+                }
+
+            };
+
+            SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+            SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
+            CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+            HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+            requestFactory.setHttpClient(httpClient);
+            RestTemplate restTemplate = new RestTemplate(requestFactory);
+
+            return restTemplate;
+        } catch (Exception e) {
+            throw new RuntimeException("failed to establish a RestTemplate for no-validating certificate");
+        }
+
     }
 
     private boolean checkLocalCall(ProcessInstance instance) throws Exception {
@@ -226,12 +289,30 @@ public class ServiceTask extends DefaultActivity {
             this.inputPayloadTemplate = inputPayloadTemplate;
         }
 
+    HttpHeader[] headers;
+
+        public HttpHeader[] getHeaders() {
+            return headers;
+        }
+
+        public void setHeaders(HttpHeader[] headers) {
+            this.headers = headers;
+        }
+
     String method;
         public String getMethod() {
             return method;
         }
         public void setMethod(String method) {
             this.method = method;
+        }
+
+    boolean noValidationForSSL;
+        public boolean isNoValidationForSSL() {
+            return noValidationForSSL;
+        }
+        public void setNoValidationForSSL(boolean noValidationForSSL) {
+            this.noValidationForSSL = noValidationForSSL;
         }
 
     ParameterContext[] outputMapping;

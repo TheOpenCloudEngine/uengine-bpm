@@ -15,8 +15,6 @@ import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.ResultPayload;
 import org.uengine.kernel.RoleMapping;
-import org.uengine.util.export.DefinitionArchive;
-import org.uengine.util.export.UEngineArchive;
 
 
 /**
@@ -63,34 +61,34 @@ public interface ProcessManagerRemote extends javax.ejb.EJBObject{
 	public void flowControl(String command, String instanceId, String tracingTag) throws RemoteException;
 
 	//process defintion
-	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String defId, String alias) throws RemoteException;
-	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String defId, String objectType, String alias) throws RemoteException;
-	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String defId, String objectType, String alias, String superDefId) throws RemoteException;
-	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, ProcessDefinition def, String folder, String defId) throws RemoteException;
-	public void removeProcessDefinition(String defVerId) throws RemoteException;
-	public void renameProcessDefinition(String pdName, String newName) throws RemoteException;
-	public String getProcessDefinitionIdByAlias(String alias) throws RemoteException;
-	public void setVisibleProcessDefinition(String defId, boolean isVisible) throws RemoteException;
+//	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String defId, String alias) throws RemoteException;
+//	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String defId, String objectType, String alias) throws RemoteException;
+//	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String defId, String objectType, String alias, String superDefId) throws RemoteException;
+//	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, ProcessDefinition def, String folder, String defId) throws RemoteException;
+//	public void removeProcessDefinition(String defVerId) throws RemoteException;
+//	public void renameProcessDefinition(String pdName, String newName) throws RemoteException;
+////	public String getProcessDefinitionIdByAlias(String alias) throws RemoteException;
+//	public void setVisibleProcessDefinition(String defId, boolean isVisible) throws RemoteException;
 	
 	//ProcessDefinitionRemote
-	public ProcessDefinitionRemote[] listProcessDefinitionRemotesLight() throws RemoteException;
-	public ProcessDefinitionRemote[] findAllVersions(String defId) throws RemoteException;
-	public ProcessDefinitionRemote getProcessDefinitionRemote(String defVerId) throws RemoteException;
-	public ProcessDefinitionRemote getProcessDefinitionRemoteByDefinitionId(String defId) throws RemoteException;
-	public ProcessDefinitionRemote getProcessDefinitionRemoteWithInstanceId(String instanceId) throws RemoteException;
+//	public ProcessDefinitionRemote[] listProcessDefinitionRemotesLight() throws RemoteException;
+//	public ProcessDefinitionRemote[] findAllVersions(String defId) throws RemoteException;
+//	public ProcessDefinitionRemote getProcessDefinitionRemote(String defVerId) throws RemoteException;
+//	public ProcessDefinitionRemote getProcessDefinitionRemoteByDefinitionId(String defId) throws RemoteException;
+//	public ProcessDefinitionRemote getProcessDefinitionRemoteWithInstanceId(String instanceId) throws RemoteException;
 	
 	//Production Version
-	public String getProductionVersionIdAtThatTime(String defId, Date thatTime) throws RemoteException;	
-	public String getFirstProductionVersionId(String defId) throws RemoteException;
-	public String getProcessDefinitionProductionVersionByAlias(String alias) throws RemoteException;
-	public void setProcessDefinitionProductionVersion(String pdvid) throws RemoteException;
-	public String getProcessDefinitionProductionVersion(String defId) throws RemoteException;
-	public String getProcessDefinitionProductionVersionByName(String pdName) throws RemoteException;
+//	public String getProductionVersionIdAtThatTime(String defId, Date thatTime) throws RemoteException;
+//	public String getFirstProductionVersionId(String defId) throws RemoteException;
+//	public String getProcessDefinitionProductionVersionByAlias(String alias) throws RemoteException;
+//	public void setProcessDefinitionProductionVersion(String pdvid) throws RemoteException;
+//	public String getProcessDefinitionProductionVersion(String defId) throws RemoteException;
+//	public String getProcessDefinitionProductionVersionByName(String pdName) throws RemoteException;
 
 	//getProcessDefinition
 	public ProcessDefinition getProcessDefinition(String defVerId) throws RemoteException;
 	public String getProcessDefinition(String defVerId, String encodingStyle) throws RemoteException;
-	public ProcessDefinition getProcessDefinitionWithInstanceId(String instanceId) throws RemoteException;
+//	public ProcessDefinition getProcessDefinitionWithInstanceId(String instanceId) throws RemoteException;
 	public String getProcessDefinitionWithInstanceId(String instanceId, String encodingStyle) throws RemoteException;
 	
 	//public ProcessDefinition getProcessDefinitionWithoutInheritance(String defVerId) throws RemoteException;
@@ -98,13 +96,13 @@ public interface ProcessManagerRemote extends javax.ejb.EJBObject{
 	//public ProcessDefinition getProcessDefinitionWithInstanceIdWithoutInheritance(String instanceId) throws RemoteException;
 	public String getProcessDefinitionWithInstanceIdWithoutInheritance(String instanceId, String encodingStyle) throws RemoteException;
 
-	public String getResource(String resourceId) throws RemoteException;
+//	public String getResource(String resourceId) throws RemoteException;
     
-	//ProcessInstanceRemote
-	public ProcessInstanceRemote[] listProcessInstanceRemotes() throws RemoteException;
-	public ProcessInstanceRemote[] listProcessInstanceRemotes(String defId) throws RemoteException;
-	public ProcessInstanceRemote[] listProcessInstanceRemotes(String defId, String status) throws RemoteException;
-	public ProcessInstanceRemote[] listProcessArchiveRemotes() throws RemoteException;
+//	//ProcessInstanceRemote
+//	public ProcessInstanceRemote[] listProcessInstanceRemotes() throws RemoteException;
+//	public ProcessInstanceRemote[] listProcessInstanceRemotes(String defId) throws RemoteException;
+//	public ProcessInstanceRemote[] listProcessInstanceRemotes(String defId, String status) throws RemoteException;
+//	public ProcessInstanceRemote[] listProcessArchiveRemotes() throws RemoteException;
 	
 	//process instance
 	public void removeProcessInstance(String instanceId) throws RemoteException;
@@ -130,22 +128,20 @@ public interface ProcessManagerRemote extends javax.ejb.EJBObject{
 	//import and export
 	public void exportProcessDefinitionbyDefinitionId(String defId, boolean allVersion) throws Exception;
     public void exportProcessDefinitionbyVersionId(String defVerId) throws Exception;
-    public Vector importProcessDefinition(String parentFolder, InputStream loadedZipFile, UEngineArchive editedUa, String[] command ) throws Exception;
     public Hashtable importProcessAliasCheck(InputStream is) throws Exception;
-	public DefinitionArchive[] importDefinitionArchiveList(InputStream is) throws RemoteException;
-	
-	//flow chart
-	public String viewProcessDefinitionFlowChart(String defVerId, Map options) throws RemoteException;
-	public String viewProcessInstanceFlowChart(String instanceId, Map options) throws RemoteException;
 
-	//folder
-	public void removeFolder(String folderName) throws RemoteException;
-	public String addFolder(String folderName, String parentFolder) throws RemoteException;
-	public void moveFolder(String defId, String parentFolder) throws RemoteException;
-	
-	//dynamic change
-	public void changeProcessDefinition(String instanceId, String definitionInXML) throws RemoteException;
-	public void changeProcessDefinition(String instanceId, ProcessDefinition definition) throws RemoteException;
+	//flow chart
+//	public String viewProcessDefinitionFlowChart(String defVerId, Map options) throws RemoteException;
+//	public String viewProcessInstanceFlowChart(String instanceId, Map options) throws RemoteException;
+//
+//	//folder
+//	public void removeFolder(String folderName) throws RemoteException;
+//	public String addFolder(String folderName, String parentFolder) throws RemoteException;
+//	public void moveFolder(String defId, String parentFolder) throws RemoteException;
+//
+//	//dynamic change
+//	public void changeProcessDefinition(String instanceId, String definitionInXML) throws RemoteException;
+//	public void changeProcessDefinition(String instanceId, ProcessDefinition definition) throws RemoteException;
 	
 	//test
 	public void setFault(String instanceId, String tracingTag, Exception fault) throws RemoteException;
@@ -162,8 +158,8 @@ public interface ProcessManagerRemote extends javax.ejb.EJBObject{
 	
 	//for Process Market
 	
-	public void importProcessDefinitionGraciously(String parentFolder, String itemId, String itemFilePath, String loggedUserGlobalCom) throws Exception;
-	public String exportProcessDefinitionForAddToMarket(String defId, String loggedUserGlobalCom) throws Exception;
+//	public void importProcessDefinitionGraciously(String parentFolder, String itemId, String itemFilePath, String loggedUserGlobalCom) throws Exception;
+//	public String exportProcessDefinitionForAddToMarket(String defId, String loggedUserGlobalCom) throws Exception;
 
 	public void setChanged();
 }	

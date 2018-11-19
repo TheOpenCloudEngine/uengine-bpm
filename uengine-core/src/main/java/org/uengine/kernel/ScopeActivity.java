@@ -33,6 +33,13 @@ public class ScopeActivity extends FlowActivity implements MessageListener{
 			if(pvName==null)
 				return null;
 
+			if(pvName.startsWith("[roles].")){
+				ProcessVariable variable = ProcessVariable.forName(pvName);
+				variable.setTypeClassName(RoleMapping.class.getName());
+
+				return variable;
+			}
+
 			String pvNameLower = pvName.toLowerCase();
 			if(pvName.indexOf('.') > -1){
 				String[] parts = pvNameLower.replace('.','@').split("@");

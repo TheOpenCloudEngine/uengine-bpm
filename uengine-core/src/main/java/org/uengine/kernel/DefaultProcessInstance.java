@@ -273,6 +273,8 @@ public class DefaultProcessInstance extends AbstractProcessInstance {
 
 	private Serializable formatValue(String key, Serializable val) throws Exception {
 
+		if(val==null) return null;
+
 		ProcessDefinition definition = getProcessDefinition();
 		ProcessVariable variable = definition.getProcessVariable(key);
 

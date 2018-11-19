@@ -25,9 +25,10 @@ import org.metaworks.dwr.MetaworksRemoteService;
 import org.uengine.kernel.ReleaseResourceListener;
 import org.uengine.kernel.UEngineException;
 import org.uengine.persistence.dao.DAOFactory;
+import org.uengine.processmanager.DefaultProcessTransactionContext;
 import org.uengine.processmanager.ProcessManagerBean;
 import org.uengine.processmanager.ProcessTransactionContext;
-import org.uengine.processmanager.TransactionContext;
+import org.uengine.processmanager.DefaultTransactionContext;
 import org.uengine.util.ForLoop;
 
 import com.sun.rowset.CachedRowSetImpl;
@@ -143,7 +144,7 @@ public abstract class AbstractGenericDAO implements InvocationHandler, IDAO {
 		);		
 	}
 	
-//	protected AbstractGenericDAO(TransactionContext tc, String sqlStmt, Class daoClass)	throws Exception {
+//	protected AbstractGenericDAO(DefaultTransactionContext tc, String sqlStmt, Class daoClass)	throws Exception {
 //		this(
 //			new TransactionContextConnectionFactoryAdapter(tc),
 //			false,
@@ -294,11 +295,11 @@ public abstract class AbstractGenericDAO implements InvocationHandler, IDAO {
 		}catch(Exception e){
 			throw new UEngineException("Error when to try sql [" + getStatement() + "] ", e);
 		}finally{
-			if (rowSet!= null && cf instanceof TransactionContext) {
-				TransactionContext tc = (TransactionContext) cf;
+			if (rowSet!= null && cf instanceof DefaultTransactionContext) {
+				DefaultTransactionContext tc = (DefaultTransactionContext) cf;
 				tc.addReleaseResourceListeners(new ReleaseResourceListener() {
 					
-					public void beforeReleaseResource(TransactionContext tx) throws Exception {
+					public void beforeReleaseResource(DefaultTransactionContext tx) throws Exception {
 						releaseResource();
 					}
 				});
@@ -314,7 +315,7 @@ public abstract class AbstractGenericDAO implements InvocationHandler, IDAO {
 	}
 	
 	private void checkOkToCloseConnection() throws Exception{
-		if(getConnectionFactory() instanceof ProcessTransactionContext){
+		if(getConnectionFactory() instanceof DefaultProcessTransactionContext){
 			ProcessManagerBean pm = ((ProcessTransactionContext)getConnectionFactory()).getProcessManager();
 			if(!pm.isManagedTransaction()) throw new UEngineException("This thread tries to close any of connection in uEngine-managed transaction.");
 		}
@@ -913,7 +914,7 @@ public abstract class AbstractGenericDAO implements InvocationHandler, IDAO {
 				if(rowSet!=null) {
 //					try {
 //					if(rowSet.isClosed()) { 
-//						throw new UEngineException("This DAO has been already closed. If you use TransactionContext, Use DAO during TransactionContext is alive.");
+//						throw new UEngineException("This DAO has been already closed. If you use DefaultTransactionContext, Use DAO during DefaultTransactionContext is alive.");
 //					}
 //					}catch (Exception ex) {
 //						ex.printStackTrace();

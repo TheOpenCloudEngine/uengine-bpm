@@ -7,9 +7,7 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 import org.uengine.kernel.KeyedParameter;
-import org.uengine.processmanager.TransactionContext;
-
-import org.uengine.webservice.*;
+import org.uengine.processmanager.DefaultTransactionContext;
 
 /**
  * @author Jinyoung Jang
@@ -43,7 +41,7 @@ public class SimulatorWorkList extends DefaultWorkList{
 		return taskId;
 	}
 
-	public void cancelWorkItem(String taskID, KeyedParameter[] options, TransactionContext tc)
+	public void cancelWorkItem(String taskID, KeyedParameter[] options, DefaultTransactionContext tc)
 		throws RemoteException {
 		// TODO Auto-generated method stub
 		super.cancelWorkItem(taskID, options, tc);
@@ -52,7 +50,7 @@ public class SimulatorWorkList extends DefaultWorkList{
 	/* (non-Javadoc)
 	 * @see org.uengine.webservices.worklist.WorkList#completeWorkItem(java.lang.String, org.uengine.webservices.worklist.KeyedParameter[])
 	 */
-	public void completeWorkItem(String taskID, KeyedParameter[] options, TransactionContext tc)
+	public void completeWorkItem(String taskID, KeyedParameter[] options, DefaultTransactionContext tc)
 		throws RemoteException {
 		// TODO Auto-generated method stub
 		super.completeWorkItem(taskID, options, tc);
@@ -73,7 +71,7 @@ public class SimulatorWorkList extends DefaultWorkList{
 	public void updateWorkItem(
 		String taskId,
 		String userId,
-		KeyedParameter[] parameters, TransactionContext tc)
+		KeyedParameter[] parameters, DefaultTransactionContext tc)
 		throws RemoteException {
 		// TODO Auto-generated method stub
 		super.updateWorkItem(taskId, userId, parameters, tc);

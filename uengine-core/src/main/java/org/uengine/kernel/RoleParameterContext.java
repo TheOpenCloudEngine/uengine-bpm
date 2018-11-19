@@ -10,8 +10,6 @@ import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Range;
 import org.metaworks.inputter.RadioInput;
 import org.uengine.kernel.GlobalContext;
-import org.uengine.kernel.face.RoleParameterContextArgumentFace;
-import org.uengine.kernel.face.RoleSelectorFace;
 
 /**
  * @author Jinyoung Jang
@@ -42,7 +40,6 @@ public class RoleParameterContext implements Serializable{
 	}
 	
 	String argument;
-	@Face(faceClass = RoleParameterContextArgumentFace.class)
 		public String getArgument() {
 			return argument;
 		}
@@ -51,7 +48,6 @@ public class RoleParameterContext implements Serializable{
 		}
 
 	Role role;
-	@Face(faceClass=RoleSelectorFace.class)
 		public Role getRole() {
 			return role;
 		}	

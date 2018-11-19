@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.uengine.processmanager.TransactionContext;
+import org.uengine.processmanager.DefaultTransactionContext;
+import org.uengine.processmanager.ProcessTransactionContext;
 
 public class DebuggingContext implements NeedArrangementToSerialize{
 	
@@ -20,11 +21,11 @@ public class DebuggingContext implements NeedArrangementToSerialize{
 		return (ProcessInstance) processInstanceMap.get(rootProcessInstanceId);
 	}
 	
-	public DebuggingContext (TransactionContext tc, String rootProcessInstanceId) throws Exception{
+	public DebuggingContext (ProcessTransactionContext tc, String rootProcessInstanceId) throws Exception{
 		this (tc, rootProcessInstanceId, false);
 	}
 		
-	public DebuggingContext (TransactionContext tc, String rootProcessInstanceId, boolean includeExecutionPaths) throws Exception{
+	public DebuggingContext (ProcessTransactionContext tc, String rootProcessInstanceId, boolean includeExecutionPaths) throws Exception{
 		processInstanceMap = tc.getProcessInstancesInTransaction();
 		this.rootProcessInstanceId = rootProcessInstanceId;
 		this.processDefinitionMap = new Hashtable();

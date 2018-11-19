@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.metaworks.annotation.Hidden;
-import org.uengine.five.framework.ProcessTransactionListener;
 import org.uengine.kernel.*;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.TransactionContext;
@@ -62,33 +61,39 @@ public class FlowActivity extends ComplexActivity {
 	
 				// source
                 String source = sequenceFlow.getSourceRef();
+				Activity sourceActivity = null;
 
 				if(source!=null) {
-					Activity sourceActivity = getProcessDefinition().getActivity(source);
+					sourceActivity = getProcessDefinition().getActivity(source);
+				}else if(sequenceFlow.getSourceActivity()!=null){
+					sourceActivity = sequenceFlow.getSourceActivity();
+				}
 
-					if (sourceActivity != null) {
-						if(!sourceActivity.getOutgoingSequenceFlows().contains(sequenceFlow)){
-							sourceActivity.addOutgoingTransition(sequenceFlow);
-							sequenceFlow.setSourceActivity(sourceActivity);
-						}else{
-							System.out.println("duplicated SequenceFlow in FlowActivity " + getName());
-						}
+				if (sourceActivity != null) {
+					if(!sourceActivity.getOutgoingSequenceFlows().contains(sequenceFlow)){
+						sourceActivity.addOutgoingTransition(sequenceFlow);
+						sequenceFlow.setSourceActivity(sourceActivity);
+					}else{
+						System.out.println("duplicated SequenceFlow in FlowActivity " + getName());
 					}
 				}
-    
+
                 // target
                 String target = sequenceFlow.getTargetRef();
+				Activity targetActivity = null;
 
-				if(target!=null){
-					Activity targetActivity = getProcessDefinition().getActivity(target);
+				if(target!=null) {
+					targetActivity = getProcessDefinition().getActivity(target);
+				}else if(sequenceFlow.getTargetActivity() != null) {
+					targetActivity = sequenceFlow.getTargetActivity();
+				}
 
-					if(targetActivity!=null) {
-						if(!targetActivity.getIncomingSequenceFlows().contains(sequenceFlow)){
-							targetActivity.addIncomingTransition(sequenceFlow);
-							sequenceFlow.setTargetActivity(targetActivity);
-						}else{
-							System.out.println("duplicated SequenceFlow in FlowActivity " + getName());
-						}
+				if(targetActivity!=null) {
+					if(!targetActivity.getIncomingSequenceFlows().contains(sequenceFlow)){
+						targetActivity.addIncomingTransition(sequenceFlow);
+						sequenceFlow.setTargetActivity(targetActivity);
+					}else{
+						System.out.println("duplicated SequenceFlow in FlowActivity " + getName());
 					}
 				}
 
@@ -244,14 +249,14 @@ public class FlowActivity extends ComplexActivity {
                  * 2018.01.02 Leehc
                  */
                 final FlowActivity finalThis = this;
-                ProcessTransactionListener tl = new ProcessTransactionListener() {
+                TransactionListener tl = new TransactionListener() {
                     
                     @Override
-                    public void beforeRollback(org.uengine.five.framework.ProcessTransactionContext tx) throws Exception {
+                    public void beforeRollback(TransactionContext tx) throws Exception {
                     }
                     
                     @Override
-                    public void beforeCommit(org.uengine.five.framework.ProcessTransactionContext tx) throws Exception {
+                    public void beforeCommit(TransactionContext tx) throws Exception {
                         // 프로세스의 경우 실행중인 Activity가 없을 경우에만 종료
                         boolean completeAvail = true;
                         if (finalThis instanceof ProcessDefinition) {
@@ -270,15 +275,15 @@ public class FlowActivity extends ComplexActivity {
                     }
                     
                     @Override
-                    public void afterRollback(org.uengine.five.framework.ProcessTransactionContext tx) throws Exception {
+                    public void afterRollback(TransactionContext tx) throws Exception {
                     }
                     
                     @Override
-                    public void afterCommit(org.uengine.five.framework.ProcessTransactionContext tx) throws Exception {
+                    public void afterCommit(TransactionContext tx) throws Exception {
                     }
                 };
                 
-                org.uengine.five.framework.ProcessTransactionContext.getThreadLocalInstance().addTransactionListener(tl);
+                instance.getProcessTransactionContext().addTransactionListener(tl);
             }
                 
 			// register token before queueActivity()

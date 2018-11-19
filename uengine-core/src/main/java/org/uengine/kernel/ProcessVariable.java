@@ -389,6 +389,10 @@ System.out.println("ProcessVariable:: converting from String to Integer");
 	}
 	
 	public void set(ProcessInstance instance, String scope, Serializable value) throws Exception{
+
+		if(getName()==null)
+			throw new IllegalStateException("Processvariable should have its name. this variable name is null");
+
 		set(instance, scope, null, value);
 	}
 

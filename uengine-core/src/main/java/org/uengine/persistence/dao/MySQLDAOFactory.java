@@ -3,8 +3,6 @@
  */
 package org.uengine.persistence.dao;
 
-import org.uengine.processmanager.SimpleTransactionContext;
-import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.dao.*;
 
 import java.sql.Connection;
@@ -14,8 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import java.lang.reflect.*;
-
-import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
 
 /**
@@ -174,7 +170,7 @@ public class MySQLDAOFactory extends OracleDAOFactory{
 //					if (conn != null) try { conn.close(); } catch (SQLException e) {}
 				}
 
-//				TransactionContext tc = new SimpleTransactionContext();
+//				DefaultTransactionContext tc = new SimpleTransactionContext();
 //				try {
 //					
 //					String forTableName  = new String(forWhat);

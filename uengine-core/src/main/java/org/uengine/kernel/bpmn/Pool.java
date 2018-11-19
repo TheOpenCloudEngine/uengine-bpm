@@ -13,11 +13,9 @@ import org.uengine.kernel.view.DynamicDrawGeom;
 import org.uengine.modeling.ElementView;
 import org.uengine.modeling.IElement;
 import org.uengine.util.UEngineUtil;
-import org.uengine.webservice.ApplyProperties;
-import java.io.*;
 
 @Face(ejsPath="genericfaces/ActivityFace.ejs", options={"fieldOrder"}, values={"name,description"})
-public class Pool implements IElement, java.io.Serializable, ContextAware{
+public class Pool{
 
 	transient MetaworksContext metaworksContext;
 		public MetaworksContext getMetaworksContext() {
@@ -51,30 +49,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 			description.setText(string);
 		}
 		
-	PoolResolutionContext poolResolutionContext;
-	@Hidden
-	@Face(displayName="웹서비스 선택")
-	@Order(3)
-		public PoolResolutionContext getPoolResolutionContext() {
-			if( poolResolutionContext == null ){
-				String poolResolutionContexts = GlobalContext.getPropertyString("poolresolutioncontexts", null);
-				if( poolResolutionContexts != null ){
-					try{
-						Class<?> clazz = Class.forName(poolResolutionContexts);
-//						if( clazz.equals(DefaultCompanyPoolResolutionContext.class)){
-							poolResolutionContext = (PoolResolutionContext) clazz.newInstance();
-//						}
-					}catch(Exception e){
-						//e.printStackTrace();
-					}
-				}
-			}
-			return poolResolutionContext;
-		}
-		public void setPoolResolutionContext(PoolResolutionContext poolResolutionContext) {
-			this.poolResolutionContext = poolResolutionContext;
-		}
-		
+
 
 	transient String currentEditorId;
 	@Hidden
@@ -98,44 +73,7 @@ public class Pool implements IElement, java.io.Serializable, ContextAware{
 			this.viewId = viewId;
 		}
 
-	@Hidden
-	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
-	public Object[] apply() throws Exception {
 
-		if ( this.getDescription() == null || "".equals(this.getDescription())){
-			this.setDescription(this.getName());
-		}
-
-		DynamicDrawGeom ddg = this.getPoolResolutionContext().drawActivitysOnDesigner();
-		ddg.setParentGeomId(this.getViewId());
-
-		return new Object[]{ddg};
-	}
-
-	@Hidden
-	@ServiceMethod(callByContent=true, target=ServiceMethodContext.TARGET_APPEND)
-	public Object[] cancel(){
-		ModalWindow modalWindow = new ModalWindow();
-		return new Object[]{new Remover(modalWindow , true)};
-		
-	}
-	
-	ElementView elementView;
-
-	public ElementView createView(){
-		ElementView elementView = (ElementView) UEngineUtil.getComponentByEscalation(getClass(), "view");
-		elementView.setElement(this);
-
-		return elementView;
-	}
-	@Hidden
-	public ElementView getElementView() {
-		return this.elementView;
-	}
-	public void setElementView(ElementView elementView) {
-		this.elementView = elementView;
-	}
-	
 	public void createDocument() {
 		// TODO Auto-generated method stub
 	}

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 
-public class SimulatorTransactionContext extends ProcessTransactionContext {
+public class SimulatorTransactionContext extends DefaultProcessTransactionContext {
 
 	public SimulatorTransactionContext(){
 		super(null);

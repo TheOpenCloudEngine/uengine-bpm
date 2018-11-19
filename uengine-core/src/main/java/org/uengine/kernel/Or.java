@@ -3,7 +3,6 @@ package org.uengine.kernel;
 import org.metaworks.annotation.Face;
 import org.metaworks.annotation.Name;
 import org.uengine.kernel.GlobalContext;
-import org.uengine.modeling.modeler.condition.OrConditionFace;
 
 
 /**

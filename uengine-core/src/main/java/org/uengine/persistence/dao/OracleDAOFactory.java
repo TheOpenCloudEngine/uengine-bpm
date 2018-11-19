@@ -9,9 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import org.uengine.persistence.processinstance.ProcessInstanceDAO;
-import org.uengine.persistence.processinstance.ProcessInstanceRepositoryLocal;
-import org.uengine.persistence.processvariable.ProcessVariableDAO;
 import org.uengine.util.dao.ConnectiveDAO;
 import org.uengine.util.dao.IDAO;
 
@@ -90,20 +87,6 @@ public class OracleDAOFactory extends DAOFactory{
 			KeyGeneratorDAO.class,
 			"select SEQ_BPM_"+ forWhat + ".NextVal as keyNumber from dual"
 		);
-	}
-	
-	public ProcessInstanceDAO createProcessInstanceDAOForArchive() throws Exception{
-		return (ProcessInstanceDAO)create(
-			ProcessInstanceDAO.class,
-			"{call bpm_func_archiveProc (?id)}"
-		);	
-	}
-
-	public ProcessVariableDAO findProcessVariableDAOByInstanceId() throws Exception{
-		return (ProcessVariableDAO)create(
-			ProcessVariableDAO.class,
-			"select * from bpm_procvar where instanceid = ?instanceId"
-		);	
 	}
 
 	public String getDBMSProductName() throws Exception {

@@ -1,20 +1,19 @@
 package org.uengine.persistence;
 
 import org.uengine.persistence.dao.DAOFactory;
-import org.uengine.processmanager.TransactionContext;
-import org.uengine.util.UEngineUtil;
+import org.uengine.processmanager.DefaultTransactionContext;
 
 public class AbstractDAOType implements DAOType{
 	
-	TransactionContext transactionContext;
-		public void setTransactionContext(TransactionContext tc){
+	DefaultTransactionContext transactionContext;
+		public void setTransactionContext(DefaultTransactionContext tc){
 			transactionContext = tc;
 		}
-		public TransactionContext getTransactionContext() {
+		public DefaultTransactionContext getTransactionContext() {
 			return transactionContext;
 		}
 
-	protected static DAOType getInstance(Class clsType, TransactionContext ptc){
+	protected static DAOType getInstance(Class clsType, DefaultTransactionContext ptc){
 		
 		//try own dbms' strategy first. 
 		try {

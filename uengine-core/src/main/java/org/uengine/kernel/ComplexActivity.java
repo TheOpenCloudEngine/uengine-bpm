@@ -1,27 +1,17 @@
 package org.uengine.kernel;
 
 import java.beans.PropertyChangeEvent;
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.ejb.RemoveException;
-
 import org.metaworks.annotation.Hidden;
-import org.metaworks.dwr.MetaworksRemoteService;
-import org.springframework.integration.channel.QueueChannel;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.support.GenericMessage;
 import org.uengine.kernel.bpmn.Pool;
 import org.uengine.processmanager.ProcessManagerFactoryBean;
 import org.uengine.processmanager.ProcessManagerRemote;
 import org.uengine.processmanager.ProcessTransactionContext;
-import org.uengine.processmanager.TransactionContext;
-import org.uengine.queue.workqueue.WorkProcessorBean;
 import org.uengine.util.ActivityForLoop;
 
 /**
@@ -63,7 +53,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 		if(roles != null)
 			//TODO: use hashtable
 			for(int i=0; i<roles.length; i++){
-				if(roles[i].getName().equalsIgnoreCase(roleName)) return roles[i];
+				if(roles[i]!=null && roles[i].getName()!=null && roles[i].getName().equalsIgnoreCase(roleName)) return roles[i];
 			}
 		return null;
 	}
@@ -776,8 +766,7 @@ public class ComplexActivity extends DefaultActivity implements NeedArrangementT
 						else
 							pm = (new ProcessManagerFactoryBean()).getProcessManagerForReadOnly();
 
-						String versionId = pm.getProcessDefinitionProductionVersion(spAct.getDefinitionIdOnly());		
-						ProcessDefinition spDef = ProcessDefinitionFactory.getInstance(ptc).getDefinition(versionId);
+						ProcessDefinition spDef = ProcessDefinitionFactory.getInstance(ptc).getDefinition(spAct.getDefinitionId());
 
 						if(spDef.isInitiateByFirstWorkitem()){
 							ActivityReference actRefReturnedFromSP = spDef.getInitiatorHumanActivityReference(ptc);

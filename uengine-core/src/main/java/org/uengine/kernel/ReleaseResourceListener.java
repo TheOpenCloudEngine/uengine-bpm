@@ -1,7 +1,7 @@
 package org.uengine.kernel;
 
-import org.uengine.processmanager.TransactionContext;
+import org.uengine.processmanager.DefaultTransactionContext;
 
 public interface ReleaseResourceListener {
-	void beforeReleaseResource(TransactionContext tx) throws Exception;
+	void beforeReleaseResource(DefaultTransactionContext tx) throws Exception;
 }

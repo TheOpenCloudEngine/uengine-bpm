@@ -56,22 +56,12 @@ import org.uengine.kernel.RoleMapping;
 import org.uengine.kernel.SubProcessActivity;
 import org.uengine.kernel.UEngineException;
 import org.uengine.persistence.dao.UniqueKeyGenerator;
-import org.uengine.persistence.processdefinition.ProcessDefinitionDAOType;
-import org.uengine.persistence.processdefinition.ProcessDefinitionRepositoryHomeLocal;
-import org.uengine.persistence.processdefinition.ProcessDefinitionRepositoryLocal;
-import org.uengine.persistence.processdefinition.ProductionDefinitionDAO;
-import org.uengine.persistence.processdefinitionversion.ProcessDefinitionVersionRepositoryHomeLocal;
-import org.uengine.persistence.processdefinitionversion.ProcessDefinitionVersionRepositoryLocal;
-import org.uengine.persistence.processinstance.ProcessInstanceRepositoryHomeLocal;
-import org.uengine.persistence.processinstance.ProcessInstanceRepositoryLocal;
 import org.uengine.util.ActivityForLoop;
 import org.uengine.util.FileCopy;
 import org.uengine.util.UEngineUtil;
 import org.uengine.util.ZipEntryMapper;
 import org.uengine.util.dao.ConnectionFactory;
 import org.uengine.util.dao.DefaultConnectionFactory;
-import org.uengine.util.export.DefinitionArchive;
-import org.uengine.util.export.UEngineArchive;
 
 //import au.id.jericho.lib.html.FormField;
 //import au.id.jericho.lib.html.FormFields;
@@ -176,14 +166,14 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 	}
 	//
 
-	transient private ProcessTransactionContext transactionContext;
+	transient private DefaultProcessTransactionContext transactionContext;
 		public ProcessTransactionContext getTransactionContext() {
 			if(transactionContext==null)
-				 transactionContext = new ProcessTransactionContext(this);
+				 transactionContext = new DefaultProcessTransactionContext(this);
 			
 			return transactionContext;
 		}
-		public void setTransactionContext(ProcessTransactionContext transactionContext) {
+		public void setTransactionContext(DefaultProcessTransactionContext transactionContext) {
 			this.transactionContext = transactionContext;
 		}
 
@@ -220,7 +210,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 
 
 	public void ejbCreate() {
-		transactionContext = new ProcessTransactionContext(this);
+		transactionContext = new DefaultProcessTransactionContext(this);
     }
 	
 	protected ProcessInstance getInstance(String instId) throws Exception{
@@ -229,7 +219,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 //System.out.println("instId = " + instId);		
 		
 		if(transactionContext==null)
-			 transactionContext = new ProcessTransactionContext(this);
+			 transactionContext = new DefaultProcessTransactionContext(this);
 		options.put("ptc", transactionContext);
 
 		if(!UEngineUtil.isNotEmpty(instId)){
@@ -260,7 +250,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 			HashMap options = new HashMap();
 			
 			if(transactionContext==null)
-				 transactionContext = new ProcessTransactionContext(this);
+				 transactionContext = new DefaultProcessTransactionContext(this);
 		
 			options.put("ptc", transactionContext);
 			ProcessInstance instance = getDefinition(processDefinition).createInstance(name, options);
@@ -595,506 +585,8 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		}	
 	}	
 	
-	public ProcessDefinitionRemote[] listProcessDefinitionRemotesLight() throws RemoteException{
-		try{
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionVersionRepositoryHomeLocal pdihr = GlobalContext.createProcessDefinitionVersionRepositoryHomeLocal(getTransactionContext());
 
-			Collection definitions = pdhr.findAllProcessDefinitions();
-			
-			Vector processDefinitionRemotes = new Vector();			
-			for(Iterator iter = definitions.iterator(); iter.hasNext();){
-				ProcessDefinitionRepositoryLocal pdrl = ((ProcessDefinitionRepositoryLocal)iter.next());
-				ProcessDefinitionRemote pdr = new ProcessDefinitionRemote();
-				pdr.setId(pdrl.getDefId().toString());
-				pdr.setFolder(pdrl.getIsFolder());
-				pdr.setParentFolder(pdrl.getParentFolder().toString());
-				pdr.setName(TextContext.createInstance());
-				pdr.getName().setText(pdrl.getName());
-				pdr.setBelongingDefinitionId(pdr.getId());
-				pdr.setAlias(pdrl.getAlias());
-				pdr.setVisible(pdrl.getIsVisible());
-				
-				pdr.objType = pdrl.getObjType();
-				
-				if(!org.uengine.util.UEngineUtil.isNotEmpty(pdr.objType)) {
-					pdr.objType = "process";
-				}
 
-				
-				String definitionGroupId = pdr.getBelongingDefinitionId();
-				String objType = pdr.getObjType();
-
-				if(!pdr.isFolder()){
-					int productionVersion = pdrl.getProdVer();
-					//Object[] nameAndVersion = UEngineUtil.getProcessNameAndVersion(pdr.getName());
-					//String name = (String)nameAndVersion[0];
-					
-					Collection versions = pdihr.findAllVersions(new Long(pdr.getId()));
-					for(Iterator iter2 = versions.iterator(); iter2.hasNext();){						
-						ProcessDefinitionVersionRepositoryLocal pdirl = ((ProcessDefinitionVersionRepositoryLocal)iter2.next());
-						
-						pdr = new ProcessDefinitionRemote();
-						pdr.setId(pdirl.getDefVerId().toString());
-						pdr.setFolder(false);
-						pdr.setParentFolder(pdrl.getParentFolder().toString());
-						pdr.setName(TextContext.createInstance());	
-						pdr.getName().setText(pdrl.getName());
-						pdr.setVersion(pdirl.getVer().intValue());
-						pdr.setBelongingDefinitionId(definitionGroupId);
-						pdr.setObjType(objType);
-						pdr.setAlias(pdrl.getAlias());
-						pdr.setVisible(pdrl.getIsVisible());
-						
-						if(pdirl.getVer().intValue() == productionVersion)
-							pdr.setProduction(true);
-
-						processDefinitionRemotes.add(pdr);
-					}					
-				}else
-					processDefinitionRemotes.add(pdr);
-			}
-			
-			ProcessDefinitionRemote pds[] = new ProcessDefinitionRemote[processDefinitionRemotes.size()];
-			processDefinitionRemotes.toArray(pds);
-
-			return pds;
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public ProcessDefinitionRemote[] findAllVersions(String pdid ) throws RemoteException{
-		try{
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionVersionRepositoryHomeLocal pdihr = GlobalContext.createProcessDefinitionVersionRepositoryHomeLocal(getTransactionContext());
-			
-			String productionVersion = "-1";
-			try{
-				productionVersion = getProcessDefinitionProductionVersion(pdid);
-			}catch(RemoteException e){}
-			
-			Vector processDefinitionRemotes = new Vector();
-			ProcessDefinitionRemote pdr = null;
-			
-			if(pdid.startsWith("[")){
-				String definitionAlias = pdid.substring(1, pdid.indexOf("]"));
-				pdid = getProcessDefinitionIdByAlias(definitionAlias);
-			}		
-		
-			Collection versions = pdihr.findAllVersions(new Long(pdid));
-			for(Iterator iter2 = versions.iterator(); iter2.hasNext();){		
-				ProcessDefinitionVersionRepositoryLocal pdirl = ((ProcessDefinitionVersionRepositoryLocal)iter2.next());
-				
-				pdr = new ProcessDefinitionRemote();
-				pdr.setId(pdirl.getDefVerId().toString());
-				pdr.setFolder(false);
-				//pdr.setParentFolder(pdrl.getParentFolder().toString());
-				pdr.setName(TextContext.createInstance());
-				//pdr.getName().setText(pdrl.getName());
-				pdr.setVersion(pdirl.getVer().intValue());
-				pdr.setModifiedDate(pdirl.getModDate());
-				//pdr.setBelongingDefinitionId(definitionGroupId);
-				
-				//if(pdirl.getVer() == productionVersion)
-				if( productionVersion != null && productionVersion.equals(pdirl.getDefVerId().toString())){
-					pdr.setProduction(true);
-				}
-
-				processDefinitionRemotes.add(pdr);
-			}					
-				
-
-			ProcessDefinitionRemote pds[] = new ProcessDefinitionRemote[processDefinitionRemotes.size()];
-			processDefinitionRemotes.toArray(pds);
-
-			return pds;
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-
-	public void setProcessDefinitionProductionVersion(String pdvid) throws RemoteException {
-		log("setProcessDefinitionProductionVersion", new Object[]{pdvid});
-		try {
-			if (pdvid.indexOf("@")>-1) {
-				pdvid = ProcessDefinition.splitDefinitionAndVersionId(pdvid)[1];
-			}
-			
-			ProcessDefinitionVersionRepositoryHomeLocal pdvhr = GlobalContext.createProcessDefinitionVersionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionVersionRepositoryLocal pdvlr = pdvhr.findByPrimaryKey(new Long(pdvid));
-			
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionRepositoryLocal pdlr = pdhr.findByPrimaryKey(pdvlr.getDefId());
-			
-			pdlr.setProdVer(pdvlr.getVer().intValue());
-			pdlr.setProdVerId(new Long(pdvid));
-			
-			if (pdlr.getObjType() == null) {
-				ProcessDefinition definition = getProcessDefinition(pdvid);
-				String shortDescription = definition.getShortDescription().getText();
-				if (shortDescription != null) {
-					pdlr.setDescription(shortDescription);
-				}
-			}
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String getProcessDefinitionProductionVersion(String pdid) throws RemoteException {
-		log("getProcessDefinitionProductionVersion", new Object[]{pdid});
-		try{
-			if(pdid.startsWith("[")){
-				String definitionAlias = pdid.substring(1, pdid.indexOf("]"));
-				return getProcessDefinitionProductionVersionByAlias(definitionAlias);
-			}
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionRepositoryLocal pdlr = pdhr.findByPrimaryKey(new Long(pdid));
-			
-			Long productionVersionId = pdlr.getProdVerId();
-			if(productionVersionId==null || ((Long)productionVersionId).longValue()==-1)
-				throw new RemoteException("ProcessManagerError: There's no production. Make sure you have chosen a version of the process definition as production at least once.");
-							
-			return productionVersionId.toString();
-		} catch(ObjectNotFoundException onfe) {
-			throw new RemoteException("ProcessManagerError: No such processdefinition with id '" + pdid +"'. Please check '"+pdid+"' is a definition id not a definition version id.", onfe);
-		} catch(Exception e) {
-			//e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String getProcessDefinitionProductionVersionByName(String pdName) throws RemoteException{
-		log("getProcessDefinitionProductionVersionByName", new Object[]{pdName});
-		try{
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionRepositoryLocal pdlr = pdhr.findByName(pdName);
-			
-			if(pdlr==null) 
-				throw new RemoteException("ProcessManagerError: There's no such process definition named '" + pdName + "'");
-			
-			Long productionVersionId = pdlr.getProdVerId();
-			if(productionVersionId==null || ((Long)productionVersionId).longValue()==-1)
-				throw new RemoteException("ProcessManagerError: There's no production. Make sure you have chosen a version of the process definition as production at least once.");
-							
-			return productionVersionId.toString();
-		}catch(ObjectNotFoundException onfe){
-			UEngineException ue = new UEngineException("No such processdefinition with name '" + pdName +"'.", onfe);
-			throw new RemoteException("ProcessManagerError:" + ue.getMessage(), ue);
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String getProcessDefinitionProductionVersionByAlias(String alias) throws RemoteException{
-		log("getProcessDefinitionProductionVersionByAlias", new Object[]{alias});
-		try{
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionRepositoryLocal pdlr = pdhr.findByAlias(alias);
-			
-			if(pdlr==null) 
-				throw new RemoteException("ProcessManagerError: There's no such process definition aliased '" + alias + "'");
-			
-			Long productionVersionId = pdlr.getProdVerId();
-			if(productionVersionId==null || ((Long)productionVersionId).longValue()==-1)
-				throw new RemoteException("ProcessManagerError: There's no production. Make sure you have chosen a version of the process definition as production at least once.");
-							
-			return productionVersionId.toString();
-		}catch(ObjectNotFoundException onfe){
-			UEngineException ue = new UEngineException("No such processdefinition with alias '" + alias +"'.", onfe);
-			throw new RemoteException("ProcessManagerError:" + ue.getMessage(), ue);
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String getProcessDefinitionIdByAlias(String alias) throws RemoteException{
-		log("getProcessDefinitionIdByAlias", new Object[]{alias});
-		try{
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionRepositoryLocal pdlr = pdhr.findByAlias(alias);
-			
-			return pdlr.getDefId().toString();
-		}catch(ObjectNotFoundException onfe){
-			UEngineException ue = new UEngineException("No such processdefinition with alias '" + alias +"'.", onfe);
-			throw new RemoteException("ProcessManagerError:" + ue.getMessage(), ue);
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public ProcessInstanceRemote[] listProcessInstanceRemotes() throws RemoteException{
-//		log("listProcessInstanceRemotes", new Object[]{});
-		return listProcessInstanceRemotes(null, null);
-	}
-
-	public ProcessInstanceRemote[] listProcessInstanceRemotes(String definition) throws RemoteException{
-//		log("listProcessInstanceRemotes", new Object[]{definition});
-		return listProcessInstanceRemotes(definition, null);
-	}
-	
-	public ProcessInstanceRemote[] listProcessInstanceRemotes(String definition, String status) throws RemoteException{
-		log("listProcessInstanceRemotes", new Object[]{definition, status});
-		try{
-			ProcessInstanceRepositoryHomeLocal pihr = GlobalContext.createProcessInstanceRepositoryHomeLocal();
-
-			Collection instances;
-			
-			if(definition!=null){
-				if(status!=null)
-					instances = pihr.findByDefinitionAndStatus(new Long(definition), status);
-				else
-					instances = pihr.findByDefinition(new Long(definition));
-			}else{
-//				if(status==null)
-					instances = pihr.findAllProcessInstances();
-/*				else
-					instances = pihr.findByStatus(status);*/
-			}
-				
-			ProcessInstanceRemote[] pirs = new ProcessInstanceRemote[instances.size()];
-				
-			int i=0;
-			for(Iterator iter = instances.iterator(); iter.hasNext();){
-				ProcessInstanceRepositoryLocal pirl = (ProcessInstanceRepositoryLocal)iter.next();
-				pirs[i] = new ProcessInstanceRemote(pirl);				
-				i++;
-			}
-			
-			return pirs; 
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public ProcessInstanceRemote[] listProcessArchiveRemotes() throws RemoteException{
-		log("listProcessArchiveRemotes", new Object[]{});
-		try{
-			ProcessInstanceRepositoryHomeLocal pihr = GlobalContext.createProcessInstanceRepositoryHomeLocal();
-			Collection instances = pihr.findAllProcessArchives();
-				
-			ProcessInstanceRemote[] pirs = new ProcessInstanceRemote[instances.size()];
-				
-			int i=0;
-			for(Iterator iter = instances.iterator(); iter.hasNext();){
-				ProcessInstanceRepositoryLocal pirl = (ProcessInstanceRepositoryLocal)iter.next();
-				pirs[i] = new ProcessInstanceRemote(pirl);
-				/*pirs[i].setId(pirl.getId().toString());
-				pirs[i].setStatus(pirl.getStatus());*/
-				i++;
-			}
-			
-			return pirs; 
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-
-/*	public String[] listProcessInstanceIds() throws RemoteException{
-		try{
-			return ActivityInstance.getInstanceIds();
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String[] listProcessInstanceIds(String definitionName) throws RemoteException{
-		try{
-			return ActivityInstance.getInstanceIds(definitionName);
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}*/
-
-	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String belongingPdid, String alias) throws RemoteException{
-		log("addProcessDefinition", new Object[]{name, new Integer(version), description, new Boolean(isAdhoc), strDef, folder, belongingPdid});
-		try{	
-			HashMap options = new HashMap();
-			if(alias!=null)
-				options.put("alias", alias);
-			
-			String[] defVerIdAndDefId = ProcessDefinitionFactory.getInstance(getTransactionContext()).addDefinitionImpl(belongingPdid, null, version, name, description, isAdhoc, strDef, folder, false, options);
-			return defVerIdAndDefId[1] + "@" + defVerIdAndDefId[0];
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String belongingPdid, String alias, String objectType) throws RemoteException{
-		log("addProcessDefinition", new Object[]{name, new Integer(version), description, new Boolean(isAdhoc), strDef, folder, belongingPdid});
-		try{		
-			HashMap options = new HashMap();
-			if(objectType!=null)
-				options.put("objectType", objectType);
-			if(alias!=null)
-				options.put("alias", alias);
-			
-			String[] defVerIdAndDefId = ProcessDefinitionFactory.getInstance(getTransactionContext()).addDefinitionImpl(belongingPdid, null, version, name, description, isAdhoc, strDef, folder, false, options);
-			return defVerIdAndDefId[1] + "@" + defVerIdAndDefId[0];
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, String strDef, String folder, String belongingPdid, String objectType, String alias, String superDefId) throws RemoteException{
-		log("addProcessDefinition", new Object[]{name, new Integer(version), description, new Boolean(isAdhoc), strDef, folder, belongingPdid});
-		try{	
-			HashMap options = new HashMap();
-			if(objectType!=null)
-				options.put("objectType", objectType);
-			if(alias!=null)
-				options.put("alias", alias);
-			if(superDefId != null)
-				options.put("superDefId", superDefId);
-			
-			String[] defVerIdAndDefId = ProcessDefinitionFactory.getInstance(getTransactionContext()).addDefinitionImpl(belongingPdid, null, version, name, description, isAdhoc, strDef, folder, false, options);
-			return defVerIdAndDefId[1] + "@" + defVerIdAndDefId[0];
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String addProcessDefinition(String name, int version, String description, boolean isAdhoc, ProcessDefinition processDefinition, String folder, String belongingPdid) throws RemoteException{
-		log("addProcessDefinition", new Object[]{name, new Integer(version), description, new Boolean(isAdhoc), processDefinition, folder, belongingPdid});
-		try{
-			String[] defVerIdAndDefId = ProcessDefinitionFactory.getInstance(getTransactionContext()).addDefinitionImpl(belongingPdid, null, version, name, description, isAdhoc, processDefinition, folder, false, null);
-			return defVerIdAndDefId[1] + "@" + defVerIdAndDefId[0];
- 		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String addFolder(String folderName, String parentFolder) throws RemoteException{
-		log("addFolder", new Object[]{folderName, parentFolder});
-		try{
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			
-			//if there is no parent folder, this will occur an exception to break this try~catch block
-			if(parentFolder!=null && !parentFolder.equals("-1")){
-				pdhr.findByPrimaryKey(new Long(parentFolder));
-			}
-			if(!UEngineUtil.isNotEmpty(parentFolder)){
-				parentFolder = "-1";
-			}
-			
-			ProcessDefinitionRepositoryLocal pdr = null;
-			
-			try {
-				pdr = pdhr.findByNameSameLevel(folderName, new Long(parentFolder), "folder");
-			} catch (Exception e) {
-				pdr = pdhr.create(UniqueKeyGenerator.issueProcessDefinitionKey(getTransactionContext()));
-				pdr.setName(folderName);
-				pdr.setParentFolder(new Long(parentFolder));
-				pdr.setIsFolder(true);
-				pdr.setObjType("folder");
-			}
-			
-			return ""+pdr.getDefId();
-		}catch(Exception e){
-			e.printStackTrace();			
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public void moveFolder(String pdid, String parentFolder) throws RemoteException{
-		log("moveFolder", new Object[]{pdid, parentFolder});
-		try{
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());			
-			ProcessDefinitionRepositoryLocal pdr = pdhr.findByPrimaryKey(new Long(pdid));
-			
-			//if there is no parent folder, this will occur an exception to break this try~catch block
-			if(parentFolder!=null && !parentFolder.equals("-1")){
-				pdhr.findByPrimaryKey(new Long(parentFolder));
-			}
-			if(!UEngineUtil.isNotEmpty(parentFolder)){
-				parentFolder = "-1";
-			}
-			
-			pdr.setParentFolder(new Long(parentFolder));
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public void setVisibleProcessDefinition(String pdid, boolean isVisible) throws RemoteException{
-		log("setHiddenProcessDefinition", new Object[]{pdid, new Boolean(isVisible)});
-		try{
-			
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());			
-			ProcessDefinitionRepositoryLocal pdr = pdhr.findByPrimaryKey(new Long(pdid));
-
-			pdr.setIsVisible(isVisible);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public void renameProcessDefinition(String pdid, String newName) throws RemoteException{
-		log("renameProcessDefinition", new Object[]{pdid, newName});
-		try{
-			ProcessTransactionContext tc = getTransactionContext();
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(tc);			
-			ProcessDefinitionRepositoryLocal pdr = pdhr.findByPrimaryKey(new Long(pdid));
-			pdr.setName(newName);
-			
-			if (pdr.getProdVerId() != null) {
-				//2011.1.11 add by yookjy
-				//rename upd 
-				String pdvid = String.valueOf(pdr.getProdVerId());
-				ProcessDefinitionFactory pdf = ProcessDefinitionFactory.getInstance(getTransactionContext());
-				ProcessDefinition pd = pdf.getDefinition(pdvid);
-				pd.setName(newName);
-	
-				//rename process definition version
-				ProcessDefinitionVersionRepositoryHomeLocal pdvhr = GlobalContext.createProcessDefinitionVersionRepositoryHomeLocal(tc);		
-				ProcessDefinitionVersionRepositoryLocal pdvr = pdvhr.findByPrimaryKey(new Long(pdvid));
-				pdvr.setDefName(newName);
-						
-				//restore upd file
-				String path = null;
-				String def = (String)pdvr.getFilePath();
-				if(def.startsWith("LINK:")){
-					path = def.substring("LINK:".length());
-				}
-				pdf.storeProcessDefinition(path, pd);
-				
-				//restore cached file
-				pdf.compileDefinition(DEFINITION_ROOT + path, pd);		
-				
-				//remove cache
-				pdf.removeFromCache(pdvid);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
 	//2011.02.28 modified by yookjy 
 	public Serializable getActivityProperty(String processDefinition, String tracingTag, String propertyName) throws RemoteException{
 		log("getActivityProperty", new Object[]{processDefinition, tracingTag, propertyName});
@@ -1159,42 +651,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		}
 	}
 	
-	public String viewProcessDefinitionFlowChart(String processDefinition, Map options) throws RemoteException{
-		log("viewProcessDefinitionFlowChart", new Object[]{processDefinition, options});
-		try{
-			ProcessDefinition definition = getDefinition(processDefinition);
-			ProcessInstance instance = new DefaultProcessInstance();
-			instance.setProcessTransactionContext(getTransactionContext());
-			return null;
-			//return ProcessDefinitionViewer.getInstance().render(getDefinition(processDefinition), null, options).toString();
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public String viewProcessInstanceFlowChart(String instanceId, Map options) throws RemoteException{
-		logInst("viewProcessInstanceFlowChart", new Object[]{instanceId, options});
-		try{
-			if(instanceId == null) return "";
-				//throw new RemoteException("ProcessManagerError: null process instance id");
-			
-			ProcessInstance instance = getInstance(instanceId);
-			ProcessDefinition definition = instance.getProcessDefinition();
-			
-			//for performance and synchronized view - we don't need to create snapshot by the implementation of caching logic.
-			ProcessInstance shotCopy = instance;//instance.createSnapshot();
-			instance.setProcessDefinition(definition);
-			//
-			return null;
-			
-			//return ProcessDefinitionViewer.getInstance().render(definition, shotCopy, options).toString();
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
+
 	public Hashtable getActivityInstanceDetails(String instanceId, String tracingTag) throws RemoteException{
 		logInst("getActivityInstanceDetails", new Object[]{instanceId, tracingTag});
 		try{
@@ -1386,22 +843,6 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 	public String getProcessDefinition(String processDefinition, String encodingStyle) throws RemoteException{
 		return getProcessDefinition(processDefinition, encodingStyle, false);
 	}
-	
-	public String getResource(String resourceId) throws RemoteException{
-		log("getResource", new Object[]{resourceId});
-		try{
-			InputStream ris = ProcessDefinitionFactory.getInstance(getTransactionContext()).getResourceStream(resourceId);
-			
-			ByteArrayOutputStream bao = new ByteArrayOutputStream();
-			
-			UEngineUtil.copyStream(ris, bao);
-			
-			return bao.toString(GlobalContext.DATABASE_ENCODING/*"ISO-8859-1"*/);
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
 
 	/**
 	 * This method is costly to call. Use getProcessDefinitionRemote() instead if full data is not neccessary.
@@ -1440,102 +881,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 	public String getProcessDefinitionWithInstanceId(String instanceId, String encodingStyle) throws RemoteException{
 		return getProcessDefinitionWithInstanceId(instanceId, encodingStyle, false);
 	}
-	
-	public ProcessDefinitionRemote getProcessDefinitionRemote(String pdvid) throws RemoteException{
-		try{
-			ProcessDefinitionVersionRepositoryHomeLocal pdvrhl = GlobalContext.createProcessDefinitionVersionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionVersionRepositoryLocal pdvrl = pdvrhl.findByPrimaryKey(new Long(pdvid));
-			
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionRepositoryLocal pdl = pdhr.findByPrimaryKey(pdvrl.getDefId());
-			int productionVersion = pdl.getProdVer();
-			
-			ProcessDefinitionRemote pdr =null;
-			
-			try{
-				ProcessDefinition pd = getDefinition(pdvid);
-				if(pd !=null && pd instanceof ProcessDefinition){
-					pdr = new ProcessDefinitionRemote(pd, getTransactionContext(), pdvrl);
-					
-					if(pdl.getObjType() != null){
-						pdr.setObjType(pdl.getObjType());
-					}
-				}
-			}catch (Exception e) {
-				pdr = new ProcessDefinitionRemote(pdl, pdvrl);
-			}
-			
-			
-//			ProcessDefinitionRemote pdr = new ProcessDefinitionRemote(getDefinition(pdvid), getTransactionContext());
-			//TODO: Method 'getProcessDefinitionRemoteWithInstanceId' also need such correction
-			//pdr.setName(TextContext.createInstance());
-			//pdr.getName().setText(pdl.getName());
-			//pdr.setBelongingDefinitionId(pdl.getId().toString());
-			
-			if(pdvrl.getVer().intValue() == productionVersion)
-				pdr.setProduction(true);
-			else{
-				pdr.setProduction(false);
-			}
-			
-			return pdr;
-		}catch(Exception e){
-			//e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public ProcessDefinitionRemote getProcessDefinitionRemoteByDefinitionId(String defId) throws RemoteException{
-		try{
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			ProcessDefinitionRepositoryLocal pdrl = pdhr.findByPrimaryKey(new Long(defId));
-			ProcessDefinitionRemote pdr = new ProcessDefinitionRemote(pdrl, null);
 
-			return pdr;
-
-		}catch(Exception e){
-			//e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-		
-	}
-
-	public ProcessDefinitionRemote getProcessDefinitionRemoteWithInstanceId(String instanceId) throws RemoteException{
-		try{
-			//TODO: sometimes there are illegal invocations from web server. 
-			if(instanceId==null) return null;
-			
-			ProcessInstance instance = getInstance(instanceId);
-			ProcessDefinition definition = instance.getProcessDefinition();
-			
-			if(definition==null)
-				throw new UEngineException("Can't find definition for this instance. Check if the definition file exists.");
-				
-			return new ProcessDefinitionRemote(definition, getTransactionContext());
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public ProcessDefinition getProcessDefinitionWithInstanceId(String instanceId) throws RemoteException{
-		logInst("getProcessDefinitionWithInstanceId", new Object[]{instanceId});
-		try{
-			//ProcessInstanceRepositoryLocal pil = GlobalContext.createProcessInstanceRepositoryHomeLocal().findByPrimaryKey(new Long(instanceId));
-			
-			ProcessInstance instance = getInstance(instanceId);
-			ProcessDefinition orginial = instance.getProcessDefinition();
-			
-			//ProcessDefinition orginial = getProcessDefinition(""+pil.getDefVerId());
-				
-			//Some EJB containers doesn't carry out serialization for object passing (especially in case that the caller is in the same VM).
-			// So, it is required to make a copy so that the original object cannot be modified.
-			return (ProcessDefinition)orginial.clone();
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
 	
 	public void flowControl(String command, String instanceId, String tracingTag) throws RemoteException{
 		logInst("flowControl", new Object[]{command, instanceId, tracingTag});
@@ -1554,13 +900,13 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		logInst("removeProcessInstance", new Object[]{instanceId});
 		try{
 			ProcessInstance instance = getInstance(instanceId);
-			instance.remove();		
+			instance.remove();
 		}catch(Exception e){
 			e.printStackTrace();
 			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
 		}
 	}
-	
+
 	public ProcessInstance getProcessInstance(String instanceId) throws RemoteException{
 
 		Object[] instanceIdAndExecutionScope = AbstractProcessInstance.parseInstanceIdAndExecutionScope(instanceId);
@@ -1717,44 +1063,6 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 
 	}
 
-	public void removeProcessDefinition(String processDefinition) throws RemoteException{
-		log("removeProcessDefinition", new Object[]{processDefinition});
-		try{
-			//Check there is referencing instance
-			ProcessInstanceRepositoryHomeLocal pihr = GlobalContext.createProcessInstanceRepositoryHomeLocal();
-			//if there is any of instance of this folder, this definition can't be removed
-			Collection pis = pihr.findByDefinition(new Long(processDefinition));
-			if(pis.iterator().hasNext())
-				throw new UEngineException("This definition has instances");
-
-			ProcessDefinitionFactory.getInstance(getTransactionContext()).removeDefinition(processDefinition);			
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
-	public void removeFolder(String folderId) throws RemoteException{
-		log("removeFolder", new Object[]{folderId});
-
-		try{
-			//Check there is child
-			ProcessDefinitionRepositoryHomeLocal pdhr = GlobalContext.createProcessDefinitionRepositoryHomeLocal(getTransactionContext());
-			//if there is child of this folder, this folder can't be removed
-			Collection childs = pdhr.findByFolder(new Long(folderId));
-			if(childs.iterator().hasNext())
-				throw new UEngineException("This folder is not empty");
-					
-			ProcessDefinitionRepositoryLocal pdr = pdhr.findByPrimaryKey(new Long(folderId));
-
-			pdr.setIsDeleted(true);
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-
-
 	
 //----- standard handlers -----------
    public void ejbRemove ()
@@ -1790,11 +1098,6 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 
 	private ProcessDefinition getDefinition(String pdvid, boolean withoutInheritance) throws Exception{
 		
-		if(pdvid.startsWith("[")){
-			String definitionAlias = pdvid.substring(1, pdvid.indexOf("]"));
-			pdvid = getProcessDefinitionProductionVersionByAlias(definitionAlias);
-		}		
-		
 		ProcessDefinition pd = ProcessDefinitionFactory.getInstance(getTransactionContext()).getDefinition(pdvid, true, withoutInheritance);
 		
 /*		if(pd.isAdhoc())
@@ -1807,38 +1110,6 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		return getDefinition(pdvid, false);
 	}
 
-	public void changeProcessDefinition(String instanceId, String definition) throws RemoteException{
-		logInst("changeProcessDefinition", new Object[]{instanceId, definition});
-		changeProcessDefinitionImpl(instanceId, definition);
-	}
-	public void changeProcessDefinition(String instanceId, ProcessDefinition definition) throws RemoteException{
-		logInst("changeProcessDefinition", new Object[]{instanceId, definition});
-		changeProcessDefinitionImpl(instanceId, definition);
-	}
-
-
-	private void changeProcessDefinitionImpl(String instanceId, Object definition) throws RemoteException{
-		try{
-			ProcessInstance instance = getInstance(instanceId);
-			
-			ProcessDefinition processDefinition = null;
-			if(definition instanceof String){
-				ByteArrayInputStream is = new ByteArrayInputStream(((String)definition).getBytes("UTF-8"));
-				processDefinition = (ProcessDefinition) ProcessDefinitionFactory.getActivity(is);
-			}else{
-				processDefinition = (ProcessDefinition)definition;
-			}
-	
-			if(processDefinition==instance.getProcessDefinition()) 
-				throw new UEngineException("Dynamic change exception: Changed definition is the original one so it can't be changed. That means your code didn't clone the definition for changing it. Also It implies the damage of cached definition.");
-			
-			instance.setProcessDefinition(processDefinition);
-
-		}catch(Exception e){
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-	}
-	
 //	private void changeProcessDefinitionImpl(String instanceId, Object definition) throws RemoteException{
 //		try{
 //			//verify whether the instance flow has been changed and the changed definition is inconsistence with instance changes.
@@ -1902,33 +1173,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
 		}
 	}
-	
-	public String getProductionVersionIdAtThatTime(String defId, Date thatTime) throws RemoteException {
-		ProcessDefinitionDAOType procDefDF = ProcessDefinitionDAOType.getInstance(null);
-		ProductionDefinitionDAO productionDefDAO;
-		
-		try {
-			productionDefDAO = procDefDF.getProductionDefinitionAtThatTime(Long.parseLong(defId), thatTime);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-		
-		return productionDefDAO.getDefVerId().toString();
-	}
-	
-	public String getFirstProductionVersionId(String defId) throws RemoteException {
-		try{
-			ProcessDefinitionDAOType procDefDF = ProcessDefinitionDAOType.getInstance(getTransactionContext());
-			ProductionDefinitionDAO productionDefDAO = procDefDF.getFirstProductionDefinition(Long.parseLong(defId));
-			return productionDefDAO.getDefVerId().toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
-		}
-		
-	}
-	
+
 	  protected Connection getConnection () throws SQLException
 	   {
 		  //return null;
@@ -1953,7 +1198,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 		try{
 			if(transactionContext==null) return;
 			transactionContext.commit(); //means one unit transaction
-			//transactionContext = new TransactionContext(this);
+			//transactionContext = new DefaultTransactionContext(this);
 			//System.out.println("!!! pm.applyChanges() !!!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1968,7 +1213,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 			if(transactionContext==null) return;
 			
 			transactionContext.rollback(); //means one unit transaction
-			transactionContext = new ProcessTransactionContext(this);
+			transactionContext = new DefaultProcessTransactionContext(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
@@ -2164,7 +1409,7 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 				try{
 					if(act instanceof SubProcessActivity){
 						SubProcessActivity spAct = (SubProcessActivity)act;
-						String defVerId = spAct.getDefinitionVersionId("",null);
+						String defVerId = spAct.getDefinitionId();
 						definitions.add(defVerId);
 						
 						pmb.getSubDefinitionsDeeply(pmb.getDefinition(defVerId));
@@ -2347,122 +1592,8 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 //			throw new RemoteException("ProcessManagerError:"+e.getMessage(), e);
 //		}
 //	}
-	
-
-		
-	private Hashtable setDefinitionsForExport(String processDefinition, 
-			                                  ProcessDefinitionRemote[] pdrs, 
-			                                  String parentDirectory, 
-			                                  Hashtable options, 
-			                                  boolean ExportAllVersion) throws Exception {
-		for (int i=0; i<pdrs.length; i++) {
-			ProcessDefinitionRemote pdr = pdrs[i];
-			
-			if(!pdr.getParentFolder().equals(processDefinition)) continue;
-			
-			UEngineArchive ua = (UEngineArchive)options.get(UEngineArchive.UENGINE_ARCHIVE);
-			
-			if (pdr.isFolder()) { //folder
-				ua.setDefinitionList(pdr.getName().getText(), "", pdr.getBelongingDefinitionId(), String.valueOf(pdr.getVersion()), ZipEntryMapper.TYPE_FOLDER, pdr.getName().getText(), "", pdr.getParentFolder(), pdr.getId(), false);
-				options.put(UEngineArchive.UENGINE_ARCHIVE, (UEngineArchive)ua);
-				String temp = parentDirectory;
-				parentDirectory = parentDirectory + pdr.getName() + File.separatorChar;
-				File f = new File( TEMP_DIRECTORY + parentDirectory );
-				f.mkdirs();
-
-				setDefinitionsForExport(pdr.getId(), pdrs, parentDirectory, options, ExportAllVersion);
-				
-				parentDirectory = temp;
-			} else if (pdr.isProduction() ) { //process or form
-				ua.setDefinitionList(pdr.getName().getText(), pdr.getAlias(), pdr.getBelongingDefinitionId(), String.valueOf(pdr.getVersion()), pdr.getObjType(), pdr.getName().getText()+ZipEntryMapper.ENTRY_SEPARATOR+pdr.getAlias()+ZipEntryMapper.ENTRY_SEPARATOR+pdr.getId()+ZipEntryMapper.ENTRY_SEPARATOR+pdr.getObjType(), pdr.getDescription() == null ? "" : pdr.getDescription().getText(), pdr.getParentFolder(), pdr.getId(), false);
-				options.put(UEngineArchive.UENGINE_ARCHIVE, (UEngineArchive)ua);
-				getFilePathNFileCopy(pdr, parentDirectory);
-				
-				if (pdr.getObjType().equals("process")) {
-					//sub process
-					try {
-						Vector tempSubDefinition = getSubDefinitionsDeeply(getProcessDefinition(pdr.getId()));
-						Hashtable subDefinition = (Hashtable)options.get(UEngineArchive.SUB_PROC);
-						for (int z=0; z<tempSubDefinition.size(); z++ ) {
-							String tempDefId = (String)tempSubDefinition.get(z);
-							if(!subDefinition.containsKey(tempDefId))
-								subDefinition.put(tempDefId,tempDefId);
-						}
-						options.put(UEngineArchive.SUB_PROC, subDefinition);
-					} catch (Exception re) {
-						System.out.println("setDefinitionsForExport(process) : " +  pdr.getId());
-						_DUMMY_LIST_.add(pdr.getId()+ "(" + pdr.getName() + "," + pdr.getObjType() + "," + pdr.getAlias() + ") ");
-					}
-				}
-			}
-		}
-		
-		return options;
-	}
-		
-	private Hashtable setSubProcessesForExport(String rootDirectory, Hashtable options) throws Exception  {
-		
-		UEngineArchive ua = (UEngineArchive)options.get(UEngineArchive.UENGINE_ARCHIVE);
-		Hashtable subDefinition = (Hashtable)options.get(UEngineArchive.SUB_PROC);
-		
-		Enumeration keys = subDefinition.keys();
-		while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
-			String subDefVerId = (String) subDefinition.get(key);
-			
-			ProcessDefinitionRemote pdr = getProcessDefinitionRemote(subDefVerId);
-			pdr.setObjType("process");
-			
-			if ( !ua.containKeys(pdr.getBelongingDefinitionId())) {
-	            //_SubProc folder create
-				ua.setDefinitionList("_SubProc","", "_SubProc", "", ZipEntryMapper.TYPE_FOLDER ,"_SubProc" ,"", ua.getMainProcessDefinition().getBelongingId(), "", false);
-				
-				//add sub-process
-				String fileName = ZipEntryMapper.ENTRY_SEPARATOR+pdr.getName().getText()+ZipEntryMapper.ENTRY_SEPARATOR+pdr.getAlias()+ZipEntryMapper.ENTRY_SEPARATOR+pdr.getId()+ZipEntryMapper.ENTRY_SEPARATOR+pdr.getObjType();
-				String desc = pdr.getDescription() == null ? "" : pdr.getDescription().getText();
-				ua.setDefinitionList(pdr.getName().getText(), pdr.getAlias(), pdr.getBelongingDefinitionId(), String.valueOf(pdr.getVersion()), pdr.getObjType(),fileName ,desc, "_SubProc" , pdr.getId(), false);
-				
-				getFilePathNFileCopy(pdr, rootDirectory + File.separatorChar + "_SubProc" + File.separatorChar, false);
-			}
-		}
-			
-		options.put(UEngineArchive.UENGINE_ARCHIVE, (UEngineArchive)ua);
-		
-		return options;
-	}
-	
-	private void getFilePathNFileCopy(ProcessDefinitionRemote pdr, String parentDirectory) throws Exception {
-		getFilePathNFileCopy(pdr, parentDirectory, false);
-	}
-	
-	private void getFilePathNFileCopy(ProcessDefinitionRemote pdr, String parentDirectory, boolean isSub) throws Exception {
-		ProcessManagerBean pmb = this;
-		ProcessTransactionContext tc = pmb.getTransactionContext();
-		ProcessDefinitionVersionRepositoryHomeLocal pdvhr = GlobalContext.createProcessDefinitionVersionRepositoryHomeLocal(tc);
-		ProcessDefinitionVersionRepositoryLocal pdvr;
-
-		pdvr = pdvhr.findByPrimaryKey(new Long(pdr.getId()));
-		String def = (String) pdvr.getFilePath();
-		if (def.startsWith("LINK:")) {
-			File f = new File(TEMP_DIRECTORY + parentDirectory);
-			if (!f.exists())
-				f.mkdirs();
-			String resourceLocation = def.substring("LINK:".length());
-			String filePath = null;
-			if (isSub == false) {
-				filePath = TEMP_DIRECTORY + parentDirectory + (pdr.getName().getText() + ZipEntryMapper.ENTRY_SEPARATOR + pdr.getAlias() 
-						+ ZipEntryMapper.ENTRY_SEPARATOR + pdr.getId() + ZipEntryMapper.ENTRY_SEPARATOR + pdr.getObjType());
-			} else if (isSub == true) {
-				filePath = TEMP_DIRECTORY + parentDirectory + ("sub" + ZipEntryMapper.ENTRY_SEPARATOR + pdr.getName().getText() 
-						+ ZipEntryMapper.ENTRY_SEPARATOR + pdr.getAlias() + ZipEntryMapper.ENTRY_SEPARATOR + pdr.getId() 
-						+ ZipEntryMapper.ENTRY_SEPARATOR + pdr.getObjType());
-			}
-			FileCopy fc = new FileCopy(DEFINITION_ROOT + resourceLocation, filePath);
-			fc.start();
-		}
-	}
-	
-//	public Hashtable importProcessAliasCheck(InputStream is) throws Exception {
+//
+// 	public Hashtable importProcessAliasCheck(InputStream is) throws Exception {
 //		Hashtable result = new Hashtable();
 //
 //		Hashtable inputStreamList = expandFiles(is);
@@ -2534,135 +1665,6 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 //		}
 //	}
 
-	private void importFolder(String newRootFolderId,
-			                  String oldRootFolderId, 
-			                  UEngineArchive ua,
-			                  UEngineArchive edited_ua, 
-			                  Hashtable newDefIdList) throws Exception {
-				
-		for (int i = 0; i < ua.getDefinitionList().size(); i++) {
-			DefinitionArchive da = (DefinitionArchive) ua.getDefinitionList().get(i);
-			DefinitionArchive fixedDa = (DefinitionArchive) edited_ua.getDefinitionList().get(i);
-
-			if (da.isRoot() == false && da.getObjectType().equals("folder") && da.getParentFolder().equals(oldRootFolderId)) {
-				String newFolderId = addFolder(fixedDa.getName(), newRootFolderId);
-			
-				newDefIdList.put(da.getBelongingId(),newFolderId);
-				
-				importFolder(newFolderId, da.getBelongingId(), ua,edited_ua,newDefIdList);
-			}
-		}
-	}
-	
-	private void importDefinitions(Hashtable inputStreamList,
-            					   String[] command ,
-            					   UEngineArchive ua,
-			                       UEngineArchive edited_ua, 
-			                       Hashtable newDefIdList,
-			                       Hashtable newDefVerIdList,
-			                       Hashtable newAliasList) throws Exception {
-
-		for (int i = 0; i < ua.getDefinitionList().size(); i++) {
-			DefinitionArchive da = (DefinitionArchive) ua.getDefinitionList().get(i);
-			DefinitionArchive fixedDa = (DefinitionArchive) edited_ua.getDefinitionList().get(i);
-			String[] deployedDefinitionInformation = null;
-
-			if (!da.isRoot()&& fixedDa.getArchiveFileName().equals(da.getArchiveFileName()) && !"folder".equals(da.getObjectType())) {
-				
-				String key = da.getName() + "." + da.getAlias() + "." + da.getId() + "." + da.getObjectType();
-				String definitionDoc = (String) inputStreamList.get(key);
-
-				if (definitionDoc != null) {
-					Map objectOptions = new HashMap();
-					objectOptions.put("alias", fixedDa.getAlias());
-					objectOptions.put("objectType", da.getObjectType());
-					
-					if ("new".equals(command[i])) {
-						String parentFolder = (String) newDefIdList.get(da.getParentFolder());
-	
-						deployedDefinitionInformation = ProcessDefinitionFactory.getInstance(getTransactionContext()).addDefinitionImpl(
-								null, null, 1, fixedDa.getName(), null, false, definitionDoc, parentFolder, false, objectOptions);
-						
-					} else if ("update".equals(command[i])) {
-						String parentFolder = null;
-						ProcessDefinitionRemote[] pdrs = listProcessDefinitionRemotesLight();
-						for (int j = 0; j < pdrs.length; j++) {
-							ProcessDefinitionRemote tempPdr = pdrs[i];
-							if ((!tempPdr.isFolder) && ((tempPdr.getAlias()).equals(fixedDa.getAlias())) && (fixedDa.getAlias() != null && !fixedDa.getAlias().equals(""))) {
-								parentFolder = tempPdr.getParentFolder();
-							}
-						}
-
-						String pdId = getProcessDefinitionIdByAlias(fixedDa.getAlias());
-						ProcessDefinitionRemote[] findLastVersion = findAllVersions(pdId);
-						
-						int versionId = 0;
-						for (int j = 0; j < findLastVersion.length; j++) {
-							int compareVersionId = findLastVersion[j].getVersion();
-							if (versionId < compareVersionId) {
-								versionId = compareVersionId;
-							}
-						}
-
-						deployedDefinitionInformation = ProcessDefinitionFactory.getInstance(getTransactionContext()).addDefinitionImpl(
-								pdId, null, versionId+1, fixedDa.getName(), null, false, definitionDoc, parentFolder, false, objectOptions);
-					}
-					
-					String pdvId = deployedDefinitionInformation[0];
-					newDefIdList.put(da.getBelongingId(),deployedDefinitionInformation[1]);
-					newDefVerIdList.put(da.getId(),pdvId);
-					newAliasList.put(da.getAlias(), fixedDa.getAlias());
-					
-					setProcessDefinitionProductionVersion(pdvId);
-
-				}
-			}
-		}
-	}
-	
-
-	
-	private void replaceMacro(String HTML_PATH) throws Exception {
-		File htmlFile = new File(HTML_PATH);
-		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(htmlFile), "UTF-8"));
-		StringBuffer daoHeader = new StringBuffer();
-		StringBuffer contents = new StringBuffer();
-		String line = "";
-
-		while ((line = in.readLine()) != null) {
-			if (line.indexOf("<form") > -1) {
-				line = deleteTag(line, "<form");
-			}
-			if (line.indexOf("</form>") > -1) {
-				line = deleteTag(line, "</form>");
-			}
-			contents.append(line);
-			contents.append("\r\n");
-		}
-		UEngineUtil.saveContents(htmlFile.getAbsolutePath(), daoHeader.toString() + contents.toString());
-	}
-	
-	private String deleteTag(String src, String key) throws Exception {
-		String retHtml = "";
-
-		int beg = 0;
-		int end = 0;
-		int keysize = key.length();
-		boolean bcontinue = true;
-
-		if (key.equals("<form")) {
-			end = src.indexOf(key);
-			retHtml = src.substring(beg, end);
-			beg = src.indexOf(">", end) + 1;
-			retHtml = " " + retHtml + " " + src.substring(beg);
-		} else if (key.equals("</form>")) {
-			end = src.indexOf(key);
-			retHtml = src.substring(beg, end);
-			retHtml = " " + retHtml + src.substring(end + 7);
-		}
-
-		return retHtml;
-	}
 
 //	private Hashtable expandFiles(InputStream is) throws Exception {
 //		net.sf.jazzlib.ZipInputStream zipIn = new net.sf.jazzlib.ZipInputStream(is);
@@ -2815,28 +1817,6 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 //	    throw e;
 //	}
 //    }
-
-    @Override
-    public String exportProcessDefinitionForAddToMarket(String defId, String loggedUserGlobalCom) throws Exception {
-	exportProcessDefinitionbyDefinitionId(defId, false);
-	String fileName = "";
-	if (!defId.equals("-1")) {
-	    fileName = getProcessDefinitionRemoteByDefinitionId(defId).getName().getText();
-	} else {
-	    fileName = "root";
-	}
-
-	String TEMP_DIRECTORY = GlobalContext.getPropertyString("server.definition.path", "." + File.separatorChar + "uengine" + File.separatorChar + "definition" + File.separatorChar);
-
-	if (!TEMP_DIRECTORY.endsWith("/") && !TEMP_DIRECTORY.endsWith("\\")) {
-	    TEMP_DIRECTORY = TEMP_DIRECTORY + "/";
-	}
-	TEMP_DIRECTORY = TEMP_DIRECTORY + "temp" + File.separatorChar + "download" + File.separatorChar;
-	String filePath = TEMP_DIRECTORY + fileName + ".zip";
-
-	return filePath;
-    }
-
 	@Override
 	public void setChanged() {
 		//do nothing.  ProcessManagerDirtyAdvice will check this.
@@ -2848,22 +1828,9 @@ public class ProcessManagerBean implements SessionBean, SessionSynchronization, 
 	}
 
 	@Override
-	public Vector importProcessDefinition(String parentFolder, InputStream loadedZipFile, UEngineArchive editedUa, String[] command) throws Exception {
-		return null;
-	}
-
-	@Override
 	public Hashtable importProcessAliasCheck(InputStream is) throws Exception {
 		return null;
 	}
 
-	@Override
-	public DefinitionArchive[] importDefinitionArchiveList(InputStream is) throws RemoteException {
-		return new DefinitionArchive[0];
-	}
 
-	@Override
-	public void importProcessDefinitionGraciously(String parentFolder, String itemId, String itemFilePath, String loggedUserGlobalCom) throws Exception {
-
-	}
 }

@@ -13,7 +13,6 @@ import org.uengine.kernel.GlobalContext;
 import org.uengine.kernel.ParameterContext;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.designer.MappingCanvas;
-import org.uengine.webservice.PoolMappingTree;
 
 
 public class MappingContext implements Serializable {

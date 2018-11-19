@@ -27,7 +27,7 @@ import org.uengine.util.UEngineUtil;
 /**
  * @author Jinyoung Jang
  */
-public class Role implements IElement, java.io.Serializable, Cloneable, ContextAware {
+public class Role implements IElement, java.io.Serializable, Cloneable {
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
 	
 	public static final int DISPATCHINGOPTION_AUTO				= -1; // ����
@@ -55,110 +55,6 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 //			this.uuid = uuid;
 //		}
 
-	public static void metaworksCallback_changeMetadata(Type type){
-		
-		FieldDescriptor fd;
-		
-		//table.removeFieldDescriptor("AskWhenInit");
-		//table.removeFieldDescriptor("DispatchingOption");
-		//table.removeFieldDescriptor("Identifier");
-		//table.removeFieldDescriptor("HumanWorker");
-		//table.removeFieldDescriptor("ServiceType");
-
-		String advancedOptions = GlobalContext.getLocalizedMessage("role.advancedoptions.label", "Advanced Options");
-		
-		//type.setName(GlobalContext.getLocalizedMessage("role.displayname", "Role"));
-				
-		fd = type.getFieldDescriptor("RoleResolutionContext");		
-		fd.setDisplayName(GlobalContext.getLocalizedMessage("role.roleresolutioncontext.displayname", "Role"));
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-		
-//		fd = table.getFieldDescriptor("AskWhenInit");		
-//		fd.setAttribute("hidden", new Boolean(true));
-//		//fd.setDisplayName(GlobalContext.getLocalizedMessage("role.askwheninit.displayname"));
-//		
-		fd = type.getFieldDescriptor("DispatchingOption");
-		//fd.setAttribute("hidden", new Boolean(true));
-		fd.setInputter(new RadioInput(
-			new String[]{
-				GlobalContext.getLocalizedMessage("role.dispatchingoption.racing.displayname", "Racing"),
-				GlobalContext.getLocalizedMessage("role.dispatchingoption.loadbalanced.displayname", "Load-balanced"),
-				GlobalContext.getLocalizedMessage("role.dispatchingoption.setbyrightperson.displayname", "Set by right-person"),
-				GlobalContext.getLocalizedMessage("role.dispatchingoption.notice.displayname", "Notice"),
-				GlobalContext.getLocalizedMessage("role.dispatchingoption.all.displayname", "All"),
-			},
-			new Object[]{
-				new Integer(DISPATCHINGOPTION_RACING), 
-				new Integer(DISPATCHINGOPTION_LOADBALANCED), 
-				new Integer(DISPATCHINGOPTION_SETBYRIGHTPERSON), 
-				new Integer(DISPATCHINGOPTION_ANNOUNCEMENT),
-				new Integer(DISPATCHINGOPTION_ALL),
-			}
-		));	
-
-		fd.setDisplayName(GlobalContext.getLocalizedMessage("role.dispatchingoption.displayname", ""));
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-		
-//
-//		fd = table.getFieldDescriptor("Identifier");
-//		fd.setAttribute("hidden", new Boolean(true));
-//
-//		fd = table.getFieldDescriptor("HumanWorker");
-//		fd.setAttribute("hidden", new Boolean(true));
-//		
-//		fd = table.getFieldDescriptor("ServiceType");
-//		fd.setAttribute("hidden", new Boolean(true));
-
-		fd = type.getFieldDescriptor("Name");		
-		fd.setDisplayName(GlobalContext.getLocalizedMessage("role.name.displayname", "Role Name (id)"));
-		fd.setValidators(new Validator[]{new NotNullValid()}); //it's mandatory
-
-		fd = type.getFieldDescriptor("DisplayName");		
-		fd.setDisplayName(GlobalContext.getLocalizedMessage("role.displayname.displayname", "Display Name"));
-
-		fd = type.getFieldDescriptor("DefaultEndpoint");		
-		fd.setDisplayName(GlobalContext.getLocalizedMessage("role.defaultendpoint.displayname", "DefaultEndpoint"));
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-		
-		fd = type.getFieldDescriptor("DontPersistResolutionResult");		
-		fd.setDisplayName(GlobalContext.getLocalizedMessage("role.dontpersistresolutionresult.displayname", "Do not persist the resolution result"));
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-		
-		fd = type.getFieldDescriptor("RoleResolutionContext");
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-
-		fd = type.getFieldDescriptor("ServiceType");
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-
-		fd = type.getFieldDescriptor("HumanWorker");
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-
-		fd = type.getFieldDescriptor("Identifier");
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-		
-		fd = type.getFieldDescriptor("AskWhenInit");		
-		fd.setAttribute("group", advancedOptions);
-		fd.setAttribute("hiddenInTable", "yes");
-
-		fd.setAttribute("collapseGroup", true);
-		
-	}
-	
-	transient MetaworksContext metaworksContext;
-		public MetaworksContext getMetaworksContext() {
-			return metaworksContext;
-		}
-		public void setMetaworksContext(MetaworksContext metaworksContext) {
-			this.metaworksContext = metaworksContext;
-		}
 
 	private java.lang.String name;
 	@Name
@@ -284,7 +180,6 @@ public class Role implements IElement, java.io.Serializable, Cloneable, ContextA
 			this.dontPersistResolutionResult = dontPersistResolutionResult;
 		}
 	public Role(){
-		setMetaworksContext(new MetaworksContext());
 		this.setDisplayName("");
 //		this.setUuid(UUID.randomUUID().toString());
 	}

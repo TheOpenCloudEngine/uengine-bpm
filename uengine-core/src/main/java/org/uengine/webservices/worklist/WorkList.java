@@ -6,9 +6,8 @@ package org.uengine.webservices.worklist;
 import java.rmi.RemoteException;
 
 import org.uengine.kernel.KeyedParameter;
+import org.uengine.processmanager.DefaultTransactionContext;
 import org.uengine.processmanager.TransactionContext;
-
-import org.uengine.webservice.*;
 
 /**
  * @author Jinyoung Jang
@@ -19,7 +18,7 @@ public interface WorkList {
 	public String addWorkItem(String userId, KeyedParameter[] parameters, TransactionContext tc) throws RemoteException;
 
 	public void updateWorkItem(String taskId, String userId, KeyedParameter[] parameters, TransactionContext tc) throws RemoteException;
-	public void cancelWorkItem(String taskID, KeyedParameter[] options, TransactionContext tc) throws RemoteException;	
+	public void cancelWorkItem(String taskID, KeyedParameter[] options, TransactionContext tc) throws RemoteException;
 	public void completeWorkItem(String taskID, KeyedParameter[] options, TransactionContext tc) throws RemoteException;
 	
 	//status of workitem maybe..

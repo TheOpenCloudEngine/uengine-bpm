@@ -43,10 +43,7 @@ public class StatusReportActivity extends DefaultActivity{
 	protected void executeActivity(ProcessInstance instance) throws Exception{
 		String contentEvaluated = evaluateContent(instance, getContent()).toString();
 		
-		if(instance instanceof EJBProcessInstance){
-			((EJBProcessInstance)instance).getProcessInstanceDAO().set(getFieldName(), contentEvaluated);
-		}else
-			instance.setInfo(contentEvaluated);
+		instance.setInfo(contentEvaluated);
 		fireComplete(instance);
 	}
 

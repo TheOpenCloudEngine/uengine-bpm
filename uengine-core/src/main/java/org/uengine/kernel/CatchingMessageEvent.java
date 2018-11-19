@@ -90,7 +90,7 @@ public class CatchingMessageEvent extends Event implements MessageListener {
 
 	public boolean onMessage(ProcessInstance instance, Object payload) throws Exception {
 
-		if(getDataOutput()!=null)
+		if(getDataOutput()!=null && getDataOutput().getName()!=null)
 			getDataOutput().set(instance, "", (Serializable) payload);
 
 		if (getDataOutputMapping()!=null && payload instanceof BeanPropertyResolver) {
@@ -98,8 +98,13 @@ public class CatchingMessageEvent extends Event implements MessageListener {
 			BeanPropertyResolver payload_ = (BeanPropertyResolver) payload;
 
 			for (ParameterContext parameterContext : getDataOutputMapping()) {
+
+				String key = parameterContext.getArgument().getText();
+				if(key.startsWith("$."))
+					key = key.substring(2);
+
 				Object value = payload_.getBeanProperty(
-						parameterContext.getArgument().getText()
+						key
 				);
 
 				HashMap options = new HashMap<>();

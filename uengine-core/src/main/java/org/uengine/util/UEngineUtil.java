@@ -53,7 +53,6 @@ import org.uengine.kernel.ProcessDefinition;
 import org.uengine.kernel.ProcessInstance;
 import org.uengine.kernel.ProcessVariableValue;
 import org.uengine.kernel.UEngineException;
-import org.uengine.processmanager.ProcessDefinitionRemote;
 
 /**
  * @author Jinyoung Jang
@@ -609,21 +608,6 @@ public class UEngineUtil {
         }
     }
 
-    public static String createInstanceId(ProcessDefinitionRemote pd) {
-        Calendar now = Calendar.getInstance();
-        int y = now.get(Calendar.YEAR);
-        int m = now.get(Calendar.MONTH) + 1;
-        int d = now.get(Calendar.DATE);
-        int h = now.get(Calendar.HOUR);
-        int mi = now.get(Calendar.MINUTE);
-        int s = now.get(Calendar.SECOND);
-
-        return pd.getName().getText().replace(' ', '_') + "-" + y + (m < 10 ? "0" + m : "" + m) + (d < 10 ? "0" + d : "" + d) + (h < 10 ? "0" + h : "" + h) + (mi < 10 ? "0" + mi : "" + mi) + (s < 10 ? "0" + s : "" + s);
-    }
-
-    public static String createInstanceId(ProcessDefinition pd) {
-        return createInstanceId(new ProcessDefinitionRemote(pd, null));
-    }
 
     public static String toOnlyFirstCharacterUpper(String src) {
         if (src == null) return null;

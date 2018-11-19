@@ -485,21 +485,21 @@ public class ProcessDefinition extends ScopeActivity implements Serializable, ID
 		return initiatorHumanActivity;
 	}*/
 	
-	ListField instanceListFields[];
-		public ListField[] getInstanceListFields() {
-			return instanceListFields;
-		}
-		public void setInstanceListFields(ListField[] instanceListFields) {
-			this.instanceListFields = instanceListFields;
-		}
-	
-	ListField workListFields[];
-		public ListField[] getWorkListFields() {
-			return workListFields;
-		}
-		public void setWorkListFields(ListField[] workListFields) {
-			this.workListFields = workListFields;
-		}
+//	ListField instanceListFields[];
+//		public ListField[] getInstanceListFields() {
+//			return instanceListFields;
+//		}
+//		public void setInstanceListFields(ListField[] instanceListFields) {
+//			this.instanceListFields = instanceListFields;
+//		}
+//
+//	ListField workListFields[];
+//		public ListField[] getWorkListFields() {
+//			return workListFields;
+//		}
+//		public void setWorkListFields(ListField[] workListFields) {
+//			this.workListFields = workListFields;
+//		}
 	
 	transient String currentLocale;
 		public String getCurrentLocale() {
@@ -1110,73 +1110,73 @@ System.out.println("ProcessDefinition::addMessageListener.message = " + message)
 		return new String[]{definitionId, versionId};
 	}
 
-	public static String getDefinitionVersionId(ProcessInstance instance, String definitionId, int versionSelectionOption, ProcessDefinition definition) throws Exception{
-		ProcessManagerRemote pm = null;
+//	public static String getDefinitionVersionId(ProcessInstance instance, String definitionId, int versionSelectionOption, ProcessDefinition definition) throws Exception{
+//		ProcessManagerRemote pm = null;
+//
+//		if(instance!=null)
+//			pm = instance.getProcessTransactionContext().getProcessManager();
+//		else
+//			pm = (new ProcessManagerFactoryBean()).getProcessManagerForReadOnly();
+//
+//		return getDefinitionVersionId(instance, pm, definitionId, versionSelectionOption, definition);
+//	}
+//
+//	public static String getDefinitionVersionId(ProcessManagerRemote pm, String definitionId, int versionSelectionOption, ProcessDefinition definition) throws Exception{
+//		return getDefinitionVersionId(null, pm, definitionId, versionSelectionOption, definition);
+//	}
 
-		if(instance!=null)
-			pm = instance.getProcessTransactionContext().getProcessManager();
-		else
-			pm = (new ProcessManagerFactoryBean()).getProcessManagerForReadOnly();
-
-		return getDefinitionVersionId(instance, pm, definitionId, versionSelectionOption, definition);
-	}
-
-	public static String getDefinitionVersionId(ProcessManagerRemote pm, String definitionId, int versionSelectionOption, ProcessDefinition definition) throws Exception{
-		return getDefinitionVersionId(null, pm, definitionId, versionSelectionOption, definition);
-	}
-
-	public static String getDefinitionVersionId(ProcessInstance instance, ProcessManagerRemote pm, String definitionId, int versionSelectionOption, ProcessDefinition definition) throws Exception{
-		String versionId = null;
-
-		String [] defIdAndVersionId = splitDefinitionAndVersionId(definitionId);
-		definitionId = defIdAndVersionId[0];
-		versionId = defIdAndVersionId[1];
-		
-		try{
-			//need re-resolution for definition id if the definition id is an alias
-			if(definitionId.startsWith("[") && definitionId.endsWith("]")){
-				String definitionAlias = definitionId.substring(1, definitionId.length()-1);
-				definitionId = pm.getProcessDefinitionIdByAlias(definitionAlias);
-			}
-
-			switch(versionSelectionOption){
-			case VERSIONSELECTOPTION_CURRENT_PROD_VER:
-				versionId = pm.getProcessDefinitionProductionVersion(definitionId);
-				break;
-			case VERSIONSELECTOPTION_PROD_VER_AT_DESIGNED_TIME:
-				//if(instance==null) throw new UEngineException("")
-				versionId = pm.getProductionVersionIdAtThatTime(definitionId, instance.getRootProcessInstance().getProcessDefinition().getModifiedDate().getTime());
-				break;
-			case VERSIONSELECTOPTION_PROD_VER_AT_INITIATED_TIME:
-				versionId = pm.getProductionVersionIdAtThatTime(definitionId, definition.getStartedTime(instance).getTime());
-				break;
-			case VERSIONSELECTOPTION_JUST_SELECTED:
-				if(versionId==null)
-					throw new UEngineException("Even though the sub process activity is set to use the sub processes' definition version with the just selected one, the version is not explicitly set.");
-				break;
-			}
-
-			if(versionId == null){
-				versionId = pm.getProcessDefinitionProductionVersion(definitionId);
-			}
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			
-			try{
-				versionId = pm.getFirstProductionVersionId(definitionId);
-			}catch(Exception ex){
-				ex.printStackTrace();
-				versionId = pm.getProcessDefinitionProductionVersion(definitionId);
-			}
-		}finally{
-			try{
-				if(instance==null) pm.remove();
-			}catch(Exception e){};
-		}
-		
-		return versionId;
-	}
+//	public static String getDefinitionVersionId(ProcessInstance instance, ProcessManagerRemote pm, String definitionId, int versionSelectionOption, ProcessDefinition definition) throws Exception{
+//		String versionId = null;
+//
+//		String [] defIdAndVersionId = splitDefinitionAndVersionId(definitionId);
+//		definitionId = defIdAndVersionId[0];
+//		versionId = defIdAndVersionId[1];
+//
+//		try{
+//			//need re-resolution for definition id if the definition id is an alias
+//			if(definitionId.startsWith("[") && definitionId.endsWith("]")){
+//				String definitionAlias = definitionId.substring(1, definitionId.length()-1);
+//				definitionId = pm.getProcessDefinitionIdByAlias(definitionAlias);
+//			}
+//
+//			switch(versionSelectionOption){
+//			case VERSIONSELECTOPTION_CURRENT_PROD_VER:
+//				versionId = pm.getProcessDefinitionProductionVersion(definitionId);
+//				break;
+//			case VERSIONSELECTOPTION_PROD_VER_AT_DESIGNED_TIME:
+//				//if(instance==null) throw new UEngineException("")
+//				versionId = pm.getProductionVersionIdAtThatTime(definitionId, instance.getRootProcessInstance().getProcessDefinition().getModifiedDate().getTime());
+//				break;
+//			case VERSIONSELECTOPTION_PROD_VER_AT_INITIATED_TIME:
+//				versionId = pm.getProductionVersionIdAtThatTime(definitionId, definition.getStartedTime(instance).getTime());
+//				break;
+//			case VERSIONSELECTOPTION_JUST_SELECTED:
+//				if(versionId==null)
+//					throw new UEngineException("Even though the sub process activity is set to use the sub processes' definition version with the just selected one, the version is not explicitly set.");
+//				break;
+//			}
+//
+//			if(versionId == null){
+//				versionId = pm.getProcessDefinitionProductionVersion(definitionId);
+//			}
+//
+//		}catch(Exception e){
+//			e.printStackTrace();
+//
+//			try{
+//				versionId = pm.getFirstProductionVersionId(definitionId);
+//			}catch(Exception ex){
+//				ex.printStackTrace();
+//				versionId = pm.getProcessDefinitionProductionVersion(definitionId);
+//			}
+//		}finally{
+//			try{
+//				if(instance==null) pm.remove();
+//			}catch(Exception e){};
+//		}
+//
+//		return versionId;
+//	}
 
 	protected void beforeExecute(ProcessInstance instance) throws Exception {
 		super.beforeExecute(instance);

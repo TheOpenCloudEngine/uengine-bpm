@@ -37,71 +37,7 @@ public class EventHandler implements Serializable{
 	public final static int TRIGGERING_BY_REJECTED = 103;
 	public final static int TRIGGERING_BY_ARBITRARYFINISHED = 104;
 		
-	public static void metaworksCallback_changeMetadata(Type type){
-		FieldDescriptor fd = type.getFieldDescriptor("HandlerActivity");
-		//fd.setAttribute("hidden", new Boolean(true));
-		
-		fd.setInputter(new AbstractComponentInputter(){
-			private static final long serialVersionUID = GlobalContext.SERIALIZATION_UID;
-			
-			JLabel valueLabel;
-			Activity value;
-			
-			public Object getValue() {
-				// TODO Auto-generated method stub
-				return value;
-			}
 
-			public void setValue(Object data) {
-				// TODO Auto-generated method stub
-				valueLabel.setText(((Activity)data).getName());
-				value = (Activity)data;
-			}
-
-			public Component getNewComponent() {
-				// TODO Auto-generated method stub
-				return (valueLabel = new JLabel("not set"));
-			}
-			
-		});
-		
-		fd = type.getFieldDescriptor("TriggeringMethod");
-		fd.setInputter(new SelectInput(
-				new String[]{
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.byeventbutton", "By Event Button (in web)"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.byapi", "By API invocation"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.whendelegation", "When a participant is delegated"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.whencompensation", "When the scope is compensated"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.whenfault", "When one of child is in fault"),
-						//activity event
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.activityevent.aftercompleted", "After one of child is completed"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.activityevent.aftersaved", "After one of child is saved only"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.activityevent.aftersaved.or.completed", "After one of child is saved or completed"),
-						//approval
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.approval.drafted", "Approval / Drafted"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.approval.approved", "Approval / Approved"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.approval.rejected", "Approval / Rejected"),
-						GlobalContext.getLocalizedMessage("eventhandler.triggeringmethods.approval.arbitraryapproved", "Approval / Arbitrary Approved"),
-				}, new Object[]{
-						new Integer(TRIGGERING_BY_EVENTBUTTON),
-						new Integer(TRIGGERING_BY_API),						
-						new Integer(TRIGGERING_BY_DELEGATION),						
-						new Integer(TRIGGERING_BY_COMPENSATION),						
-						new Integer(TRIGGERING_BY_FAULT),
-						//activity events
-						new Integer(TRIGGERING_BY_AFTER_CHILD_COMPLETED),
-						new Integer(TRIGGERING_BY_AFTER_CHILD_SAVED),
-						new Integer(TRIGGERING_BY_AFTER_CHILD_SAVED_OR_COMPLETED),
-						//approval
-						new Integer(TRIGGERING_BY_DRAFTED),						
-						new Integer(TRIGGERING_BY_APPROVED),						
-						new Integer(TRIGGERING_BY_REJECTED),						
-						new Integer(TRIGGERING_BY_ARBITRARYFINISHED),						
-				}
-			)
-		);
-	}	
-	
 	
 	String name;
 	TextContext displayName = org.uengine.contexts.TextContext.createInstance();

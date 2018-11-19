@@ -1,33 +1,17 @@
 package org.uengine.kernel;
 
 import org.uengine.persistence.dao.DAOFactory;
-import org.uengine.persistence.processdefinition.*;
-import org.uengine.persistence.processdefinitionversion.ProcessDefinitionVersionRepositoryHomeLocal;
-import org.uengine.persistence.processdefinitionversion.ProcessDefinitionVersionRepositoryHomeLocalImpl;
-import org.uengine.persistence.processinstance.ProcessInstanceRepositoryHomeLocal;
-import org.uengine.persistence.processvariable.ProcessVariableRepositoryHomeLocal;
-import org.uengine.persistence.rolemapping.RoleMappingRepositoryHomeLocal;
+import org.uengine.processmanager.DefaultTransactionContext;
 import org.uengine.processmanager.SimulatorTransactionContext;
 import org.uengine.processmanager.TransactionContext;
 import org.uengine.util.UEngineUtil;
-import org.uengine.util.dao.ConnectiveDAO;
-import org.uengine.util.dao.GenericDAO;
-import org.uengine.util.dao.IDAO;
-import org.uengine.util.resources.PropertyResourceBundle;
-import org.uengine.util.resources.ResourceBundle;
-import org.uengine.webservice.*;
 //import java.util.*;
 
 //for the method 'getServiceProvider()' 
 
 import java.io.*;
-import java.math.BigDecimal;
 import java.net.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 //end
 
 /**
@@ -93,11 +77,6 @@ public class GlobalContext{
 	public final static int JDBC_MAX_IDLE = Integer.parseInt(GlobalContext.getPropertyString("jdbc.maxIdle", "10"));
 	public final static long JDBC_MAX_WAIT = Long.parseLong(GlobalContext.getPropertyString("jdbc.maxWait", "-1"));
 	
-	public static ProcessDefinitionRepositoryHomeLocal processDefinitionRepositoryHomeLocal;
-	public static ProcessDefinitionVersionRepositoryHomeLocal processDefinitionVersionRepositoryHomeLocal;
-	public static ProcessInstanceRepositoryHomeLocal processInstanceRepositoryHomeLocal;
-	public static ProcessVariableRepositoryHomeLocal processVariableRepositoryHomeLocal;
-	public static RoleMappingRepositoryHomeLocal roleMappingRepositoryHomeLocal;
 
 	static Hashtable serializers;
 	static Hashtable serviceProviders;
@@ -131,7 +110,7 @@ public class GlobalContext{
 	public static String getDefaultLocale(){
 		return DEFAULT_LOCALE;
 	}
-	
+
 	public static void setDefaultLocale(String locale) {
 		if (properties != null && !Locale.getDefault().getLanguage().equals(locale)) {
 			properties.put("default.locale", locale);
@@ -140,7 +119,7 @@ public class GlobalContext{
 			messages = PropertyResourceBundle.getBundle("org.uengine.resources.messages", new Locale(locale), GlobalContext.class.getClassLoader());
 		}
 	}
-	
+
 	static boolean isDesignTime;
 		public static boolean isDesignTime() {
 			return isDesignTime;
@@ -253,13 +232,13 @@ public class GlobalContext{
 			Locale locale = new Locale(properties.getProperty("default.locale", Locale.getDefault().getLanguage()));
 			if(messages==null)
 				messages = PropertyResourceBundle.getBundle("org.uengine.resources.messages", locale, GlobalContext.class.getClassLoader());
-				
+
 			return messages.getString(key);
 		}catch(Exception e){
 			return defaultValue;
 		}
 	}
-	
+
 	public static final String getLocalizedMessage(String key, String _locale, String defaultValue) {
 		try{
 			Locale locale = null;
@@ -270,56 +249,56 @@ public class GlobalContext{
 			}
 //			if(messages==null)
 				messages = PropertyResourceBundle.getBundle("org.uengine.resources.messages", locale, GlobalContext.class.getClassLoader());
-				
+
 			return messages.getString(key);
 		}catch(Exception e){
 			return defaultValue;
 		}
 	}
-	
+
 	public static final String getLocalizedMessageForWeb(String key, String language, String defaultValue) {
 		try{
 			if(!webMessageBundles.containsKey(language)){
 				Locale locale = new Locale(language);
 				PropertyResourceBundle propertyResourceBundle = (PropertyResourceBundle) PropertyResourceBundle.getBundle("org.uengine.messages", locale, GlobalContext.getClassLoader());
-				
+
 				if(!propertyResourceBundle.getLocale().getLanguage().equals(language)) return defaultValue;
-				
+
 				webMessageBundles.put(language, propertyResourceBundle);
 			}
 			ResourceBundle webMessageBundle = (ResourceBundle) webMessageBundles.get(language);
-			
+
 			return webMessageBundle.getString(key);
 
 		}catch(Exception e){
 			return defaultValue;
 		}
 	}
-	
+
 	public static final String getMessageForWeb(String key, String language) {
 		try {
 			String tmpKey = key.toLowerCase();
 			tmpKey = tmpKey.replaceAll(" ", "_");
-			
+
 			key = key.replaceAll("_", " ");
-			
+
 			if (!webMessageBundles.containsKey(language)) {
 				Locale locale = new Locale(language);
 				PropertyResourceBundle propertyResourceBundle = (PropertyResourceBundle) PropertyResourceBundle.getBundle("org.uengine.messages", locale, GlobalContext.getClassLoader());
-				
+
 				if (!propertyResourceBundle.getLocale().getLanguage().equals(language)) return key;
-				
+
 				webMessageBundles.put(language, propertyResourceBundle);
 			}
 			ResourceBundle webMessageBundle = (ResourceBundle) webMessageBundles.get(language);
-			
+
 			return webMessageBundle.getString(tmpKey);
 
 		} catch(Exception e) {
 			return key;
 		}
 	}
-	
+
 	public static final String getSQL(String key){
 		if(sqls==null){
 			try {
@@ -349,23 +328,7 @@ public class GlobalContext{
 	public static final String getLocalizedMessage(String key) {
 		return getLocalizedMessage(key, null);
 	}
-	
-	public static ServiceProvider getServiceProvider(String serviceKey) throws Exception{
-		//TODO: caching mechanism required
-		Class SPCls = getComponentClass(serviceKey);
-System.out.println("GlobalContext::getServiceProvider SPCls is : "+ SPCls.getSuperclass().getName());
 
-		ServiceProvider sp = (ServiceProvider)SPCls.getConstructor(new Class[]{}).newInstance(new Object[]{});
-		return sp;
-	}
-	
-	public static ServiceProvider getServiceProvider(ServiceDefinition serviceDefinition, String portType) throws Exception{
-		//TODO: caching mechanism required
-		if(serviceDefinition==null) return getServiceProvider(portType); //for old version
-		
-		return new DefaultServiceProvider(serviceDefinition, portType);
-	}
-	
 	public static ClassLoader getComponentClassLoader() throws Exception{
 		//I decided not to use proprietary class loading
 		return GlobalContext.class.getClassLoader();
@@ -607,59 +570,7 @@ System.out.println("GlobalContext::deserialize: the case that source is a busine
 //		}
 	}
 	//
-	
-	public static ProcessDefinitionVersionRepositoryHomeLocal createProcessDefinitionVersionRepositoryHomeLocal(TransactionContext tc) throws Exception{
-		if(!useEJB)
-			return new ProcessDefinitionVersionRepositoryHomeLocalImpl(tc);
-		
-		if(processDefinitionVersionRepositoryHomeLocal==null){
-			processDefinitionVersionRepositoryHomeLocal =
-			(ProcessDefinitionVersionRepositoryHomeLocal)getInitialContext().lookup("ProcessDefinitionVersionRepositoryHomeLocal");
-		}
 
-		return processDefinitionVersionRepositoryHomeLocal;
-	}
-
-	public static ProcessDefinitionRepositoryHomeLocal createProcessDefinitionRepositoryHomeLocal(TransactionContext tc) throws Exception{
-		
-		if(!useEJB)
-			return new ProcessDefinitionRepositoryHomeLocalImpl(tc);
-		
-		if(processDefinitionRepositoryHomeLocal==null){
-			processDefinitionRepositoryHomeLocal =
-				(ProcessDefinitionRepositoryHomeLocal)
-				getInitialContext().lookup("ProcessDefinitionRepositoryHomeLocal");
-		}
-		
-		return processDefinitionRepositoryHomeLocal;
-	}
-
-	public static ProcessInstanceRepositoryHomeLocal createProcessInstanceRepositoryHomeLocal() throws Exception{
-		if(processInstanceRepositoryHomeLocal==null){
-			processInstanceRepositoryHomeLocal =
-			(ProcessInstanceRepositoryHomeLocal)getInitialContext().lookup("ProcessInstanceRepositoryHomeLocal");
-		}
-
-		return processInstanceRepositoryHomeLocal;
-	}
-	
-	public static ProcessVariableRepositoryHomeLocal createProcessVariableRepositoryHomeLocal() throws Exception{
-		if(processVariableRepositoryHomeLocal==null){
-			processVariableRepositoryHomeLocal =
-			(ProcessVariableRepositoryHomeLocal)getInitialContext().lookup("ProcessVariableRepositoryHomeLocal");
-		}
-
-		return processVariableRepositoryHomeLocal;
-	}
-
-	public static RoleMappingRepositoryHomeLocal createRoleMappingRepositoryHomeLocal() throws Exception{
-		if(roleMappingRepositoryHomeLocal==null){
-			roleMappingRepositoryHomeLocal =
-			(RoleMappingRepositoryHomeLocal)getInitialContext().lookup("RoleMappingRepositoryHomeLocal");
-		}
-
-		return roleMappingRepositoryHomeLocal;
-	}
 
 	public static InitialContext getInitialContext() throws Exception{
 		return new InitialContext();
@@ -674,10 +585,8 @@ System.out.println("GlobalContext::deserialize: the case that source is a busine
 	
 	public static Calendar getNow(TransactionContext tc) throws Exception{
 		
-		if(tc==null || tc instanceof SimulatorTransactionContext) return Calendar.getInstance();
-		
-		DAOFactory daoFactory = DAOFactory.getInstance(tc);
-		return daoFactory.getNow();
+		return Calendar.getInstance();
+
 	}
 
 

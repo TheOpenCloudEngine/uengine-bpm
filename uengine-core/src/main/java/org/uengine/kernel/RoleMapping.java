@@ -14,6 +14,7 @@ import java.util.Properties;
 
 public class RoleMapping implements java.io.Serializable, Cloneable, CommandVariableValue{
 	private static final long serialVersionUID = org.uengine.kernel.GlobalContext.SERIALIZATION_UID;
+	public static final String ROLES_PREFIX = "[roles].";
 	public static Class USE_CLASS = null;
 	
 	protected String name;//this is roleName. don't be confused with resource name
@@ -549,6 +550,10 @@ public class RoleMapping implements java.io.Serializable, Cloneable, CommandVari
 	}
 
 	public boolean doCommand(ProcessInstance instance, String variableKey) throws Exception {
+		if(variableKey.startsWith(ROLES_PREFIX)){
+			variableKey = variableKey.substring(ROLES_PREFIX.length());
+		}
+
 		if(instance.getProcessDefinition().getRole(variableKey)!=null){
 			setName(variableKey);
 			instance.putRoleMapping(this);

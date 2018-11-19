@@ -7,9 +7,6 @@ import java.util.Calendar;
 import java.util.Map;
 
 import org.uengine.persistence.DAOType;
-import org.uengine.persistence.processinstance.ProcessInstanceDAO;
-import org.uengine.persistence.processinstance.ProcessInstanceRepositoryLocal;
-import org.uengine.persistence.processvariable.ProcessVariableDAO;
 import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.util.UEngineUtil;
 import org.uengine.util.dao.*;
@@ -37,8 +34,6 @@ public abstract class DAOFactory{
 	abstract public WorkListDAO createWorkListDAOForInsertCall(Map options) throws Exception;
 	abstract public WorkListDAO createWorkListDAOForUpdate(Map options) throws Exception;
 	abstract public KeyGeneratorDAO createKeyGenerator(String forWhat, Map options) throws Exception;
-	abstract public ProcessInstanceDAO createProcessInstanceDAOForArchive() throws Exception;
-	abstract public ProcessVariableDAO findProcessVariableDAOByInstanceId() throws Exception;
 	abstract public Calendar getNow() throws Exception;
 
 	abstract public String getSequenceSql(String seqName) throws Exception;
@@ -47,7 +42,7 @@ public abstract class DAOFactory{
 
 	public static DAOFactory getInstance(ConnectionFactory tc){
 //		if(tc == null)
-//			throw new IllegalArgumentException("ConnectionFactory or TransactionContext is null. ConnectionFactory should be provided to create the DAOFactory.");
+//			throw new IllegalArgumentException("ConnectionFactory or DefaultTransactionContext is null. ConnectionFactory should be provided to create the DAOFactory.");
 
 		DAOFactory daoFactory;
 		try{

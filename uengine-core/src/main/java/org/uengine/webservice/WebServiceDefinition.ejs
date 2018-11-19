@@ -1,9 +1,0 @@
-
-<% 
-    if( value ){ 
-%>
-     <% if( value.targetMethod ){ %>
-        <span><%= value.targetMethod.id %></span>    
-    <%  } %>
-    <input type="button" value="select" onClick="<%=methods.openPicker.caller()%>" />        
-<% } %>

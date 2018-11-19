@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
 
 	<properties>
-		<org.springframework-version>4.1.4.RELEASE</org.springframework-version>
+		<org.springframework-version>4.3.6.RELEASE</org.springframework-version>
 		<uengine.processcodi.version>1.2.0-SNAPSHOT</uengine.processcodi.version>
 		<uengine.metaworks3.version>1.3.0-SNAPSHOT</uengine.metaworks3.version>
 	</properties>
@@ -15,14 +15,9 @@
 
   <modules>
 	  <module>uengine-commons</module>
-	  <module>uengine-modeling</module>
-	  <module>uengine-uml</module>
 	  <module>uengine-core</module>
-	  <module>uengine-bpmn-modeler</module>
 	  <module>uengine-resource-manager</module>
 	  <module>bpmn-model</module>
-	  <module>uengine-client-example</module>
-	  <module>uengine-social-bpm-portal</module>
 	  <module>uengine-persistence-couchbase</module>
 	  <module>uengine-migrator</module>
   </modules>

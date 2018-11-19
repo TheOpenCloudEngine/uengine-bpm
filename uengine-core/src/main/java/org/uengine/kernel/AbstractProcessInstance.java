@@ -7,8 +7,8 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.metaworks.dwr.MetaworksRemoteService;
-import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.processmanager.TransactionContext;
+import org.uengine.processmanager.ProcessTransactionContext;
 import org.uengine.util.*;
 import org.uengine.webservices.worklist.WorkList;
 
@@ -193,10 +193,12 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 		
 		activity.beforeExecute(this);
 
-		setStatus(tracingTag, Activity.STATUS_RUNNING);
-
 		try{
-			if(activity.isQueuingEnabled() || forceToQueue){
+			if(
+					!Activity.STATUS_QUEUED.equals(activity.getStatus(this)) //if already queued, run it
+					&& (activity.isQueuingEnabled() || forceToQueue)){
+
+				setStatus(tracingTag, Activity.STATUS_QUEUED);
 
 				//trigger the next activity step after finishing the transaction (afterCommit)
 				getProcessTransactionContext().addTransactionListener(new TransactionListener() {
@@ -205,7 +207,10 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 
 					@Override
 					public void afterCommit(TransactionContext tx) throws Exception {
-						(new ProcessExecutionThread()).queue(instanceIdAndExecutionScopeThatTime, activity.getTracingTag());
+
+						IActivityEventQueue activityEventQueue = MetaworksRemoteService.getComponent(IActivityEventQueue.class);
+
+						activityEventQueue.queue(instanceIdAndExecutionScopeThatTime, activity.getTracingTag(), 0, null);
 					}
 
 					@Override
@@ -217,7 +222,10 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 				});
 
 			}else {
+				setStatus(tracingTag, Activity.STATUS_RUNNING);
+
 				activity.executeActivity(this);
+				activity.afterExecute(this);
 			}
 		}catch (Exception e) {
 			StringWriter sw = new StringWriter();
@@ -236,9 +244,6 @@ public abstract class AbstractProcessInstance implements ProcessInstance, java.i
 			throw new Exception(e);
 		}
 
-		if(!activity.isQueuingEnabled()) {
-			activity.afterExecute(this);
-		}
 	}
 
 	private Activity getEventOriginator(String eventName) {
